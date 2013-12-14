@@ -19,7 +19,9 @@ Bedrosians Business Logic Service written in Java
 
 https://github.com/beachsidecoders/beachside-dev-central/blob/master/virtualbox/vbx-osx-ubuntu.md
 
+* Install and setup Java
 
+* Install and setup Maven
 
 * Project Files
 
@@ -30,10 +32,12 @@ git clone ssh://git@vcs.bedrosians.com:2222/bedrosians/bedlogic.git
 cd bedlogic
 ```
 
+* Building
+
+* Running
 
 ## Acknowledgements
 BedLogic makes use of the following third-party open source libraries:
 
 * 
 * 
-
