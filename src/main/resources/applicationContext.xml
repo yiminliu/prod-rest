@@ -1,6 +1,27 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-                        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+  
+    <!-- Scans within the base package of the application for @Components to configure as beans -->
+    <context:annotation-config/>
+    <context:component-scan base-package="com.bedrosians.bedlogic" />
+    
+    <bean id="dataSource"
+        class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">  
+        <property name="driverClassName" value="${database.driver}" />  
+        <property name="url" value="${database.url}" />  
+        <property name="username" value="${database.user}" />  
+        <property name="password" value="${database.password}" />
+        <property name="initialSize" value="10" />
+        <property name="maxActive" value="100" />
+        <property name="maxWait" value="10000" />
+        <property name="minIdle" value="10" />
+    </bean>
+    
+    <bean id="accountDAO" class="com.bedrosians.bedlogic.keymarkDAO.AccountDAO">
+    </bean>
+    
+    <context:property-placeholder location="classpath:jdbc.properties"/>
 
 </beans>
