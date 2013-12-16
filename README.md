@@ -55,6 +55,9 @@ mvn jetty:run
 ```sh
 # If the curl command is executed from a host other than the server, replace localhost by the dns name or ip of the server.
 curl --get http://localhost:8080/bedlogic/rest/hello
+
+# The accounts endpoint. Replace <customer-code> with the desired account. ie 411703
+curl --get http://localhost:8080/bedlogic/rest/accounts/411703
 ```
 
 ## Acknowledgements
