@@ -28,7 +28,7 @@ public class AccountDAO
         Account account = this.jdbcTemplate.queryForObject(SQL, new Object[]{custcd}, new RowMapper<Account>() {
             public Account mapRow(ResultSet rs, int rowNum) throws SQLException
             {
-                return new Account(rs.getString("custcd"), rs.getString("coname"), rs.getString("coaddr1"), rs.getString("coaddr2"), rs.getString("cocity"), rs.getString("costatecd"), rs.getString("cozip"), rs.getString("cocountrycd"));
+                return new Account(rs.getString("custcd").trim(), rs.getString("coname").trim(), rs.getString("coaddr1").trim(), rs.getString("coaddr2").trim(), rs.getString("cocity").trim(), rs.getString("costatecd").trim(), rs.getString("cozip").trim(), rs.getString("cocountrycd").trim());
             }
         });
         
