@@ -76,4 +76,4 @@ BedLogic makes use of the following third-party open source libraries:
 * Spring Framework (http://projects.spring.io/spring-framework) - Application features: Dependency Injection, IOC, Data Access via ODBC, and spring-test module for integration testing
 * JUnit (http://junit.org) - Testing framework
 * Mockito (http://code.google.com/p/mockito/) - Mocking framework
-* 
+* SLF4J (http://www.slf4j.org) and Logback (http://logback.qos.ch) - Logging api via SLF4J, and implementation via Logback.
