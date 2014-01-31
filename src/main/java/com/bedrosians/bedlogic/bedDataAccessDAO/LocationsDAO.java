@@ -18,19 +18,22 @@ public class LocationsDAO
     public JSONObject getLocations()
     {
         JSONRPCDAO  rpcDAO = new JSONRPCDAO();
-        String      auth = new String("TODO-Use-User-Code");
+        String      userType = new String("guest");
+        String      userCode = new String("");
         String      locationCodes = "";
-        String      emptyStrParam = new String("");
+        String      locationRegion = new String("");
+        String      branchName = new String("");
         
         rpcDAO.setMethodName("readLocations");
         rpcDAO.setMethodResultType("locations");
-        rpcDAO.addStringParameter(auth);
+        rpcDAO.addStringParameter(userType);
+        rpcDAO.addStringParameter(userCode);
         rpcDAO.addIntListParameter(locationCodes);
-        rpcDAO.addStringParameter(emptyStrParam);
-        rpcDAO.addStringParameter(emptyStrParam);
+        rpcDAO.addStringParameter(locationRegion);
+        rpcDAO.addStringParameter(branchName);
         
         // TODO: Read URL from config
-        JSONObject result = rpcDAO.call("http://192.168.56.14:8888/api/v2/server.php");
+        JSONObject result = rpcDAO.call("http://192.168.56.14:8888/api/dataaccess/v2/server.php");
         
         return result;
     }
