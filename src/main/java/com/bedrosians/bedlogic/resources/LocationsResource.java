@@ -8,7 +8,10 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
+
+import com.bedrosians.bedlogic.exception.*;
 import com.bedrosians.bedlogic.bedDataAccessDAO.LocationsDAO;
 import net.minidev.json.JSONObject;
 
@@ -19,16 +22,25 @@ public class LocationsResource
     @Produces({MediaType.APPLICATION_JSON})
     public Response getLocations()
     {
-        LocationsDAO                locationsDAO = new LocationsDAO();
-        JSONObject                  result = locationsDAO.getLocations();
         Response.ResponseBuilder    responseBuilder = null;
-       
-        if (result != null)
+
+        try
         {
-            String json = result.toString();
+            LocationsDAO    locationsDAO = new LocationsDAO();
+            JSONObject      result = locationsDAO.getLocations();
+            String          json = result.toString();
+            
             responseBuilder = Response.ok(json, MediaType.APPLICATION_JSON);
         }
-        else
+        catch (BedDAOUnAuthorizedException e)
+        {
+            responseBuilder = Response.status(Status.UNAUTHORIZED);
+        }
+        catch (BedDAOBadResultException e)
+        {
+            responseBuilder = Response.status(Status.NOT_FOUND);
+        }
+        catch (BedDAOException e)
         {
             responseBuilder = Response.serverError();
         }

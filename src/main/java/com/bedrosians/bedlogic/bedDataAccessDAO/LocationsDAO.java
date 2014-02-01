@@ -8,6 +8,7 @@ import com.thetransactioncompany.jsonrpc2.*;
 import net.minidev.json.JSONObject;
 
 import com.bedrosians.bedlogic.bedDataAccessDAO.JSONRPCDAO;
+import com.bedrosians.bedlogic.exception.BedDAOException;
 
 public class LocationsDAO
 {
@@ -16,13 +17,14 @@ public class LocationsDAO
     }
     
     public JSONObject getLocations()
-    {
+        throws BedDAOException
+    {        
         JSONRPCDAO  rpcDAO = new JSONRPCDAO();
-        String      userType = new String("guest");
-        String      userCode = new String("");
+        String      userType = "guest";
+        String      userCode = "";
         String      locationCodes = "";
-        String      locationRegion = new String("");
-        String      branchName = new String("");
+        String      locationRegion = "";
+        String      branchName = "";
         
         rpcDAO.setMethodName("readLocations");
         rpcDAO.setMethodResultType("locations");
@@ -33,7 +35,7 @@ public class LocationsDAO
         rpcDAO.addStringParameter(branchName);
         
         // TODO: Read URL from config
-        JSONObject result = rpcDAO.call("http://192.168.56.14:8888/api/dataaccess/v2/server.php");
+        JSONObject  result = rpcDAO.call("http://192.168.56.14:8888/api/dataaccess/v2/server.php");
         
         return result;
     }

@@ -7,8 +7,10 @@ import com.thetransactioncompany.jsonrpc2.client.*;
 import com.thetransactioncompany.jsonrpc2.*;
 import net.minidev.json.JSONObject;
 
+import com.bedrosians.bedlogic.exception.*;
+
 public class JSONRPCDAO
-{
+{    
     private String          methodName;
     private String          methodResultType;
     private List<Object>    params;
@@ -32,7 +34,6 @@ public class JSONRPCDAO
     
     public void addStringParameter(String inParam)
     {
-        // TODO: Do we need to make const into object
         this.params.add(inParam);
     }
     
@@ -49,28 +50,25 @@ public class JSONRPCDAO
     }
     
     public JSONObject call(String inServerURLStr)
+        throws BedDAOException
     {
-        URL         serverURL = null;
         JSONObject  returnResult = null;
         
 		try
         {
-			serverURL = new URL(inServerURLStr);
+			URL serverURL = new URL(inServerURLStr);
+            returnResult = this.call(serverURL);
 		}
         catch (MalformedURLException e)
         {
-            ;
+            throw new BedDAOInternalException(e);
 		}
-        
-        if (serverURL != null)
-        {
-            returnResult = this.call(serverURL);
-        }
-        
+                
         return returnResult;
     }
     
     public JSONObject call(URL serverURL)
+        throws BedDAOException
     {
         JSONObject  returnResult = null;
         
@@ -93,9 +91,9 @@ public class JSONRPCDAO
                 if (rpcResponse.indicatesSuccess())
                 {
                     JSONObject  resultObject = (JSONObject) rpcResponse.getResult();
-                    Number      resultCode = (Number) resultObject.get("resultcode");
+                    int         resultCode = ((Number) resultObject.get("resultcode")).intValue();
                     
-                    if (resultCode.intValue() == 0)
+                    if (resultCode == 0)
                     {
                         resultObject.remove("resultcode");
                         if (!this.methodResultType.isEmpty())
@@ -105,23 +103,27 @@ public class JSONRPCDAO
                         }
                         returnResult = resultObject;
                     }
-                    else if (resultCode.intValue() == 1)
+                    else if (resultCode == 1)
                     {
-                        // TODO Return Unauthorized
+                        throw new BedDAOUnAuthorizedException();
+                    }
+                    else if (resultCode == 2)
+                    {
+                        throw new BedDAOBadResultException();
                     }
                     else
                     {
-                        // TODO Return Parameter Error
+                        throw new BedDAOInternalException();
                     }
                 }
                 else
                 {
-                    // TODO Return internal error
+                    throw new BedDAOInternalException();
                 }
             }
             catch (JSONRPC2SessionException e)
             {
-                // TODO;
+                throw new BedDAOInternalException(e);
             }
         }
         
