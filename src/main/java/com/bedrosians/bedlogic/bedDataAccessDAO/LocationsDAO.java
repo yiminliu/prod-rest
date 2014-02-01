@@ -19,7 +19,7 @@ public class LocationsDAO
     public JSONObject getLocations(String userType, String userCode, String locationCodes, String locationRegion, String branchName)
         throws BedDAOException
     {        
-        JSONRPCDAO  rpcDAO = new JSONRPCDAO();
+        JSONRPCDAO  rpcDAO = JSONRPCDAO.Create();
         
         rpcDAO.setMethodName("readLocations");
         rpcDAO.setMethodResultType("locations");
@@ -29,8 +29,7 @@ public class LocationsDAO
         rpcDAO.addStringParameter(locationRegion);
         rpcDAO.addStringParameter(branchName);
         
-        // TODO: Read URL from config
-        JSONObject  result = rpcDAO.call("http://192.168.56.14:8888/api/dataaccess/v2/server.php");
+        JSONObject  result = rpcDAO.call();
         
         return result;
     }

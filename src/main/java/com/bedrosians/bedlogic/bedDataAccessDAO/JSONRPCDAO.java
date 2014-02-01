@@ -14,12 +14,24 @@ public class JSONRPCDAO
     private String          methodName;
     private String          methodResultType;
     private List<Object>    params;
-    
+    private URL             rpcServerURL;
+        
     public JSONRPCDAO()
     {
         this.methodName = "";
         this.methodResultType = "";
         this.params = new ArrayList<Object>();
+        this.rpcServerURL = null;
+    }
+    
+    public static JSONRPCDAO Create()
+        throws BedDAOException
+    {
+        JSONRPCDAO newDAO = new JSONRPCDAO();
+
+        // TODO Read URL from config
+        newDAO.setRPCServerURL("http://192.168.56.14:8888/api/dataaccess/v2/server.php");
+        return newDAO;
     }
     
     public void setMethodName(String inMethodName)
@@ -49,84 +61,96 @@ public class JSONRPCDAO
         this.params.add(inParam);
     }
     
-    public JSONObject call(String inServerURLStr)
+    public void setRPCServerURL(String inServerURLStr)
         throws BedDAOException
     {
-        JSONObject  returnResult = null;
-        
-		try
+        try
         {
-			URL serverURL = new URL(inServerURLStr);
-            returnResult = this.call(serverURL);
-		}
+            this.rpcServerURL = new URL(inServerURLStr);
+        }
         catch (MalformedURLException e)
         {
             throw new BedDAOInternalException(e);
-		}
-                
-        return returnResult;
+        }
     }
-    
-    public JSONObject call(URL serverURL)
+        
+    public JSONObject call()
         throws BedDAOException
     {
         JSONObject  returnResult = null;
         
-        if (!this.methodName.isEmpty())
+        try
         {
-            try
+            // Check for valid method name and url
+            if (this.methodName.isEmpty() || this.rpcServerURL == null)
             {
-                // Configure session
-                JSONRPC2Session rpcSession = new JSONRPC2Session(serverURL);
-                rpcSession.getOptions().enableCompression(true);
+                throw new BedDAOInternalException();
+            }
+
+            // Configure session
+            JSONRPC2Session rpcSession = new JSONRPC2Session(this.rpcServerURL);
+            rpcSession.getOptions().enableCompression(true);
+            
+            // Configure request
+            long             requestID = this.GetNextRequestID();
+            JSONRPC2Request rpcRequest = new JSONRPC2Request(this.methodName, this.params, requestID);
+            
+            // Send the request
+            JSONRPC2Response rpcResponse = rpcSession.send(rpcRequest);
+            
+            // Process the response
+            if (rpcResponse.indicatesSuccess())
+            {
+                JSONObject  resultObject = (JSONObject) rpcResponse.getResult();
+                int         resultCode = ((Number) resultObject.get("resultcode")).intValue();
                 
-                // Configure request
-                int             requestID = 1;  // TODO: unique request ID
-                JSONRPC2Request rpcRequest = new JSONRPC2Request(this.methodName, this.params, requestID);
-                
-                // Send the request
-                JSONRPC2Response rpcResponse = rpcSession.send(rpcRequest);
-                
-                // Process the response
-                if (rpcResponse.indicatesSuccess())
+                if (resultCode == 0)
                 {
-                    JSONObject  resultObject = (JSONObject) rpcResponse.getResult();
-                    int         resultCode = ((Number) resultObject.get("resultcode")).intValue();
-                    
-                    if (resultCode == 0)
+                    resultObject.remove("resultcode");
+                    if (!this.methodResultType.isEmpty())
                     {
-                        resultObject.remove("resultcode");
-                        if (!this.methodResultType.isEmpty())
-                        {
-                            resultObject.put(this.methodResultType, resultObject.get("result"));
-                            resultObject.remove("result");
-                        }
-                        returnResult = resultObject;
+                        resultObject.put(this.methodResultType, resultObject.get("result"));
+                        resultObject.remove("result");
                     }
-                    else if (resultCode == 1)
-                    {
-                        throw new BedDAOUnAuthorizedException();
-                    }
-                    else if (resultCode == 2)
-                    {
-                        throw new BedDAOBadResultException();
-                    }
-                    else
-                    {
-                        throw new BedDAOInternalException();
-                    }
+                    returnResult = resultObject;
+                }
+                else if (resultCode == 1)
+                {
+                    throw new BedDAOUnAuthorizedException();
+                }
+                else if (resultCode == 2)
+                {
+                    throw new BedDAOBadResultException();
                 }
                 else
                 {
                     throw new BedDAOInternalException();
                 }
             }
-            catch (JSONRPC2SessionException e)
+            else
             {
-                throw new BedDAOInternalException(e);
+                throw new BedDAOInternalException();
             }
+        }
+        catch (JSONRPC2SessionException e)
+        {
+            throw new BedDAOInternalException(e);
         }
         
         return returnResult;
-    }    
+    }
+    
+    /*
+     * Return the next requestID. Skip 0 as it is an invalid request ID
+     */
+    private static long nextRequestID = 0;
+    private static synchronized long GetNextRequestID()
+    {
+        if (nextRequestID == Long.MAX_VALUE)
+        {
+            nextRequestID = 0;
+        }
+        
+        return ++nextRequestID;
+    }
 }
