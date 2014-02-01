@@ -16,15 +16,10 @@ public class LocationsDAO
     {
     }
     
-    public JSONObject getLocations()
+    public JSONObject getLocations(String userType, String userCode, String locationCodes, String locationRegion, String branchName)
         throws BedDAOException
     {        
         JSONRPCDAO  rpcDAO = new JSONRPCDAO();
-        String      userType = "guest";
-        String      userCode = "";
-        String      locationCodes = "";
-        String      locationRegion = "";
-        String      branchName = "";
         
         rpcDAO.setMethodName("readLocations");
         rpcDAO.setMethodResultType("locations");
