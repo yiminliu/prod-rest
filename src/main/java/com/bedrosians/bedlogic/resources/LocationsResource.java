@@ -7,6 +7,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.GET;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -30,8 +32,7 @@ public class LocationsResource
      */
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getLocations(@QueryParam("usertype") String userType
-                                    , @QueryParam("usercode") String userCode
+    public Response getLocations(@Context HttpHeaders requestHeaders
                                     , @QueryParam("locationcodes") String locationCodes
                                     , @QueryParam("locationregion") String locationRegion
                                     , @QueryParam("branchname") String branchName)    
@@ -40,12 +41,23 @@ public class LocationsResource
 
         try
         {
+            // Retrieve user type and user code from authorization header
+            Map<String,String>  authInfo = BasicAuthParser.parse(requestHeaders);
+            String              userType = null;
+            String              userCode = null;
+            
+            if (authInfo != null)
+            {
+                userType = authInfo.get("user");
+                userCode = authInfo.get("password");
+            }
+            
             // Validate Parameters
             userCode = (userCode == null) ? "" : userCode;
             if (userType == null
                 || ("keymark".equals(userType) && userCode.isEmpty()))
             {
-                throw new WebApplicationException(Response.Status.BAD_REQUEST);
+                throw new WebApplicationException(Response.Status.UNAUTHORIZED);
             }
             locationCodes = (locationCodes == null) ? "" : locationCodes;
             locationRegion = (locationRegion == null) ? "" : locationRegion;
