@@ -1,5 +1,6 @@
 package com.bedrosians.bedlogic.bedDataAccessDAO;
 
+//import java.lang.Integer;
 import java.net.*;
 import java.util.*;
 
@@ -50,10 +51,35 @@ public class JSONRPCDAO
     }
     
     public void addIntListParameter(String inParam)
+        throws BedDAOException
     {
-        // TODO: Parse comma separated list. Can we pass list of int?
-        List<Object>    intList = new ArrayList<Object>();
-        this.params.add(intList);
+        List<Number>    numberList = new ArrayList<Number>();
+        
+        if (!inParam.trim().isEmpty())
+        {        
+            String[]        strList = inParam.split(",");
+            try
+            {
+                for (int index=0; index<strList.length; index++)
+                {
+                    String numberStr = strList[index].trim();
+                    if (!numberStr.isEmpty())
+                    {
+                        numberList.add(Integer.parseInt(numberStr));
+                    }
+                    else
+                    {
+                        throw new BedDAOBadParamException();
+                    }
+                }
+            }
+            catch (NumberFormatException e)
+            {
+                throw new BedDAOBadParamException(e);
+            }
+        }
+        
+        this.params.add(numberList);
     }
     
     public void addObjectParameter(Object inParam)

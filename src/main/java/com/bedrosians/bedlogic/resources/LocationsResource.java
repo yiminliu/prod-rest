@@ -79,6 +79,10 @@ public class LocationsResource
         {
             responseBuilder = Response.status(Status.NOT_FOUND);
         }
+        catch (BedDAOBadParamException e)
+        {
+            responseBuilder = Response.status(Status.BAD_REQUEST);
+        }
         catch (BedDAOException e)
         {
             responseBuilder = Response.serverError();
