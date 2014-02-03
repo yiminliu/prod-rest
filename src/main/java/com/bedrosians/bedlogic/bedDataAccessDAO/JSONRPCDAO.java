@@ -3,6 +3,7 @@ package com.bedrosians.bedlogic.bedDataAccessDAO;
 //import java.lang.Integer;
 import java.net.*;
 import java.util.*;
+import javax.ws.rs.core.MultivaluedMap;
 
 import com.thetransactioncompany.jsonrpc2.client.*;
 import com.thetransactioncompany.jsonrpc2.*;
@@ -80,6 +81,18 @@ public class JSONRPCDAO
         }
         
         this.params.add(numberList);
+    }
+    
+    public void addQueryParameters(MultivaluedMap<String,String> queryParams)
+    {
+        Map<String,String>    queryParamsMap = new HashMap<String,String>();
+        
+        for (Map.Entry<String, List<String>> entry : queryParams.entrySet())
+        {
+            queryParamsMap.put(entry.getKey(), entry.getValue().get(0));
+        }
+        
+        this.params.add(queryParamsMap);
     }
     
     public void addObjectParameter(Object inParam)

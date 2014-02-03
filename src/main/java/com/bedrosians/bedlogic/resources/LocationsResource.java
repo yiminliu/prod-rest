@@ -24,8 +24,6 @@ public class LocationsResource
     /**
      * Locations resource
      * Query Params
-     * - usertype:          required valid values: guest | keymark
-     * - usercode:          required non empty usercode for keymark user type
      * - locationcodes:     optional comma separated list of location codes to match against
      * - locationregion:    optional location region name to match against
      * - branchname:        optional branchname to match against
