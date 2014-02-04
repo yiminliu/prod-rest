@@ -14,7 +14,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.WebApplicationException;
 
-import com.bedrosians.bedlogic.exception.*;
+import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.bedDataAccessDAO.LocationsDAO;
 import net.minidev.json.JSONObject;
 
@@ -35,28 +35,20 @@ public class LocationsResource
                                     , @QueryParam("locationregion") String locationRegion
                                     , @QueryParam("branchname") String branchName)    
     {
-        Response.ResponseBuilder    responseBuilder = null;
+        Response    response;
 
         try
         {
-            // Retrieve user type and user code from authorization header
-            Map<String,String>  authInfo = BasicAuthParser.parse(requestHeaders);
-            String              userType = null;
-            String              userCode = null;
-            
-            if (authInfo != null)
-            {
-                userType = authInfo.get("user");
-                userCode = authInfo.get("password");
-            }
-            
-            // Validate Parameters
-            userCode = (userCode == null) ? "" : userCode;
-            if (userType == null
-                || ("keymark".equals(userType) && userCode.isEmpty()))
+            // Check usercode
+            UserCodeParser  userCodeParser = new UserCodeParser(requestHeaders);
+            if (!userCodeParser.isValidFormat())
             {
                 throw new WebApplicationException(Response.Status.UNAUTHORIZED);
             }
+            String userType = userCodeParser.getUserType();
+            String userCode = userCodeParser.getUserCode();
+            
+            // Get query params
             locationCodes = (locationCodes == null) ? "" : locationCodes;
             locationRegion = (locationRegion == null) ? "" : locationRegion;
             branchName = (branchName == null) ? "" : branchName;            
@@ -67,25 +59,13 @@ public class LocationsResource
             
             // Return json reponse
             String          json = result.toString();
-            responseBuilder = Response.ok(json, MediaType.APPLICATION_JSON);
-        }
-        catch (BedDAOUnAuthorizedException e)
-        {
-            responseBuilder = Response.status(Status.UNAUTHORIZED);
-        }
-        catch (BedDAOBadResultException e)
-        {
-            responseBuilder = Response.status(Status.NOT_FOUND);
-        }
-        catch (BedDAOBadParamException e)
-        {
-            responseBuilder = Response.status(Status.BAD_REQUEST);
+            response = Response.ok(json, MediaType.APPLICATION_JSON).build();
         }
         catch (BedDAOException e)
         {
-            responseBuilder = Response.serverError();
+            response = BedDAOExceptionMapper.MapToResponse(e);
         }
         
-        return responseBuilder.build();
+        return response;
     }
 }

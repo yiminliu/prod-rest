@@ -14,7 +14,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.WebApplicationException;
 
-import com.bedrosians.bedlogic.exception.*;
+import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.bedDataAccessDAO.ProductsDAO;
 import net.minidev.json.JSONObject;
 
