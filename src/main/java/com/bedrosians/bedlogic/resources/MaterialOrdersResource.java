@@ -22,7 +22,7 @@ public class MaterialOrdersResource
     /**
      * MaterialOrders resource
      * Query Params
-     * - unit:
+     * - openCode: optional. Values can be: A, Y, N. Default: A
      */
     @GET
     @Produces({MediaType.APPLICATION_JSON})
@@ -46,7 +46,10 @@ public class MaterialOrdersResource
             String userCode = userCodeParser.getUserCode();
             
             // Get query params
-            openCode = (openCode == null) ? "" : openCode;
+            if (openCode == null || openCode.trim().isEmpty())
+            {
+                openCode = "A";
+            }
             
             // Retrieve DAO object
             MaterialOrdersDAO  materialOrdersDAO = new MaterialOrdersDAO();
