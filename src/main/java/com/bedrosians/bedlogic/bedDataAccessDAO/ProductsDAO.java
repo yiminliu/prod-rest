@@ -4,6 +4,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import net.minidev.json.JSONObject;
 
 import com.bedrosians.bedlogic.exception.BedDAOException;
+import com.bedrosians.bedlogic.models.Products;
 
 public class ProductsDAO
 {
@@ -11,7 +12,7 @@ public class ProductsDAO
     {
     }
     
-    public JSONObject getProductsByQueryParams(String userType, String userCode, MultivaluedMap<String,String> queryParams)
+    public Products getProductsByQueryParams(String userType, String userCode, MultivaluedMap<String,String> queryParams)
         throws BedDAOException
     {        
         JSONRPCDAO  rpcDAO = JSONRPCDAO.Create();
@@ -24,6 +25,6 @@ public class ProductsDAO
         
         JSONObject  result = rpcDAO.call();
         
-        return result;
+        return new Products(result);
     }
 }

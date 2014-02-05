@@ -5,26 +5,23 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.WebApplicationException;
 
 import com.bedrosians.bedlogic.exception.BedDAOException;
-import com.bedrosians.bedlogic.bedDataAccessDAO.ProductsDAO;
-import com.bedrosians.bedlogic.models.Products;
+import com.bedrosians.bedlogic.bedDataAccessDAO.ProductSeriesDAO;
+import com.bedrosians.bedlogic.models.ProductSeries;
 
-@Path("/products")
-public class ProductsResource
+@Path("/productseries")
+public class ProductSeriesResource
 {
     /**
-     * Products resource
+     * Productseries resource
      */
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getProducts(@Context HttpHeaders requestHeaders
-                                    , @Context UriInfo uriInfo)
+    public Response getProductSeries(@Context HttpHeaders requestHeaders)
     {
         Response    response;
 
@@ -38,16 +35,13 @@ public class ProductsResource
             }
             String userType = userCodeParser.getUserType();
             String userCode = userCodeParser.getUserCode();
-            
-            // Get queryParams
-            MultivaluedMap queryParams = uriInfo.getQueryParameters();
-                        
+                                    
             // Retrieve DAO object
-            ProductsDAO productsDAO = new ProductsDAO();
-            Products    result = productsDAO.getProductsByQueryParams(userType, userCode, queryParams);
+            ProductSeriesDAO    productSeriesDAO = new ProductSeriesDAO();
+            ProductSeries       result = productSeriesDAO.getProductSeries(userType, userCode);
             
             // Return json reponse
-            String     jsonStr = result.toJSONString();
+            String  jsonStr = result.toJSONString();
             response = Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();
         }
         catch (BedDAOException e)

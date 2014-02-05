@@ -1,8 +1,5 @@
 package com.bedrosians.bedlogic.resources;
 
-import java.net.*;
-import java.util.*;
-
 import javax.ws.rs.Path;
 import javax.ws.rs.GET;
 import javax.ws.rs.QueryParam;
@@ -16,7 +13,7 @@ import javax.ws.rs.WebApplicationException;
 
 import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.bedDataAccessDAO.LocationsDAO;
-import net.minidev.json.JSONObject;
+import com.bedrosians.bedlogic.models.Locations;
 
 @Path("/locations")
 public class LocationsResource
@@ -55,11 +52,11 @@ public class LocationsResource
             
             // Retrieve DAO object
             LocationsDAO    locationsDAO = new LocationsDAO();
-            JSONObject      result = locationsDAO.getLocations(userType, userCode, locationCodes, locationRegion, branchName);
+            Locations       result = locationsDAO.getLocations(userType, userCode, locationCodes, locationRegion, branchName);
             
             // Return json reponse
-            String          json = result.toString();
-            response = Response.ok(json, MediaType.APPLICATION_JSON).build();
+            String  jsonStr = result.toJSONString();
+            response = Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();
         }
         catch (BedDAOException e)
         {
