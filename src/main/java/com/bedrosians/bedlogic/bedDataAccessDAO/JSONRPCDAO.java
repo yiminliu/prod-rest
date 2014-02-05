@@ -32,7 +32,7 @@ public class JSONRPCDAO
         JSONRPCDAO newDAO = new JSONRPCDAO();
 
         // TODO Read URL from config
-        newDAO.setRPCServerURL("http://192.168.56.14:8888/api/dataaccess/v2/server.php");
+        newDAO.setRPCServerURL("http://192.168.56.14:8888/rpc/dataaccess/v2/index.php");
         return newDAO;
     }
     
