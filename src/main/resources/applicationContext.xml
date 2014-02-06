@@ -18,10 +18,7 @@
         <property name="maxWait" value="10000" />
         <property name="minIdle" value="10" />
     </bean>
-    
-    <bean id="accountDAO" class="com.bedrosians.bedlogic.keymarkDAO.AccountDAO">
-    </bean>
-    
+        
     <context:property-placeholder location="classpath:jdbc.properties"/>
 
 </beans>
