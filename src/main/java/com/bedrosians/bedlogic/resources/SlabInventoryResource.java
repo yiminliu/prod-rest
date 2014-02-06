@@ -19,19 +19,37 @@ import com.bedrosians.bedlogic.models.SlabInventory;
 @Path("/slabinventory")
 public class SlabInventoryResource
 {
-    /**
-     * SlabInventory resource
-     * Query Params
-     * - locationcode: optional.
-     * - unit:         optional.
-     */
+
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     @Path("{itemcode}")
     public Response getSlabInventory(@Context HttpHeaders requestHeaders
                                     , @PathParam("itemcode") String itemCode
-                                    , @QueryParam("locationcode") String locationCode
                                     , @QueryParam("unit") String unit)
+    {
+        return this.getSlabInventoryInternal(requestHeaders, itemCode, "", unit);
+    }
+
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    @Path("{itemcode}/{locationcode}")
+    public Response getSlabInventory(@Context HttpHeaders requestHeaders
+                                    , @PathParam("itemcode") String itemCode
+                                    , @PathParam("locationcode") String locationCode
+                                    , @QueryParam("unit") String unit)
+    {
+        return this.getSlabInventoryInternal(requestHeaders, itemCode, locationCode, unit);
+    }
+
+    /**
+     * SlabInventory resource
+     * Query Params
+     * - unit:         optional.
+     */
+    private Response getSlabInventoryInternal(HttpHeaders requestHeaders
+                                    , String itemCode
+                                    , String locationCode
+                                    , String unit)
     {
         Response    response;
 
@@ -47,7 +65,6 @@ public class SlabInventoryResource
             String userCode = userCodeParser.getUserCode();
             
             // Get query params
-            locationCode = (locationCode == null) ? "" : locationCode;
             unit = (unit == null) ? "" : unit;
             
             // Retrieve DAO object

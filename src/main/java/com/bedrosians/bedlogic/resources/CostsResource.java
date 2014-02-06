@@ -19,19 +19,36 @@ import com.bedrosians.bedlogic.models.Costs;
 @Path("/costs")
 public class CostsResource
 {
-    /**
-     * Costs resource
-     * Query Params
-     * - locationcode: optional.
-     * - unit:         optional.
-     */
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     @Path("{itemcode}")
     public Response getCosts(@Context HttpHeaders requestHeaders
                                     , @PathParam("itemcode") String itemCode
-                                    , @QueryParam("locationcode") String locationCode
                                     , @QueryParam("unit") String unit)
+    {
+        return this.getCostsInternal(requestHeaders, itemCode, "", unit);
+    }
+
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    @Path("{itemcode}/{locationcode}")
+    public Response getCosts(@Context HttpHeaders requestHeaders
+                                    , @PathParam("itemcode") String itemCode
+                                    , @PathParam("locationcode") String locationCode
+                                    , @QueryParam("unit") String unit)
+    {
+        return this.getCostsInternal(requestHeaders, itemCode, locationCode, unit);
+    }
+
+    /**
+     * Costs resource
+     * Query Params
+     * - unit:         optional.
+     */
+    private Response getCostsInternal(HttpHeaders requestHeaders
+                                    , String itemCode
+                                    , String locationCode
+                                    , String unit)
     {
         Response    response;
 
