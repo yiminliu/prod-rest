@@ -2,6 +2,7 @@ package com.bedrosians.bedlogic.resources;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.GET;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -12,18 +13,22 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.WebApplicationException;
 
 import com.bedrosians.bedlogic.exception.BedDAOException;
-import com.bedrosians.bedlogic.bedDataAccessDAO.ProductPromosDAO;
-import com.bedrosians.bedlogic.models.ProductPromos;
+import com.bedrosians.bedlogic.bedDataAccessDAO.SlabCostsDAO;
+import com.bedrosians.bedlogic.models.SlabCosts;
 
-@Path("/productpromos")
-public class ProductPromosResource
+@Path("/slabcosts")
+public class SlabCostsResource
 {
     /**
-     * ProductPromos resource
+     * SlabCosts resource
      */
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getProductPromos(@Context HttpHeaders requestHeaders
+    @Path("{itemcode}/{locationcode}/{serialnumber}")
+    public Response getSlabCosts(@Context HttpHeaders requestHeaders
+                                    , @PathParam("itemcode") String itemCode
+                                    , @PathParam("locationcode") String locationCode
+                                    , @PathParam("serialnumber") String serialNumber
                                     , @Context UriInfo uriInfo)
     {
         Response    response;
@@ -43,8 +48,8 @@ public class ProductPromosResource
             MultivaluedMap queryParams = uriInfo.getQueryParameters();
                         
             // Retrieve DAO object
-            ProductPromosDAO productPromosDAO = new ProductPromosDAO();
-            ProductPromos    result = productPromosDAO.getProductPromosByQueryParams(userType, userCode, queryParams);
+            SlabCostsDAO slabCostsDAO = new SlabCostsDAO();
+            SlabCosts    result = slabCostsDAO.getSlabCosts(userType, userCode, itemCode, locationCode, serialNumber, queryParams);
             
             // Return json reponse
             String     jsonStr = result.toJSONString();
