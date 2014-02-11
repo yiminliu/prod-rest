@@ -9,9 +9,10 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.WebApplicationException;
 
 import com.bedrosians.bedlogic.exception.BedDAOException;
+import com.bedrosians.bedlogic.exception.BedResException;
+import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
 import com.bedrosians.bedlogic.bedDataAccessDAO.LocationsDAO;
 import com.bedrosians.bedlogic.models.Locations;
 
@@ -40,7 +41,7 @@ public class LocationsResource
             UserCodeParser  userCodeParser = new UserCodeParser(requestHeaders);
             if (!userCodeParser.isValidFormat())
             {
-                throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+                throw new BedResUnAuthorizedException();
             }
             String userType = userCodeParser.getUserType();
             String userCode = userCodeParser.getUserCode();
@@ -61,6 +62,10 @@ public class LocationsResource
         catch (BedDAOException e)
         {
             response = BedDAOExceptionMapper.MapToResponse(e);
+        }
+        catch (BedResException e)
+        {
+            response = BedResExceptionMapper.MapToResponse(e);
         }
         
         return response;
