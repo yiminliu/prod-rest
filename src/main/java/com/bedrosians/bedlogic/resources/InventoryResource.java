@@ -49,7 +49,7 @@ public class InventoryResource
             
             // Retrieve DAO object
             InventoryDAO  inventoryDAO = new InventoryDAO();
-            Inventory     result = inventoryDAO.getInventory(userType, userCode, itemCode, unit);
+            Inventory     result = inventoryDAO.readInventory(userType, userCode, itemCode, unit);
             
             // Return json reponse
             String  jsonStr = result.toJSONString();

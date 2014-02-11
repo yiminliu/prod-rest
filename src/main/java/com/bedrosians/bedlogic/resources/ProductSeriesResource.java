@@ -38,7 +38,7 @@ public class ProductSeriesResource
                                     
             // Retrieve DAO object
             ProductSeriesDAO    productSeriesDAO = new ProductSeriesDAO();
-            ProductSeries       result = productSeriesDAO.getProductSeries(userType, userCode);
+            ProductSeries       result = productSeriesDAO.readProductSeries(userType, userCode);
             
             // Return json reponse
             String  jsonStr = result.toJSONString();

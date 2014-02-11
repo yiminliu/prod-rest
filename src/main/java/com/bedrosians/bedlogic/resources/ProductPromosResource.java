@@ -44,7 +44,7 @@ public class ProductPromosResource
                         
             // Retrieve DAO object
             ProductPromosDAO productPromosDAO = new ProductPromosDAO();
-            ProductPromos    result = productPromosDAO.getProductPromosByQueryParams(userType, userCode, queryParams);
+            ProductPromos    result = productPromosDAO.readProductPromosByQueryParams(userType, userCode, queryParams);
             
             // Return json reponse
             String     jsonStr = result.toJSONString();

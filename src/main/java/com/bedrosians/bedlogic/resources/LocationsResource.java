@@ -52,7 +52,7 @@ public class LocationsResource
             
             // Retrieve DAO object
             LocationsDAO    locationsDAO = new LocationsDAO();
-            Locations       result = locationsDAO.getLocations(userType, userCode, locationCodes, locationRegion, branchName);
+            Locations       result = locationsDAO.readLocations(userType, userCode, locationCodes, locationRegion, branchName);
             
             // Return json reponse
             String  jsonStr = result.toJSONString();

@@ -69,7 +69,7 @@ public class SlabInventoryResource
             
             // Retrieve DAO object
             SlabInventoryDAO    slabInventoryDAO = new SlabInventoryDAO();
-            SlabInventory       result = slabInventoryDAO.getSlabInventory(userType, userCode, itemCode, locationCode, unit);
+            SlabInventory       result = slabInventoryDAO.readSlabInventory(userType, userCode, itemCode, locationCode, unit);
             
             // Return json reponse
             String  jsonStr = result.toJSONString();

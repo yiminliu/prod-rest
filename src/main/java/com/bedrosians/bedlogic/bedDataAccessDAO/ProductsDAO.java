@@ -12,7 +12,7 @@ public class ProductsDAO
     {
     }
     
-    public Products getProductsByQueryParams(String userType, String userCode, MultivaluedMap<String,String> queryParams)
+    public Products readProductsByQueryParams(String userType, String userCode, MultivaluedMap<String,String> queryParams)
         throws BedDAOException
     {        
         JSONRPCDAO  rpcDAO = JSONRPCDAO.Create();

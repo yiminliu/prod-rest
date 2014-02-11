@@ -53,7 +53,7 @@ public class MaterialOrdersResource
             
             // Retrieve DAO object
             MaterialOrdersDAO  materialOrdersDAO = new MaterialOrdersDAO();
-            MaterialOrders     result = materialOrdersDAO.getMaterialOrders(userType, userCode, itemCode, locationCode, openCode);
+            MaterialOrders     result = materialOrdersDAO.readMaterialOrders(userType, userCode, itemCode, locationCode, openCode);
             
             // Return json reponse
             String  jsonStr = result.toJSONString();

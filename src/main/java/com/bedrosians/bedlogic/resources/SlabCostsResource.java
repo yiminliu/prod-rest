@@ -49,7 +49,7 @@ public class SlabCostsResource
                         
             // Retrieve DAO object
             SlabCostsDAO slabCostsDAO = new SlabCostsDAO();
-            SlabCosts    result = slabCostsDAO.getSlabCosts(userType, userCode, itemCode, locationCode, serialNumber, queryParams);
+            SlabCosts    result = slabCostsDAO.readSlabCosts(userType, userCode, itemCode, locationCode, serialNumber, queryParams);
             
             // Return json reponse
             String     jsonStr = result.toJSONString();

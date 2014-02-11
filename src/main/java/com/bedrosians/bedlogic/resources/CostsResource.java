@@ -69,7 +69,7 @@ public class CostsResource
             
             // Retrieve DAO object
             CostsDAO    costsDAO = new CostsDAO();
-            Costs       result = costsDAO.getCosts(userType, userCode, itemCode, locationCode, unit);
+            Costs       result = costsDAO.readCosts(userType, userCode, itemCode, locationCode, unit);
             
             // Return json reponse
             String  jsonStr = result.toJSONString();

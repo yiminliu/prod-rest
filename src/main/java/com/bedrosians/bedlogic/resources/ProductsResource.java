@@ -44,7 +44,7 @@ public class ProductsResource
                         
             // Retrieve DAO object
             ProductsDAO productsDAO = new ProductsDAO();
-            Products    result = productsDAO.getProductsByQueryParams(userType, userCode, queryParams);
+            Products    result = productsDAO.readProductsByQueryParams(userType, userCode, queryParams);
             
             // Return json reponse
             String     jsonStr = result.toJSONString();

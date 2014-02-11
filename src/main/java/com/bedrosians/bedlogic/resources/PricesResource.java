@@ -96,7 +96,7 @@ public class PricesResource
             
             // Retrieve DAO object
             PricesDAO  pricesDAO = new PricesDAO();
-            Prices     result = pricesDAO.getPrices(userType, userCode, itemCode, customerCode, branchCode, locationCode, unit);
+            Prices     result = pricesDAO.readPrices(userType, userCode, itemCode, customerCode, branchCode, locationCode, unit);
             
             // Return json reponse
             String  jsonStr = result.toJSONString();

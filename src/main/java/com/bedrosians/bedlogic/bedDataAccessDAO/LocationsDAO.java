@@ -14,7 +14,7 @@ public class LocationsDAO
     {
     }
     
-    public Locations getLocations(String userType, String userCode, String locationCodes, String locationRegion, String branchName)
+    public Locations readLocations(String userType, String userCode, String locationCodes, String locationRegion, String branchName)
         throws BedDAOException
     {        
         JSONRPCDAO  rpcDAO = JSONRPCDAO.Create();

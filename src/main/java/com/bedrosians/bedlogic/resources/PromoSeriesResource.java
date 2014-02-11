@@ -52,7 +52,7 @@ public class PromoSeriesResource
             
             // Retrieve DAO object
             PromoSeriesDAO  promoSeriesDAO = new PromoSeriesDAO();
-            PromoSeries     result = promoSeriesDAO.getPromoSeries(userType, userCode, promoCode, promoRegion, materialType);
+            PromoSeries     result = promoSeriesDAO.readPromoSeries(userType, userCode, promoCode, promoRegion, materialType);
             
             // Return json reponse
             String  jsonStr = result.toJSONString();

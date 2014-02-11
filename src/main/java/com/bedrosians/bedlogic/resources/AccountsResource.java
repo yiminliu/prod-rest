@@ -79,7 +79,7 @@ public class AccountsResource
             
             // Retrieve DAO object
             AccountsDAO    accountsDAO = new AccountsDAO();
-            Accounts       result = accountsDAO.getAccounts(userType, userCode, customerCode, branchCode, customerName, creditStatus);
+            Accounts       result = accountsDAO.readAccounts(userType, userCode, customerCode, branchCode, customerName, creditStatus);
             
             // Return json reponse
             String  jsonStr = result.toJSONString();
