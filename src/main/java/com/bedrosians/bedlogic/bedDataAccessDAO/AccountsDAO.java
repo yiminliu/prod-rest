@@ -14,7 +14,7 @@ public class AccountsDAO
     {
     }
         
-    public Accounts getAccounts(String userType, String userCode, String customerCode, String branchCode, String customerName, String creditStatus)
+    public Accounts readAccounts(String userType, String userCode, String customerCode, String branchCode, String customerName, String creditStatus)
         throws BedDAOException
     {        
         JSONRPCDAO  rpcDAO = JSONRPCDAO.Create();

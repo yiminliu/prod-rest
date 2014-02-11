@@ -10,9 +10,10 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.WebApplicationException;
 
 import com.bedrosians.bedlogic.exception.BedDAOException;
+import com.bedrosians.bedlogic.exception.BedResException;
+import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
 import com.bedrosians.bedlogic.bedDataAccessDAO.InventoryDAO;
 import com.bedrosians.bedlogic.models.Inventory;
 
@@ -39,7 +40,7 @@ public class InventoryResource
             UserCodeParser  userCodeParser = new UserCodeParser(requestHeaders);
             if (!userCodeParser.isValidFormat())
             {
-                throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+                throw new BedResUnAuthorizedException();
             }
             String userType = userCodeParser.getUserType();
             String userCode = userCodeParser.getUserCode();
@@ -49,7 +50,7 @@ public class InventoryResource
             
             // Retrieve DAO object
             InventoryDAO  inventoryDAO = new InventoryDAO();
-            Inventory     result = inventoryDAO.getInventory(userType, userCode, itemCode, unit);
+            Inventory     result = inventoryDAO.readInventory(userType, userCode, itemCode, unit);
             
             // Return json reponse
             String  jsonStr = result.toJSONString();
@@ -58,6 +59,10 @@ public class InventoryResource
         catch (BedDAOException e)
         {
             response = BedDAOExceptionMapper.MapToResponse(e);
+        }
+        catch (BedResException e)
+        {
+            response = BedResExceptionMapper.MapToResponse(e);
         }
         
         return response;

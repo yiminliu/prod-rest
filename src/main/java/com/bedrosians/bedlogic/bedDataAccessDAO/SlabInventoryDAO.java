@@ -14,7 +14,7 @@ public class SlabInventoryDAO
     {
     }
         
-    public SlabInventory getSlabInventory(String userType, String userCode, String itemCode, String locationCode, String unit)
+    public SlabInventory readSlabInventory(String userType, String userCode, String itemCode, String locationCode, String unit)
         throws BedDAOException
     {        
         JSONRPCDAO  rpcDAO = JSONRPCDAO.Create();

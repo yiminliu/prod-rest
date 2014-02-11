@@ -10,9 +10,10 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.WebApplicationException;
 
 import com.bedrosians.bedlogic.exception.BedDAOException;
+import com.bedrosians.bedlogic.exception.BedResException;
+import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
 import com.bedrosians.bedlogic.bedDataAccessDAO.SlabCostsDAO;
 import com.bedrosians.bedlogic.models.SlabCosts;
 
@@ -39,7 +40,7 @@ public class SlabCostsResource
             UserCodeParser  userCodeParser = new UserCodeParser(requestHeaders);
             if (!userCodeParser.isValidFormat())
             {
-                throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+                throw new BedResUnAuthorizedException();
             }
             String userType = userCodeParser.getUserType();
             String userCode = userCodeParser.getUserCode();
@@ -49,7 +50,7 @@ public class SlabCostsResource
                         
             // Retrieve DAO object
             SlabCostsDAO slabCostsDAO = new SlabCostsDAO();
-            SlabCosts    result = slabCostsDAO.getSlabCosts(userType, userCode, itemCode, locationCode, serialNumber, queryParams);
+            SlabCosts    result = slabCostsDAO.readSlabCosts(userType, userCode, itemCode, locationCode, serialNumber, queryParams);
             
             // Return json reponse
             String     jsonStr = result.toJSONString();
@@ -58,6 +59,10 @@ public class SlabCostsResource
         catch (BedDAOException e)
         {
             response = BedDAOExceptionMapper.MapToResponse(e);
+        }
+        catch (BedResException e)
+        {
+            response = BedResExceptionMapper.MapToResponse(e);
         }
         
         return response;
