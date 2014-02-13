@@ -58,7 +58,7 @@ public class MaterialOrderDAOTest extends TestCase{
 	@Test
 	public void testGetMaterialOrdersByItemCode() throws Exception {	
 		System.out.println("testGetMaterialOrdersByItemCode: " + itemCode);
-		MaterialOrders result = rpcDao.getMaterialOrders(userType, userCode, itemCode, "", "");
+		MaterialOrders result = rpcDao.readMaterialOrders(userType, userCode, itemCode, "", "");
 	    assertNotNull(result);
 	    System.out.println("Result = " + result.toJSONString());
 	}
@@ -66,7 +66,7 @@ public class MaterialOrderDAOTest extends TestCase{
 	@Test
 	public void testGetMaterialOrdersByLocationCode() throws Exception {	
 		System.out.println("testGetMaterialOrdersByLocationCode: " + locationCode);	
-		MaterialOrders result = rpcDao.getMaterialOrders(userType, userCode, "", locationCode, "");
+		MaterialOrders result = rpcDao.readMaterialOrders(userType, userCode, "", locationCode, "");
 	    assertNotNull(result);
 	    System.out.println("Result = " + result.toJSONString());
 	}
@@ -74,7 +74,7 @@ public class MaterialOrderDAOTest extends TestCase{
 	@Test
 	public void testGetMaterialOrdersByOpenCode() throws Exception {	
 		System.out.println("testGetMaterialOrdersByOpenCode: " + openCode);
-		MaterialOrders result = rpcDao.getMaterialOrders(userType, userCode, "", "", openCode);
+		MaterialOrders result = rpcDao.readMaterialOrders(userType, userCode, "", "", openCode);
 	    assertNotNull(result);
 	    System.out.println("Result = " + result.toJSONString());
 	}
@@ -83,7 +83,7 @@ public class MaterialOrderDAOTest extends TestCase{
 	public void testGetMaterialOrdersByItemCodeAndLoctionCode() throws Exception {	
 		System.out.printf("testGetMaterialOrdersByItemCodeAndLoctionCode: %s, %s", itemCode, locationCode);
 		System.out.println();
-		MaterialOrders result = rpcDao.getMaterialOrders(userType, userCode, itemCode, locationCode, "");
+		MaterialOrders result = rpcDao.readMaterialOrders(userType, userCode, itemCode, locationCode, "");
 	    assertNotNull(result);
 	    System.out.println("Result = " + result.toJSONString());
 	}
@@ -92,7 +92,7 @@ public class MaterialOrderDAOTest extends TestCase{
 	public void testGetMaterialOrdersByLoctionCodeAndOpenCode() throws Exception {	
 		System.out.printf("testGetMaterialOrdersByItemCodeAndLoctionCodeAndOpenCode: %s, %s", locationCode, openCode);
 		System.out.println();
-		MaterialOrders result = rpcDao.getMaterialOrders(userType, userCode, "", locationCode, openCode);
+		MaterialOrders result = rpcDao.readMaterialOrders(userType, userCode, "", locationCode, openCode);
 	    assertNotNull(result);
 	    System.out.println("Result = " + result.toJSONString());
 	}
@@ -100,7 +100,7 @@ public class MaterialOrderDAOTest extends TestCase{
 	@Test
 	public void testGetMaterialOrdersByItemCodeAndLoctionCodeAndOpenCode() throws Exception {	
 		System.out.printf("testGetMaterialOrdersByItemCodeAndLoctionCodeAndOpenCode: %s, %s, %s", itemCode, locationCode, openCode);
-		MaterialOrders result = rpcDao.getMaterialOrders(userType, userCode, itemCode, locationCode, openCode);
+		MaterialOrders result = rpcDao.readMaterialOrders(userType, userCode, itemCode, locationCode, openCode);
 	    assertNotNull(result);
 	    System.out.println("Result = " + result.toJSONString());
 	}

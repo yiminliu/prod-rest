@@ -89,7 +89,7 @@ public class AccountsDAOTest extends TestCase{
 	@Test
 	public void testGetAccountsByCustomerCode() throws Exception {
 		System.out.println("testGetAccountsByCustomerCode: " + itemcode);
-	    Accounts result = rpcDao.getAccounts(userType, userCode, customercode, "", "", "");
+	    Accounts result = rpcDao.readAccounts(userType, userCode, customercode, "", "", "");
 	    assertNotNull(result);
 	    System.out.println("Result = " + result.toJSONString());
 	}
@@ -98,7 +98,7 @@ public class AccountsDAOTest extends TestCase{
 	public void testGetAccountsByCustomerCodeAndBranchCode() throws Exception {
 		System.out.printf("testGetAccountsByCustomerCodeAndBranchCode: %s, %s",itemcode,branchCode);
 	    System.out.println();
-	    Accounts result = rpcDao.getAccounts(userType, userCode, customercode, branchCode, "", "");
+	    Accounts result = rpcDao.readAccounts(userType, userCode, customercode, branchCode, "", "");
 	    assertNotNull(result);
 	    System.out.println("Result = " + result.toJSONString());
 	}
@@ -107,7 +107,7 @@ public class AccountsDAOTest extends TestCase{
 	public void testGetAccountsByCustomerName() throws Exception {
 		System.out.printf("testGetAccountsByCustomerName: %s",customerName);
 		System.out.println();
-	    Accounts result = rpcDao.getAccounts(userType, userCode, "", "", customerName, "");
+	    Accounts result = rpcDao.readAccounts(userType, userCode, "", "", customerName, "");
 	    assertNotNull(result);
 	    System.out.println("Result = " + result.toJSONString());
 	}
@@ -116,7 +116,7 @@ public class AccountsDAOTest extends TestCase{
 	public void testGetAccountsByBranchCodeAndCreditStatus() throws Exception {
 		System.out.printf("testGetAccountsByBranchCodeAndCreditStatus: %s, %s", branchCode , creditstatus);
 	    System.out.println();
-		Accounts result = rpcDao.getAccounts(userType, userCode, "", branchCode, "", creditstatus);
+		Accounts result = rpcDao.readAccounts(userType, userCode, "", branchCode, "", creditstatus);
 	    assertNotNull(result);
 	    System.out.println("Result = " + result.toJSONString());
 	}
@@ -125,7 +125,7 @@ public class AccountsDAOTest extends TestCase{
 	public void testGetAccountsByCreditStatus() throws Exception {
 		System.out.printf("testGetAccountsByCreditStatus: %s", creditstatus);
 	    System.out.println();
-		Accounts result = rpcDao.getAccounts(userType, userCode, "", "", "", creditstatus);
+		Accounts result = rpcDao.readAccounts(userType, userCode, "", "", "", creditstatus);
 	    assertNotNull(result);
 	    System.out.println("Result = " + result.toJSONString());
 	}
@@ -133,7 +133,7 @@ public class AccountsDAOTest extends TestCase{
 	@Test(expected=BedDAOUnAuthorizedException.class)  
 	public void testGetAccountsByGuestUserType() throws Exception {
 		System.out.println("testGetProductsByItemCode: BedDAOUnAuthorizedException is expected");
-	    Accounts result = rpcDao.getAccounts(userTypeGuest, userCode, customercode, branchCode, "", "");
+	    Accounts result = rpcDao.readAccounts(userTypeGuest, userCode, customercode, branchCode, "", "");
 	    assertNotNull(result);
 	    System.out.println("Result = " + result.toJSONString());
 	}

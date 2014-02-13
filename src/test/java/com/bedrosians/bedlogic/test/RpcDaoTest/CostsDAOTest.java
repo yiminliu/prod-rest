@@ -54,7 +54,7 @@ public class CostsDAOTest extends TestCase{
 	@Test
 	public void testGetCostsByItemCode() throws Exception {	
 		System.out.println("testGetCostsByItemCode: " + itemcode);
-	    Costs result = rpcDao.getCosts(userType, userCode, itemcode, "", unit);
+	    Costs result = rpcDao.readCosts(userType, userCode, itemcode, "", unit);
 	    assertNotNull(result);
 	    System.out.println("Result = " + result.toJSONString());
 	}
@@ -63,7 +63,7 @@ public class CostsDAOTest extends TestCase{
 	public void testGetCostsByItemCodeAndLocationCode() throws Exception {	
 	    System.out.printf("testGetCostsByItemCodeAndLocationCode: %s, %s", itemcode, locationCode);
 	    System.out.println();
-		Costs result = rpcDao.getCosts(userType, userCode, itemcode, locationCode, unit);
+		Costs result = rpcDao.readCosts(userType, userCode, itemcode, locationCode, unit);
 	    assertNotNull(result);
 	    System.out.println("Result = " + result.toJSONString());
 	}
@@ -71,7 +71,7 @@ public class CostsDAOTest extends TestCase{
 	@Test(expected=BedDAOUnAuthorizedException.class)  
 	public void testGetPricesWithGuestUserType() throws Exception {	
 		System.out.println("testGetPricesWithGuestUserType: BedDAOUnAuthorizedException is expected");
-	    Costs result = rpcDao.getCosts(userTypeGuest, userCodeGuest, itemcode, locationCode, unit);
+	    Costs result = rpcDao.readCosts(userTypeGuest, userCodeGuest, itemcode, locationCode, unit);
 	    assertNotNull(result);
 	}
 	

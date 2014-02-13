@@ -58,7 +58,7 @@ public class SlabInventoryDAOTest extends TestCase{
 	@Test
 	public void testGetSlabInventoryByItemCode() throws Exception {	
 		System.out.println("testGetSlabInventoryByItemCode: " + itemCode);
-		SlabInventory result = rpcDao.getSlabInventory(userType, userCode, itemCode, "", "");
+		SlabInventory result = rpcDao.readSlabInventory(userType, userCode, itemCode, "", "");
 	    assertNotNull(result);
 	    System.out.println("SlabInventory = " + result.toJSONString());
 	}
@@ -67,7 +67,7 @@ public class SlabInventoryDAOTest extends TestCase{
 	public void testGetSlabInventoryByItemCodeAndLocationCode() throws Exception {	
 		System.out.printf("testGetSlabInventoryByItemCodeAndLocationCode: %s, %s", itemCode, locationCode);
 	    System.out.println();
-		SlabInventory result = rpcDao.getSlabInventory(userType, userCode, itemCode, locationCode, "");
+		SlabInventory result = rpcDao.readSlabInventory(userType, userCode, itemCode, locationCode, "");
 	    assertNotNull(result);
 	    System.out.println("SlabInventory = " + result.toJSONString());
 	}
@@ -76,7 +76,7 @@ public class SlabInventoryDAOTest extends TestCase{
 	@Test(expected=BedDAOUnAuthorizedException.class)  
 	public void testGetSlabCostsWithGuestUserType() throws Exception {	
 	    System.out.println("testGetProductsByItemCode: BedDAOUnAuthorizedException is expected");
-	 	SlabInventory result = rpcDao.getSlabInventory(userTypeGuest, userCode, itemCode, locationCode, "");
+	 	SlabInventory result = rpcDao.readSlabInventory(userTypeGuest, userCode, itemCode, locationCode, "");
 	    //assertNotNull(result);
 	    System.out.println("SlabInventory = " + result.toJSONString());
 	}

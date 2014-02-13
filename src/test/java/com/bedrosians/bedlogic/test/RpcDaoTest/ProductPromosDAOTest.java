@@ -84,7 +84,7 @@ public class ProductPromosDAOTest extends TestCase{
 		System.out.println("testGetProductPromosByPromoCode: " + promocode);
 		MultivaluedMap<String,String> queryParams = new MultivaluedMapImpl();
     	queryParams.put("promocode", Arrays.asList(new String[]{promocode}));
-    	ProductPromos result = rpcDao.getProductPromosByQueryParams(userType, userCode, queryParams);
+    	ProductPromos result = rpcDao.readProductPromosByQueryParams(userType, userCode, queryParams);
         assertNotNull(result);
 	    System.out.println("Result = " + result.toJSONString());
 	}
@@ -94,7 +94,7 @@ public class ProductPromosDAOTest extends TestCase{
 		System.out.println("testGetProductPromosByPromoRegion: " + promoregion);
 		MultivaluedMap<String,String> queryParams = new MultivaluedMapImpl();
     	queryParams.put("promoregion", Arrays.asList(new String[]{promoregion}));
-    	ProductPromos result = rpcDao.getProductPromosByQueryParams(userType, userCode, queryParams);
+    	ProductPromos result = rpcDao.readProductPromosByQueryParams(userType, userCode, queryParams);
         assertNotNull(result);
 	    System.out.println("Result = " + result.toJSONString());
 	}
@@ -104,7 +104,7 @@ public class ProductPromosDAOTest extends TestCase{
 		System.out.println("testGetProductMaterialtype: " + materialtype);
 		MultivaluedMap<String,String> queryParams = new MultivaluedMapImpl();
     	queryParams.put("materialtype", Arrays.asList(new String[]{materialtype}));
-    	ProductPromos result = rpcDao.getProductPromosByQueryParams(userType, userCode, queryParams);
+    	ProductPromos result = rpcDao.readProductPromosByQueryParams(userType, userCode, queryParams);
         assertNotNull(result);
 	    System.out.println("Result = " + result.toJSONString());
 	}
@@ -116,7 +116,7 @@ public class ProductPromosDAOTest extends TestCase{
 		MultivaluedMap<String,String> queryParams = new MultivaluedMapImpl();
     	queryParams.put("promocode", Arrays.asList(new String[]{promocode}));
     	queryParams.put("promoregion", Arrays.asList(new String[]{promoregion}));
-    	ProductPromos result = rpcDao.getProductPromosByQueryParams(userType, userCode, queryParams);
+    	ProductPromos result = rpcDao.readProductPromosByQueryParams(userType, userCode, queryParams);
         assertNotNull(result);
 	    System.out.println("Result = " + result.toJSONString());
 	}
@@ -128,7 +128,7 @@ public class ProductPromosDAOTest extends TestCase{
 		MultivaluedMap<String,String> queryParams = new MultivaluedMapImpl();
     	queryParams.put("promocode", Arrays.asList(new String[]{promocode}));
     	queryParams.put("materialtype", Arrays.asList(new String[]{materialtype}));
-    	ProductPromos result = rpcDao.getProductPromosByQueryParams(userType, userCode, queryParams);
+    	ProductPromos result = rpcDao.readProductPromosByQueryParams(userType, userCode, queryParams);
         assertNotNull(result);
 	    System.out.println("Result = " + result.toJSONString());
 	}
@@ -140,7 +140,7 @@ public class ProductPromosDAOTest extends TestCase{
 		MultivaluedMap<String,String> queryParams = new MultivaluedMapImpl();
     	queryParams.put("promoregion", Arrays.asList(new String[]{promoregion}));
     	queryParams.put("materialtype", Arrays.asList(new String[]{materialtype}));
-    	ProductPromos result = rpcDao.getProductPromosByQueryParams(userType, userCode, queryParams);
+    	ProductPromos result = rpcDao.readProductPromosByQueryParams(userType, userCode, queryParams);
         assertNotNull(result);
 	    System.out.println("Result = " + result.toJSONString());
 	}
@@ -153,7 +153,7 @@ public class ProductPromosDAOTest extends TestCase{
     	queryParams.put("promocode", Arrays.asList(new String[]{promocode}));
     	queryParams.put("promoregion", Arrays.asList(new String[]{promoregion}));
     	queryParams.put("materialtype", Arrays.asList(new String[]{materialtype}));
-    	ProductPromos result = rpcDao.getProductPromosByQueryParams(userType, userCode, queryParams);
+    	ProductPromos result = rpcDao.readProductPromosByQueryParams(userType, userCode, queryParams);
         assertNotNull(result);
 	    System.out.println("Result = " + result.toJSONString());
 	}

@@ -77,7 +77,7 @@ public class ProductsDAOTest extends TestCase{
 		System.out.println("testGetProductsByItemCode: " + itemcode);
 		MultivaluedMap<String,String> queryParams = new MultivaluedMapImpl();
     	queryParams.put("itemcode", Arrays.asList(new String[]{itemcode}));
-	    Products result = rpcDao.getProductsByQueryParams(userType, userCode, queryParams);
+	    Products result = rpcDao.readProductsByQueryParams(userType, userCode, queryParams);
 	    assertNotNull(result);
 	    System.out.println("Products = " + result.toJSONString());
 	}
@@ -87,7 +87,7 @@ public class ProductsDAOTest extends TestCase{
 		 System.out.println("testGetProductsBySeriesName: " + seriesname);
 		MultivaluedMap<String,String> queryParams = new MultivaluedMapImpl();
 		queryParams.put("seriesname", Arrays.asList(new String[]{seriesname}));
-		Products result = rpcDao.getProductsByQueryParams(userType, userCode, queryParams);
+		Products result = rpcDao.readProductsByQueryParams(userType, userCode, queryParams);
     	assertNotNull(result);
 	    System.out.println("Products = " + result.toJSONString());
 	}

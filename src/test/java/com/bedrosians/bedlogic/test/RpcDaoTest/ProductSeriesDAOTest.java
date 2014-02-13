@@ -78,7 +78,7 @@ public class ProductSeriesDAOTest extends TestCase{
 	@Test
 	public void testGetProductSeries() throws Exception {
 		System.out.println("testGetProductSeries");
-	    ProductSeries result = rpcDao.getProductSeries(userName, password);
+	    ProductSeries result = rpcDao.readProductSeries(userName, password);
 	    assertNotNull(result);
 	    System.out.println("ProductSeries = " + result.toJSONString());
 	}

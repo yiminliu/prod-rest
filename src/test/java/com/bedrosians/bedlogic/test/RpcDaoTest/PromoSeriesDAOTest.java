@@ -86,7 +86,7 @@ public class PromoSeriesDAOTest extends TestCase{
 	@Test
 	public void testGetPromoSeriesByPromoCode() throws Exception {
 		System.out.println("testGetPromoSeriesByPromoCode: " + promocode);
-    	PromoSeries result = rpcDao.getPromoSeries(userType, userCode, promocode, "", "");
+    	PromoSeries result = rpcDao.readPromoSeries(userType, userCode, promocode, "", "");
         assertNotNull(result);
 	    System.out.println("Result = " + result.toJSONString());
 	}
@@ -94,7 +94,7 @@ public class PromoSeriesDAOTest extends TestCase{
 	@Test
 	public void testGetPromoSeriesByPromoRegion() throws Exception {
 		System.out.println("testGetPromoSeriesByPromoRegion: " + promoregion);
-		PromoSeries result = rpcDao.getPromoSeries(userType, userCode, "", promoregion, "");
+		PromoSeries result = rpcDao.readPromoSeries(userType, userCode, "", promoregion, "");
         assertNotNull(result);
 	    System.out.println("Result = " + result.toJSONString());
 	}
@@ -102,7 +102,7 @@ public class PromoSeriesDAOTest extends TestCase{
 	@Test
 	public void testGetPromoSeriesByMaterialtype() throws Exception {
 		System.out.println("testGetPromoSeriesByMaterialtype: " + materialtype);
-	 	PromoSeries result = rpcDao.getPromoSeries(userType, userCode, "", "", materialtype);
+	 	PromoSeries result = rpcDao.readPromoSeries(userType, userCode, "", "", materialtype);
         assertNotNull(result);
 	    System.out.println("Result = " + result.toJSONString());
 	}
@@ -111,7 +111,7 @@ public class PromoSeriesDAOTest extends TestCase{
 	public void testGetPromoSeriesByPromoCodeAndPromoRegion() throws Exception {
 		System.out.printf("testGetPromoSeriesByPromoCodeAndPromoRegion: %s, %s", promocode, promoregion);
 		System.out.println();
-		PromoSeries result = rpcDao.getPromoSeries(userType, userCode, promocode, promoregion, "");
+		PromoSeries result = rpcDao.readPromoSeries(userType, userCode, promocode, promoregion, "");
         assertNotNull(result);
 	    System.out.println("Result = " + result.toJSONString());
 	}
@@ -120,7 +120,7 @@ public class PromoSeriesDAOTest extends TestCase{
 	public void testGetPromoSeriesByPromoCodeAndMeterialType() throws Exception {
 		System.out.printf("testGetPromoSeriesByPromoCodeAndMeterialType: %s, %s", promocode, materialtype);
 		System.out.println();
-		PromoSeries result = rpcDao.getPromoSeries(userType, userCode, promocode, "", materialtype);
+		PromoSeries result = rpcDao.readPromoSeries(userType, userCode, promocode, "", materialtype);
         assertNotNull(result);
 	    System.out.println("Result = " + result.toJSONString());
 	}
@@ -129,7 +129,7 @@ public class PromoSeriesDAOTest extends TestCase{
 	public void testGetPromoSeriesByPromoRegionAndMeterialType() throws Exception {
 		System.out.printf("testGetPromoSeriesByPromoRegionAndMeterialType: %s, %s", promoregion,materialtype);
 		System.out.println();
-		PromoSeries result = rpcDao.getPromoSeries(userType, userCode, "", promoregion, materialtype);
+		PromoSeries result = rpcDao.readPromoSeries(userType, userCode, "", promoregion, materialtype);
         assertNotNull(result);
 	    System.out.println("Result = " + result.toJSONString());
 	}
@@ -139,7 +139,7 @@ public class PromoSeriesDAOTest extends TestCase{
 		System.out.printf("testGetPromoSeriesByPromoCodeAndPromoRegionAndMeterialType: %s, %s, %s", promocode, promoregion,materialtype);
 		System.out.println();
 		MultivaluedMap<String,String> queryParams = new MultivaluedMapImpl();
-		PromoSeries result = rpcDao.getPromoSeries(userType, userCode, promocode, promoregion, materialtype);
+		PromoSeries result = rpcDao.readPromoSeries(userType, userCode, promocode, promoregion, materialtype);
         assertNotNull(result);
 	    System.out.println("Result = " + result.toJSONString());
 	}

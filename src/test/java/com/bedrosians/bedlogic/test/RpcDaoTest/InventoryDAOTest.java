@@ -44,7 +44,7 @@ public class InventoryDAOTest extends TestCase{
 	@Test
 	public void testGetInventoryByItemCode() throws Exception {
 		System.out.println("testGetInventoryByItemCode: " + itemCode);
-	    Inventory result = rpcDao.getInventory(userType, userCode, itemCode, "");
+	    Inventory result = rpcDao.readInventory(userType, userCode, itemCode, "");
 	    assertNotNull(result);
 	    System.out.println("Result = " + result.toJSONString());
 	}

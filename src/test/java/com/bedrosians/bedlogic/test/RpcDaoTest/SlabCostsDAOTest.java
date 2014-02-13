@@ -68,7 +68,7 @@ public class SlabCostsDAOTest extends TestCase{
 		System.out.println("testGetProductsByItemCode: " + itemCode);
 		queryParams.put("freightrate", Arrays.asList(new String[]{freightrate}));
     	queryParams.put("deliverycost", Arrays.asList(new String[]{deliverycost}));
-	    SlabCosts result = rpcDao.getSlabCosts(userType, userCode, itemCode, "", "", queryParams);
+	    SlabCosts result = rpcDao.readSlabCosts(userType, userCode, itemCode, "", "", queryParams);
 	    assertNotNull(result);
 	    System.out.println("SlabCosts = " + result.toJSONString());
 	}
@@ -79,7 +79,7 @@ public class SlabCostsDAOTest extends TestCase{
 	    System.out.println();
 		queryParams.put("freightrate", Arrays.asList(new String[]{freightrate}));
     	queryParams.put("deliverycost", Arrays.asList(new String[]{deliverycost}));
-	    SlabCosts result = rpcDao.getSlabCosts(userType, userCode, itemCode, locationCode, "", queryParams);
+	    SlabCosts result = rpcDao.readSlabCosts(userType, userCode, itemCode, locationCode, "", queryParams);
 	    assertNotNull(result);
 	    System.out.println("SlabCosts = " + result.toJSONString());
 	}
@@ -90,7 +90,7 @@ public class SlabCostsDAOTest extends TestCase{
 	    System.out.println();
 	    queryParams.put("freightrate", Arrays.asList(new String[]{freightrate}));
     	queryParams.put("deliverycost", Arrays.asList(new String[]{deliverycost}));
-	    SlabCosts result = rpcDao.getSlabCosts(userType, userCode, itemCode, locationCode, serialNumber, queryParams);
+	    SlabCosts result = rpcDao.readSlabCosts(userType, userCode, itemCode, locationCode, serialNumber, queryParams);
 	    assertNotNull(result);
 	    System.out.println("SlabCosts = " + result.toJSONString());
 	}
@@ -101,7 +101,7 @@ public class SlabCostsDAOTest extends TestCase{
 	    System.out.println();
 		queryParams.put("freightrate", Arrays.asList(new String[]{"100"}));
     	queryParams.put("deliverycost", Arrays.asList(new String[]{deliverycost}));
-	    SlabCosts result = rpcDao.getSlabCosts(userType, userCode, itemCode, locationCode, serialNumber, queryParams);
+	    SlabCosts result = rpcDao.readSlabCosts(userType, userCode, itemCode, locationCode, serialNumber, queryParams);
 	    assertNotNull(result);
 	    System.out.println("SlabCosts = " + result.toJSONString());
 	}
@@ -112,7 +112,7 @@ public class SlabCostsDAOTest extends TestCase{
 		System.out.println();
         queryParams.put("freightrate", Arrays.asList(new String[]{freightrate}));
     	queryParams.put("deliverycost", Arrays.asList(new String[]{deliverycost}));
-	    SlabCosts result = rpcDao.getSlabCosts(userType, userCode, itemCode, locationCode, "", null);
+	    SlabCosts result = rpcDao.readSlabCosts(userType, userCode, itemCode, locationCode, "", null);
 	    assertNotNull(result);
 	    System.out.println("SlabCosts = " + result.toJSONString());
 	}
@@ -122,7 +122,7 @@ public class SlabCostsDAOTest extends TestCase{
 		System.out.println("testGetSlabCostsWithGuestUserType: BedDAOUnAuthorizedException is expected");
 		queryParams.put("freightrate", Arrays.asList(new String[]{freightrate}));
     	queryParams.put("deliverycost", Arrays.asList(new String[]{deliverycost}));
-	    SlabCosts result = rpcDao.getSlabCosts(userTypeGuest, userCode, itemCode, locationCode, "", queryParams);
+	    SlabCosts result = rpcDao.readSlabCosts(userTypeGuest, userCode, itemCode, locationCode, "", queryParams);
 	    assertNotNull(result);
 	    System.out.println("SlabCosts = " + result.toJSONString());
 	}

@@ -56,7 +56,7 @@ public class LocationDAOTest extends TestCase{
 	@Test
 	public void testGetLocationsByLocationCodes() throws Exception {
 		System.out.println("testGetLocationsByLocationCode: " + locationCodes);
-	    Locations result = rpcDao.getLocations(userType, userCode, locationCodes, "", "");
+	    Locations result = rpcDao.readLocations(userType, userCode, locationCodes, "", "");
 	    assertNotNull(result);
 	    System.out.println("Products = " + result.toJSONString());
 	}
@@ -64,7 +64,7 @@ public class LocationDAOTest extends TestCase{
 	@Test
 	public void testGetLocationsByLocationRegion() throws Exception {
 		System.out.println("testGetLocationsByLocationRegion: " + locationRegion);
-	    Locations result = rpcDao.getLocations(userType, userCode, "", locationRegion, "");
+	    Locations result = rpcDao.readLocations(userType, userCode, "", locationRegion, "");
 	    assertNotNull(result);
 	    System.out.println("Products = " + result.toJSONString());
 	}
@@ -73,7 +73,7 @@ public class LocationDAOTest extends TestCase{
 	@Test
 	public void testGetLocationsByBranchName() throws Exception {
 		System.out.println("testGetLocationsByBranchName: " + branchName);
-	    Locations result = rpcDao.getLocations(userType, userCode, "", "", branchName);
+	    Locations result = rpcDao.readLocations(userType, userCode, "", "", branchName);
 	    assertNotNull(result);
 	    System.out.println("Products = " + result.toJSONString());
 	}
@@ -81,7 +81,7 @@ public class LocationDAOTest extends TestCase{
 	@Test
 	public void testGetLocationsByLocationCodesAndLocationRegion() throws Exception {
 		System.out.printf("testGetLocationsByLocationCodesAndLocationRegion: %s, %s", locationCodes, locationRegion);
-	    Locations result = rpcDao.getLocations(userType, userCode, locationCodes, locationRegion, "");
+	    Locations result = rpcDao.readLocations(userType, userCode, locationCodes, locationRegion, "");
 	    assertNotNull(result);
 	    System.out.println("Products = " + result.toJSONString());
 	}
@@ -89,7 +89,7 @@ public class LocationDAOTest extends TestCase{
 	@Test
 	public void testGetLocationsByLocationCodesAndLocationRegionAndBranchName() throws Exception {
 		System.out.printf("testGetLocationsByLocationCodesAndLocationRegion: %s, %s, %s", locationCodes, locationRegion, branchName);
-	    Locations result = rpcDao.getLocations(userType, userCode, locationCodes, locationRegion, branchName);
+	    Locations result = rpcDao.readLocations(userType, userCode, locationCodes, locationRegion, branchName);
 	    assertNotNull(result);
 	    System.out.println("Products = " + result.toJSONString());
 	}
