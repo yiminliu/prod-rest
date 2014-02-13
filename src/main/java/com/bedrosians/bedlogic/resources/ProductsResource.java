@@ -11,10 +11,14 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.WebApplicationException;
 
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+
 import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.bedDataAccessDAO.ProductsDAO;
 import com.bedrosians.bedlogic.models.Products;
 
+@Controller
 @Path("/products")
 public class ProductsResource
 {

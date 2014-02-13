@@ -12,10 +12,13 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.WebApplicationException;
 
+import org.springframework.stereotype.Component;
+
 import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.bedDataAccessDAO.AccountsDAO;
 import com.bedrosians.bedlogic.models.Accounts;
 
+@Component
 @Path("/accounts")
 public class AccountsResource
 {

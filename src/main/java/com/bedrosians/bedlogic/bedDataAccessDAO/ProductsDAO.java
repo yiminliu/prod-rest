@@ -1,11 +1,15 @@
 package com.bedrosians.bedlogic.bedDataAccessDAO;
 
 import javax.ws.rs.core.MultivaluedMap;
+
+import org.springframework.stereotype.Service;
+
 import net.minidev.json.JSONObject;
 
 import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.models.Products;
 
+@Service
 public class ProductsDAO
 {
     public ProductsDAO()

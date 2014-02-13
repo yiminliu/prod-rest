@@ -1,9 +1,13 @@
 package com.bedrosians.bedlogic.bedDataAccessDAO;
 
+import org.springframework.stereotype.Service;
+
 import net.minidev.json.JSONObject;
+
 import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.models.ProductSeries;
 
+@Service
 public class ProductSeriesDAO
 {
     public ProductSeriesDAO()
