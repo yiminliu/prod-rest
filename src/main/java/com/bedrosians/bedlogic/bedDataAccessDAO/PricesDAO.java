@@ -18,7 +18,7 @@ public class PricesDAO
     {
     }
     
-    public Prices getPrices(String userType, String userCode, String itemCode, String customerCode, String branchCode, String locationCode, String unit)
+    public Prices readPrices(String userType, String userCode, String itemCode, String customerCode, String branchCode, String locationCode, String unit)
         throws BedDAOException
     {        
         JSONRPCDAO  rpcDAO = JSONRPCDAO.Create();

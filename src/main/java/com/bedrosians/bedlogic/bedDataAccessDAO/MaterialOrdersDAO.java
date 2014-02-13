@@ -18,7 +18,7 @@ public class MaterialOrdersDAO
     {
     }
     
-    public MaterialOrders getMaterialOrders(String userType, String userCode, String itemCode, String locationCode, String openCode)
+    public MaterialOrders readMaterialOrders(String userType, String userCode, String itemCode, String locationCode, String openCode)
         throws BedDAOException
     {        
         JSONRPCDAO  rpcDAO = JSONRPCDAO.Create();

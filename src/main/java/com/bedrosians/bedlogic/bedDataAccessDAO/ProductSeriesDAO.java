@@ -14,7 +14,7 @@ public class ProductSeriesDAO
     {
     }
     
-    public ProductSeries getProductSeries(String userType, String userCode)
+    public ProductSeries readProductSeries(String userType, String userCode)
         throws BedDAOException
     {        
         JSONRPCDAO  rpcDAO = JSONRPCDAO.Create();

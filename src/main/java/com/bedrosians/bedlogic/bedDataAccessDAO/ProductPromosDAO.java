@@ -16,7 +16,7 @@ public class ProductPromosDAO
     {
     }
     
-    public ProductPromos getProductPromosByQueryParams(String userType, String userCode, MultivaluedMap<String,String> queryParams)
+    public ProductPromos readProductPromosByQueryParams(String userType, String userCode, MultivaluedMap<String,String> queryParams)
         throws BedDAOException
     {        
         JSONRPCDAO  rpcDAO = JSONRPCDAO.Create();

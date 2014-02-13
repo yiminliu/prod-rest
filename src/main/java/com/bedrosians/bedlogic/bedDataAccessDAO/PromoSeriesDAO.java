@@ -18,7 +18,7 @@ public class PromoSeriesDAO
     {
     }
         
-    public PromoSeries getPromoSeries(String userType, String userCode, String promoCode, String promoRegion, String materialType)
+    public PromoSeries readPromoSeries(String userType, String userCode, String promoCode, String promoRegion, String materialType)
         throws BedDAOException
     {        
         JSONRPCDAO  rpcDAO = JSONRPCDAO.Create();

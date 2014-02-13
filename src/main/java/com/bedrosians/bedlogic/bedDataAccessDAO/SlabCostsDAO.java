@@ -16,7 +16,7 @@ public class SlabCostsDAO
     {
     }
     
-    public SlabCosts getSlabCosts(String userType, String userCode, String itemCode, String locationCode, String serialNumber, MultivaluedMap<String,String> queryParams)
+    public SlabCosts readSlabCosts(String userType, String userCode, String itemCode, String locationCode, String serialNumber, MultivaluedMap<String,String> queryParams)
         throws BedDAOException
     {        
         JSONRPCDAO  rpcDAO = JSONRPCDAO.Create();

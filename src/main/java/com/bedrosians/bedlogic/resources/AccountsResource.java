@@ -10,11 +10,12 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.WebApplicationException;
 
 import org.springframework.stereotype.Component;
 
 import com.bedrosians.bedlogic.exception.BedDAOException;
+import com.bedrosians.bedlogic.exception.BedResException;
+import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
 import com.bedrosians.bedlogic.bedDataAccessDAO.AccountsDAO;
 import com.bedrosians.bedlogic.models.Accounts;
 
@@ -69,7 +70,7 @@ public class AccountsResource
             UserCodeParser  userCodeParser = new UserCodeParser(requestHeaders);
             if (!userCodeParser.isValidFormat())
             {
-                throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+                throw new BedResUnAuthorizedException();
             }
             String userType = userCodeParser.getUserType();
             String userCode = userCodeParser.getUserCode();
@@ -82,7 +83,7 @@ public class AccountsResource
             
             // Retrieve DAO object
             AccountsDAO    accountsDAO = new AccountsDAO();
-            Accounts       result = accountsDAO.getAccounts(userType, userCode, customerCode, branchCode, customerName, creditStatus);
+            Accounts       result = accountsDAO.readAccounts(userType, userCode, customerCode, branchCode, customerName, creditStatus);
             
             // Return json reponse
             String  jsonStr = result.toJSONString();
@@ -91,6 +92,10 @@ public class AccountsResource
         catch (BedDAOException e)
         {
             response = BedDAOExceptionMapper.MapToResponse(e);
+        }
+        catch (BedResException e)
+        {
+            response = BedResExceptionMapper.MapToResponse(e);
         }
         
         return response;
