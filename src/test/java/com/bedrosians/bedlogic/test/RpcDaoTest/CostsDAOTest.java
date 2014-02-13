@@ -13,12 +13,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.bedrosians.bedlogic.bedDataAccessDAO.CostsDAO;
-import com.bedrosians.bedlogic.bedDataAccessDAO.PricesDAO;
-import com.bedrosians.bedlogic.bedDataAccessDAO.SlabCostsDAO;
 import com.bedrosians.bedlogic.exception.BedDAOUnAuthorizedException;
 import com.bedrosians.bedlogic.models.Costs;
-import com.bedrosians.bedlogic.models.Prices;
-
 
 
 @RunWith(SpringJUnit4ClassRunner.class)

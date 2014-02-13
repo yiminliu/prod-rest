@@ -1,10 +1,5 @@
 package com.bedrosians.bedlogic.test.RpcDaoTest;
 
-
-import java.util.Arrays;
-
-import javax.ws.rs.core.MultivaluedMap;
-
 import junit.framework.TestCase;
 
 import org.junit.Before;
@@ -17,11 +12,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.bedrosians.bedlogic.bedDataAccessDAO.LocationsDAO;
-import com.bedrosians.bedlogic.bedDataAccessDAO.ProductsDAO;
 import com.bedrosians.bedlogic.models.Locations;
-import com.bedrosians.bedlogic.models.Products;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
-
 
 
 @RunWith(SpringJUnit4ClassRunner.class)

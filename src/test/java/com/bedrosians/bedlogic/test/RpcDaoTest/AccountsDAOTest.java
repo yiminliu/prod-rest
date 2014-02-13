@@ -1,41 +1,7 @@
 package com.bedrosians.bedlogic.test.RpcDaoTest;
 
 
-	import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MultivaluedMap;
-
 import junit.framework.TestCase;
-import net.minidev.json.JSONObject;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -47,11 +13,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.bedrosians.bedlogic.bedDataAccessDAO.AccountsDAO;
-import com.bedrosians.bedlogic.bedDataAccessDAO.ProductsDAO;
 import com.bedrosians.bedlogic.exception.BedDAOUnAuthorizedException;
 import com.bedrosians.bedlogic.models.Accounts;
-import com.bedrosians.bedlogic.models.Products;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 
 
