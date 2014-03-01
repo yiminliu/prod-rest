@@ -65,5 +65,43 @@ public class ProductsDAOTest extends TestCase{
 	    System.out.println("Products = " + result.toJSONString());
 	}
 	
+	@Test
+	public void testGetSimplifiedProducts() throws Exception {
+		System.out.println("testGetSimplifiedProducts: ");
+		Products result = rpcDao.readSimplifiedProducts(userType, userCode);
+    	assertNotNull(result);
+	    System.out.println("Products = " + result.toJSONString());
+	}
+	
+	@Test
+	public void testCreateProduct() throws Exception {
+		System.out.println("testCreateProduct: ");
+		MultivaluedMap<String,String> params = new MultivaluedMapImpl();;
+    	params.put("inactivecd", Arrays.asList(new String[]{"Y"}));
+		params.put("seriesname", Arrays.asList(new String[]{"test"}));
+		params.put("itemcd", Arrays.asList(new String[]{"TEST"}));
+	
+	    Products result = rpcDao.createProduct(userType, userCode, params);
+	    
+	    assertNotNull(result);
+	    System.out.println("Test Result = " + result.toJSONString());
+	}
+	
+	@Test
+	public void testUpdateProduct() throws Exception {
+		System.out.println("testUpdateProduct: " + itemcode);
+		MultivaluedMap<String,String> updateParams = new MultivaluedMapImpl();;
+		MultivaluedMap<String,String> condition = new MultivaluedMapImpl();;
+		updateParams.put("inactivecd", Arrays.asList(new String[]{"Y"}));
+		updateParams.put("seriesname", Arrays.asList(new String[]{"test"}));
+		updateParams.put("itemcd", Arrays.asList(new String[]{"AECBUB217NR"}));
+		condition.put("itemcd", Arrays.asList(new String[]{"AECBUB217NR"}));
+	    Products result = rpcDao.updateProduct(userType, userCode, updateParams, condition);
+	    
+	    assertNotNull(result);
+	    System.out.println("Test Result = " + result.toJSONString());
+	}
+	
+	
 	
 }
