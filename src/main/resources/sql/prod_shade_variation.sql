@@ -7,7 +7,7 @@ CREATE TABLE prod_shade_variation
    
 
 INSERT INTO prod_shade_variation VALUES
-      ('V0', ''),
+      ('V0', 'N/A'),
       ('V1', 'Low'),
       ('V2', 'Medium'),
       ('V3', 'High'),
