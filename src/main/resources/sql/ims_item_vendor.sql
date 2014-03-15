@@ -14,15 +14,15 @@ CREATE TABLE ims_item_vendor
    freight_rate_cwt        numeric(9,4),
    duty_pct                numeric(7,4)     DEFAULT 0,
 
-   PRIMARY KEY (itemcd, vendor_id),
+   PRIMARY KEY (itemcd, vendor_id)
    
    CONSTRAINT ims_item_vendor_fkey FOREIGN KEY (itemcd)
       REFERENCES ims (itemcd) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,   
       
-   CONSTRAINT vendor_fkey FOREIGN KEY (vendor_id)
-      REFERENCES ims_vendor (vendor_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION   
+   --CONSTRAINT vendor_fkey FOREIGN KEY (vendor_id)
+     -- REFERENCES ims_vendor (vendor_id) MATCH SIMPLE
+      --ON UPDATE NO ACTION ON DELETE NO ACTION   
 );
 
 COMMIT; 
