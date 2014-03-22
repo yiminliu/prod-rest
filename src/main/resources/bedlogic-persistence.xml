@@ -1,0 +1,83 @@
+<beans 
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:context="http://www.springframework.org/schema/context" 
+    xmlns:mvc="http://www.springframework.org/schema/mvc" 
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:cache="http://www.springframework.org/schema/cache"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+                        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+                        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+                        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+                        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
+                        http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-4.0.xsd">
+               
+   
+     <!-- Annotation auto scan -->                        
+    <context:component-scan base-package="com.bedrosians.bedlogic" />
+   
+    <!-- Transaction -->
+    <tx:annotation-driven transaction-manager="transactionManager" />
+    
+    <!-- Datasource -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">  
+        <property name="driverClassName" value="${database.driver}" />  
+        <property name="url" value="${database.url}" />  
+        <property name="username" value="${database.user}" />  
+        <property name="password" value="${database.password}" />
+        <property name="defaultTransactionIsolation">
+            <util:constant static-field="java.sql.Connection.TRANSACTION_READ_COMMITTED"/>
+        </property>
+        <!-- dbcp polling-->    
+        <property name="initialSize" value="${minPoolSize}" />
+        <property name="maxActive" value="${maxPoolSize}" />
+        <!-- <property name="acquireIncrement" value="${acquireIncrement}" />-->
+        <property name="maxWait" value="5000" />
+        <property name="minIdle" value="10" />
+        <property name="removeAbandoned" value="true" />
+        <property name="validationQuery" value="select name from Obmh" />
+        <property name="testOnBorrow" value="true"/>
+    </bean>
+ 
+    <!-- SessionFactory -->   
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />  
+        <property name="packagesToScan" value="com.bedrosians.bedlogic.domain" />
+        <property name="hibernateProperties">  
+            <props>  
+                <prop key="hibernate.dialect">${hibernate.dialect}</prop>  
+                <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>  
+                <prop key="hibernate.format_sql">${hibernate.format.sql}</prop>
+                <prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</prop>
+                <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>                  
+               
+                <!--<prop key="hibernate.max.fetch.depth">${hibernate.max.fetch.depth}</prop>          
+                <prop key="hibernate.jdbc.fetch.size">${hibernate.jdbc.fetch.size}</prop>          
+                <prop key="hibernate.jdbc.batch.size">${hibernate.jdbc.bstch.size}</prop>-->          
+            </props>  
+        </property>  
+    </bean>
+    
+    <bean id="transactionInterceptor" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+       <property name="transactionManager" ref="transactionManager" />
+       <property name="transactionAttributes">
+       <props>
+          <prop key="save">PROPAGATION_REQUIRED</prop>
+       </props>
+       </property>
+   </bean>
+  
+    <!-- Transaction Manager -->
+    <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">  
+        <property name="sessionFactory" ref="sessionFactory" />  
+    </bean>
+   
+    
+    <!-- <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>-->
+    
+    <!--  JDBC Config file -->
+    <context:property-placeholder location="classpath:config/jdbc.properties"/>
+
+</beans>
