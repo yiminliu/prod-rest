@@ -2,17 +2,16 @@ package com.bedrosians.bedlogic.domain.item.enums;
 
 public enum MpsCode {
 
-		 NEW_PRODUCT("New Product"),
-	     ACTIVE_PRODUCT("Active Product"),
-	     PRE_DROP("Pre Drop"),
-	     DROP("Drop"),
-	     OBSOLET("Obsolete"),
-	     DO_NOT_INVENTORY("Do Not Inventory"),
-	     SECOND_PROMO("Second/Promo"),
-	     CLAIMS_INVETORY("Claims Inventory"),
-	     DIRECT_SHIP("Direct Ship"),
-	     SPECIAL_OORDER("Special Order"),
-	     NONE("N/A");
+		 New_Product("New Product"),
+		 Active_Product("Active Product"),
+		 Pre_Drop("Pre Drop"),
+	     Drop("Drop"),
+	     Obsolete("Obsolete"),
+	     Do_Not_Inventory("Do Not Inventory"),
+	     Second_Promo("Second/Promo"),
+	     Claims_Inventory("Claims Inventory"),
+	     Direct_Ship("Direct Ship"),
+	     Special_Order("Special Order");
 	   		 
 		 private String description;
 		 
@@ -34,34 +33,34 @@ public enum MpsCode {
 			 MpsCode instance = null;
 			 switch(description) {
 				 case("New Product"): case("New"): case("New_Product"):
-					 instance = NEW_PRODUCT;
+					 instance = New_Product;
 				     break;
 				 case("Active Product"): case("Active"): case("Active_Product"):
-				     instance = ACTIVE_PRODUCT;
+				     instance = Active_Product;
 			         break;    
 				 case("Pre Drop"): case("Pre_Drop"):
-					 instance = PRE_DROP;
+					 instance = Pre_Drop;
 				     break;   
 				 case("Drop"): case("drop"):
-					 instance = DROP;
+					 instance = Drop;
 				     break;     
 				 case("Obsolete"): case("obsolete"):
-					 instance = OBSOLET;
+					 instance = Obsolete;
 				     break;     
 				 case("Do Not Inventory"): case("Do_Not_Inventory"):
-				     instance = DO_NOT_INVENTORY;
+				     instance = Do_Not_Inventory;
 			         break;
 			     case("Second/Promo"): case("Second_Promo"):
-			         instance = SECOND_PROMO;
+			         instance = Second_Promo;
 		             break;    
 			     case("Claims Inventory"): case("Claims_Inventory"):
-				     instance = CLAIMS_INVETORY;
+				     instance = Claims_Inventory;
 			         break;   
 			     case("Direct Ship"): case("Direct_Ship"):
-				     instance = DIRECT_SHIP;
+				     instance = Direct_Ship;
 			         break;     
 			     case("Special Order"): case("Special_Order"):
-				     instance = SPECIAL_OORDER;
+				     instance = Special_Order;
 			         break;
 			     
 			 }	   

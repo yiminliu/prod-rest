@@ -2,9 +2,9 @@ package com.bedrosians.bedlogic.domain.item.enums;
 
 public enum Status {
 
-		 BEST("Best"),
-	     BETTER("Better"),
-	     GOOD("Good");
+		 Best("Best"),
+	     Better("Better"),
+	     Good("Good");
 		 
 		 private String description;
 		 
@@ -18,14 +18,14 @@ public enum Status {
 		 public static Status instanceOf(String description){
 			 Status status = null ;
 			 switch(description) {
-				 case("Best"): case("BEST"):
-				    status = BEST;
+				 case("Best"): case("BEST"): case("best"):
+				    status = Best;
 				    break;
-				 case("Better"): case("BETTER"):
-				    status = BETTER;
+				 case("Better"): case("BETTER"): case("better"):
+				    status = Better;
 				    break;
-				 case("Good"): case("GOOD"):
-					status = GOOD;
+				 case("Good"): case("GOOD"): case("good"):
+					status = Good;
 				    break;	    
 			 }	   
 			 return status;

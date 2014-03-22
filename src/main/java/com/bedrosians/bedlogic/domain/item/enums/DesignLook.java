@@ -2,8 +2,8 @@ package com.bedrosians.bedlogic.domain.item.enums;
 
 public enum DesignLook {
 
-		 WOOD("Wood"),
-	     TRAVERTINE("Travertine");
+		 Wood("Wood"),
+		 Travertine("Travertine");
 	   
 		 private String description;
 		 
@@ -18,10 +18,10 @@ public enum DesignLook {
 			 DesignLook instance = null;
 			 switch(description) {
 				 case("Wood"): case("WOOD"):
-					 instance = WOOD;
+					 instance = Wood;
 				     break;
 				 case("Travertine"): case("TRAVERTINE"):
-					 instance = TRAVERTINE;
+					 instance = Travertine;
 				     break;    
 			 }	   
 			 return instance;

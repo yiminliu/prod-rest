@@ -3,7 +3,7 @@ package com.bedrosians.bedlogic.domain.item.enums;
 public enum DesignStyle {
 
 		 CONTEMPORARY("Contemporary"),
-	     MODEN("Modern"),
+	     MODERN("Modern"),
 	     ELECTIC("Eclectic"),
 	     TRADITIONAL("Traditional"),
   	     ASIAN("Asian"),
@@ -32,7 +32,7 @@ public enum DesignStyle {
 					 instance = CONTEMPORARY;
 				     break;
 				 case("Modern"): case("MODEN"):
-					 instance = MODEN;
+					 instance = MODERN;
 				     break; 
 				 case("Eclectic"): case("ELECTIC"):
 					 instance = ELECTIC;
