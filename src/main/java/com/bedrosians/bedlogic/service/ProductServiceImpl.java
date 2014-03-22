@@ -44,14 +44,14 @@ public class ProductServiceImpl implements ProductService {
 	@Transactional(readOnly=true)
 	public List<Item> getByQueryParameters(MultivaluedMap<String, String> queryParams){
 		List<Item> items = itemDao.getItemsByQueryParameters(queryParams);
-		for(Item item : items){
+	/*	for(Item item : items){
 			if(item.getImsNewFeature() == null){
 				item.setImsNewFeature(imsNewFeatureDao.getImsNewFeatureById(item.getItemcd().trim()));
 			}	
 			if(item.getVendors() == null || item.getVendors().isEmpty()){
 				item.setVendors(vendorDao.getVendorsByItemId(item.getItemcd().trim()));
 			}
-		}
+		}*/
 		return items;
 	}
 		

@@ -54,8 +54,10 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 		
 		Set<Map.Entry<String, List<String>>> set = queryParams.entrySet();
 	    Iterator it = set.iterator();
-	    Criteria criteria = currentSession().createCriteria(Item.class, "item");
-	    Criteria newFeatureCriteria = criteria.createCriteria("imsNewFeature");
+	    //Criteria criteria = currentSession().createCriteria(Item.class, "item");
+	    Criteria criteria = currentSession().createCriteria(Item.class);
+	    Criteria newFeatureCriteria = criteria.createCriteria("imsNewFeature", Criteria.LEFT_JOIN);
+	    //criteria.createAlias("imsNewFeature", "nf", Criteria.LEFT_JOIN);
 	   // criteria.createCriteria("imsNewFeature", "newFeature");
 	   // criteria.add( Restrictions.eqProperty("item.itemcd", "newFeature.itemcd") );
 	    //criteria.createAlias("imsNewFeature", "imsNewFeature");
@@ -165,8 +167,8 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	  	criteria.setMaxResults(LIMIT);
 	  	//criteria.createAlias("imsNewFeature", "nf", Criteria.LEFT_JOIN);
 	    //criteria.setFetchMode("nf", FetchMode.EAGER);
-	    criteria.createAlias("vendors", "v", Criteria.LEFT_JOIN);
-	    criteria.setFetchMode("v", FetchMode.EAGER);
+	    //criteria.createAlias("vendors", "v", Criteria.LEFT_JOIN);
+	    //criteria.setFetchMode("v", FetchMode.EAGER);
 	    //criteria.add(Restrictions.eq("nf.itemcd", "item.itemcd"));
 	    
 	    //criteria.createAlias("vendors", "vendor");
