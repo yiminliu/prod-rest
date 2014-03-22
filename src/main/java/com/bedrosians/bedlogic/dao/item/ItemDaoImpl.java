@@ -1,7 +1,7 @@
 package com.bedrosians.bedlogic.dao.item;
 
 
-import java.util.Date;
+import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
@@ -18,26 +19,32 @@ import org.springframework.stereotype.Repository;
 import com.bedrosians.bedlogic.dao.GenericDaoImpl;
 import com.bedrosians.bedlogic.domain.item.ImsNewFeature;
 import com.bedrosians.bedlogic.domain.item.Item;
-
+import com.bedrosians.bedlogic.domain.item.enums.Grade;
+import com.bedrosians.bedlogic.domain.item.enums.Status;
+import com.bedrosians.bedlogic.domain.item.enums.Body;
+import com.bedrosians.bedlogic.domain.item.enums.Edge;
+import com.bedrosians.bedlogic.domain.item.enums.Icon;
+import com.bedrosians.bedlogic.domain.item.enums.SurfaceApplication;
+import com.bedrosians.bedlogic.domain.item.enums.SurfaceFinish;
+import com.bedrosians.bedlogic.domain.item.enums.SurfaceType;
+import com.bedrosians.bedlogic.domain.item.enums.DesignLook;
+import com.bedrosians.bedlogic.domain.item.enums.DesignStyle;
+import com.bedrosians.bedlogic.domain.item.enums.MpsCode;
 
 @Repository("itemDao")
 public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao {
 					
-	 private static final int OFF_SET =  0;
+	 private static final int OFF_SET = 0;
 	 private static final int LIMIT = 500;
  
      
 	@Override
 	public Item getItemById(String itemId) {
-       return findById(itemId);//branch info cannot be linked to the item.
-		//List<Item> list = findByParameter("itemcd", itemId);
-	//	if(list != null && !list.isEmpty())
-//		   return list.get(0);
-//		else return null;
+       return findById(itemId);
 	}
 	
    public List<Item> getItemsByQueryParameters(MultivaluedMap<String, String> queryParams){
-	   //return findByParameters(queryParams);
+	
 	   if(queryParams == null) 
 		   return null;
 		
@@ -47,17 +54,26 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 		
 		Set<Map.Entry<String, List<String>>> set = queryParams.entrySet();
 	    Iterator it = set.iterator();
-	    Criteria criteria = currentSession().createCriteria(Item.class);
+	    Criteria criteria = currentSession().createCriteria(Item.class, "item");
+	    Criteria newFeatureCriteria = criteria.createCriteria("imsNewFeature");
+	   // criteria.createCriteria("imsNewFeature", "newFeature");
+	   // criteria.add( Restrictions.eqProperty("item.itemcd", "newFeature.itemcd") );
+	    //criteria.createAlias("imsNewFeature", "imsNewFeature");
+	    //criteria.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
+	    //criteria.setFetchMode("imsNewFeature", FetchMode.EAGER);
 	  	criteria.setReadOnly(true);
 	  	criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
    	   	String key, value = null;
 	   	while(it.hasNext()) {
    	    	Entry<String, List<String>> entry = (Entry<String, List<String>>)it.next();
    		   	key = (String)entry.getKey();
-   		   
+   		  		   
    		   	if(key == null && key.trim().length() == 0)
    	    	   throw new IllegalArgumentException("Invalid field name in query.");
    		
+   		 	if("itemcode".equalsIgnoreCase(key) || "itemId".equalsIgnoreCase(key))
+   		   		key = "itemcd";
+   
    		   	List<String> values = entry.getValue();
    		   	
    		   //for(String value : ((List<String>)entry.getValue())) {
@@ -65,6 +81,32 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
    		    if(values != null) {
    		   	   value = values.get(0);	
    	   
+   		   	   if(ImsNewFeature.allFields().contains(key)) {	   		  
+   		   			if("grade".equalsIgnoreCase(key))
+   		   		        newFeatureCriteria.add(Restrictions.eq(key, Grade.instanceOf(value)));
+   		   			else if("status".equalsIgnoreCase(key))
+		   		        newFeatureCriteria.add(Restrictions.eq(key, Status.instanceOf(value)));
+   		   		    else if("body".equalsIgnoreCase(key))
+	   		            newFeatureCriteria.add(Restrictions.eq(key, Body.instanceOf(value)));
+   		   		    else if("edge".equalsIgnoreCase(key))
+	   		            newFeatureCriteria.add(Restrictions.eq(key, Edge.instanceOf(value)));
+		   		    else if("icon".equalsIgnoreCase(key))
+		   		    	newFeatureCriteria.add(Restrictions.eq(key, Icon.instanceOf(value)));
+		   		    else if("mpsCode".equalsIgnoreCase(key))
+			   		    newFeatureCriteria.add(Restrictions.eq(key, MpsCode.instanceOf(value)));
+				    else if("surfaceApplication".equalsIgnoreCase(key))
+		   		        newFeatureCriteria.add(Restrictions.eq(key, SurfaceApplication.instanceOf(value)));
+		   		    else if("surfaceFinish".equalsIgnoreCase(key))
+	   		            newFeatureCriteria.add(Restrictions.eq(key, SurfaceFinish.instanceOf(value)));
+		   		    else if("surfaceType".equalsIgnoreCase(key))
+	   		            newFeatureCriteria.add(Restrictions.eq(key, SurfaceType.instanceOf(value)));	
+		   		    else if("designLook".equalsIgnoreCase(key))
+	   		            newFeatureCriteria.add(Restrictions.eq(key, DesignLook.instanceOf(value)));
+		   		    else if("designStyle".equalsIgnoreCase(key))
+	   		            newFeatureCriteria.add(Restrictions.eq(key, DesignStyle.instanceOf(value)));
+   		   	    	continue;
+   		   	   }
+   		   		    		   		   
    		       if("exactMatch".equalsIgnoreCase(key))
    		   	       continue;
    		   	   if("lengthmin".equalsIgnoreCase(key)){
@@ -78,6 +120,9 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	    	   }
    		   	   else if("widthmax".equalsIgnoreCase(key)){
 	    	       criteria.add(Restrictions.le("nmWidth", Float.parseFloat(value))); 	
+	    	   }
+   		   	   else if("pricemax".equalsIgnoreCase(key)){
+	    	       criteria.add(Restrictions.le("price", new BigDecimal(value))); 	
 	    	   }
    		   	   else if("size".equalsIgnoreCase(key) || "sizes".equalsIgnoreCase(key)){
    		   		   boolean lengthXwidth = true;
@@ -115,8 +160,18 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
    	    	   }
    		    }   
 	  	}
+	   
 	  	criteria.addOrder(Order.asc("itemcd"));
 	  	criteria.setMaxResults(LIMIT);
+	  	//criteria.createAlias("imsNewFeature", "nf", Criteria.LEFT_JOIN);
+	    //criteria.setFetchMode("nf", FetchMode.EAGER);
+	    criteria.createAlias("vendors", "v", Criteria.LEFT_JOIN);
+	    criteria.setFetchMode("v", FetchMode.EAGER);
+	    //criteria.add(Restrictions.eq("nf.itemcd", "item.itemcd"));
+	    
+	    //criteria.createAlias("vendors", "vendor");
+	    //criteria.setFetchMode("vendors", FetchMode.EAGER.JOIN);
+	    //criteria.add(Restrictions.eq("vendor.itemcd", "item.itemcd"));
 	  	System.out.println("criteria = " +criteria.toString());
 	  	items =  (List<Item>)criteria.list();			
 	  	return items;
@@ -130,7 +185,7 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	  
 	@Override
 	public String createItem(Item item){
-		//return (String)save(item); 
-		return (String)currentSession().save(item); 
+		return (String)save(item); 
+		//return (String)currentSession().save(item); 
 	}
 }

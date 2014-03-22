@@ -11,16 +11,12 @@ import java.util.Map.Entry;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.exception.DataException;
 import org.springframework.beans.factory.annotation.Autowired;
-
-//import com.bedrosians.bedlogic.util.PatternMatchMode;
-//import com.bedrosians.bedlogic.util.RestrictionOperation;
 
 
 public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T, PK> {
@@ -42,10 +38,7 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
 	
 	@SuppressWarnings("unchecked")
 	public PK save(T newInstance) {
-		//Transaction tx = currentSession().beginTransaction();
 		PK pk = (PK)currentSession().save(newInstance);
-		//currentSession().flush();
-		//tx.commit();
 		return pk;
 	}
 	
@@ -67,8 +60,7 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
           // if(session.contains(transientObject))
         	 session.update(transientObject);
           //session.saveOrUpdate(transientObject);
-           //else
-        	// session.merge(transientObject);
+      
 		}
 		catch(DataException e){
 			throw e;
@@ -81,6 +73,52 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
 		
 	}
 	
+	//@Loggable(value=LogLevel.DEBUG)
+		@Override
+		@SuppressWarnings("unchecked")
+	    public List<T> findByParameters(MultivaluedMap<String, String> queryParams){
+			
+			if(queryParams == null) 
+			   return null;
+			
+			Set<Map.Entry<String, List<String>>> set = queryParams.entrySet();
+		    Iterator it = set.iterator();
+		    Criteria criteria = currentSession().createCriteria(type);
+		  	criteria.setReadOnly(true);
+		  	criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+	   	   	String key, value = null;
+		  	while(it.hasNext()) {
+	   	    	Entry<String, List<String>> entry = (Entry<String, List<String>>)it.next();
+	   		   	key = (String)entry.getKey();
+	   	    	value = ((List<String>)entry.getValue()).get(0);
+	   	    	if("activityStatus".equalsIgnoreCase(key)) {
+	   	            if ("active".equalsIgnoreCase(value))
+	   	 		        criteria.add(Restrictions.eq(key, ""));
+	   	 		    else if ("inactive".equalsIgnoreCase(value))
+	   	 		        criteria.add(Restrictions.in(key, new String[] {"F", "Y", "D", "I"})); 
+	   	    	}  
+	   	       	else {
+	   	    		//criteria.add(Restrictions.eq("activityStatus", "")); //return only active accounts
+	   	    		criteria.add(Restrictions.eq(key, value).ignoreCase());
+	   	    	}
+	   		
+	   	    }	  	
+			return (List<T>)criteria.list();			
+		}
+		
+		
+		//@Loggable(value=LogLevel.DEBUG)
+		@Override
+		@SuppressWarnings("unchecked")
+	    public Long insertRecord(String insertStatement){
+			//SQLQuery query = currentSession().createSQLQuery(insertStatement);
+			
+			SQLQuery query = currentSession().createSQLQuery("INSERT INTO Product (product_Id, color) VALUES('Test', 'Beige')");
+	        long value = query.executeUpdate();
+	        return Long.valueOf(value);
+		}	   
+		
+		
 	//@Override
 	@SuppressWarnings("unchecked")
     public List<T> findByParameter(final String parameterName, String value){
@@ -88,7 +126,7 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
 		   value = value.toUpperCase();
 	  	Criteria criteria = currentSession().createCriteria(type);
 	  	criteria.setReadOnly(true);
-	  	criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+	  	//criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		criteria.add(Restrictions.eq(parameterName, value).ignoreCase());
 		return (List<T>)criteria.list();			
 	}
@@ -156,50 +194,5 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
 	  	return (List<T>)criteria.list();			
 	 }
 	*/
-	
-	//@Loggable(value=LogLevel.DEBUG)
-	@Override
-	@SuppressWarnings("unchecked")
-    public List<T> findByParameters(MultivaluedMap<String, String> queryParams){
-		
-		if(queryParams == null) 
-		   return null;
-		
-		Set<Map.Entry<String, List<String>>> set = queryParams.entrySet();
-	    Iterator it = set.iterator();
-	    Criteria criteria = currentSession().createCriteria(type);
-	  	criteria.setReadOnly(true);
-	  	criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-   	   	String key, value = null;
-	  	while(it.hasNext()) {
-   	    	Entry<String, List<String>> entry = (Entry<String, List<String>>)it.next();
-   		   	key = (String)entry.getKey();
-   	    	value = ((List<String>)entry.getValue()).get(0);
-   	    	if("activityStatus".equalsIgnoreCase(key)) {
-   	            if ("active".equalsIgnoreCase(value))
-   	 		        criteria.add(Restrictions.eq(key, ""));
-   	 		    else if ("inactive".equalsIgnoreCase(value))
-   	 		        criteria.add(Restrictions.in(key, new String[] {"F", "Y", "D", "I"})); 
-   	    	}  
-   	       	else {
-   	    		//criteria.add(Restrictions.eq("activityStatus", "")); //return only active accounts
-   	    		criteria.add(Restrictions.eq(key, value).ignoreCase());
-   	    	}
-   		
-   	    }	  	
-		return (List<T>)criteria.list();			
-	}
-	
-	
-	//@Loggable(value=LogLevel.DEBUG)
-	@Override
-	@SuppressWarnings("unchecked")
-    public Long insertRecord(String insertStatement){
-		//SQLQuery query = currentSession().createSQLQuery(insertStatement);
-		
-		SQLQuery query = currentSession().createSQLQuery("INSERT INTO Product (product_Id, color) VALUES('Test', 'Beige')");
-        long value = query.executeUpdate();
-        return Long.valueOf(value);
-	}	   
 	
 }
