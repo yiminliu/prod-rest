@@ -10,7 +10,7 @@ public class ProductSeriesDAO
     {
     }
     
-    public ProductSeries readProductSeries(String userType, String userCode)
+    public ProductSeries readProductSeries(String userType, String userCode, String seriesName)
         throws BedDAOException
     {        
         JSONRPCDAO  rpcDAO = JSONRPCDAO.Create();
@@ -19,6 +19,7 @@ public class ProductSeriesDAO
         rpcDAO.setMethodResultType("productseries");
         rpcDAO.addStringParameter(userType);
         rpcDAO.addStringParameter(userCode);
+        rpcDAO.addStringParameter(seriesName);
         
         JSONObject  result = rpcDAO.call();
         
