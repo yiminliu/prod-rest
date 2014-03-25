@@ -43,6 +43,10 @@ ProductSeries
 ```sh
 curl --basic -u "guest:" --get "http://192.168.56.23:8080/bedlogic/rest/productseries"
 curl --basic -u "keymark:<usercode>" --get "http://192.168.56.23:8080/bedlogic/rest/productseries"
+
+# replace <seriesname> with actual series name
+curl --basic -u "guest:" --get "http://192.168.56.23:8080/bedlogic/rest/productseries/<seriesname>"
+curl --basic -u "keymark:<usercode>" --get "http://192.168.56.23:8080/bedlogic/rest/productseries/<seriesname>"
 ```
 
 ProductPromos
