@@ -56,9 +56,11 @@ public class ProductSeriesResource
 
             seriesName = (seriesName == null) ? "" : seriesName;
                                     
+            String resultType = (seriesName == "") ? "productseries" : "productseriescolors";
+
             // Retrieve DAO object
             ProductSeriesDAO    productSeriesDAO = new ProductSeriesDAO();
-            ProductSeries       result = productSeriesDAO.readProductSeries(userType, userCode, seriesName);
+            ProductSeries       result = productSeriesDAO.readProductSeries(userType, userCode, seriesName, resultType);
             
             // Return json reponse
             String  jsonStr = result.toJSONString();
