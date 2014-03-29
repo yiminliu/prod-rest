@@ -462,7 +462,7 @@ public class ImsQueryUtil {
     		   item.getVendors().get(1).setVendorDiscountPct(Float.parseFloat(value));
     		   break;	  
     	   case "v2_vendorlandedbasecost": case "v_vendorLandedBaseCost":
-    		   item.getVendors().get(1).setv.setVendorlandedbasecost(new BigDecimal(value));
+    		   item.getVendors().get(1).setVendorlandedbasecost(new BigDecimal(value));
         	   break;	   
     	   case "v2_vendorfreightratecwt": case "v2_vendorFreightRateCwt":
     		   item.getVendors().get(1).setVendorFreightRateCwt(new BigDecimal(value));
