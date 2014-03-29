@@ -18,13 +18,13 @@ public enum TaxClass {
 	 public static TaxClass instanceOf(String description){
 		 TaxClass instance = null;
 		 switch(description) {
-			 case("T"): case("t"):
+		     case("Tax"): case("tax"): case("T"): case("t"):
 				 instance = T;
 			     break;
-			 case("Non_Tax"): case("Non-Tax"):
+			 case("Non_Tax"): case("Non-Tax"): case("non_tax"): case("non-tax"): case("N"):  case("n"):
 				 instance = N;
 			     break;   
-			 case("Exempt"): case("exempt"):
+			 case("Exempt"): case("exempt"):  case("E"):
 				 instance = E;
 			     break;     
 		 }	   
