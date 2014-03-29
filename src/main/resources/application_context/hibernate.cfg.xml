@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+                                         "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+ <session-factory name="">
+  <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+  <property name="hibernate.connection.url">jdbc:postgresql://192.168.222.71:5432/para</property>
+  <property name="hibernate.connection.username">keymark</property>
+  <property name="hibernate.connection.password">jbo5883$</property>
+  <!--  SQL Dialect -->
+  <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+  <!-- Enable Hibernate's Current Session Context -->
+  <property name="current_session_context_class">thread</property>
+  <!-- Disable Second Level Cache -->
+  <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
+  <!-- Drop and recreate the Schema on startup -->
+  <property name="hbm2ddl.auto">create</property>
+  <!-- Echo all executed SQL to stdout -->
+  <property name="show_sql">true</property>
+  </session-factory>
+</hibernate-configuration>
