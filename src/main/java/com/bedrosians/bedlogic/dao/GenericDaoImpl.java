@@ -47,6 +47,14 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
 	public T findById(final PK id) {
 	return (T)currentSession().get(type, id);
 	}
+	
+	//This method only gets a proxy of the item, without hitting the database
+	@Override
+	@SuppressWarnings("unchecked")
+	public T loadById(final PK id) {
+	return (T)currentSession().load(type, id);
+	}
+		
 			
 	public List<T> findAll(){
 		return currentSession().createCriteria(type).list();

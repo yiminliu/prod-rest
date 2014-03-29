@@ -11,6 +11,7 @@ import com.bedrosians.bedlogic.domain.item.Item;
 public interface ItemDao extends GenericDao<Item, String>{
   
   public Item getItemById(String itemId);
+  public Item loadItemById(String itemId);
   public List<Item> getItemsByQueryParameters(MultivaluedMap<String, String> queryParams);
   public void updateItem(Item item);
   public String createItem(Item item);
