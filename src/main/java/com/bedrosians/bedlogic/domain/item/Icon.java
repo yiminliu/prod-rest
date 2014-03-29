@@ -20,7 +20,9 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 @Entity
 @Table(name = "ims_icon", schema = "public")
 public class Icon implements java.io.Serializable {
-
+  
+	private static final long serialVersionUID = -1113582221787L;
+	
 	private Long iconId;
 	private Item item;
 	private String originCountry;
@@ -380,6 +382,4 @@ public class Icon implements java.io.Serializable {
 		return true;
 	}
 	
-	
-
 }

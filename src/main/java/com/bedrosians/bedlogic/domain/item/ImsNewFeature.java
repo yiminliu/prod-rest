@@ -20,8 +20,6 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
@@ -30,12 +28,12 @@ import com.bedrosians.bedlogic.domain.item.enums.DesignLook;
 import com.bedrosians.bedlogic.domain.item.enums.DesignStyle;
 import com.bedrosians.bedlogic.domain.item.enums.Edge;
 import com.bedrosians.bedlogic.domain.item.enums.Grade;
-import com.bedrosians.bedlogic.domain.item.enums.Icon;
 import com.bedrosians.bedlogic.domain.item.enums.MpsCode;
 import com.bedrosians.bedlogic.domain.item.enums.Status;
 import com.bedrosians.bedlogic.domain.item.enums.SurfaceApplication;
 import com.bedrosians.bedlogic.domain.item.enums.SurfaceFinish;
 import com.bedrosians.bedlogic.domain.item.enums.SurfaceType;
+import com.bedrosians.bedlogic.util.ImsResultUtil;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 
@@ -43,7 +41,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @Entity
 @Table(name = "ims_new_feature", schema = "public")
 public class ImsNewFeature implements java.io.Serializable {
-
+   
+	private static final long serialVersionUID = -11135822658657L;
+	
 	private String itemcd;
 	private Item item;
 	private Grade grade;
@@ -53,12 +53,12 @@ public class ImsNewFeature implements java.io.Serializable {
 	private DesignStyle designStyle;
 	private Body body;
 	private Edge edge;
-	private Icon icon;
 	private SurfaceApplication surfaceApplication;
 	private SurfaceType surfaceType;
 	private SurfaceFinish surfaceFinish;
-	private Integer warranty;
-	private String recommendedGroutJoint;
+	private Float warranty;
+	private String  recommendedGroutJointMin;
+	private String  recommendedGroutJointMax;
 	private Date createdDate;
 	private Date launchedDate;
 	private Date lastModifiedDate;
@@ -102,8 +102,7 @@ public class ImsNewFeature implements java.io.Serializable {
 	@Column(name="mps_code")
 	@Enumerated(EnumType.STRING)
 	public MpsCode getMpsCode() {
-		//return (mpsCode != null? mpsCode : ImsResultUtil.convertInactivecdToMpsCode(item.getInactivecd()));
-		return mpsCode;
+		return (mpsCode != null? mpsCode : ImsResultUtil.convertInactivecdToMpsCode(item.getInactivecd()));
 	}
 
 	public void setMpsCode(MpsCode mpsCode) {
@@ -119,17 +118,7 @@ public class ImsNewFeature implements java.io.Serializable {
 	public void setBody(Body body) {
 		this.body = body;
 	}
-
-	@Column(name = "icon")
-	@Enumerated(EnumType.STRING)
-	public Icon getIcon() {
-		return this.icon;
-	}
-
-	public void setIcon(Icon icon) {
-		this.icon = icon;
-	}
-
+	
 	@Column(name = "grade")
 	@Enumerated(EnumType.STRING)
 	public Grade getGrade() {
@@ -200,26 +189,35 @@ public class ImsNewFeature implements java.io.Serializable {
 		this.surfaceFinish = surfaceFinish;
 	}
 	
-    @Column(name="recommended_grout_joint")
-	public String getRecommendedGroutJoint() {
-		return recommendedGroutJoint;
+    @Column(name="recommended_grout_joint_min")
+	public String  getRecommendedGroutJointMin() {
+		return recommendedGroutJointMin;
 	}
 
-	public void setRecommendedGroutJoint(String recommendedGroutJoint) {
-		this.recommendedGroutJoint = recommendedGroutJoint;
+	public void setRecommendedGroutJointMin(String  recommendedGroutJointMin) {
+		this.recommendedGroutJointMin = recommendedGroutJointMin;
+	}
+	
+	 @Column(name="recommended_grout_joint_max")
+	 public String  getRecommendedGroutJointMax() {
+		return recommendedGroutJointMax;
+	 }
+
+	 public void setRecommendedGroutJointMax(String recommendedGroutJointMax) {
+		this.recommendedGroutJointMax = recommendedGroutJointMax;
 	}
     
 	@Column(name="warranty")
-	public Integer getWarranty() {
+	public Float getWarranty() {
 		return warranty;
 	}
 
-	public void setWarranty(Integer warranty) {
+	public void setWarranty(Float warranty) {
 		this.warranty = warranty;
 	}
 	
 	@Temporal(TemporalType.DATE)
-	@Column(name = "created_date", length = 13)
+	@Column(name = "created_date", updatable=false)
 	public Date getCreatedDate() {
 		return this.createdDate;
 	}
@@ -239,8 +237,7 @@ public class ImsNewFeature implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "last_modified_date", updatable=false, insertable=false)
-	@Generated(GenerationTime.ALWAYS)
+	@Column(name = "last_modified_date", updatable=false)
 	public Date getLastModifiedDate() {
 		return this.lastModifiedDate;
 	}
@@ -249,16 +246,18 @@ public class ImsNewFeature implements java.io.Serializable {
 		this.lastModifiedDate = lastModifiedDate;
 	}
 
+	@JsonIgnore
 	@Transient
 	public boolean isEmpty(){
 		return (grade == null && status == null && mpsCode == null && designLook == null && designStyle == null && body == null && 
-				edge == null && icon == null && surfaceApplication == null && surfaceType == null && surfaceFinish == null);
+				edge == null && surfaceApplication == null && surfaceType == null && surfaceFinish == null);
 		
 	}
 	
+	@JsonIgnore
 	@Transient
-	static public List<String> allFields(){
-		return Arrays.asList("grade", "status", "mpsCode", "designLook", "designStyle", "body", "edge", "icon", "surfaceApplication", 
+	static public List<String> allProperties(){
+		return Arrays.asList("grade", "status", "mpsCode", "designLook", "designStyle", "body", "edge", "surfaceApplication", 
 				               "surfaceType" , "surfaceFinish", "recommendedGroutJoint", "createdDate", "launchedDate", "lastModifiedDate");
 	}
 	
@@ -294,7 +293,7 @@ public class ImsNewFeature implements java.io.Serializable {
 				+ ", imsEdge=" + edge
 				+ ", mpsCode =" + mpsCode
 				+ ", body=" + body 
-				+ ", imsIcon=" + icon
+				//+ ", imsIcon=" + icon
 				+ ", grade=" + grade 
 				+ ", status=" + status
 				+ ", imsSurfaceApplication=" + surfaceApplication

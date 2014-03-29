@@ -2,10 +2,12 @@ package com.bedrosians.bedlogic.domain.item;
 
 import java.math.BigDecimal;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -17,7 +19,8 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 @Table(name="ims_vendor")
 public class Vendor implements java.io.Serializable {
 
-	private long vendorId;
+	private static final long serialVersionUID = -582265865921787L;
+	
 	private String vendorName;
 	private String vendorName2;
 	private String vendorXrefId;
@@ -27,50 +30,43 @@ public class Vendor implements java.io.Serializable {
 	private String vendorFob;
 	private Float vendorDiscountPct;
 	private Integer vendorPriceRoundAccuracy;
-	private Float vendorMarkupPct = 0.0F;
+	private Float vendorMarkupPct = 0F;
 	private BigDecimal vendorFreightRateCwt;
 	private Integer leadTime;
 	private Float dutyPct;
-	private String itemcd;
 	private Item item;
 
-	
+	ItemVendorId itemVendorId = new ItemVendorId();
+		
 	public Vendor() {
 	}
-
-	public Vendor(long vendorId) {
-		this.vendorId = vendorId;
-	}
-
-
-	@Id
-	@Column(name="vendor_id")
-	public long getVendorId() {
-		return this.vendorId;
-	}
-
-	public void setVendorId(long vendorId) {
-		this.vendorId = vendorId;
+	
+	public Vendor(ItemVendorId itemVendorId) {
+		this.itemVendorId = itemVendorId;
 	}
 	
+	
+	@EmbeddedId
+	@AttributeOverrides({
+		@AttributeOverride(name = "itemcd", column = @Column(name = "itemcd", nullable = false, length = 20)),
+		@AttributeOverride(name = "vendorId", column = @Column(name = "vendor_id", nullable = false, precision = 10, scale = 0)) })
+    public ItemVendorId getItemVendorId() {
+		return this.itemVendorId;
+	}
+
+	public void setItemVendorId(ItemVendorId itemVendorId) {
+		this.itemVendorId = itemVendorId;
+	}
+
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name="itemcd")
+	@JoinColumn(name="itemcd", updatable=false, insertable=false)
 	public Item getItem(){
 		return this.item;
 	}
 	
 	public void setItem(Item item){
 		this.item = item;
-	}
-	
-	@Column(name = "itemcd", length = 15, insertable = false, updatable = false)
-	public String getItemcd() {
-		return itemcd;
-	}
-
-	public void setItemcd(String itemcd) {
-		this.itemcd = itemcd;
 	}
 	
 	@Column(name = "vendor_name", length = 60)
@@ -190,10 +186,37 @@ public class Vendor implements java.io.Serializable {
 		this.dutyPct = dutyPct;
 	}
 
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((itemVendorId == null) ? 0 : itemVendorId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Vendor other = (Vendor) obj;
+		if (itemVendorId == null) {
+			if (other.itemVendorId != null)
+				return false;
+		} else if (!itemVendorId.equals(other.itemVendorId))
+			return false;
+		return true;
+	}
+
 	@Override
 	public String toString() {
 		return "Vendor ["
-				+ "vendorId=" + vendorId 
+				+ "vendorId=" + itemVendorId.getVendorId() 
 				+ ", vendorName=" + vendorName
 				+ ", vendorName2=" + vendorName2 
 				+ ", vendorXrefId=" + vendorXrefId 
