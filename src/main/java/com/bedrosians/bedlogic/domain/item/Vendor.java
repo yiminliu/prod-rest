@@ -32,6 +32,7 @@ public class Vendor implements java.io.Serializable {
 	private Integer vendorPriceRoundAccuracy;
 	private Float vendorMarkupPct = 0F;
 	private BigDecimal vendorFreightRateCwt;
+	private BigDecimal vendorlandedbasecost = BigDecimal.valueOf(0.00);
 	private Integer leadTime;
 	private Float dutyPct;
 	private Item item;
@@ -168,6 +169,14 @@ public class Vendor implements java.io.Serializable {
 		this.leadTime = leadTime;
 	}
 
+	@Column(name = "vendorlandedbasecost", precision = 13, scale = 6)
+	public BigDecimal getVendorlandedbasecost() {
+		return this.vendorlandedbasecost;
+	}
+
+	public void setVendorlandedbasecost(BigDecimal vendorlandedbasecost) {
+		this.vendorlandedbasecost = vendorlandedbasecost;
+	}
 	@Column(name = "vendor_freight_rate_cwt", precision = 9, scale = 4)
 	public BigDecimal getVendorFreightRateCwt() {
 		return this.vendorFreightRateCwt;

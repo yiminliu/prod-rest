@@ -345,8 +345,29 @@ public class ImsQueryUtil {
     	   case "priorlistprice":
     		   item.setPriorlistprice(new BigDecimal(value));
     		   break;	   
-    		   
-   			
+    	   case "priorvendorpriceunit": case "priorVendorPriceUnit":
+    		   item.setPriorvendorpriceunit(value);
+    	   case "priorvendorfob": case "priorVendorFob":
+    		   item.setPriorvendorfob(value);	   
+    	   case "priorvendorlistprice": case "priorVendorListPrice":
+    		   item.setPriorvendorlistprice(new BigDecimal(value));
+    		   break;
+    	   case "priorvendornetprice": case "priorVendorNetPrice":
+    		   item.setPriorvendornetprice(new BigDecimal(value));
+    		   break;
+    	   case "priorvendorfreightratecwt": case "priorVendorFreightRateCwt":
+    		   item.setPriorvendorfreightratecwt(new BigDecimal(value));
+    		   break;
+    	   case "priorvendordiscpct1": case "priorVendorDiscPct1":
+    		   item.setPriorvendordiscpct1(Float.parseFloat(value));
+    		   break;
+    	   case "priorvendormarkuppct": case "priorVendorMarkupPct":
+    		   item.setPriorvendormarkuppct(Float.parseFloat(value));
+    		   break;
+    	   case "priorvendorroundaccuracy": case "priorVendorRoundAccuracy":
+    		   item.setPriorvendorroundaccuracy(Integer.parseInt(value));
+    		   break;
+    	    			
     		/*---------- Vendor ----------*/	
     	   case "vendorId": case "vendornbr1":
     		   item.setVendorId(Integer.parseInt(value));
@@ -440,6 +461,9 @@ public class ImsQueryUtil {
     	   case "v2_vendordiscpct": case "v2_vendordiscpct1": case "v2_vendorDiscPct":
     		   item.getVendors().get(1).setVendorDiscountPct(Float.parseFloat(value));
     		   break;	  
+    	   case "v2_vendorlandedbasecost": case "v_vendorLandedBaseCost":
+    		   item.getVendors().get(1).setv.setVendorlandedbasecost(new BigDecimal(value));
+        	   break;	   
     	   case "v2_vendorfreightratecwt": case "v2_vendorFreightRateCwt":
     		   item.getVendors().get(1).setVendorFreightRateCwt(new BigDecimal(value));
     		   break;
