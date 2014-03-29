@@ -68,6 +68,7 @@ public class ImsResultUtil {
 	}
 	
 	public static String getStandardSellUnit(Item item) {
+		
 		String standardUnit = item.getBaseunit();
 		
         if (item.getUnit1isstdsell() != null && item.getUnit1isstdsell() == 'Y')
@@ -82,7 +83,8 @@ public class ImsResultUtil {
         return standardUnit;
     }
 	
-	public static String getStandardOrderUnit(Item item) {
+	public static String getStandardPurchaseUnit(Item item) {
+		
 		String standardUnit = item.getBaseunit();
 		
         if (item.getUnit1isstdsell() != null && item.getUnit1isstdord() == 'Y')
@@ -98,17 +100,17 @@ public class ImsResultUtil {
     }
 	
 	
-	public static float getBaseToSellRatio(Item item)
+	public static float getUnitSellRatio(Item item)
     {
 		float baseToSellRatio = 1f;
  
-        if(item.getUnit1isstdsell() != null && "Y".equalsIgnoreCase(item.getUnit1isstdsell().toString().trim()));
+        if(item.getUnit1isstdsell() != null && "Y".equalsIgnoreCase(item.getUnit1isstdsell().toString().trim()))
             baseToSellRatio = item.getUnit1ratio();
-        if(item.getUnit2isstdsell() != null && "Y".equalsIgnoreCase(item.getUnit2isstdsell().toString().trim()));
+        else if(item.getUnit2isstdsell() != null && "Y".equalsIgnoreCase(item.getUnit2isstdsell().toString().trim()))
             baseToSellRatio = item.getUnit2ratio();
-        if(item.getUnit3isstdsell() != null && "Y".equalsIgnoreCase(item.getUnit3isstdsell().toString().trim()));
+        else if(item.getUnit3isstdsell() != null && "Y".equalsIgnoreCase(item.getUnit3isstdsell().toString().trim()))
             baseToSellRatio = item.getUnit3ratio();
-        if(item.getUnit4isstdsell() != null && "Y".equalsIgnoreCase(item.getUnit4isstdsell().toString().trim()));
+        else if(item.getUnit4isstdsell() != null && "Y".equalsIgnoreCase(item.getUnit4isstdsell().toString().trim()));
             baseToSellRatio = item.getUnit4ratio();
        
          if(baseToSellRatio == 0)
@@ -117,6 +119,54 @@ public class ImsResultUtil {
         return baseToSellRatio;
     }
 	
+	public static String getPackUnit(Item item)
+    {
+		String packUnit = item.getBaseunit();
+ 
+        if(item.getUnit1ispackunit() != null && "Y".equalsIgnoreCase(item.getUnit1ispackunit().toString().trim()))
+           packUnit = item.getUnit1unit();
+        else if(item.getUnit2ispackunit() != null && "Y".equalsIgnoreCase(item.getUnit2ispackunit().toString().trim()))
+           packUnit = item.getUnit2unit();   
+        else if(item.getUnit3ispackunit() != null && "Y".equalsIgnoreCase(item.getUnit3ispackunit().toString().trim()))
+           packUnit = item.getUnit3unit();   
+        else if(item.getUnit4ispackunit() != null && "Y".equalsIgnoreCase(item.getUnit4ispackunit().toString().trim()))
+           packUnit = item.getUnit4unit();    
+       
+        return packUnit;
+    }
+	
+
+	/*
+	$Ims_SellRatio = 1;
+	$Ims_SellUnit  = $Ims_BaseUnit;
+	$Ims_SellIsFractQty = $Ims_BaseIsFractQty;
+
+	$Ims_PackRatio = 1;
+	$Ims_PackUnit  = $Ims_BaseUnit;
+	$Ims_PackIsFractQty = $Ims_BaseIsFractQty;
+
+	$Ims_VPrcRatio = 1;
+	$Ims_VPrcUnit  = $Ims_BaseUnit;
+	$Ims_VPrcIsFractQty = $Ims_BaseIsFractQty;
+
+	for ($ii=0; $ii<5; $ii++)
+	{if ($Ims_IsStdOrd[$ii] == 'Y')
+	  {$Ims_PackRatio = $Ims_Ratio[$ii];
+	   $Ims_PackUnit  = $Ims_Unit[$ii];
+	   $Ims_PackIsFractQty = $Ims_IsFractQty[$ii];
+	  }
+	 if ($Ims_IsStdSell[$ii] == 'Y')
+	  {$Ims_SellRatio = $Ims_Ratio[$ii];
+	   $Ims_SellUnit  = $Ims_Unit[$ii];
+	   $Ims_SellIsFractQty = $Ims_IsFractQty[$ii];
+	  }
+	 if ($Ims_VendorPriceUnit == $Ims_Unit[$ii])
+	  {$Ims_VPrcRatio = $Ims_Ratio[$ii];
+	   $Ims_VPrcUnit  = $Ims_VendorPriceUnit;
+	   $Ims_VPrcIsFractQty = $Ims_IsFractQty[$ii];
+	  }
+	}
+    */
 	
 	
 	/*

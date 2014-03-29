@@ -12,28 +12,41 @@ import java.util.Map.Entry;
 import javax.ws.rs.core.MultivaluedMap;
 
 import com.bedrosians.bedlogic.domain.item.Item;
+import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 
 
 public class ImsValidation {
 
-	public void validateNewItem(Item item){
+	public static void validateQueryParams( MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException{
+		validateForNullParams(queryParams);	
+	}
+	
+	public static void validateInsertParams( MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException{
+		validateForNullParams(queryParams);		
+	}
+		
+	public static void validateNewItem(Item item) throws BedDAOBadParamException{
 		if(item.getItemcd() == null || item.getItemcd().length() < 1)
-		   throw new IllegalArgumentException("Item code cannot be null.");
-		if(item.getBaseunit() == null || item.getBaseunit().length() < 1)
-		   throw new IllegalArgumentException("BaseUnit cannot be null.");
+		   throw new BedDAOBadParamException("Item code cannot be empty.");
+		//validateNewItemUnit(item);
+	}
+	
+	private static void validateForNullParams( MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException{
+		if(queryParams == null || queryParams.isEmpty())
+		   throw new BedDAOBadParamException("Please enter valid query parameters!");	
 	}
 	
 	//Validate the new item against the ims CHECK constraints
-	public void validateNewItemUnit(Item item){
+	public static void validateNewItemUnit(Item item) throws BedDAOBadParamException{
 		
 		if(item.getBaseunit() == null || item.getBaseunit().length() < 1)
-		   throw new IllegalArgumentException("BaseUnit cannot be null.");
+		   throw new BedDAOBadParamException("BaseUnit cannot be null.");
 		//ims Check1-4
 		if(((item.getUnit1unit() == null || item.getUnit1unit().trim().length() == 0) && item.getUnit1ratio() > 0) || ((item.getUnit1unit() != null && item.getUnit1unit().trim().length() > 0) && (item.getUnit1ratio() == null || item.getUnit1ratio() <= 0)) ||
 	       ((item.getUnit2unit() == null || item.getUnit2unit().trim().length() == 0) && item.getUnit2ratio() > 0) || ((item.getUnit2unit() != null && item.getUnit2unit().trim().length() > 0) && (item.getUnit2ratio() == null || item.getUnit2ratio() <= 0)) ||
 	  	   ((item.getUnit3unit() == null || item.getUnit3unit().trim().length() == 0) && item.getUnit3ratio() > 0) || ((item.getUnit3unit() != null && item.getUnit3unit().trim().length() > 0) && (item.getUnit3ratio() == null || item.getUnit3ratio() <= 0)) ||
 		   ((item.getUnit4unit() == null || item.getUnit4unit().trim().length() == 0) && item.getUnit4ratio() > 0) || ((item.getUnit4unit() != null && item.getUnit4unit().trim().length() > 0) && (item.getUnit4ratio() == null || item.getUnit4ratio() <= 0)))
-		    throw new IllegalArgumentException("Unit or unit ratio is wrong.");
+		    throw new BedDAOBadParamException("Unit or unit ratio is wrong.");
 		//ims Check 5
          if ((item.getVendorpriceunit() == null) ||
         	 (item.getVendorpriceunit().length() < 4 || 
@@ -75,7 +88,7 @@ public class ImsValidation {
 		
 	}
 	
-	private boolean checkIllegalValue(String originalString){
+	private static boolean checkIllegalValue(String originalString){
 		String[] illegalValues = new String[]{"EA", "EACH", "PC", "LF", "SF", "CT", "CTM", "CTNH", "PK"};
 		for(String s : illegalValues){
 			if(originalString.equalsIgnoreCase(s))
