@@ -7,25 +7,26 @@ import javax.ws.rs.core.MultivaluedMap;
 import org.springframework.stereotype.Service;
 
 import com.bedrosians.bedlogic.domain.item.Item;
+import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
+import com.bedrosians.bedlogic.exception.BedDAOException;
+import com.bedrosians.bedlogic.exception.BedResException;
 
 
 @Service
 public interface ProductService {
 	
-    //public List<Item> getProducts();
-	
-	public Item getProductById(String id);
+	public Item getProductById(String id) throws BedDAOBadParamException, BedDAOException;
 		
-	public List<Item> getByQueryParameters(MultivaluedMap<String, String> queryParams);
+	public List<Item> getProductsByQueryParameters(MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException, BedDAOException, BedResException;
 	
-	public String createProduct(Item item);
+	public String createProduct(Item item)throws BedDAOBadParamException, BedDAOException, BedResException;
 	
-	public String createProduct(MultivaluedMap<String, String> queryParams);
+	public String createProduct(MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException, BedDAOException, BedResException;
 	
-	public void updateProduct(Item item);
+	public void updateProduct(Item item) throws BedDAOBadParamException, BedDAOException, BedResException;
 	
-	public void updateProduct(String itemId, Item item);
+	public void updateProduct(String itemId, Item item) throws BedDAOBadParamException, BedDAOException, BedResException;
 	
-	public void updateProduct(MultivaluedMap<String, String> queryParams);
+	public void updateProduct(MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException, BedDAOException, BedResException;
 
 }
