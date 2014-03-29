@@ -208,6 +208,10 @@ public class ProductsResource
            	response = BedDAOExceptionMapper.MapToResponse(e);
         
         }
+        catch (BedDAOException e)
+        {
+            response = BedDAOExceptionMapper.MapToResponse(e);
+        }
         catch (BedResException e)
         {
             response = BedResExceptionMapper.MapToResponse(e);
