@@ -121,27 +121,54 @@ public class ProductServiceImpl implements ProductService {
 		   item.initVendors(ImsQueryUtil.determineNumberOfVendors(queryParams));
 		}
 		if(ImsQueryUtil.containsAnyKey(queryParams, Icon.allPropertis()))
+			   item.addIcon(new Icon());	
+		/*	
+		if(ImsQueryUtil.containsKey(queryParams, "poNote")) {
+			   Note poNote = new PoNote();
+			   poNote.setCreatedDate(new Date());
+			   item.addPoNote(poNote);
+		}  
+			
+		if(ImsQueryUtil.containsKey(queryParams, "buyerNote")) {
+			   Note buyerNote = new BuyerNote();
+			   buyerNote.setCreatedDate(new Date());
+			   item.addBuyerNote(buyerNote);
+		}
+		if(ImsQueryUtil.containsKey(queryParams, "invoiceNote")) {
+			   Note invoiceNote = new InvoiceNote();
+			   invoiceNote.setCreatedDate(new Date());
+			   item.addInvoiceNote(invoiceNote);
+		}
+		if(ImsQueryUtil.containsKey(queryParams, "internalNote")) {
+			Note internalNote = new InternalNote();
+		    internalNote.setCreatedDate(new Date());
+	  	    item.addInternalNote(internalNote);
+		}
+		*/
+		if(ImsQueryUtil.containsAnyKey(queryParams, Icon.allPropertis()))
 		   item.addIcon(new Icon());	
-/*		if(ImsQueryUtil.containsKey(queryParams, "poNote")) {
-		   Note poNote = new Note("po_note");
+	
+		if(ImsQueryUtil.containsKey(queryParams, "poNote")) {
+		   Note poNote = new Note("po");
 		   poNote.setCreatedDate(new Date());
-		   item.addPoNote(poNote);
+		   item.addNote(poNote);
 		}  
 		if(ImsQueryUtil.containsKey(queryParams, "buyerNote")) {
-		   Note buyerNote = new Note("buyer_note");
+		   Note buyerNote = new Note("buyer");
 		   buyerNote.setCreatedDate(new Date());
-		   item.addBuyerNote(buyerNote);
+		   item.addNote(buyerNote);
 	    }
 		if(ImsQueryUtil.containsKey(queryParams, "invoiceNote")) {
-		   Note invoiceNote = new Note("invoice_note");
+		   Note invoiceNote = new Note("invoice");
 		   invoiceNote.setCreatedDate(new Date());
-		   item.addInvoiceNote(invoiceNote);
+		   item.addNote(invoiceNote);
 	    }
 		if(ImsQueryUtil.containsKey(queryParams, "internalNote")) {
-		   Icon icon = new Icon();
-    	   item.addIcon(icon);
+			Note internalNote = new Note("internal");
+			   internalNote.setCreatedDate(new Date());
+			   item.addNote(internalNote);
 		}
-	*/						
+							
 		try{
 		    item = ImsQueryUtil.buildItemForInsert(item, queryParams);
 		}
