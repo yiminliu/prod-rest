@@ -26,14 +26,28 @@ public class ImsValidation {
 	}
 		
 	public static void validateNewItem(Item item) throws BedDAOBadParamException{
-		if(item.getItemcd() == null || item.getItemcd().length() < 1)
+		if(item.getItemCode() == null || item.getItemCode().length() < 1)
 		   throw new BedDAOBadParamException("Item code cannot be empty.");
+		validateFieldLength(item);
 		//validateNewItemUnit(item);
 	}
 	
 	private static void validateForNullParams( MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException{
 		if(queryParams == null || queryParams.isEmpty())
 		   throw new BedDAOBadParamException("Please enter valid query parameters!");	
+	}
+	
+	public static void validateFieldLength(Item item) throws BedDAOBadParamException{
+		if(item.getLottype() != null && item.getLottype().length() > 1)
+		   throw new BedDAOBadParamException("Lottype should be one charactor.");
+		if(item.getItemtypecd() != null && item.getItemtypecd().length() > 1)
+		   throw new BedDAOBadParamException("Itemtypecd should be one charactor.");
+		if(item.getPricegroup() != null && item.getPricegroup().length() > 2)
+		   throw new BedDAOBadParamException("Pricegroup length should be two charactors or less.");
+		if(item.getItemgroupnbr() != null && item.getItemgroupnbr() > 99)
+			   throw new BedDAOBadParamException("Itemgroupnbr length should be two digits or less.");
+		
+		
 	}
 	
 	//Validate the new item against the ims CHECK constraints

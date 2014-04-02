@@ -1,7 +1,20 @@
 package com.bedrosians.bedlogic.util;
 
+import javax.persistence.Column;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
+
+import com.bedrosians.bedlogic.domain.item.Icon;
 import com.bedrosians.bedlogic.domain.item.Item;
 import com.bedrosians.bedlogic.domain.item.enums.MpsCode;
+import com.bedrosians.bedlogic.domain.item.enums.Origin;
 
 
 public class ImsResultUtil {
@@ -26,6 +39,70 @@ public class ImsResultUtil {
 	    	   break;
 	    }	
 		return mpsCode;
+	}
+	
+	public static Icon parseIcons(String icons){
+		 /*!
+		* Stored as 20 character string
+		*
+		* 0 - Made in Italy
+		* 1 - Outdoor
+		* 2 - Made in USA
+		* 3 - ADA
+		* 4 - Thru Color
+		* 5 - Inkjet
+		* 6 - Recycled
+		* 7 - Color Body
+		* 8 - Glazed
+		* 9 - Rectified
+		* 10 - Unglazed
+		* 11 - Post Recycled
+		* 12 - Pre Recycled
+		* 13 - Made in China
+		* 14 - Made in Turkey
+		* 15 - Made in Mexico
+		* 16 - Coefficient of Friction
+		* 17 - Chiseled Edge
+		* 18 - Unused
+		* 19 - Unused
+		*
+		*/
+		
+		if(icons == null || icons.length() == 0)
+			return null;
+		
+		Icon icon = new Icon();
+		
+		String country = null;
+				
+		if (icons.length() > 0 && icons.charAt(0) == 'Y' )
+		    country = Origin.Italy.getDescription();
+		else if (icons.length() > 3 && icons.charAt(3) == 'Y' )
+		    country = Origin.USA.getDescription();
+		else if (icons.length() > 13 && icons.charAt(13) == 'Y' )
+			country = Origin.China.getDescription();
+		else if (icons.length() > 14 && icons.charAt(14) == 'Y' )
+		    country = Origin.Turkey.getDescription();
+		else if (icons.length() > 15 && icons.charAt(15) == 'Y' )
+		    country = Origin.Mexico.getDescription();
+		
+		icon.setOriginCountry(country);
+		
+        icon.setExteriorProduct(icons.length() < 2? false : icons.charAt(1) == 'Y');
+        icon.setAdaAccessibility(icons.length() < 4? false : icons.charAt(3) == 'Y');
+        icon.setThroughColor(icons.length() < 5? false : icons.charAt(4) == 'Y');
+        icon.setInkJet(icons.length() < 6? false : icons.charAt(5) == 'Y');
+        icon.setRecycled(icons.length() < 7? false : icons.charAt(6) == 'Y');
+        icon.setColorBody(icons.length() < 8? false : icons.charAt(7) == 'Y');
+        icon.setGlazed(icons.length() < 9? false : icons.charAt(8) == 'Y');
+        icon.setRectifiedEdge(icons.length() < 10? false : icons.charAt(9) == 'Y');
+        icon.setUnglazed(icons.length() < 11? false : icons.charAt(10) == 'Y');
+        icon.setPostRecycled(icons.length() < 12? false : icons.charAt(11) == 'Y');
+        icon.setPreRecycled(icons.length() < 13? false : icons.charAt(12) == 'Y');
+        icon.setCoefficientOfFriction(icons.length() < 17? false : icons.charAt(16) == 'Y');
+        icon.setChiseledEdge(icons.length() < 18? false : icons.charAt(17) == 'Y');		
+        
+        return icon;
 	}
 	
 	/*
@@ -72,13 +149,13 @@ public class ImsResultUtil {
 		String standardUnit = item.getBaseunit();
 		
         if (item.getUnit1isstdsell() != null && item.getUnit1isstdsell() == 'Y')
-        	standardUnit = item.getUnit1unit().trim();
-        else  if (item.getUnit2isstdsell() != null && item.getUnit2isstdsell() == 'Y')
-        	standardUnit = item.getUnit2unit().trim();
-        else  if (item.getUnit3isstdsell() != null && item.getUnit3isstdsell() == 'Y')
-        	standardUnit = item.getUnit3unit().trim();
-        else  if (item.getUnit4isstdsell() != null && item.getUnit4isstdsell() == 'Y')
-        	standardUnit = item.getUnit4unit().trim();
+        	standardUnit = item.getUnit1unit();
+        else if (item.getUnit2isstdsell() != null && item.getUnit2isstdsell() == 'Y')
+        	standardUnit = item.getUnit2unit();
+        else if (item.getUnit3isstdsell() != null && item.getUnit3isstdsell() == 'Y')
+        	standardUnit = item.getUnit3unit();
+        else if (item.getUnit4isstdsell() != null && item.getUnit4isstdsell() == 'Y')
+        	standardUnit = item.getUnit4unit();
        
         return standardUnit;
     }
@@ -88,13 +165,13 @@ public class ImsResultUtil {
 		String standardUnit = item.getBaseunit();
 		
         if (item.getUnit1isstdsell() != null && item.getUnit1isstdord() == 'Y')
-        	standardUnit = item.getUnit1unit().trim();
-        else  if (item.getUnit2isstdsell() != null && item.getUnit2isstdord() == 'Y')
-        	standardUnit = item.getUnit2unit().trim();
-        else  if (item.getUnit3isstdsell() != null && item.getUnit3isstdord() == 'Y')
-        	standardUnit = item.getUnit3unit().trim();
-        else  if (item.getUnit4isstdsell() != null && item.getUnit4isstdord() == 'Y')
-        	standardUnit = item.getUnit4unit().trim();
+        	standardUnit = item.getUnit1unit();
+        else if (item.getUnit2isstdsell() != null && item.getUnit2isstdord() == 'Y')
+        	standardUnit = item.getUnit2unit();
+        else if (item.getUnit3isstdsell() != null && item.getUnit3isstdord() == 'Y')
+        	standardUnit = item.getUnit3unit();
+        else if (item.getUnit4isstdsell() != null && item.getUnit4isstdord() == 'Y')
+        	standardUnit = item.getUnit4unit();
        
         return standardUnit;
     }

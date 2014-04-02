@@ -18,7 +18,7 @@ public class FormatUtil {
 	
     public static Character process(Character data){
 		
-		if (data == null)
+		if (data == null || Character.isSpaceChar(data))
 			return new Character(' ');
 		else {
 			    return Character.toString(data).trim().charAt(0);
@@ -50,7 +50,7 @@ public class FormatUtil {
 		Float newData = Float.valueOf(0);
 		if (data != null)
 			newData = Float.valueOf((String.valueOf(data).trim()));
-	    return newData;
+	    return Math.round(newData * 100)/100.00f;
 	}
 	
 	public static BigDecimal process(BigDecimal data){
@@ -58,9 +58,9 @@ public class FormatUtil {
 		if (data != null)
 			//newData = BigDecimal.valueOf((String.valueOf(data).trim()));
 			newData = data;
-	    return newData;
+	    return newData.setScale(2, BigDecimal.ROUND_HALF_EVEN);
 	}
-		
+	   
 	public static Date process(Date date) {
 					
 		if (date == null) {

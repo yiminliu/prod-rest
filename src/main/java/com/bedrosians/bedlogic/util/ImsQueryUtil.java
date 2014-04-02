@@ -1,10 +1,7 @@
 package com.bedrosians.bedlogic.util;
 
 
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -14,7 +11,8 @@ import java.util.Map.Entry;
 
 import javax.ws.rs.core.MultivaluedMap;
 
-import com.bedrosians.bedlogic.domain.item.ImsNewFeature;
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import com.bedrosians.bedlogic.domain.item.Item;
 import com.bedrosians.bedlogic.domain.item.Vendor;
 import com.bedrosians.bedlogic.domain.item.enums.Status;
@@ -23,29 +21,27 @@ import com.bedrosians.bedlogic.domain.item.enums.DesignLook;
 import com.bedrosians.bedlogic.domain.item.enums.DesignStyle;
 import com.bedrosians.bedlogic.domain.item.enums.TaxClass;
 import com.bedrosians.bedlogic.domain.item.enums.MpsCode;
-import com.bedrosians.bedlogic.domain.item.enums.Icon;
 import com.bedrosians.bedlogic.domain.item.enums.Body;
 import com.bedrosians.bedlogic.domain.item.enums.SurfaceApplication;
 import com.bedrosians.bedlogic.domain.item.enums.SurfaceFinish;
 import com.bedrosians.bedlogic.domain.item.enums.SurfaceType;
 import com.bedrosians.bedlogic.domain.item.enums.Edge;
-import com.bedrosians.bedlogic.domain.item.enums.ShadeVariation;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 
 public class ImsQueryUtil {
 
 	public static String getValue(MultivaluedMap<String, String> queryParams, String searchKey) {
 		
+		
 	    Set<Map.Entry<String, List<String>>> set = queryParams.entrySet();
 		Iterator<Entry<String, List<String>>> it = set.iterator(); 
-		String key, value = null;
+		String key = null;
 		while(it.hasNext()) {
 		   	Entry<String, List<String>> entry = (Entry<String, List<String>>)it.next();
 		   	key = (String)entry.getKey();
 		   	//key = Character.toUpperCase(key.charAt(0)) + key.substring(1); 
 		   	if(key.equalsIgnoreCase(searchKey))
 		   	   return ((List<String>)entry.getValue()).get(0);
-		   	
 		} 
 		return null;
 	}
@@ -86,8 +82,7 @@ public class ImsQueryUtil {
 
 	
 	public static Item buildItemForInsert(Item item, MultivaluedMap<String, String> queryParams){
-		//Item item = new Item();
-		
+			
 	    Set<Map.Entry<String, List<String>>> set = queryParams.entrySet();
 		Iterator<Entry<String, List<String>>> it = set.iterator(); 
 		String key, value = null;
@@ -95,7 +90,6 @@ public class ImsQueryUtil {
 			try{
 		   	   Entry<String, List<String>> entry = (Entry<String, List<String>>)it.next();
 		   	   key = (String)entry.getKey();
-		   	   //key = Character.toUpperCase(key.charAt(0)) + key.substring(1); 
 		   	   value = ((List<String>)entry.getValue()).get(0);
 		   	   setParameter(item, key, value);
 			}
@@ -115,7 +109,7 @@ public class ImsQueryUtil {
 			//item.getVendors().get(0).getItemVendorId().setItemcd(item.getItemcd());
 		for(Vendor vendor : item.getVendors()){
 			if(vendor.getItemVendorId().getitemcd() == null)
-			vendor.getItemVendorId().setItemcd(item.getItemcd());
+			vendor.getItemVendorId().setItemcd(item.getItemCode());
 		}
 		return item;
 	}
@@ -128,7 +122,7 @@ public class ImsQueryUtil {
 		while(it.hasNext()) {
 		   	Entry<String, List<String>> entry = (Entry<String, List<String>>)it.next();
 		   	key = (String)entry.getKey();
-		   	if(key.equalsIgnoreCase("itemcd"))
+		   	if(key.equalsIgnoreCase("itemcd") || key.equalsIgnoreCase("itemcode") || key.equalsIgnoreCase("itemCode"))
 		   	   continue; 
 		   	value = ((List<String>)entry.getValue()).get(0);
 		   	setParameter(item, key, value);
@@ -160,7 +154,7 @@ public class ImsQueryUtil {
 
     	   /*------- basic info ---------*/ 
     	   case "itemcd": case "itemcode": case "itemCode":
-    		   item.setItemcd(value);
+    		   item.setItemCode(value);
     		   itemcd = value;
       		   break;
     	   case "description": case "itemdesc1":
@@ -217,7 +211,7 @@ public class ImsQueryUtil {
     	   case "printlabel": case "printLabel":
     		   item.setPrintlabel(value);
     		   break;	
-    	   case "lottype": case "lotType":
+       	   case "lottype": case "lotType":
     		   item.setLottype(value);
     		   break;	
     	   case "abccd": case "abcCd": case "abccode": case "abcCode":
@@ -250,12 +244,16 @@ public class ImsQueryUtil {
     	   case "dropdate":  case "dropDate":
     		   item.setDropdate(new Date(value));
     		   break;
-    	   
-    		 
+    	   case "updatecd":
+    		   item.setUpdatecd(value);
+    		   break;
+    	   case "cost": case "cost1":
+    		   item.setCost(new BigDecimal(value));
+    		   break;			
     			
     	/*-------- dimension --------*/	   
     	   case "size":
-    		   item = generateSizeQuery(item, value);
+    		   item = generateItemSizeQuery(item, value);
     		   break;	   
     	   case "length":
     		   item.setLength(value);
@@ -329,7 +327,10 @@ public class ImsQueryUtil {
     		   break;	
     	   case "priceroundaccuracy": case "priceRoundAccuracy":
     		   item.setPriceRoundAccuracy(Integer.parseInt(value));
-    		   break;	   
+    		   break;
+    	   case "listpricemarginpct": case "listPriceMarginPct":
+    		   item.setListpricemarginpct(Float.parseFloat(value));
+    		   break;
     	   case "poincludeinvendorcost":
     		   item.setPoincludeinvendorcost(value.charAt(0));
     		   break;
@@ -367,10 +368,10 @@ public class ImsQueryUtil {
     	   case "priorvendorroundaccuracy": case "priorVendorRoundAccuracy":
     		   item.setPriorvendorroundaccuracy(Integer.parseInt(value));
     		   break;
-    	    			
+    	   		
     		/*---------- Vendor ----------*/	
     	   case "vendorId": case "vendornbr1":
-    		   item.setVendorId(Integer.parseInt(value));
+    		   item.setVendornbr1(Integer.parseInt(value));
     		   item.getVendors().get(0).getItemVendorId().setVendorId(Long.parseLong(value));
     		   if(itemcd != null)
     		      item.getVendors().get(0).getItemVendorId().setItemcd(itemcd);
@@ -391,10 +392,6 @@ public class ImsQueryUtil {
     		   item.setVendorlistprice(new BigDecimal(value));
     		   item.getVendors().get(0).setVendorListPrice(new BigDecimal(value));
     		   break;
-    	   case "vendordiscountPct": case "vendorDiscountPct":
-    		   item.setVendordiscpct(Float.parseFloat(value));
-    		   item.getVendors().get(0).setVendorDiscountPct(Float.parseFloat(value));
-    		   break;
     	   case "vendorDutyPct": case "dutypct": case "dutyPct":
     		   item.setDutypct(Float.parseFloat(value));
     		   item.getVendors().get(0).setDutyPct(Float.parseFloat(value));
@@ -411,10 +408,16 @@ public class ImsQueryUtil {
     		   item.setVendormarkuppct(Float.parseFloat(value));
     		   item.getVendors().get(0).setVendorMarkupPct(Float.parseFloat(value));
     		   break;	
-    	   case "vendordiscpct": case "vendordiscpct1": case "vendorDiscPct":
+    	   case "vendordiscpct": case "vendordiscpct1": case "vendorDiscPct": case "vendorDiscountPct":
     		   item.setVendordiscpct(Float.parseFloat(value));
     		   item.getVendors().get(0).setVendorDiscountPct(Float.parseFloat(value));
-    		   break;	 
+    		   break;	
+    	   case "vendordiscpct2": case "vendorDiscPct2": case "vendorDiscountPct2":
+    		   item.setVendordiscpct2(Float.parseFloat(value));
+    		   break;
+    	   case "vendordiscpct3": case "vendorDiscPct3": case "vendorDiscountPct3":
+    		   item.setVendordiscpct3(Float.parseFloat(value));
+    		   break;
     	   case "vendorlandedbasecost": case "vendorLandedBaseCost":
     		   item.setVendorlandedbasecost(new BigDecimal(value));
         	   break;	   
@@ -426,6 +429,19 @@ public class ImsQueryUtil {
     		   item.setVendorroundaccuracy(Integer.parseInt(value));
     		   item.getVendors().get(0).setVendorPriceRoundAccuracy(Integer.parseInt(value));
     		   break; 
+    	   case "vendornbr":
+    		   item.setVendornbr(Integer.parseInt(value));
+    		   break; 
+    	   case "vendornbr2":
+    		   item.setVendornbr2(Integer.parseInt(value));
+    		   break;
+    	   case "vendornbr3":
+    		   item.setVendornbr3(Integer.parseInt(value));
+    		   break;   		   
+    	   case "priorlastupdated":
+    		   item.setPriorlastupdated(new Date(value));
+    		   break;			
+    			
     	   case "v2_vendorId": case "v2_vendornbr1":
     		   item.getVendors().get(1).getItemVendorId().setVendorId(Long.parseLong(value));
     		   if(itemcd != null)
@@ -708,69 +724,75 @@ public class ImsQueryUtil {
     				   
     	   /*----------- test -----------*/	   
     	   case "waterAbsorption":
-    		   item.setWaterAbsorption(Float.parseFloat(value));
+    		   item.getTest().setWaterAbsorption(Float.parseFloat(value));
     		   break;	   
     	   case "scratchResistance":
-    		   item.setScratchResistance(Float.parseFloat(value));
+    		   item.getTest().setScratchResistance(Float.parseFloat(value));
     		   break;
     	   case "frostResistance":
-    		   item.setFrostResistance(value.charAt(0));
+    		   item.getTest().setFrostResistance(value.charAt(0));
     		   break;
     	   case "chemicalResistance":
-    		   item.setChemicalResistance(value.charAt(0));
+    		   item.getTest().setChemicalResistance(value.charAt(0));
     		   break;	   
     	   case "peiAbrasion":
-    		   item.setPeiAbrasion(Float.parseFloat(value));
+    		   item.getTest().setPeiAbrasion(Float.parseFloat(value));
     		   break;	   
     	   case "scofWet":
-    		   item.setScofWet(Float.parseFloat(value));
+    		   item.getTest().setScofWet(Float.parseFloat(value));
     		   break;
     	   case "scofDry":
-    		   item.setScofDry(Float.parseFloat(value));
+    		   item.getTest().setScofDry(Float.parseFloat(value));
     		   break;	   
     	   case "breakingStrengt":
-    		   item.setBreakingStrength(Integer.parseInt(value));
+    		   item.getTest().setBreakingStrength(Integer.parseInt(value));
     		   break;	  
     	   case "restricted": 
-    		   item.setRestricted(value.charAt(0));
+    		   item.getTest().setRestricted(value.charAt(0));
     		   break;
     	   case "warpage": 
-    		   item.setWarpage(value.charAt(0));
+    		   item.getTest().setWarpage(value.charAt(0));
     		   break;
     	   case "wedging": 
-    		   item.setWedging(value.charAt(0));
+    		   item.getTest().setWedging(value.charAt(0));
     		   break;
     	   case "greenfriendly": 
-    		   item.setGreenfriendly(value.charAt(0));
+    		   item.getTest().setGreenfriendly(value.charAt(0));
     		   break;
     	   case "thermalShock": 
-    		   item.setThermalShock(value.charAt(0));
+    		   item.getTest().setThermalShock(value.charAt(0));
     		   break;
     	   case "dcof":
-    		   item.setDcof(Float.parseFloat(value));
+    		   item.getTest().setDcof(Float.parseFloat(value));
     		   break;	   
     	   case "moh":
-    		   item.setMoh(Float.parseFloat(value));
+    		   item.getTest().setMoh(Float.parseFloat(value));
     		   break;	   
     	   case "bondStrength":
-    		   item.setBondStrength(value);
+    		   item.getTest().setBondStrength(value);
     	       break;
     	   case "brStrength":  case "breakingStrength":
-    		   item.setBreakingStrength(Integer.parseInt(value));
+    		   item.getTest().setBreakingStrength(Integer.parseInt(value));
     	       break;	    
     	   case "leadPoint":
-    		   item.setLeadPoint(value);
+    		   item.getTest().setLeadPoint(value);
     	       break;	
-    	       
+    	   case "preConsummer":
+    		   item.getTest().setPreConsummer(Float.parseFloat(value));
+    		   break;
+    	   case "posConsummer":
+    		   item.getTest().setPosConsummer(Float.parseFloat(value));
+    		   break;
+    	   	   	
     	   /*-------- application ------*/	   
     	   case "residential":
-    		   item.setResidential(value);
+    		   item.getApplications().setResidential(value);
     		   break;	
     	   case "commercial":
-    		   item.setCommercial(value);
+    		   item.getApplications().setCommercial(value);
     		   break;
     	   case "lightcommercial": case "lightCommercial":
-    		   item.setCommercial(value);
+    		   item.getApplications().setCommercial(value);
     		   break;
     	   case "application": 
     		   item.setApplication(value);
@@ -830,34 +852,54 @@ public class ImsQueryUtil {
                break;    
 	   	   
     	   /*--------- notes ----------*/
-    	   case "ponotes": 
+    	   case "ponotes": case "poNotes":
     		   item.setPoNotes(value);
-    		//   item.getPoNote().setNote(value);
+    		   //item.getPoNote().setNote(value);
+    		   if(item.getNotes() != null && item.getNotes().get(0) != null)
+    		   item.getNotes().get(0).setNote(value);
     		   break;
            case "note1":
     		   item.setNotes1(value);
-    		//   item.getBuyerNote().setNote(value);
+    		   //item.getBuyerNote().setNote(value);
+    		   if(item.getNotes() != null && item.getNotes().get(1) != null)
+        		   item.getNotes().get(0).setNote(value);
     		   break;
     	   case "note2":
     		   item.setNotes2(value);
-    		//   item.getInvoiceNote().setNote(value);
+    		   //item.getBuyerNote().setNote(value);
+    		   if(item.getNotes() != null && item.getNotes().get(1) != null)
+        		   item.getNotes().get(1).setNote(value);
     		   break;
     	   case "note3":
     		   item.setNotes3(value);
+    		   //item.getInvoiceNote().setNote(value);
+    		   if(item.getNotes() != null && item.getNotes().get(2) != null)
+        		   item.getNotes().get(2).setNote(value);
     		   break;	   
-    	   /*case "ponote": case "poNote":
-    		   item.getPoNote().setNote(value);
+    	   case "ponote": case "poNote":
+    		   //item.getPoNote().setNote(value);
+    		   if(item.getNotes() != null && item.getNotes().get(0) != null)
+        		   item.getNotes().get(0).setNote(value);
+    		   item.setPoNotes(value);
     		   break;
     	   case "buyernote": case "buyerNote":
-    		   item.getBuyerNote().setNote(value);
+    		   //item.getBuyerNote().setNote(value);
+    		   if(item.getNotes() != null && item.getNotes().get(1) != null)
+        		   item.getNotes().get(1).setNote(value);
+    		   item.setNotes1(value);
     		   break;
     	   case "invoicenote": case "invoiceNote":
-    		   item.getPoNote().setNote(value);
+    		   //item.getPoNote().setNote(value);
+    		   if(item.getNotes() != null && item.getNotes().get(2) != null)
+        		   item.getNotes().get(2).setNote(value);
+    		   item.setNotes3(value);
     		   break;	
     	   case "internalnote": case "internalNote":
-    		   item.getInternalNote().setNote(value);
+    		   //item.getInternalNote().setNote(value);
+    		   if(item.getNotes() != null && item.getNotes().get(3) != null)
+        		   item.getNotes().get(3).setNote(value);
     		   break;
-    		 */  
+    		   
     		   
     		 //----- similar items -----//
     	   case "similarItemcd1": case "similaritemcd1":
@@ -883,7 +925,7 @@ public class ImsQueryUtil {
     		   break;
      	   default:
       		   System.out.println("Field: "+ field + " is not supported");
-      	   throw new BedDAOBadParamException("Invalid property name. Please check the property name. Property name is case senstive: " + field);
+      	       throw new BedDAOBadParamException("Invalid property name. Please check the property name. Property name is case senstive: " + field);
       		  
     		   //log it
     	}	
@@ -892,7 +934,7 @@ public class ImsQueryUtil {
     	
     }
     
-    private static Item generateSizeQuery(Item item, String sizes){
+    private static Item generateItemSizeQuery(Item item, String sizes){
     	boolean lengthXwidth = true;
     	String[] sizeArray = sizes.split(",");
     	String length, width;
@@ -914,25 +956,7 @@ public class ImsQueryUtil {
     	return item;
     }
     
-    
-	public static Item buildInsertSqlStatment(MultivaluedMap<String, String> queryParams){
-		Item Item = new Item();
-		
-	    Set<Map.Entry<String, List<String>>> set = queryParams.entrySet();
-		Iterator it = set.iterator();
-		String key, value = null;
-		while(it.hasNext()) {
-		   	Entry<String, List<String>> entry = (Entry<String, List<String>>)it.next();
-		   	key = (String)entry.getKey();
-		   	key = Character.toUpperCase(key.charAt(0)) + key.substring(1); 
-		   	String methodName = "Set"+key+"()";
-		   	
-		   	value = ((List<String>)entry.getValue()).get(0);
-		} 	
-			  	
-		return Item;
-	}
-	
+  
 	public static String generateInsertSqlStatment(String tableName, MultivaluedMap<String, String> queryParams){
 		Item item = new Item();
 		
@@ -966,75 +990,6 @@ public class ImsQueryUtil {
 		return columns.toString();
 	}
 
-	public void validateNewItem(Item item){
-		if(item.getItemcd() == null || item.getItemcd().length() < 1)
-		   throw new IllegalArgumentException("Item code cannot be null.");
-		if(item.getBaseunit() == null || item.getBaseunit().length() < 1)
-		   throw new IllegalArgumentException("BaseUnit cannot be null.");
-		
-		
-	}
-	
-	//Validate the new item against the ims CHECK constraints
-	public void validateNewItemUnit(Item item){
-		
-		if(item.getBaseunit() == null || item.getBaseunit().length() < 1)
-		   throw new IllegalArgumentException("BaseUnit cannot be null.");
-		//ims Check1-4
-		if(((item.getUnit1unit() == null || item.getUnit1unit().trim().length() == 0) && item.getUnit1ratio() > 0) || ((item.getUnit1unit() != null && item.getUnit1unit().trim().length() > 0) && (item.getUnit1ratio() == null || item.getUnit1ratio() <= 0)) ||
-	       ((item.getUnit2unit() == null || item.getUnit2unit().trim().length() == 0) && item.getUnit2ratio() > 0) || ((item.getUnit2unit() != null && item.getUnit2unit().trim().length() > 0) && (item.getUnit2ratio() == null || item.getUnit2ratio() <= 0)) ||
-	  	   ((item.getUnit3unit() == null || item.getUnit3unit().trim().length() == 0) && item.getUnit3ratio() > 0) || ((item.getUnit3unit() != null && item.getUnit3unit().trim().length() > 0) && (item.getUnit3ratio() == null || item.getUnit3ratio() <= 0)) ||
-		   ((item.getUnit4unit() == null || item.getUnit4unit().trim().length() == 0) && item.getUnit4ratio() > 0) || ((item.getUnit4unit() != null && item.getUnit4unit().trim().length() > 0) && (item.getUnit4ratio() == null || item.getUnit4ratio() <= 0)))
-		    throw new IllegalArgumentException("Unit or unit ratio is wrong.");
-		//ims Check 5
-         if ((item.getVendorpriceunit() == null) ||
-        	 (item.getVendorpriceunit().length() < 4 || 
-        	 !item.getVendorpriceunit().equalsIgnoreCase(item.getBaseunit()) || 
-        	 !item.getVendorpriceunit().equalsIgnoreCase(item.getUnit1unit()) ||
-        	 !item.getVendorpriceunit().equalsIgnoreCase(item.getUnit2unit()) ||
-        	 !item.getVendorpriceunit().equalsIgnoreCase(item.getUnit3unit()) ||
-        	 !item.getVendorpriceunit().equalsIgnoreCase(item.getUnit4unit())) ||
-        	 //(item.getVendordiscpct1() == null) ||
-        	 //(item.getVendordiscpct2() == null) ||
-        	 //(item.getVendordiscpct3() == null) ||
-        	 (item.getVendorroundaccuracy() == null) ||
-        	 (item.getVendorroundaccuracy() < 0) ||
-        	 (item.getVendorroundaccuracy() > 4) ||
-        	 
-        	 (item.getVendormarkuppct() == null) ||
-        	 (item.getVendorfreightratecwt() == null) 
-        	 //(item.getVendorlandedbasecost() == null) ||
-        	 //(item.getSellpricemarginpct() == null) ||
-        	 //(item.getSellpricemarginpct().longValue() >= 100) ||
-        	 //(item.getListpricemarginpct() == null) ||
-        	 //(item.getListpricemarginpct().longValue() >= 100) ||
-        	 
-        	 //(item.getSellpriceroundaccuracy() == null) ||
-        	 //(item.getSellpriceroundaccuracy() < 0) ||
-        	// (item.getSellpriceroundaccuracy() .length > 4) ||
-        	 //(item.getSellpricemarginpct() == null) ||
-        	 //(item.getSellpricemarginpct() == null)
-        	 )
-        	 throw new IllegalArgumentException("Unit price related value.");
-		 
-		//ims check 6
-		if (item.getBaseunit() != null && checkIllegalValue(item.getBaseunit()) ||
-	       (item.getUnit1unit() != null && checkIllegalValue(item.getUnit1unit())) ||
-	       (item.getUnit2unit() != null && checkIllegalValue(item.getUnit2unit())) ||
-	       (item.getUnit3unit() != null && checkIllegalValue(item.getUnit3unit())) ||
-	       (item.getUnit4unit() != null && checkIllegalValue(item.getUnit4unit())))
-	    	 throw new IllegalArgumentException("Unit or unit ratio is wrong.");
-		
-	}
-	
-	private boolean checkIllegalValue(String originalString){
-		String[] illegalValues = new String[]{"EA", "EACH", "PC", "LF", "SF", "CT", "CTM", "CTNH", "PK"};
-		for(String s : illegalValues){
-			if(originalString.equalsIgnoreCase(s))
-			   return true;	
-		}
-		return false;
-	}
 	
 	public static Item buildVendorInfo(MultivaluedMap<String, String> queryParams, Item item){
 	
