@@ -3,22 +3,31 @@ package com.bedrosians.bedlogic.domain.item;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 
 @Entity
 @Table(name = "ims_note", schema = "public")
+//@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+//@DiscriminatorColumn(name="note_type", discriminatorType = DiscriminatorType.STRING)
 public class Note implements java.io.Serializable {
 
 	private static final long serialVersionUID = -135822655921787L;
@@ -40,6 +49,7 @@ public class Note implements java.io.Serializable {
 		this.noteId = noteId;
 	}
 	
+	@JsonIgnore
 	@Id
 	@Column(name = "note_id", unique = true, nullable = false, precision = 10, scale = 0)
 	@GeneratedValue(strategy=GenerationType.AUTO, generator="ims_note_id_seq_gen")
@@ -53,8 +63,7 @@ public class Note implements java.io.Serializable {
 	}
 
 	@JsonIgnore
-	//@ManyToOne(fetch = FetchType.EAGER)
-	@OneToOne//(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "itemcd")//, nullable = false)
 	public Item getItem() {
 		return this.item;
@@ -64,6 +73,7 @@ public class Note implements java.io.Serializable {
 		this.item = item;
 	}
 	
+	//@Transient
 	@Column(name="note_type")
 	public String getType() {
 		return type;

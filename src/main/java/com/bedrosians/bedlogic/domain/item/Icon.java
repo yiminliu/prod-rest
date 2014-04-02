@@ -35,12 +35,12 @@ public class Icon implements java.io.Serializable {
 	private Boolean unglazed;
 	private Boolean rectifiedEdge;
 	private Boolean chiseledEdge;
-	private Boolean versaillesPattern;
+	private Boolean versaillesPattern = false;
 	private Boolean recycled;
 	private Boolean postRecycled;
 	private Boolean preRecycled;
-	private Boolean leadPoint;
-	private Boolean greenFriendly;
+	private Boolean leadPoint = false;
+	private Boolean greenFriendly = false;
 	private Boolean coefficientOfFriction;
 
 	public Icon() {
@@ -51,7 +51,7 @@ public class Icon implements java.io.Serializable {
 	}
 
 	
-	
+	@JsonIgnore
 	@Id
 	@Column(name = "icon_id", unique = true, nullable = false)
 	@GeneratedValue(strategy=GenerationType.AUTO, generator="ims_icon_id_seq_gen")

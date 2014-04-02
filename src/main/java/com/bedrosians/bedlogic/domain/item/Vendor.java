@@ -11,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
@@ -47,6 +48,7 @@ public class Vendor implements java.io.Serializable {
 	}
 	
 	
+	@JsonIgnore
 	@EmbeddedId
 	@AttributeOverrides({
 		@AttributeOverride(name = "itemcd", column = @Column(name = "itemcd", nullable = false, length = 20)),
@@ -68,6 +70,11 @@ public class Vendor implements java.io.Serializable {
 	
 	public void setItem(Item item){
 		this.item = item;
+	}
+
+	@Transient
+	public Long getVendorId(){
+		return this.itemVendorId.getVendorId();
 	}
 	
 	@Column(name = "vendor_name", length = 60)
@@ -194,7 +201,6 @@ public class Vendor implements java.io.Serializable {
 	public void setDutyPct(Float dutyPct) {
 		this.dutyPct = dutyPct;
 	}
-
 	
 	@Override
 	public int hashCode() {
