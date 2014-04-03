@@ -56,7 +56,7 @@ public class ImsNewFeature implements java.io.Serializable {
 	private SurfaceApplication surfaceApplication;
 	private SurfaceType surfaceType;
 	private SurfaceFinish surfaceFinish;
-	private Float warranty;
+	private Integer warranty;
 	private String  recommendedGroutJointMin;
 	private String  recommendedGroutJointMax;
 	private Date createdDate;
@@ -208,11 +208,11 @@ public class ImsNewFeature implements java.io.Serializable {
 	}
     
 	@Column(name="warranty")
-	public Float getWarranty() {
+	public Integer getWarranty() {
 		return warranty;
 	}
 
-	public void setWarranty(Float warranty) {
+	public void setWarranty(Integer warranty) {
 		this.warranty = warranty;
 	}
 	
@@ -293,7 +293,6 @@ public class ImsNewFeature implements java.io.Serializable {
 				+ ", imsEdge=" + edge
 				+ ", mpsCode =" + mpsCode
 				+ ", body=" + body 
-				//+ ", imsIcon=" + icon
 				+ ", grade=" + grade 
 				+ ", status=" + status
 				+ ", imsSurfaceApplication=" + surfaceApplication

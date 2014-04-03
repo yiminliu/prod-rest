@@ -5,6 +5,8 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 @Embeddable
 public class ItemVendorId implements Serializable{
 
@@ -19,6 +21,7 @@ public class ItemVendorId implements Serializable{
 		this.vendorId = vendorId;
 	}
 
+	@JsonIgnore
 	@Column(name = "itemcd", nullable = false, length = 15)
 	public String getitemcd() {
 		return this.itemcd;

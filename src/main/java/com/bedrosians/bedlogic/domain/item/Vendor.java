@@ -22,6 +22,7 @@ public class Vendor implements java.io.Serializable {
 
 	private static final long serialVersionUID = -582265865921787L;
 	
+	private Integer vendorOrder;
 	private String vendorName;
 	private String vendorName2;
 	private String vendorXrefId;
@@ -32,8 +33,8 @@ public class Vendor implements java.io.Serializable {
 	private Float vendorDiscountPct;
 	private Integer vendorPriceRoundAccuracy;
 	private Float vendorMarkupPct = 0F;
-	private BigDecimal vendorFreightRateCwt;
-	private BigDecimal vendorlandedbasecost = BigDecimal.valueOf(0.00);
+	private Float vendorFreightRateCwt = 0F;
+	private BigDecimal vendorlandedbasecost = new BigDecimal(0.00);
 	private Integer leadTime;
 	private Float dutyPct;
 	private Item item;
@@ -77,6 +78,14 @@ public class Vendor implements java.io.Serializable {
 		return this.itemVendorId.getVendorId();
 	}
 	
+	@Column(name = "vendor_order", length = 2)
+	public Integer getVendorOrder() {
+		return this.vendorOrder;
+	}
+
+	public void setVendorOrder(Integer vendorOrder) {
+		this.vendorOrder = vendorOrder;
+	}
 	@Column(name = "vendor_name", length = 60)
 	public String getVendorName() {
 		return this.vendorName;
@@ -185,11 +194,11 @@ public class Vendor implements java.io.Serializable {
 		this.vendorlandedbasecost = vendorlandedbasecost;
 	}
 	@Column(name = "vendor_freight_rate_cwt", precision = 9, scale = 4)
-	public BigDecimal getVendorFreightRateCwt() {
+	public Float getVendorFreightRateCwt() {
 		return this.vendorFreightRateCwt;
 	}
 
-	public void setVendorFreightRateCwt(BigDecimal freightRateCwt) {
+	public void setVendorFreightRateCwt(Float freightRateCwt) {
 		this.vendorFreightRateCwt = freightRateCwt;
 	}
 
