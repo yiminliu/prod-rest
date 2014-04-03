@@ -25,7 +25,7 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
 	@Autowired
 	private SessionFactory sessionFactory;
 	
-	protected synchronized Session currentSession() {
+	protected Session currentSession() {
 	   return sessionFactory.getCurrentSession();
 	  //return sessionFactory.openSession();
 	    
@@ -48,7 +48,7 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
 	return (T)currentSession().get(type, id);
 	}
 	
-	//This method only gets a proxy of the item, without hitting the database
+	//This method only gets a proxy of the persistent entity, without hitting the database
 	@Override
 	@SuppressWarnings("unchecked")
 	public T loadById(final PK id) {
@@ -81,52 +81,7 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
 		
 	}
 	
-	//@Loggable(value=LogLevel.DEBUG)
-		@Override
-		@SuppressWarnings("unchecked")
-	    public List<T> findByParameters(MultivaluedMap<String, String> queryParams){
-			
-			if(queryParams == null) 
-			   return null;
-			
-			Set<Map.Entry<String, List<String>>> set = queryParams.entrySet();
-		    Iterator it = set.iterator();
-		    Criteria criteria = currentSession().createCriteria(type);
-		  	criteria.setReadOnly(true);
-		  	criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-	   	   	String key, value = null;
-		  	while(it.hasNext()) {
-	   	    	Entry<String, List<String>> entry = (Entry<String, List<String>>)it.next();
-	   		   	key = (String)entry.getKey();
-	   	    	value = ((List<String>)entry.getValue()).get(0);
-	   	    	if("activityStatus".equalsIgnoreCase(key)) {
-	   	            if ("active".equalsIgnoreCase(value))
-	   	 		        criteria.add(Restrictions.eq(key, ""));
-	   	 		    else if ("inactive".equalsIgnoreCase(value))
-	   	 		        criteria.add(Restrictions.in(key, new String[] {"F", "Y", "D", "I"})); 
-	   	    	}  
-	   	       	else {
-	   	    		//criteria.add(Restrictions.eq("activityStatus", "")); //return only active accounts
-	   	    		criteria.add(Restrictions.eq(key, value).ignoreCase());
-	   	    	}
-	   		
-	   	    }	  	
-			return (List<T>)criteria.list();			
-		}
-		
-		
-		//@Loggable(value=LogLevel.DEBUG)
-		@Override
-		@SuppressWarnings("unchecked")
-	    public Long insertRecord(String insertStatement){
-			//SQLQuery query = currentSession().createSQLQuery(insertStatement);
-			
-			SQLQuery query = currentSession().createSQLQuery("INSERT INTO Product (product_Id, color) VALUES('Test', 'Beige')");
-	        long value = query.executeUpdate();
-	        return Long.valueOf(value);
-		}	   
-		
-		
+	/*
 	//@Override
 	@SuppressWarnings("unchecked")
     public List<T> findByParameter(final String parameterName, String value){
@@ -138,7 +93,7 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
 		criteria.add(Restrictions.eq(parameterName, value).ignoreCase());
 		return (List<T>)criteria.list();			
 	}
-	/*
+	
 	
 	@Override
 	@SuppressWarnings("unchecked")
