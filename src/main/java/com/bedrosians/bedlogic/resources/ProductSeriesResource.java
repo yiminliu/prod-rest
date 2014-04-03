@@ -6,8 +6,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.MultivaluedMap;
 
 import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.exception.BedResException;
@@ -20,25 +22,25 @@ public class ProductSeriesResource
 {
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getProductSeries(@Context HttpHeaders requestHeaders)
+    public Response getProductSeries(@Context HttpHeaders requestHeaders, @Context UriInfo uriInfo)
     {
-        return this.getProductSeriesInternal(requestHeaders, "");
+        return this.getProductSeriesInternal(requestHeaders, uriInfo, "");
     }
 
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     @Path("{seriesname}")
-    public Response getCosts(@Context HttpHeaders requestHeaders
+    public Response getCosts(@Context HttpHeaders requestHeaders, @Context UriInfo uriInfo
                                     , @PathParam("seriesname") String seriesName)
     {
-        return this.getProductSeriesInternal(requestHeaders, seriesName);
+        return this.getProductSeriesInternal(requestHeaders, uriInfo, seriesName);
     }
 
    /**
      * Productseries resource
      * -seriesName: optional.
      */
-   private Response getProductSeriesInternal(HttpHeaders requestHeaders
+   private Response getProductSeriesInternal(HttpHeaders requestHeaders, UriInfo uriInfo
                                             , String seriesName)
     {
         Response    response;
@@ -58,9 +60,12 @@ public class ProductSeriesResource
                                     
             String resultType = (seriesName == "") ? "productseries" : "productseriescolors";
 
+            // Get queryParams
+            MultivaluedMap queryParams = uriInfo.getQueryParameters();
+
             // Retrieve DAO object
             ProductSeriesDAO    productSeriesDAO = new ProductSeriesDAO();
-            ProductSeries       result = productSeriesDAO.readProductSeries(userType, userCode, seriesName, resultType);
+            ProductSeries       result = productSeriesDAO.readProductSeries(userType, userCode, seriesName, resultType, queryParams);
             
             // Return json reponse
             String  jsonStr = result.toJSONString();
