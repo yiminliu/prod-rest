@@ -11,9 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bedrosians.bedlogic.dao.item.ImsNewFeatureDao;
 import com.bedrosians.bedlogic.dao.item.ItemDao;
-import com.bedrosians.bedlogic.dao.item.VendorDao;
 import com.bedrosians.bedlogic.domain.item.Icon;
 import com.bedrosians.bedlogic.domain.item.ImsNewFeature;
 import com.bedrosians.bedlogic.domain.item.Item;
@@ -34,12 +32,6 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
 	ItemDao itemDao;  
     
-    @Autowired
-    ImsNewFeatureDao imsNewFeatureDao;  
-    
-    @Autowired
-    VendorDao vendorDao;  
- 
     	    	
     @Loggable(value = LogLevel.TRACE)
     @Override
@@ -87,14 +79,9 @@ public class ProductServiceImpl implements ProductService {
 	@Loggable(value = LogLevel.TRACE)
 	@Override
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
-	public String createProduct(Item item) throws BedDAOBadParamException, BedDAOException{
+	public synchronized String createProduct(Item item) throws BedDAOBadParamException, BedDAOException{
 		String id;
 		ImsValidation.validateNewItem(item);
-		if(item.getImsNewFeature() == null || item.getImsNewFeature().getItem() == null) {
-			   ImsNewFeature imsNewFeature = new ImsNewFeature();	
-			   imsNewFeature.setCreatedDate(new Date());
-			   item.addImsNewFeature(imsNewFeature);	
-		}	
 		try{
 			id = itemDao.createItem(item); 
 		}
@@ -108,92 +95,66 @@ public class ProductServiceImpl implements ProductService {
 	@Loggable(value = LogLevel.TRACE)
 	@Override
 	@Transactional
-	public String createProduct(MultivaluedMap<String, String> queryParams)throws BedDAOBadParamException, BedDAOException{
+	public String createProduct(final MultivaluedMap<String, String> queryParams)throws BedDAOBadParamException, BedDAOException{
 		String id;
 		ImsValidation.validateInsertParams(queryParams);
 		Item item = new Item();
-		if(item.getImsNewFeature() == null || item.getImsNewFeature().getItem() == null) {
-		   ImsNewFeature imsNewFeature = new ImsNewFeature();	
-		   imsNewFeature.setCreatedDate(new Date());
-		   item.addImsNewFeature(imsNewFeature);	
-		}
-		if(item.getVendors() == null || item.getVendors().isEmpty()){
-		   item.initVendors(ImsQueryUtil.determineNumberOfVendors(queryParams));
-		}
-		if(ImsQueryUtil.containsAnyKey(queryParams, Icon.allPropertis()))
+		synchronized(item){
+		   if(item.getImsNewFeature() == null || item.getImsNewFeature().getItem() == null) {
+		      ImsNewFeature imsNewFeature = new ImsNewFeature();	
+		      imsNewFeature.setCreatedDate(new Date());
+		      item.addImsNewFeature(imsNewFeature);	
+		   }
+		   if(item.getVendors() == null || item.getVendors().isEmpty()){
+		      item.initVendors(ImsQueryUtil.determineNumberOfVendors(queryParams));
+	       }
+		   if(ImsQueryUtil.containsAnyKey(queryParams, Icon.allPropertis()))
 			   item.addIcon(new Icon());	
-		/*	
-		if(ImsQueryUtil.containsKey(queryParams, "poNote")) {
-			   Note poNote = new PoNote();
-			   poNote.setCreatedDate(new Date());
-			   item.addPoNote(poNote);
-		}  
-			
-		if(ImsQueryUtil.containsKey(queryParams, "buyerNote")) {
-			   Note buyerNote = new BuyerNote();
-			   buyerNote.setCreatedDate(new Date());
-			   item.addBuyerNote(buyerNote);
-		}
-		if(ImsQueryUtil.containsKey(queryParams, "invoiceNote")) {
-			   Note invoiceNote = new InvoiceNote();
-			   invoiceNote.setCreatedDate(new Date());
-			   item.addInvoiceNote(invoiceNote);
-		}
-		if(ImsQueryUtil.containsKey(queryParams, "internalNote")) {
-			Note internalNote = new InternalNote();
-		    internalNote.setCreatedDate(new Date());
-	  	    item.addInternalNote(internalNote);
-		}
-		*/
-		if(ImsQueryUtil.containsAnyKey(queryParams, Icon.allPropertis()))
-		   item.addIcon(new Icon());	
-	
-		if(ImsQueryUtil.containsKey(queryParams, "poNote")) {
-		   Note poNote = new Note("po");
-		   poNote.setCreatedDate(new Date());
-		   item.addNote(poNote);
-		}  
-		if(ImsQueryUtil.containsKey(queryParams, "buyerNote")) {
-		   Note buyerNote = new Note("buyer");
-		   buyerNote.setCreatedDate(new Date());
-		   item.addNote(buyerNote);
-	    }
-		if(ImsQueryUtil.containsKey(queryParams, "invoiceNote")) {
-		   Note invoiceNote = new Note("invoice");
-		   invoiceNote.setCreatedDate(new Date());
-		   item.addNote(invoiceNote);
-	    }
-		if(ImsQueryUtil.containsKey(queryParams, "internalNote")) {
-			Note internalNote = new Note("internal");
+		   if(ImsQueryUtil.containsKey(queryParams, "poNote")) {
+	  	       Note poNote = new Note("po");
+		       poNote.setCreatedDate(new Date());
+		       item.addNote(poNote);
+		   }  
+		   if(ImsQueryUtil.containsKey(queryParams, "buyerNote")) {
+		       Note buyerNote = new Note("buyer");
+		       buyerNote.setCreatedDate(new Date());
+		       item.addNote(buyerNote);
+	       }
+		   if(ImsQueryUtil.containsKey(queryParams, "invoiceNote")) {
+		       Note invoiceNote = new Note("invoice");
+		       invoiceNote.setCreatedDate(new Date());
+		       item.addNote(invoiceNote);
+	       }
+		   if(ImsQueryUtil.containsKey(queryParams, "internalNote")) {
+			   Note internalNote = new Note("internal");
 			   internalNote.setCreatedDate(new Date());
 			   item.addNote(internalNote);
+		   }
+		   try{
+		      item = ImsQueryUtil.buildItemForInsert(item, queryParams);
+		   }
+		   catch(Exception e){
+			  e.printStackTrace();
+			  throw new BedDAOBadParamException(e);
+		   }
+		   ImsValidation.validateNewItem(item);
 		}
-							
 		try{
-		    item = ImsQueryUtil.buildItemForInsert(item, queryParams);
-		}
-		catch(Exception e){
-			e.printStackTrace();
-			throw new BedDAOBadParamException(e);
-		}
-		ImsValidation.validateNewItem(item);
-		try{
-			id = itemDao.createItem(item);
+			  id = itemDao.createItem(item);
 		}
 		catch(HibernateException hbe){
-			hbe.printStackTrace();
-			throw new BedDAOException("Error occured during createProduct() due to: " + hbe.getMessage(), hbe);
-	    }		
-		return id;
-		
+			  hbe.printStackTrace();
+			  throw new BedDAOException("Error occured during createProduct() due to: " + hbe.getMessage(), hbe);
+	    }
+		return id;		
 	}
 	
 	@Loggable(value = LogLevel.TRACE)
 	@Override
 	@Transactional
-	public void updateProduct(String itemId, Item item) throws BedDAOBadParamException, BedDAOException, BedResException{
+	public void updateProduct(final String itemId, Item item) throws BedDAOBadParamException, BedDAOException, BedResException{
 		if(itemId == null || itemId.length() < 1)
-	    	   throw new BedDAOBadParamException("Please enter valid item code !");	
+	       throw new BedDAOBadParamException("Please enter valid item code !");	
 		
 		Item retrievedItem = itemDao.loadItemById(itemId);
 		if(retrievedItem == null)
@@ -217,13 +178,12 @@ public class ProductServiceImpl implements ProductService {
 	@Loggable(value = LogLevel.TRACE)
 	@Override
 	@Transactional
-	public void updateProduct(MultivaluedMap<String, String> queryParams) throws BedDAOException, BedResException{
+	public void updateProduct(final MultivaluedMap<String, String> queryParams) throws BedDAOException, BedResException{
 		
 		String itemcd = ImsQueryUtil.getValue(queryParams, "itemcd");
 		if(itemcd == null || itemcd.trim().length() == 0)
 			itemcd = ImsQueryUtil.getValue(queryParams, "itemcode");	
 		Item item = null;
-		//item = getProductById(itemcd.trim());
 		try{
 		   item = itemDao.loadItemById(itemcd.trim());
 		}
@@ -234,8 +194,9 @@ public class ProductServiceImpl implements ProductService {
 		if(item == null)
 	       throw new BedResException("No data found for the given item code");	
 		
-		item = ImsQueryUtil.buildItemForUpdate(item,queryParams);
-		
+		synchronized(item) {
+		   item = ImsQueryUtil.buildItemForUpdate(item,queryParams);
+		}
 		if(item.getImsNewFeature() != null)
 		   item.getImsNewFeature().setLastModifiedDate(new Date());
 		try{
