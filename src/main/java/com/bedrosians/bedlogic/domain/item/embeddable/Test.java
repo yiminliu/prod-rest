@@ -6,8 +6,10 @@ import javax.persistence.Embeddable;
 import com.bedrosians.bedlogic.util.FormatUtil;
 
 @Embeddable
-public class Test {
+public class Test  implements java.io.Serializable {
 
+	private static final long serialVersionUID = -8732135821787L;
+	
 	private Float waterAbsorption;
 	private Float scratchResistance;
 	private Character frostResistance;
@@ -27,6 +29,8 @@ public class Test {
 	private String leadPoint;
 	private Float preConsummer;
 	private Float posConsummer;
+	
+	public Test(){}
 	
 	@Column(name = "water_absorption", precision = 4)
 	public Float getWaterAbsorption() {
