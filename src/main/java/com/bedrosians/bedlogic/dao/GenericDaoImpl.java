@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -22,53 +23,41 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T, PK> {
 	private Class<T> type;
 	
-	@Autowired
-	private SessionFactory sessionFactory;
-	
-	protected Session currentSession() {
-	   return sessionFactory.getCurrentSession();
-	  //return sessionFactory.openSession();
-	    
-	}
-		
 	@SuppressWarnings("unchecked")
 	public GenericDaoImpl(){
 		this.type = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 	}
 	
 	@SuppressWarnings("unchecked")
-	public PK save(T newInstance) {
-		PK pk = (PK)currentSession().save(newInstance);
+	public PK save(Session session, T newInstance) {
+		PK pk = (PK)session.save(newInstance);
 		return pk;
 	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public T findById(final PK id) {
-	return (T)currentSession().get(type, id);
+	public T findById(Session session, final PK id) {
+	return (T)session.get(type, id);
 	}
 	
 	//This method only gets a proxy of the persistent entity, without hitting the database
 	@Override
 	@SuppressWarnings("unchecked")
-	public T loadById(final PK id) {
-	return (T)currentSession().load(type, id);
+	public T loadById(Session session, final PK id) {
+	return (T)session.load(type, id);
 	}
 		
 			
-	public List<T> findAll(){
-		return currentSession().createCriteria(type).list();
+	public List<T> findAll(Session session){
+		return session.createCriteria(type).list();
 	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public synchronized void update(final T transientObject) {
+	public synchronized void update(Session session, final T transientObject) {
 		try{
-           Session session = currentSession();
-          // if(session.contains(transientObject))
-        	 session.update(transientObject);
-          //session.saveOrUpdate(transientObject);
-      
+        	session.update(transientObject);
+          //session.saveOrUpdate(transientObject);      
 		}
 		catch(DataException e){
 			throw e;
@@ -77,7 +66,22 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public void delete(T persistentObject) {
+	public synchronized void update(Session session, final String id, final T transientObject) {
+		try{
+           T t = (T)session.load(type, id);
+           if(t == null)
+        	  throw new HibernateException("No DB object found for the given Id " + id);  
+           session.update(transientObject);  
+		}
+		catch(DataException e){
+			throw e;
+		}		   
+   	}
+	
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public void delete(Session session, T persistentObject) {
 		
 	}
 	

@@ -11,7 +11,7 @@ import java.util.Map.Entry;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
+import org.hibernate.Session;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.Order;
@@ -40,16 +40,16 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
  
      
 	@Override
-	public Item getItemById(String itemId) {
-       return findById(itemId);
+	public Item getItemById(Session session, String itemId) {
+       return findById(session, itemId);
 	}
 	
 	@Override
-	public Item loadItemById(String itemId) {
-       return findById(itemId);
+	public Item loadItemById(Session session, String itemId) {
+       return loadById(session, itemId);
 	}
 	
-   public List<Item> getItemsByQueryParameters(MultivaluedMap<String, String> queryParams){
+   public List<Item> getItemsByQueryParameters(Session session, MultivaluedMap<String, String> queryParams){
 	
 	   if(queryParams == null) 
 		   return null;
@@ -60,7 +60,7 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 		
 		Set<Map.Entry<String, List<String>>> set = queryParams.entrySet();
 	    Iterator it = set.iterator();
-	    Criteria criteria = currentSession().createCriteria(Item.class);
+	    Criteria criteria = session.createCriteria(Item.class);
 	    //criteria.setFetchMode("imsNewFeature", FetchMode.JOIN);
 	    Criteria newFeatureCriteria = null;
 	    Criteria vendorCriteria = null;
@@ -153,8 +153,9 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
    	    		        		            "color".equalsIgnoreCase(key)  || 
    	    		        		            "colorcategory".equalsIgnoreCase(key) ||
    	    		        		            "seriesname".equalsIgnoreCase(key)  || 
-   	    		        		            "matcategory".equalsIgnoreCase(key)))
+   	    		        		            "matcategory".equalsIgnoreCase(key))) {
    	    			        criteria.add(Restrictions.like(key, value+"%").ignoreCase());
+   	    		         }   
    	    		         else {
    	    		        	if (key.contains("price"))
      	    		    	    criteria.add(Restrictions.eq(key, new BigDecimal(value))); 
@@ -183,13 +184,13 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
    }
 	
 	@Override
-	public void updateItem(Item item){
-		update(item);
+	public void updateItem(Session session, Item item){
+		update(session, item);
 	}
 	  
 	@Override
-	public String createItem(Item item){
-		return (String)save(item); 
+	public String createItem(Session session, Item item){
+		return (String)save(session, item); 
 		//return (String)currentSession().save(item); 
 	}
 	
