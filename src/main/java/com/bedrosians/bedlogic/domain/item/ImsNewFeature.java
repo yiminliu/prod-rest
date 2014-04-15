@@ -33,6 +33,7 @@ import com.bedrosians.bedlogic.domain.item.enums.Status;
 import com.bedrosians.bedlogic.domain.item.enums.SurfaceApplication;
 import com.bedrosians.bedlogic.domain.item.enums.SurfaceFinish;
 import com.bedrosians.bedlogic.domain.item.enums.SurfaceType;
+import com.bedrosians.bedlogic.util.FormatUtil;
 import com.bedrosians.bedlogic.util.ImsResultUtil;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -45,23 +46,24 @@ public class ImsNewFeature implements java.io.Serializable {
 	private static final long serialVersionUID = -11135822658657L;
 	
 	private String itemcd;
-	private Item item;
 	private Grade grade;
 	private Status status;
+	private Body body;
+	private Edge edge;
 	private MpsCode mpsCode;
 	private DesignLook designLook;
 	private DesignStyle designStyle;
-	private Body body;
-	private Edge edge;
 	private SurfaceApplication surfaceApplication;
 	private SurfaceType surfaceType;
 	private SurfaceFinish surfaceFinish;
 	private Integer warranty;
-	private String  recommendedGroutJointMin;
-	private String  recommendedGroutJointMax;
+	private String recommendedGroutJointMin;
+	private String recommendedGroutJointMax;
 	private Date createdDate;
 	private Date launchedDate;
+	private Date droppedDate;
 	private Date lastModifiedDate;
+	private Item item;
 	
 	public ImsNewFeature() {
 	}
@@ -234,6 +236,16 @@ public class ImsNewFeature implements java.io.Serializable {
 
 	public void setLaunchedDate(Date launchedDate) {
 		this.launchedDate = launchedDate;
+	}
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "dropped_date", length = 13)
+	public Date getDroppedDate() {
+		return FormatUtil.process(this.droppedDate);
+	}
+
+	public void setDroppedDate(Date droppedDate) {
+		this.droppedDate = droppedDate;
 	}
 
 	@Temporal(TemporalType.DATE)

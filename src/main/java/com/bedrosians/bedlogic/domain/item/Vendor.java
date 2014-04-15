@@ -15,6 +15,8 @@ import javax.persistence.Transient;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+import com.bedrosians.bedlogic.util.FormatUtil;
+
 
 @Entity
 @Table(name="ims_vendor")
@@ -34,7 +36,7 @@ public class Vendor implements java.io.Serializable {
 	private Integer vendorPriceRoundAccuracy;
 	private Float vendorMarkupPct = 0F;
 	private Float vendorFreightRateCwt = 0F;
-	private BigDecimal vendorlandedbasecost = new BigDecimal(0.00);
+	private BigDecimal vendorLandedBaseCost = new BigDecimal(0.00);
 	private Integer leadTime;
 	private Float dutyPct;
 	private Item item;
@@ -124,7 +126,7 @@ public class Vendor implements java.io.Serializable {
 
 	@Column(name = "vendor_fob", length = 10)
 	public String getVendorFob() {
-		return this.vendorFob;
+		return FormatUtil.process(vendorFob);
 	}
 
 	public void setVendorFob(String vendorFob) {
@@ -133,7 +135,7 @@ public class Vendor implements java.io.Serializable {
 
 	@Column(name = "vendor_list_price", precision = 9, scale = 4)
 	public BigDecimal getVendorListPrice() {
-		return vendorListPrice;
+		return FormatUtil.process(vendorListPrice);
 	}
 
 	public void setVendorListPrice(BigDecimal vendorListPrice) {
@@ -186,13 +188,14 @@ public class Vendor implements java.io.Serializable {
 	}
 
 	@Column(name = "vendorlandedbasecost", precision = 13, scale = 6)
-	public BigDecimal getVendorlandedbasecost() {
-		return this.vendorlandedbasecost;
+	public BigDecimal getVendorLandedBaseCost() {
+		return this.vendorLandedBaseCost;
 	}
 
-	public void setVendorlandedbasecost(BigDecimal vendorlandedbasecost) {
-		this.vendorlandedbasecost = vendorlandedbasecost;
+	public void setVendorLandedBaseCost(BigDecimal vendorLandedBaseCost) {
+		this.vendorLandedBaseCost = vendorLandedBaseCost;
 	}
+	
 	@Column(name = "vendor_freight_rate_cwt", precision = 9, scale = 4)
 	public Float getVendorFreightRateCwt() {
 		return this.vendorFreightRateCwt;

@@ -10,6 +10,8 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 @Embeddable
 public class ItemVendorId implements Serializable{
 
+	private static final long serialVersionUID = -5432421787L;
+	
 	private String itemcd;
 	private Long vendorId;
 

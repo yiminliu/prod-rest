@@ -24,7 +24,6 @@ public class Icon implements java.io.Serializable {
 	private static final long serialVersionUID = -1113582221787L;
 	
 	private Long iconId;
-	private Item item;
 	private String originCountry;
 	private Boolean exteriorProduct;
 	private Boolean adaAccessibility;
@@ -42,7 +41,8 @@ public class Icon implements java.io.Serializable {
 	private Boolean leadPoint = false;
 	private Boolean greenFriendly = false;
 	private Boolean coefficientOfFriction;
-
+	private Item item;
+	
 	public Icon() {
 	}
 
@@ -50,7 +50,6 @@ public class Icon implements java.io.Serializable {
 		this.iconId = iconId;
 	}
 
-	
 	@JsonIgnore
 	@Id
 	@Column(name = "icon_id", unique = true, nullable = false)
