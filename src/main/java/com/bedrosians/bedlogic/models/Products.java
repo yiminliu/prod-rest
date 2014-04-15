@@ -5,7 +5,7 @@ import java.io.Writer;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
-import com.bedrosians.bedlogic.exception.BedDAOException;
+import com.bedrosians.bedlogic.exception.BedResException;
 
 import net.minidev.json.JSONObject;
 
@@ -30,7 +30,7 @@ public class Products
         return this.data.toString();
     }
     
-    public String toJSONStringWithJackson() throws BedDAOException
+    public String toJSONStringWithJackson() throws BedResException
     {
        ObjectMapper mapper = new ObjectMapper();
        Writer strWriter = new StringWriter();
@@ -40,9 +40,8 @@ public class Products
        catch(Exception e)
        {
    	      e.printStackTrace();
-   	      throw new BedDAOException(e);
+   	      throw new BedResException(e);
    	   }
-        return strWriter.toString();
- 
+       return strWriter.toString();
     }
 }
