@@ -3,11 +3,11 @@ package com.bedrosians.bedlogic.resources;
 
 import java.util.List;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.GET;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -16,7 +16,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 
 import com.bedrosians.bedlogic.domain.item.Item;
@@ -25,7 +27,7 @@ import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.exception.BedResException;
 import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
 import com.bedrosians.bedlogic.models.Products;
-import com.bedrosians.bedlogic.service.ProductService;
+import com.bedrosians.bedlogic.service.product.ProductService;
 
 
 @Controller
@@ -41,78 +43,22 @@ public class ProductsResource
 	
 	@GET
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getProducts(@Context HttpHeaders requestHeaders, @Context UriInfo uriInfo)
+	@PreAuthorize("permitAll")
+	public Response getProducts(@Context HttpHeaders requestHeaders, @Context UriInfo uriInfo)
     {
-        Response    response;
+        Response response = null;
 
         try
         {
-            // Check usercode
-            UserCodeParser  userCodeParser = new UserCodeParser(requestHeaders);
-            if (!userCodeParser.isValidFormat())
-            {
-                throw new BedResUnAuthorizedException();
-            }
-            String userType = userCodeParser.getUserType();
-            String userCode = userCodeParser.getUserCode();
+            //Retrieve data from database based on the given query parameters
+            List<Item> items = productService.getProductsByQueryParameters(uriInfo.getQueryParameters());       
             
-            // Get queryParams
-            MultivaluedMap queryParams = uriInfo.getQueryParameters();
-                        
-            //ProductsDAO productsDAO = new ProductsDAO();
-            //Products    result = productsDAO.readProductsByQueryParams(userType, userCode, queryParams);
-            
-            List<Item> items = productService.getProductsByQueryParameters(queryParams);
-                
+            //Convert the data to Json string
             Products result = new Products(items);
             String jsonStr = result.toJSONStringWithJackson();
        
             //Return json reponse
-             response = Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();
-        }
-        catch (BedDAOBadParamException e)
-        {
-        	response = BedDAOExceptionMapper.MapToResponse(e);
-        }
-        catch (BedDAOException e)
-        {
-            response = BedDAOExceptionMapper.MapToResponse(e);
-        }
-        catch (BedResException e)
-        {
-            response = BedResExceptionMapper.MapToResponse(e);
-        }
-        return response;
-    }
-	
-	@GET
-	@Path("{itemCode}")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response getProductById(@Context HttpHeaders requestHeaders, @PathParam("itemCode") final String itemCode)
-    {
-        Response    response;
-
-        try
-        {
-            // Check usercode
-            UserCodeParser  userCodeParser = new UserCodeParser(requestHeaders);
-            if (!userCodeParser.isValidFormat())
-            {
-                throw new BedResUnAuthorizedException();
-            }
-            String userType = userCodeParser.getUserType();
-            String userCode = userCodeParser.getUserCode();
-                             
-            //ProductsDAO productsDAO = new ProductsDAO();
-            //Products    result = productsDAO.readProductsByQueryParams(userType, userCode, queryParams);
-            
-            Item item = productService.getProductById(itemCode);
-                
-            Products result = new Products(item);
-            String jsonStr = result.toJSONStringWithJackson();
-       
-            //Return json reponse
-             response = Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();
+            response = Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();
         }
         catch (BedDAOBadParamException e)
         {
@@ -131,33 +77,23 @@ public class ProductsResource
 	
 	
 	@POST
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response createProduct(@Context HttpHeaders requestHeaders, @Context UriInfo uriInfo)
+    @Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_BUYER')") 
+	public Response createProduct(@Context HttpHeaders requestHeaders, JSONObject inputJsonObj)
     {
-        Response    response;
+        Response response;
 
         try
-        {
-            // Check usercode
-            UserCodeParser  userCodeParser = new UserCodeParser(requestHeaders);
-            if (!userCodeParser.isValidFormat())
-            {
-                throw new BedResUnAuthorizedException();
-            }
-            String userType = userCodeParser.getUserType();
-            String userCode = userCodeParser.getUserCode();
+        {     
+        	//Create a new product using the given data in json input, and save it into database  
+            String itemCode = productService.createProduct(inputJsonObj);
             
-            // Get queryParams
-            MultivaluedMap queryParams = uriInfo.getQueryParameters();
-       
-            //ProductsDAO productsDAO = new ProductsDAO();
-            //Products    result = productsDAO.readProductsByQueryParams(userType, userCode, queryParams);
-            
-            String itemId = productService.createProduct(queryParams);
-            Products result = new Products(itemId);
+            //Wrape the newly created product id into json
+            Products result = new Products(itemCode);
             String jsonStr = result.toJSONStringWithJackson();         
             
-            // Return json reponse
+            //Return json reponse
             response = Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();
         }
         catch (BedDAOBadParamException e)
@@ -176,37 +112,26 @@ public class ProductsResource
         return response;
     }
 	
+	
 	@PUT
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response updateProduct(@Context HttpHeaders requestHeaders, @Context UriInfo uriInfo)
+    @Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_BUYER')") 
+    public Response updateProduct(@Context HttpHeaders requestHeaders, JSONObject inputJsonObj)
     {
         Response    response;
 
         try
         {
-            // Check usercode
-            UserCodeParser  userCodeParser = new UserCodeParser(requestHeaders);
-            if (!userCodeParser.isValidFormat())
-            {
-                throw new BedResUnAuthorizedException();
-            }
-            String userType = userCodeParser.getUserType();
-            String userCode = userCodeParser.getUserCode();
+        	//Update a product based on the input json data
+            productService.updateProduct(inputJsonObj);    
             
-            // Get queryParams
-            MultivaluedMap queryParams = uriInfo.getQueryParameters();
-       
-            //ProductsDAO productsDAO = new ProductsDAO();
-            //Products    result = productsDAO.readProductsByQueryParams(userType, userCode, queryParams);
-            
-            productService.updateProduct(queryParams);     
             // Return json reponse
             response = Response.ok(MediaType.APPLICATION_JSON).build();
         }    
             catch (BedDAOBadParamException e)
         {
            	response = BedDAOExceptionMapper.MapToResponse(e);
-        
         }
         catch (BedDAOException e)
         {
