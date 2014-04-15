@@ -11,7 +11,7 @@ public class Applications  implements java.io.Serializable {
 	private static final long serialVersionUID = -3342182221787L;
 	
 	private String residential;
-	private String lightcommercial;
+	private String lightCommercial;
 	private String commercial;
 	
 	@Column(name = "residential", length = 20)
@@ -24,12 +24,12 @@ public class Applications  implements java.io.Serializable {
 	}
 
 	@Column(name = "lightcommercial", length = 20)
-	public String getLightcommercial() {
-		return FormatUtil.process(this.lightcommercial);
+	public String getLightCommercial() {
+		return FormatUtil.process(this.lightCommercial);
 	}
 
-	public void setLightcommercial(String lightcommercial) {
-		this.lightcommercial = lightcommercial;
+	public void setLightCommercial(String lightCommercial) {
+		this.lightCommercial = lightCommercial;
 	}
 
 	@Column(name = "commercial", length = 20)

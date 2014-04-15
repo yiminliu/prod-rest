@@ -9,36 +9,40 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Type;
-
 import org.joda.time.contrib.hibernate.PersistentDateTime;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.bedrosians.bedlogic.util.FormatUtil;
 
 @Embeddable
 public class Price implements java.io.Serializable {
 
+	private static final long serialVersionUID = -582221787L;
+	
 	private BigDecimal price;//sellprice;
-	private String pricegroup;
+	private String priceGroup;
 	private Float priceMarginPct = 0F; //sellpriceMarginPct
 	private Float minimalMarginPct;
 	private Integer priceRoundAccuracy = 0; //sellpriceroundaccuracy
 	private BigDecimal futurePrice; //futuresell;
 	private BigDecimal priorPrice;//priorsellprice;
 	private BigDecimal tempPrice;
-	private Date tempdatefrom = null;
-	private Date tempdatethru = null;
-	private BigDecimal listprice;
-	private BigDecimal priorlistprice;
+	private Date tempDateFrom = null;
+	private Date tempDateThrough = null;
+	private BigDecimal listPrice;
+	private BigDecimal priorListPrice;
 	
 	public Price(){}
 	
 	@Column(name = "listprice", precision = 9, scale = 4)
-	public BigDecimal getListprice() {
-		return FormatUtil.process(this.listprice);
+	public BigDecimal getListPrice() {
+		return FormatUtil.process(this.listPrice);
 	}
 
-	public void setListprice(BigDecimal listprice) {
-		this.listprice = listprice;
+	public void setListPrice(BigDecimal listPrice) {
+		this.listPrice = listPrice;
 	}
 
 	@Column(name = "sellprice", precision = 9, scale = 4)
@@ -51,12 +55,12 @@ public class Price implements java.io.Serializable {
 	}
 	
 	@Column(name = "pricegroup", length = 2)
-	public String getPricegroup() {
-		return FormatUtil.process(this.pricegroup);
+	public String getPriceGroup() {
+		return FormatUtil.process(this.priceGroup);
 	}
 
-	public void setPricegroup(String pricegroup) {
-		this.pricegroup = pricegroup;
+	public void setPriceGroup(String priceGroup) {
+		this.priceGroup = priceGroup;
 	}
 	
 	@Column(name = "futuresell", precision = 9, scale = 4)
@@ -79,26 +83,25 @@ public class Price implements java.io.Serializable {
 	
 	@Temporal(TemporalType.DATE)
 	@Column(name = "tempdatefrom", length = 13)
-	public Date getTempdatefrom() {
-		return FormatUtil.process(this.tempdatefrom);
+	public Date getTempDateFrom() {
+		return FormatUtil.process(this.tempDateFrom);
 	}
 
-	public void setTempdatefrom(Date tempdatefrom) {
-		this.tempdatefrom = tempdatefrom;
+	public void setTempDateFrom(Date tempDateFrom) {
+		this.tempDateFrom = tempDateFrom;
 	}
 
-	//@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.DATE)
 	@Column(name = "tempdatethru", length = 13, nullable = true)
-	//@Type(type="org.joda.time.contrib.hibernate.PersistentDateTime")
-	
-	public Date getTempdatethru() {
-		return FormatUtil.process(this.tempdatethru);
+	public Date getTempDateThrough() {
+		return FormatUtil.process(this.tempDateThrough);
 	}
 
-	public void setTempdatethru(Date tempdatethru) {
-		this.tempdatethru = tempdatethru;
+	public void setTempDateThrough(Date tempDateThrough) {
+		this.tempDateThrough = tempDateThrough;
 	}
 
+	@PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_BUYER')") 
 	@Column(name = "sellpricemarginpct", precision = 5)
 	public Float getPriceMarginPct() {
 		return FormatUtil.process(this.priceMarginPct);
@@ -117,6 +120,7 @@ public class Price implements java.io.Serializable {
 		this.priceRoundAccuracy = priceRoundAccuracy;
 	}
 	
+	@PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_BUYER')") 
 	@Column(name = "minmarginpct", precision = 4, scale = 1)
 	public Float getMinimalMarginPct() {
 		return FormatUtil.process(this.minimalMarginPct);
@@ -127,12 +131,12 @@ public class Price implements java.io.Serializable {
 	}
 	
 	@Column(name = "priorlistprice", precision = 9, scale = 4)
-	public BigDecimal getPriorlistprice() {
-		return FormatUtil.process(this.priorlistprice);
+	public BigDecimal getPriorListPrice() {
+		return FormatUtil.process(this.priorListPrice);
 	}
 
-	public void setPriorlistprice(BigDecimal priorlistprice) {
-		this.priorlistprice = priorlistprice;
+	public void setPriorListPrice(BigDecimal priorListPrice) {
+		this.priorListPrice = priorListPrice;
 	}
 
 	@Column(name = "priorsellprice", precision = 9, scale = 4)

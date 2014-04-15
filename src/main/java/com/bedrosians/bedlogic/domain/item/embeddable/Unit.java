@@ -255,6 +255,15 @@ public class Unit  implements java.io.Serializable {
 	public void setUnit1upcdesc(String unit1upcdesc) {
 		this.unit1upcdesc = unit1upcdesc;
 	}
+	
+	@Column(name = "unit1wgtperunit", precision = 12, scale = 6)
+	public BigDecimal getUnit1wgtperunit() {
+		return FormatUtil.process(this.unit1wgtperunit);
+	}
+
+	public void setUnit1wgtperunit(BigDecimal unit1wgtperunit) {
+		this.unit1wgtperunit = unit1wgtperunit;
+	}
 
 	@Column(name = "unit2unit", length = 4)
 	public String getUnit2unit() {
@@ -328,11 +337,6 @@ public class Unit  implements java.io.Serializable {
 		this.unit2upcdesc = unit2upcdesc;
 	}
 
-	@Column(name = "unit3unit", length = 4)
-	public String getUnit3unit() {
-		return FormatUtil.process(this.unit3unit);
-	}
-
 	@Column(name = "unit2wgtperunit", precision = 12, scale = 6)
 	public BigDecimal getUnit2wgtperunit() {
 		return FormatUtil.process(this.unit2wgtperunit);
@@ -342,17 +346,13 @@ public class Unit  implements java.io.Serializable {
 		this.unit2wgtperunit = unit2wgtperunit;
 	}
 	
-	public void setUnit3unit(String unit3unit) {
-		this.unit3unit = unit3unit;
+	@Column(name = "unit3unit", length = 4)
+	public String getUnit3unit() {
+		return FormatUtil.process(this.unit3unit);
 	}
 	
-	@Column(name = "unit1wgtperunit", precision = 12, scale = 6)
-	public BigDecimal getUnit1wgtperunit() {
-		return FormatUtil.process(this.unit1wgtperunit);
-	}
-
-	public void setUnit1wgtperunit(BigDecimal unit1wgtperunit) {
-		this.unit1wgtperunit = unit1wgtperunit;
+	public void setUnit3unit(String unit3unit) {
+		this.unit3unit = unit3unit;
 	}
 
 	@Column(name = "unit3ratio", precision = 9, scale = 4)

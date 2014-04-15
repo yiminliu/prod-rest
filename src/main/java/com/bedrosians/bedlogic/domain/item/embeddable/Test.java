@@ -12,12 +12,14 @@ public class Test  implements java.io.Serializable {
 	
 	private Float waterAbsorption;
 	private Float scratchResistance;
-	private Character frostResistance;
-	private Character chemicalResistance;
+	private String frostResistance;
+	private String chemicalResistance;
 	private Float peiAbrasion;
 	private Float scofWet;
 	private Float scofDry;
 	private Integer breakingStrength;
+	private String scratchStandard;
+	private String breakingStandard;
     private Character restricted;
 	private Character warpage;
 	private Character wedging;
@@ -51,20 +53,31 @@ public class Test  implements java.io.Serializable {
 	}
 
 	@Column(name = "frost_resistance", length = 1)
-	public Character getFrostResistance() {
-		return FormatUtil.process(this.frostResistance);
+	public String getFrostResistance() {
+		
+		if("P".equalsIgnoreCase(frostResistance))
+		   return "Passed";	
+		else if("N".equalsIgnoreCase(frostResistance))
+		   return "Not Passed";
+		else 
+		   return FormatUtil.process(this.frostResistance);
 	}
 
-	public void setFrostResistance(Character frostResistance) {
+	public void setFrostResistance(String frostResistance) {
 		this.frostResistance = frostResistance;
 	}
 
 	@Column(name = "chemical_resistance", length = 1)
-	public Character getChemicalResistance() {
-		return FormatUtil.process(this.chemicalResistance);
+	public String getChemicalResistance() {
+		if("P".equalsIgnoreCase(chemicalResistance))
+		   return "Passed";	
+		else if("N".equalsIgnoreCase(chemicalResistance))
+		   return "Not Passed";
+		else 
+		   return FormatUtil.process(chemicalResistance);
 	}
 
-	public void setChemicalResistance(Character chemicalResistance) {
+	public void setChemicalResistance(String chemicalResistance) {
 		this.chemicalResistance = chemicalResistance;
 	}
 
@@ -111,6 +124,24 @@ public class Test  implements java.io.Serializable {
 
 	public void setBreakingStrength(Integer breakingStrength) {
 		this.breakingStrength = breakingStrength;
+	}
+	
+	@Column(name = "sr_standard", length = 15)
+	public String getScratchStandard() {
+		return FormatUtil.process(this.scratchStandard);
+	}
+
+	public void setScratchStandard(String scratchStandard) {
+		this.scratchStandard = scratchStandard;
+	}
+
+	@Column(name = "bk_standard", length = 15)
+	public String getBreakingStandard() {
+		return FormatUtil.process(this.breakingStandard);
+	}
+
+	public void setBreakingStandard(String breakingStandard) {
+		this.breakingStandard = breakingStandard;
 	}
 
 	@Column(name = "greenfriendly", length = 1)
