@@ -11,78 +11,76 @@ public class SimilarItemCode implements java.io.Serializable {
 	
 	private static final long serialVersionUID = -13582221787L;
 	
-	private String similarItemcd1;
-	private String similarItemcd2;
-	private String similarItemcd3;
-	private String similarItemcd4;
-	private String similarItemcd5;
-	private String similarItemcd6;
-	private String similarItemcd7;
+	private String similaritemcd1;
+	private String similaritemcd2;
+	private String similaritemcd3;
+	private String similaritemcd4;
+	private String similaritemcd5;
+	private String similaritemcd6;
+	private String similaritemcd7;
 	
 	public SimilarItemCode(){}
 	
 	@Column(name = "similar_itemcd1", length = 18)
-	public String getSimilarItemcd1() {
-		return FormatUtil.process(this.similarItemcd1);
+	public String getSimilaritemcd1() {
+		return FormatUtil.process(this.similaritemcd1);
 	}
 
-	public void setSimilarItemcd1(String similarItemcd1) {
-		this.similarItemcd1 = similarItemcd1;
+	public void setSimilaritemcd1(String similaritemcd1) {
+		this.similaritemcd1 = similaritemcd1;
 	}
 
 	@Column(name = "similar_itemcd2", length = 18)
-	public String getSimilarItemcd2() {
-		return FormatUtil.process(this.similarItemcd2);
+	public String getSimilaritemcd2() {
+		return FormatUtil.process(this.similaritemcd2);
 	}
 
-	public void setSimilarItemcd2(String similarItemcd2) {
-		this.similarItemcd2 = similarItemcd2;
+	public void setSimilaritemcd2(String similaritemcd2) {
+		this.similaritemcd2 = similaritemcd2;
 	}
 
 	@Column(name = "similar_itemcd3", length = 18)
-	public String getSimilarItemcd3() {
-		return FormatUtil.process(this.similarItemcd3);
+	public String getSimilaritemcd3() {
+		return FormatUtil.process(this.similaritemcd3);
 	}
 
-	public void setSimilarItemcd3(String similarItemcd3) {
-		this.similarItemcd3 = similarItemcd3;
+	public void setSimilaritemcd3(String similaritemcd3) {
+		this.similaritemcd3 = similaritemcd3;
 	}
 
 	@Column(name = "similar_itemcd4", length = 18)
-	public String getSimilarItemcd4() {
-		return FormatUtil.process(this.similarItemcd4);
+	public String getSimilaritemcd4() {
+		return FormatUtil.process(this.similaritemcd4);
 	}
 
-	public void setSimilarItemcd4(String similarItemcd4) {
-		this.similarItemcd4 = similarItemcd4;
+	public void setSimilaritemcd4(String similaritemcd4) {
+		this.similaritemcd4 = similaritemcd4;
 	}
 
 	@Column(name = "similar_itemcd5", length = 18)
-	public String getSimilarItemcd5() {
-		return FormatUtil.process(this.similarItemcd5);
+	public String getSimilaritemcd5() {
+		return FormatUtil.process(this.similaritemcd5);
 	}
 
-	public void setSimilarItemcd5(String similarItemcd5) {
-		this.similarItemcd5 = similarItemcd5;
+	public void setSimilaritemcd5(String similaritemcd5) {
+		this.similaritemcd5 = similaritemcd5;
 	}
 
 	@Column(name = "similar_itemcd6", length = 18)
-	public String getSimilarItemcd6() {
-		return FormatUtil.process(this.similarItemcd6);
+	public String getSimilaritemcd6() {
+		return FormatUtil.process(this.similaritemcd6);
 	}
 
-	public void setSimilarItemcd6(String similarItemcd6) {
-		this.similarItemcd6 = similarItemcd6;
+	public void setSimilaritemcd6(String similaritemcd6) {
+		this.similaritemcd6 = similaritemcd6;
 	}
 
 	@Column(name = "similar_itemcd7", length = 18)
-	public String getSimilarItemcd7() {
-		return FormatUtil.process(this.similarItemcd7);
+	public String getSimilaritemcd7() {
+		return FormatUtil.process(this.similaritemcd7);
 	}
 
-	public void setSimilarItemcd7(String similarItemcd7) {
-		this.similarItemcd7 = similarItemcd7;
+	public void setSimilaritemcd7(String similaritemcd7) {
+		this.similaritemcd7 = similaritemcd7;
 	}
-
-		
 }	

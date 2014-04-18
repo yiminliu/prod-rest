@@ -10,80 +10,80 @@ public class Test  implements java.io.Serializable {
 
 	private static final long serialVersionUID = -8732135821787L;
 	
-	private Float waterAbsorption;
-	private Float scratchResistance;
-	private String frostResistance;
-	private String chemicalResistance;
-	private Float peiAbrasion;
-	private Float scofWet;
-	private Float scofDry;
-	private Integer breakingStrength;
-	private String scratchStandard;
-	private String breakingStandard;
+	private Float waterabsorption;
+	private Float scratchresistance;
+	private String frostresistance;
+	private String chemicalresistance;
+	private Float peiabrasion;
+	private Float scofwet;
+	private Float scofdry;
+	private Integer breakingstrength;
+	private String scratchstandard;
+	private String breakingstandard;
     private Character restricted;
 	private Character warpage;
 	private Character wedging;
 	private Float dcof;
-	private Character thermalShock;
-	private String bondStrength;
+	private Character thermalshock;
+	private String bondstrength;
 	private Character greenfriendly;
 	private Float moh;
-	private String leadPoint;
-	private Float preConsummer;
-	private Float posConsummer;
+	private String leadpoint;
+	private Float preconsummer;
+	private Float posconsummer;
 	
 	public Test(){}
 	
 	@Column(name = "water_absorption", precision = 4)
-	public Float getWaterAbsorption() {
-		return FormatUtil.process(this.waterAbsorption);
+	public Float getWaterabsorption() {
+		return FormatUtil.process(this.waterabsorption);
 	}
 
-	public void setWaterAbsorption(Float waterAbsorption) {
-		this.waterAbsorption = waterAbsorption;
+	public void setWaterabsorption(Float waterabsorption) {
+		this.waterabsorption = waterabsorption;
 	}
 
 	@Column(name = "scratch_resistance", precision = 5)
-	public Float getScratchResistance() {
-		return FormatUtil.process(this.scratchResistance);
+	public Float getScratchresistance() {
+		return FormatUtil.process(this.scratchresistance);
 	}
 
-	public void setScratchResistance(Float scratchResistance) {
-		this.scratchResistance = scratchResistance;
+	public void setScratchresistance(Float scratchresistance) {
+		this.scratchresistance = scratchresistance;
 	}
 
 	@Column(name = "frost_resistance", length = 1)
-	public String getFrostResistance() {
+	public String getFrostresistance() {
 		
-		if("P".equalsIgnoreCase(frostResistance))
+		if("P".equalsIgnoreCase(frostresistance))
 		   return "Passed";	
-		else if("N".equalsIgnoreCase(frostResistance))
+		else if("N".equalsIgnoreCase(frostresistance))
 		   return "Not Passed";
 		else 
-		   return FormatUtil.process(this.frostResistance);
+		   return FormatUtil.process(this.frostresistance);
 	}
 
-	public void setFrostResistance(String frostResistance) {
-		this.frostResistance = frostResistance;
+	public void setFrostresistance(String frostresistance) {
+		this.frostresistance = frostresistance;
 	}
 
 	@Column(name = "chemical_resistance", length = 1)
-	public String getChemicalResistance() {
-		if("P".equalsIgnoreCase(chemicalResistance))
+	public String getChemicalresistance() {
+		if("P".equalsIgnoreCase(chemicalresistance))
 		   return "Passed";	
-		else if("N".equalsIgnoreCase(chemicalResistance))
+		else if("N".equalsIgnoreCase(chemicalresistance))
 		   return "Not Passed";
 		else 
-		   return FormatUtil.process(chemicalResistance);
+		   return FormatUtil.process(chemicalresistance);
 	}
 
-	public void setChemicalResistance(String chemicalResistance) {
-		this.chemicalResistance = chemicalResistance;
+	public void setChemicalresistance(String chemicalresistance) {
+		this.chemicalresistance = chemicalresistance;
 	}
 
 	@Column(name = "pei_abrasion", precision = 4, scale = 1)
-	public Float getPeiAbrasion() {
-		return FormatUtil.process(this.peiAbrasion);
+	public Float getPeiabrasion() {
+		return FormatUtil.process(this.peiabrasion);
 	}
 	
 	@Column(name = "moh", precision = 5)
@@ -95,53 +95,53 @@ public class Test  implements java.io.Serializable {
 		this.moh = moh;
 	}
 
-	public void setPeiAbrasion(Float peiAbrasion) {
-		this.peiAbrasion = peiAbrasion;
+	public void setPeiabrasion(Float peiabrasion) {
+		this.peiabrasion = peiabrasion;
 	}
 
 	@Column(name = "scof_wet", precision = 4)
-	public Float getScofWet() {
-		return FormatUtil.process(this.scofWet);
+	public Float getScofeet() {
+		return FormatUtil.process(this.scofwet);
 	}
 
-	public void setScofWet(Float scofWet) {
-		this.scofWet = scofWet;
+	public void setScofwet(Float scofwet) {
+		this.scofwet = scofwet;
 	}
 
 	@Column(name = "scof_dry", precision = 4)
-	public Float getScofDry() {
-		return FormatUtil.process(this.scofDry);
+	public Float getScofdry() {
+		return FormatUtil.process(this.scofdry);
 	}
 
-	public void setScofDry(Float scofDry) {
-		this.scofDry = scofDry;
+	public void setScofdry(Float scofdry) {
+		this.scofdry = scofdry;
 	}
 
 	@Column(name = "breaking_strength", precision = 5, scale = 0)
-	public Integer getBreakingStrength() {
-		return FormatUtil.process(this.breakingStrength);
+	public Integer getBreakingstrength() {
+		return FormatUtil.process(this.breakingstrength);
 	}
 
-	public void setBreakingStrength(Integer breakingStrength) {
-		this.breakingStrength = breakingStrength;
+	public void setBreakingstrength(Integer breakingstrength) {
+		this.breakingstrength = breakingstrength;
 	}
 	
 	@Column(name = "sr_standard", length = 15)
 	public String getScratchStandard() {
-		return FormatUtil.process(this.scratchStandard);
+		return FormatUtil.process(this.scratchstandard);
 	}
 
-	public void setScratchStandard(String scratchStandard) {
-		this.scratchStandard = scratchStandard;
+	public void setScratchstandard(String scratchstandard) {
+		this.scratchstandard = scratchstandard;
 	}
 
 	@Column(name = "bk_standard", length = 15)
-	public String getBreakingStandard() {
-		return FormatUtil.process(this.breakingStandard);
+	public String getBreakingstandard() {
+		return FormatUtil.process(this.breakingstandard);
 	}
 
-	public void setBreakingStandard(String breakingStandard) {
-		this.breakingStandard = breakingStandard;
+	public void setBreakingstandard(String breakingstandard) {
+		this.breakingstandard = breakingstandard;
 	}
 
 	@Column(name = "greenfriendly", length = 1)
@@ -154,30 +154,30 @@ public class Test  implements java.io.Serializable {
 	}
 	
 	@Column(name = "pre_consummer", precision = 5)
-	public Float getPreConsummer() {
-		return FormatUtil.process(this.preConsummer);
+	public Float getPreconsummer() {
+		return FormatUtil.process(this.preconsummer);
 	}
 
-	public void setPreConsummer(Float preConsummer) {
-		this.preConsummer = preConsummer;
+	public void setPreconsummer(Float preconsummer) {
+		this.preconsummer = preconsummer;
 	}
 
 	@Column(name = "pos_consummer", precision = 5)
-	public Float getPosConsummer() {
-		return FormatUtil.process(this.posConsummer);
+	public Float getPosconsummer() {
+		return FormatUtil.process(this.posconsummer);
 	}
 
-	public void setPosConsummer(Float posConsummer) {
-		this.posConsummer = posConsummer;
+	public void setPosconsummer(Float posconsummer) {
+		this.posconsummer = posconsummer;
 	}
 
 	@Column(name = "lead_point", length = 4)
-	public String getLeadPoint() {
-		return FormatUtil.process(this.leadPoint);
+	public String getLeadpoint() {
+		return FormatUtil.process(this.leadpoint);
 	}
 
-	public void setLeadPoint(String leadPoint) {
-		this.leadPoint = leadPoint;
+	public void setLeadpoint(String leadpoint) {
+		this.leadpoint = leadpoint;
 	}
 	
 	@Column(name = "restricted", length = 1)
@@ -217,21 +217,21 @@ public class Test  implements java.io.Serializable {
 	}
 
 	@Column(name = "thermal_shock", length = 1)
-	public Character getThermalShock() {
-		return FormatUtil.process(this.thermalShock);
+	public Character getThermalshock() {
+		return FormatUtil.process(this.thermalshock);
 	}
 
-	public void setThermalShock(Character thermalShock) {
-		this.thermalShock = thermalShock;
+	public void setThermalshock(Character thermalshock) {
+		this.thermalshock = thermalshock;
 	}
 
 	@Column(name = "bond_strength", length = 6)
-	public String getBondStrength() {
-		return FormatUtil.process(this.bondStrength);
+	public String getBondstrength() {
+		return FormatUtil.process(this.bondstrength);
 	}
 
-	public void setBondStrength(String bondStrength) {
-		this.bondStrength = bondStrength;
+	public void setBondstrength(String bondstrength) {
+		this.bondstrength = bondstrength;
 	}
 	
 }
