@@ -100,7 +100,7 @@ public class Test  implements java.io.Serializable {
 	}
 
 	@Column(name = "scof_wet", precision = 4)
-	public Float getScofeet() {
+	public Float getScofwet() {
 		return FormatUtil.process(this.scofwet);
 	}
 

@@ -1,7 +1,6 @@
 package com.bedrosians.bedlogic.domain.item.embeddable;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -61,24 +60,6 @@ public class PriorVendor  implements java.io.Serializable {
 		this.priorvendordiscpct1 = priorvendordiscpct1;
 	}
 
-	//@Column(name = "priorvendordiscpct2", precision = 5)
-	//public Float getPriorvendordiscpct2() {
-	//	return FormatUtil.process(this.priorvendordiscpct2;
-	//}
-
-	//public void setPriorvendordiscpct2(Float priorvendordiscpct2) {
-	//	this.priorvendordiscpct2 = priorvendordiscpct2;
-	//}
-
-	//@Column(name = "priorvendordiscpct3", precision = 5)
-	//public Float getPriorvendordiscpct3() {
-	//	return FormatUtil.process(this.priorvendordiscpct3;
-	//}
-
-	//public void setPriorvendordiscpct3(Float priorvendordiscpct3) {
-	//	this.priorvendordiscpct3 = priorvendordiscpct3;
-	//}
-
 	@Column(name = "priorvendorroundaccuracy", precision = 1, scale = 0)
 	public Integer getPriorvendorroundaccuracy() {
 		return FormatUtil.process(this.priorvendorroundaccuracy);
@@ -124,5 +105,22 @@ public class PriorVendor  implements java.io.Serializable {
 		this.priorvendorlandedbasecost = priorvendorlandedbasecost;
 	}
 
+	//@Column(name = "priorvendordiscpct2", precision = 5)
+		//public Float getPriorvendordiscpct2() {
+		//	return FormatUtil.process(this.priorvendordiscpct2;
+		//}
+
+		//public void setPriorvendordiscpct2(Float priorvendordiscpct2) {
+		//	this.priorvendordiscpct2 = priorvendordiscpct2;
+		//}
+
+		//@Column(name = "priorvendordiscpct3", precision = 5)
+		//public Float getPriorvendordiscpct3() {
+		//	return FormatUtil.process(this.priorvendordiscpct3;
+		//}
+
+		//public void setPriorvendordiscpct3(Float priorvendordiscpct3) {
+		//	this.priorvendordiscpct3 = priorvendordiscpct3;
+		//}
 	
 }
