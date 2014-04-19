@@ -12,11 +12,15 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.bedrosians.bedlogic.dao.GenericDaoImpl;
 import com.bedrosians.bedlogic.domain.item.ImsNewFeature;
@@ -31,37 +35,44 @@ import com.bedrosians.bedlogic.domain.item.enums.SurfaceType;
 import com.bedrosians.bedlogic.domain.item.enums.DesignLook;
 import com.bedrosians.bedlogic.domain.item.enums.DesignStyle;
 import com.bedrosians.bedlogic.domain.item.enums.MpsCode;
+import com.bedrosians.bedlogic.util.logger.aspect.LogLevel;
+import com.bedrosians.bedlogic.util.logger.aspect.Loggable;
 
 @Repository("itemDao")
 public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao {
 					
-	 private static final int OFF_SET = 0;
-	 private static final int MAX_RESULTS = 500;
+    @Autowired
+	private SessionFactory sessionFactory;
+	 
+	//private static final int OFF_SET = 0;
+	private static final int MAX_RESULTS = 500;
  
      
 	@Override
-	public Item getItemById(Session session, String itemId) {
-       return findById(session, itemId);
+	@Loggable(value = LogLevel.TRACE)
+	@Transactional(readOnly=true)
+	public Item getItemById(final String itemId) {
+       return findById(sessionFactory.openSession(), itemId);
 	}
 	
 	@Override
-	public Item loadItemById(Session session, String itemId) {
+	@Loggable(value = LogLevel.TRACE)
+	public Item loadItemById(Session session, final String itemId) {
        return loadById(session, itemId);
 	}
-	
-   public List<Item> getItemsByQueryParameters(Session session, MultivaluedMap<String, String> queryParams){
-	
+ 
+ 
+   @Override
+   @Loggable(value = LogLevel.TRACE)
+   @Transactional(readOnly=true)	
+   public List<Item> getItemsByQueryParameters(MultivaluedMap<String, String> queryParams){
 	   if(queryParams == null) 
 		   return null;
-		
 		List<Item> items = null;
-		
 		boolean exactMatch = queryParams.containsKey("exactMatch")? true : false;
-		
 		Set<Map.Entry<String, List<String>>> set = queryParams.entrySet();
 	    Iterator it = set.iterator();
-	    Criteria criteria = session.createCriteria(Item.class);
-	    //criteria.setFetchMode("imsNewFeature", FetchMode.JOIN);
+	    Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Item.class);
 	    Criteria newFeatureCriteria = null;
 	    Criteria vendorCriteria = null;
 	  	criteria.setReadOnly(true);
@@ -74,19 +85,19 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
    		   	if(key == null && key.trim().length() == 0)
    	    	   throw new IllegalArgumentException("Invalid field name in query.");
    		
-   		 	if("itemcd".equalsIgnoreCase(key) || "itemcode".equalsIgnoreCase(key) || "itemId".equalsIgnoreCase(key))
-   		   		key = "itemCode";
-   		    if("materialCategory".equalsIgnoreCase(key) || "matCategory".equalsIgnoreCase(key))
-		   		key = "matcategory";
+   		 	if("itemcd".equalsIgnoreCase(key) || "itemCode".equalsIgnoreCase(key) || "itemId".equalsIgnoreCase(key))
+   		   		key = "itemcode";
+   		    if("materialCategory".equalsIgnoreCase(key) || "matcategory".equalsIgnoreCase(key) || "matCategory".equalsIgnoreCase(key))
+		   		key = "materialcategory";
    		    if("colorCategory".equalsIgnoreCase(key))
-		   		key = "calorategory";
+		   		key = "colorcategory";
 		    if("seriesName".equalsIgnoreCase(key))
 		   		key = "seriesname";
-		    if("length".equalsIgnoreCase(key))
+		    if("length".equalsIgnoreCase(key) || ("nominallength".equalsIgnoreCase(key)) || ("nominalLength".equalsIgnoreCase(key)))
 		   		key = "nmLength";
-		    if("width".equalsIgnoreCase(key))
+		    if("width".equalsIgnoreCase(key) || ("nominalwidth".equalsIgnoreCase(key)) || ("nominalWidth".equalsIgnoreCase(key)))
 		   		key = "nmWidth";
-		    if("thickness".equalsIgnoreCase(key))
+		    if("thickness".equalsIgnoreCase(key) || ("nominalthickness".equalsIgnoreCase(key)) || ("nominalThickness".equalsIgnoreCase(key)))
 		   		key = "nmThickness";		
    		   	List<String> values = entry.getValue();
    		   	
@@ -148,16 +159,16 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
    	    		   if(values.size() > 1 )
    	    		      criteria.add(Restrictions.in(key, (String[])values.toArray()));
    	    		   else {
-   	    		         if(!exactMatch && ("itemCode".equalsIgnoreCase(key) ||
-   	    		        		            "description".equalsIgnoreCase(key) || 
+   	    		         if(!exactMatch && ("itemcode".equalsIgnoreCase(key) ||
+   	    		        		            "itemdesc1".equalsIgnoreCase(key) || 
    	    		        		            "color".equalsIgnoreCase(key)  || 
    	    		        		            "colorcategory".equalsIgnoreCase(key) ||
    	    		        		            "seriesname".equalsIgnoreCase(key)  || 
-   	    		        		            "matcategory".equalsIgnoreCase(key))) {
+   	    		        		            "materialcategory".equalsIgnoreCase(key))) {
    	    			        criteria.add(Restrictions.like(key, value+"%").ignoreCase());
    	    		         }   
    	    		         else {
-   	    		        	if (key.contains("price"))
+   	    		        	if (key.contains("price") || key.endsWith("cost") || key.endsWith("Cost"))
      	    		    	    criteria.add(Restrictions.eq(key, new BigDecimal(value))); 
    	    		        	else if (key.toUpperCase().endsWith("RATIO") || 
    	    		        			 key.toUpperCase().endsWith("PCT") || key.toUpperCase().endsWith("PCT1") ||  key.toUpperCase().endsWith("PCT2") ||  key.toUpperCase().endsWith("PCT3") ||
@@ -175,26 +186,28 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
    	    	   }
    		    }   
 	  	}
-	  	criteria.addOrder(Order.asc("itemCode"));
+	  	criteria.addOrder(Order.asc("itemcode"));
 	  	criteria.setMaxResults(MAX_RESULTS);
 	  	System.out.println("criteria = " +criteria.toString());
 	  	items =  (List<Item>)criteria.list();			
 	  	return items;
 	
-   }
+    }
+	  
+	@Override
+	@Loggable(value = LogLevel.TRACE)
+	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
+	public String createItem(Item item){
+		return (String)save(sessionFactory.getCurrentSession(), item); 
+	}
 	
 	@Override
+	@Loggable(value = LogLevel.TRACE)
 	public void updateItem(Session session, Item item){
 		update(session, item);
 	}
-	  
-	@Override
-	public String createItem(Session session, Item item){
-		return (String)save(session, item); 
-		//return (String)currentSession().save(item); 
-	}
 	
-	public Criteria parseSize(Criteria criteria, List<String> values){
+	private Criteria parseSize(Criteria criteria, List<String> values){
 	   		   	
 		Disjunction disjunction = Restrictions.disjunction();
 		for(String value : values) {
