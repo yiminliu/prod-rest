@@ -11,7 +11,7 @@ import javax.persistence.SequenceGenerator;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-import com.bedrosians.bedlogic.domain.item.Icon;
+import com.bedrosians.bedlogic.domain.item.IconDescription;
 import com.bedrosians.bedlogic.domain.item.Item;
 import com.bedrosians.bedlogic.domain.item.enums.MpsCode;
 import com.bedrosians.bedlogic.domain.item.enums.Origin;
@@ -41,7 +41,7 @@ public class ImsResultUtil {
 		return mpsCode;
 	}
 	
-	public static Icon parseIcons(String icons){
+	public static IconDescription parseIcons(String icons){
 		 /*!
 		* Stored as 20 character string
 		*
@@ -71,7 +71,7 @@ public class ImsResultUtil {
 		if(icons == null || icons.length() == 0)
 			return null;
 		
-		Icon icon = new Icon();
+		IconDescription icon = new IconDescription();
 		
 		String country = null;
 				
@@ -146,32 +146,32 @@ public class ImsResultUtil {
 	
 	public static String getStandardSellUnit(Item item) {
 		
-		String standardUnit = item.getBaseunit();
+		String standardUnit = item.getUnits().getBaseunit();
 		
-        if (item.getUnit1isstdsell() != null && item.getUnit1isstdsell() == 'Y')
-        	standardUnit = item.getUnit1unit();
-        else if (item.getUnit2isstdsell() != null && item.getUnit2isstdsell() == 'Y')
-        	standardUnit = item.getUnit2unit();
-        else if (item.getUnit3isstdsell() != null && item.getUnit3isstdsell() == 'Y')
-        	standardUnit = item.getUnit3unit();
-        else if (item.getUnit4isstdsell() != null && item.getUnit4isstdsell() == 'Y')
-        	standardUnit = item.getUnit4unit();
+        if (item.getUnits().getUnit1isstdsell() != null && item.getUnits().getUnit1isstdsell() == 'Y')
+        	standardUnit = item.getUnits().getUnit1unit();
+        else if (item.getUnits().getUnit2isstdsell() != null && item.getUnits().getUnit2isstdsell() == 'Y')
+        	standardUnit = item.getUnits().getUnit2unit();
+        else if (item.getUnits().getUnit3isstdsell() != null && item.getUnits().getUnit3isstdsell() == 'Y')
+        	standardUnit = item.getUnits().getUnit3unit();
+        else if (item.getUnits().getUnit4isstdsell() != null && item.getUnits().getUnit4isstdsell() == 'Y')
+        	standardUnit = item.getUnits().getUnit4unit();
        
         return standardUnit;
     }
 	
 	public static String getStandardPurchaseUnit(Item item) {
 		
-		String standardUnit = item.getBaseunit();
+		String standardUnit = item.getUnits().getBaseunit();
 		
-        if (item.getUnit1isstdsell() != null && item.getUnit1isstdord() == 'Y')
-        	standardUnit = item.getUnit1unit();
-        else if (item.getUnit2isstdsell() != null && item.getUnit2isstdord() == 'Y')
-        	standardUnit = item.getUnit2unit();
-        else if (item.getUnit3isstdsell() != null && item.getUnit3isstdord() == 'Y')
-        	standardUnit = item.getUnit3unit();
-        else if (item.getUnit4isstdsell() != null && item.getUnit4isstdord() == 'Y')
-        	standardUnit = item.getUnit4unit();
+        if (item.getUnits().getUnit1isstdsell() != null && item.getUnits().getUnit1isstdord() == 'Y')
+        	standardUnit = item.getUnits().getUnit1unit();
+        else if (item.getUnits().getUnit2isstdsell() != null && item.getUnits().getUnit2isstdord() == 'Y')
+        	standardUnit = item.getUnits().getUnit2unit();
+        else if (item.getUnits().getUnit3isstdsell() != null && item.getUnits().getUnit3isstdord() == 'Y')
+        	standardUnit = item.getUnits().getUnit3unit();
+        else if (item.getUnits().getUnit4isstdsell() != null && item.getUnits().getUnit4isstdord() == 'Y')
+        	standardUnit = item.getUnits().getUnit4unit();
        
         return standardUnit;
     }
@@ -181,14 +181,14 @@ public class ImsResultUtil {
     {
 		float baseToSellRatio = 1f;
  
-        if(item.getUnit1isstdsell() != null && "Y".equalsIgnoreCase(item.getUnit1isstdsell().toString().trim()))
-            baseToSellRatio = item.getUnit1ratio();
-        else if(item.getUnit2isstdsell() != null && "Y".equalsIgnoreCase(item.getUnit2isstdsell().toString().trim()))
-            baseToSellRatio = item.getUnit2ratio();
-        else if(item.getUnit3isstdsell() != null && "Y".equalsIgnoreCase(item.getUnit3isstdsell().toString().trim()))
-            baseToSellRatio = item.getUnit3ratio();
-        else if(item.getUnit4isstdsell() != null && "Y".equalsIgnoreCase(item.getUnit4isstdsell().toString().trim()));
-            baseToSellRatio = item.getUnit4ratio();
+        if(item.getUnits().getUnit1isstdsell() != null && "Y".equalsIgnoreCase(item.getUnits().getUnit1isstdsell().toString().trim()))
+            baseToSellRatio = item.getUnits().getUnit1ratio();
+        else if(item.getUnits().getUnit2isstdsell() != null && "Y".equalsIgnoreCase(item.getUnits().getUnit2isstdsell().toString().trim()))
+            baseToSellRatio = item.getUnits().getUnit2ratio();
+        else if(item.getUnits().getUnit3isstdsell() != null && "Y".equalsIgnoreCase(item.getUnits().getUnit3isstdsell().toString().trim()))
+            baseToSellRatio = item.getUnits().getUnit3ratio();
+        else if(item.getUnits().getUnit4isstdsell() != null && "Y".equalsIgnoreCase(item.getUnits().getUnit4isstdsell().toString().trim()));
+            baseToSellRatio = item.getUnits().getUnit4ratio();
        
          if(baseToSellRatio == 0)
         	baseToSellRatio = 1;
@@ -198,16 +198,16 @@ public class ImsResultUtil {
 	
 	public static String getPackUnit(Item item)
     {
-		String packUnit = item.getBaseunit();
+		String packUnit = item.getUnits().getBaseunit();
  
-        if(item.getUnit1ispackunit() != null && "Y".equalsIgnoreCase(item.getUnit1ispackunit().toString().trim()))
-           packUnit = item.getUnit1unit();
-        else if(item.getUnit2ispackunit() != null && "Y".equalsIgnoreCase(item.getUnit2ispackunit().toString().trim()))
-           packUnit = item.getUnit2unit();   
-        else if(item.getUnit3ispackunit() != null && "Y".equalsIgnoreCase(item.getUnit3ispackunit().toString().trim()))
-           packUnit = item.getUnit3unit();   
-        else if(item.getUnit4ispackunit() != null && "Y".equalsIgnoreCase(item.getUnit4ispackunit().toString().trim()))
-           packUnit = item.getUnit4unit();    
+        if(item.getUnits().getUnit1ispackunit() != null && "Y".equalsIgnoreCase(item.getUnits().getUnit1ispackunit().toString().trim()))
+           packUnit = item.getUnits().getUnit1unit();
+        else if(item.getUnits().getUnit2ispackunit() != null && "Y".equalsIgnoreCase(item.getUnits().getUnit2ispackunit().toString().trim()))
+           packUnit = item.getUnits().getUnit2unit();   
+        else if(item.getUnits().getUnit3ispackunit() != null && "Y".equalsIgnoreCase(item.getUnits().getUnit3ispackunit().toString().trim()))
+           packUnit = item.getUnits().getUnit3unit();   
+        else if(item.getUnits().getUnit4ispackunit() != null && "Y".equalsIgnoreCase(item.getUnits().getUnit4ispackunit().toString().trim()))
+           packUnit = item.getUnits().getUnit4unit();    
        
         return packUnit;
     }

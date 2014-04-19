@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jettison.json.JSONObject;
 
 import com.bedrosians.bedlogic.domain.item.Item;
 import com.bedrosians.bedlogic.domain.item.Vendor;
@@ -66,21 +67,113 @@ public class ImsQueryUtil {
 	    return false;
 	}
 	
-    public static int determineNumberOfVendors(MultivaluedMap<String, String> queryParams) {
+	public static boolean containsAnyKey(JSONObject inputJsonObj, List<String> keys) {
+		Iterator<String> iterator = inputJsonObj.keys(); 
+	    while(iterator.hasNext()){
+	      	if(keys.contains((String)iterator.next()))
+	    	   return true; 
+	    }
+	    return false;
+	}
+	
+	public static String getItemCode(JSONObject inputJsonObj){
+    	String itemCode = null;
+    	try {
+    		itemCode = inputJsonObj.optString("itemcode") != ""?  inputJsonObj.optString("itemcode") : 
+    		         inputJsonObj.optString("itemCode") != ""?  inputJsonObj.optString("itemCode") : 
+    		         inputJsonObj.optString("itemcd") != ""?  inputJsonObj.optString("itemcd") :  	
+    		         inputJsonObj.optString("itemId");	 
+    	}
+    	catch(Exception e){
+    		e.printStackTrace(); // just swallow it
+    	}
+    	return itemCode;	         
+    }
+	
+	public static int determineNumberOfVendors(MultivaluedMap<String, String> queryParams) {
 		int numberOfVendors = 0;
 	    Set<Map.Entry<String, List<String>>> set = queryParams.entrySet();
 	    for(Entry<String, List<String>> entry : set){
-	    	if(entry.getKey().startsWith("vendor"))
+	    	if(entry.getKey().startsWith("vendor") && numberOfVendors < 1)
 	    		numberOfVendors = 1;	
-	       	if(entry.getKey().startsWith("vendor2") || entry.getKey().startsWith("v2_"))
+	       	if((entry.getKey().startsWith("vendor2") || entry.getKey().startsWith("v2_")) && numberOfVendors < 2)
 	    		numberOfVendors = 2;
-	    	if(entry.getKey().startsWith("vendor3") || entry.getKey().startsWith("v3_"))
+	    	if(entry.getKey().startsWith("vendor3") || entry.getKey().startsWith("v3_")){
 	    		numberOfVendors = 3;
+	    		break;
+	    	}	
+	    }
+	    return numberOfVendors;
+	}
+    
+    public static int determineNumberOfVendors(JSONObject inputJsonObj) {
+		int numberOfVendors = 0;
+	    Iterator iterator = inputJsonObj.keys();
+	    String key = "";
+	    while(iterator.hasNext()){
+	    	key = (String)iterator.next();
+	    	if(key.startsWith("vendor") && numberOfVendors < 1)
+	    		numberOfVendors = 1;	
+	       	if((key.startsWith("vendor2") || key.startsWith("v2_")) && numberOfVendors < 2)
+	    		numberOfVendors = 2;
+	    	if(key.startsWith("vendor3") || key.startsWith("v3_")){
+	    		numberOfVendors = 3;
+	    		break;
+	    	}	
 	    }
 	    return numberOfVendors;
 	}
 
-	
+    public static Item buildItemFromJsonObjectForInsert(Item item, JSONObject inputJsonObj){
+    	Iterator<String> itrator = inputJsonObj.keys();
+   		String key, value = null;
+		while(itrator.hasNext()) {
+			try{
+		   	   key = (String)itrator.next();
+		   	   value = (String)inputJsonObj.get(key);
+		   	   setParameter(item, key, value);
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+		} 
+		for(Vendor vendor : item.getVendors()){
+			if(vendor.getItemVendorId().getitemcd() == null)
+			vendor.getItemVendorId().setItemcd(item.getItemcode());
+		}
+		return item;
+	}
+    
+    public static Item buildItemFromJsonObject(Item item, JSONObject inputJsonObj, String action){
+		Iterator<String> itrator = inputJsonObj.keys();
+   		String key, value = null;
+		while(itrator.hasNext()) {
+			try{
+		   	   key = (String)itrator.next();
+		   	   if("update".equalsIgnoreCase(action) && (key.equalsIgnoreCase("itemcd") || 
+		   			                                    key.equalsIgnoreCase("itemcode") || 
+		   			                                    key.equalsIgnoreCase("itemCode") || 
+		   			                                    key.equalsIgnoreCase("itemId")))
+			   	   continue;
+		   	   value = (String)inputJsonObj.get(key);
+		   	   setParameter(item, key, value);
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+		} 
+		for(Vendor vendor : item.getVendors()){
+			if(vendor.getItemVendorId().getitemcd() == null)
+			vendor.getItemVendorId().setItemcd(item.getItemcode());
+		}
+		return item;
+	}
+ 
+    public static Item buildItemFromJsonString(String jsonString){
+    	return (Item)JsonUtil.jsonStringToPOJO(jsonString, new Item());
+    }
+    	
+    
 	public static Item buildItemForInsert(Item item, MultivaluedMap<String, String> queryParams){
 			
 	    Set<Map.Entry<String, List<String>>> set = queryParams.entrySet();
@@ -97,19 +190,9 @@ public class ImsQueryUtil {
 				e.printStackTrace();
 			}
 		} 
-		//ImsNewFeature newFeature = item.getImsNewFeature();
-		//if(newFeature != null && newFeature.getItemcd() == null) 
-			//newFeature.setItemcd(item.getItemcd());
-		
-		//newFeature.setCreatedDate(new Date());
-		//newFeature.setItem(item);
-		//item.setImsNewFeature(newFeature);
-				  	
-		//if(item.getVendors() != null && item.getVendors().get(0).getItemVendorId().getitemcd() == null)
-			//item.getVendors().get(0).getItemVendorId().setItemcd(item.getItemcd());
 		for(Vendor vendor : item.getVendors()){
 			if(vendor.getItemVendorId().getitemcd() == null)
-			vendor.getItemVendorId().setItemcd(item.getItemCode());
+			vendor.getItemVendorId().setItemcd(item.getItemcode());
 		}
 		return item;
 	}
@@ -154,11 +237,11 @@ public class ImsQueryUtil {
 
     	   /*------- basic info ---------*/ 
     	   case "itemcd": case "itemcode": case "itemCode":
-    		   item.setItemCode(value);
+    		   item.setItemcode(value);
     		   itemcd = value;
       		   break;
     	   case "description": case "itemdesc1":
-    		   item.setDescription(value);
+    		   item.setItemdesc1(value);
     		   break;
     	   case "seriesname":  case "seriesName":
     		   item.setSeriesname(value);
@@ -176,22 +259,22 @@ public class ImsQueryUtil {
     		   item.setType(value);
     		   break;
        	   case "itemtypecd": case "itemtypeCode": case "itemTypeCode":
-    		   item.setItemtypecd(value);
+    		   item.setItemtypecd(value.charAt(0));
     		   break;
        	   case "origin":
   		       item.setOrigin(value);
   		       break;	   
     	   case "showonwebsite": case "showOnWebsite":
-    		   item.setShowonwebsite(value);
+    		   item.setShowonwebsite(value.charAt(0));
     		   break;	
-    	   case "productManager":
-    		   item.setProductManager(value);
+    	   case "purchaser": case "productManager": case "productmanager":
+    		   item.getPurchaser().setPurchaser(value);
     		   break;	
-    	   case "buyer":
-    		   item.setBuyer(value);
+    	   case "purchaser2": case "buyer":
+    		   item.getPurchaser().setPurchaser(value);
     		   break;
     	   case "taxclass": case "taxClass": case "itemtaxclass": case "itemTaxClass":
-    		   item.setTaxClass(TaxClass.instanceOf(value));	   
+    		   item.setTaxClass(value.charAt(0));	   
     		   break;
     	   case "inactivecd": case "inactive_code":
     		   item.setInactivecd(value);
@@ -199,17 +282,17 @@ public class ImsQueryUtil {
     	   case "shadevariation": case "shadeVariation":
     		   item.setShadevariation(value);
     		   break;		
-    	   case "inventoryItemcd": case "inventoryitemcd":
+    	   case "inventoryitemcd": case "inventoryItemcd": case "inventoryItemCode":
     		   item.setInventoryItemcd(value);
     		   break;	
     	   case "showonalysedwards": case "showOnAlysedwards":
-    		   item.setShowonalysedwards(value);
+    		   item.setShowonalysedwards(value.charAt(0));
     		   break;	
     	   case "offshade": case "offShade":
-    		   item.setOffshade(value);
+    		   item.setOffshade(value.charAt(0));
     		   break;		
     	   case "printlabel": case "printLabel":
-    		   item.setPrintlabel(value);
+    		   item.setPrintlabel(value.charAt(0));
     		   break;	
        	   case "lottype": case "lotType":
     		   item.setLottype(value);
@@ -233,7 +316,7 @@ public class ImsQueryUtil {
     		   item.setProductline(value);
     		   break;	   
      	   case "icons":
-    		   item.setIcons(value);
+    		   item.setIconsystem(value);
     		   break;
     	   case "directship": case "directShip":
     		   item.setDirectship(value.charAt(0));
@@ -246,10 +329,7 @@ public class ImsQueryUtil {
     		   break;
     	   case "updatecd":
     		   item.setUpdatecd(value);
-    		   break;
-    	   case "cost": case "cost1":
-    		   item.setCost(new BigDecimal(value));
-    		   break;			
+    		   break;		
     			
     	/*-------- dimension --------*/	   
     	   case "size":
@@ -264,13 +344,13 @@ public class ImsQueryUtil {
     	   case "thickness":
     		   item.setThickness(value);
     		   break;
-    	   case "nmLength":  case "norminalLength":
+    	   case "nmLength":  case "nominalLength":
     		   item.setNmLength(Float.valueOf(value));
     		   break;
-    	   case "nmWidth":  case "norminalWidth":
+    	   case "nmWidth":  case "nominalWidth":
     		   item.setNmWidth(Float.valueOf(value));
     		   break;
-    	   case "nmThickness": case "norminalThickness":
+    	   case "nmThickness": case "nominalThickness":
     		   item.setNmThickness(Float.valueOf(value));
     		   break;	
     	   case "sizeunits": case "sizeUnits":
@@ -281,94 +361,112 @@ public class ImsQueryUtil {
     		   break;	
     		   
     	/*----- material info -------*/
-    	   case "mfeature": case "mFeature": case "materialFeature":
-    		   item.setMfeature(value);
+    	   case "mfeature": case "mFeature": case "materialfeature": case "materialFeature":
+    		   item.setMaterialfeature(value);
     		   break;	
-    	   case "mattype": case "matType": case "materialType":
-    		   item.setMattype(value);
+    	   case "mattype": case "matType": case "materialtype": case "materialType":
+    		   item.setMaterialtype(value);
     		   break;			   
-    	   case "matcategory": case "matCategory": case "materialCategory":
-    		   item.setMatcategory(value);
+    	   case "matcategory": case "matCategory": case "materialcategory": case "materialCategory":
+    		   item.setMaterialcategory(value);
     		   break;	   
-    	   case "matstyle": case "matStyle": case "materialStyle":
-    		   item.setMatstyle(value);
+    	   case "matstyle": case "matStyle": case "materialstyle": case "materialStyle":
+    		   item.setMaterialstyle(value);
     		   break;	
-    	   case "materialclassCd": case "materialClassCd": case "materialClassCode":
-    		   item.setMaterialclassCd(value);
+    	   case "materialclass": case "materialclassCd": case "materialClassCd": case "materialClassCode":
+    		   item.setMaterialclass(value);
     		   break; 	   
     			
     		 //------- price info --------//	
     	   case "price": case "sellprice": case "sellPrice":
-    		   item.setPrice(new BigDecimal(value));
+    		   item.getPrices().setSellprice(new BigDecimal(value));
     		   break;	
     	   case "listPrice": case "lisrprice":
-    		   item.setListprice(new BigDecimal(value));
+    		   item.getPrices().setListprice(new BigDecimal(value));
     		   break;	   
     	   case "futurePrice": case "futuresell":
-    		   item.setFuturePrice(new BigDecimal(value));
+    		   item.getPrices().setFuturesell(new BigDecimal(value));
     		   break;	
     	   case "priorPrice": case "priorsellprice":
-    		   item.setPriorPrice(new BigDecimal(value));
+    		   item.getPrices().setPriorsellprice(new BigDecimal(value));
     		   break;
+    	   case "pricegroup": case "priceGroup":
+    		   item.getPrices().setPricegroup(value);
+    		   break;  	   
     	   case "tempPrice": case "tempprice":
-    		   item.setFuturePrice(new BigDecimal(value));
+    		   item.getPrices().setTempprice(new BigDecimal(value));
     		   break;
-    	   case "tempdatefrom":  case "tempdDteFrom":
-    		   item.setTempdatefrom(new Date(value));
+    	   case "tempdatefrom":  case "tempDateFrom":
+    		   item.getPrices().setTempdatefrom(new Date(value));
     		   break;	   
-    	   case "tempdatethru":  case "tempDateThru":
-    		   item.setTempdatethru(new Date(value));
+    	   case "tempdatethru":  case "tempDateThrough":
+    		   item.getPrices().setTempdatethru(new Date(value));
     		   break;	   	  
-    	   case "pricemarginpct": case "priceMarginPct":
-    		   item.setPriceMarginPct(Float.parseFloat(value));
+    	   case "sellpricemarginpct": case "pricemarginpct": case "priceMarginPct":
+    		   item.getPrices().setSellpricemarginpct(Float.parseFloat(value));
     		   break;		   
-    	   case "minimalmarginpct": case "minimalMarginPct":
-    		   item.setMinimalMarginPct(Float.parseFloat(value));
+    	   case "minmarginpct": case "minimalmarginpct": case "minimalMarginPct":
+    		   item.getPrices().setMinmarginpct(Float.parseFloat(value));
     		   break;	
-    	   case "priceroundaccuracy": case "priceRoundAccuracy":
-    		   item.setPriceRoundAccuracy(Integer.parseInt(value));
+    	   case "sellpriceroundaccuracy": case "priceroundaccuracy": case "priceRoundAccuracy":
+    		   item.getPrices().setSellpriceroundaccuracy(Integer.parseInt(value));
     		   break;
     	   case "listpricemarginpct": case "listPriceMarginPct":
     		   item.setListpricemarginpct(Float.parseFloat(value));
     		   break;
-    	   case "poincludeinvendorcost":
-    		   item.setPoincludeinvendorcost(value.charAt(0));
-    		   break;
-    	   case "priorvendorlandedbasecost":
-    		   item.setPriorvendorlandedbasecost(new BigDecimal(value));
-    		   break;	
-    	   case "nonstockcostpct":
-    		   item.setNonstockcostpct(Float.parseFloat(value));
-    		   break;
-    	   case "pricegroup": case "priceGroup":
-    		   item.setPricegroup(value);
-    		   break;  
-    	   case "priorlistprice":
-    		   item.setPriorlistprice(new BigDecimal(value));
-    		   break;	   
+    	   case "priorlistprice": case "priorListPrice":
+    		   item.getPrices().setPriorlistprice(new BigDecimal(value));
+    		   break; 
     	   case "priorvendorpriceunit": case "priorVendorPriceUnit":
-    		   item.setPriorvendorpriceunit(value);
+    		   item.getPriorVendor().setPriorvendorpriceunit(value);
     	   case "priorvendorfob": case "priorVendorFob":
-    		   item.setPriorvendorfob(value);	   
+    		   item.getPriorVendor().setPriorvendorfob(value);	 
+    		   break;
+    	   case "priorvendorlandedbasecost": case "priorvendorLandedBaseCost":
+    		   item.getPriorVendor().setPriorvendorlandedbasecost(new BigDecimal(value));
+    		   break;	   
     	   case "priorvendorlistprice": case "priorVendorListPrice":
-    		   item.setPriorvendorlistprice(new BigDecimal(value));
+    		   item.getPriorVendor().setPriorvendorlistprice(new BigDecimal(value));
     		   break;
     	   case "priorvendornetprice": case "priorVendorNetPrice":
-    		   item.setPriorvendornetprice(new BigDecimal(value));
+    		   item.getPriorVendor().setPriorvendornetprice(new BigDecimal(value));
     		   break;
     	   case "priorvendorfreightratecwt": case "priorVendorFreightRateCwt":
-    		   item.setPriorvendorfreightratecwt(new BigDecimal(value));
+    		   item.getPriorVendor().setPriorvendorfreightratecwt(Float.parseFloat(value));
     		   break;
     	   case "priorvendordiscpct1": case "priorVendorDiscPct1":
-    		   item.setPriorvendordiscpct1(Float.parseFloat(value));
+    		   item.getPriorVendor().setPriorvendordiscpct1(Float.parseFloat(value));
     		   break;
     	   case "priorvendormarkuppct": case "priorVendorMarkupPct":
-    		   item.setPriorvendormarkuppct(Float.parseFloat(value));
+    		   item.getPriorVendor().setPriorvendormarkuppct(Float.parseFloat(value));
     		   break;
     	   case "priorvendorroundaccuracy": case "priorVendorRoundAccuracy":
-    		   item.setPriorvendorroundaccuracy(Integer.parseInt(value));
+    		   item.getPriorVendor().setPriorvendorroundaccuracy(Integer.parseInt(value));
     		   break;
     	   		
+    	   /*---------- Cost ----------*/	 
+    	   case "cost": case "cost1":
+    		   item.getCost().setCost1(new BigDecimal(value));
+    		   break;	
+    	   case "poincludeinvendorcost": case "poIncludeinVendorCost":
+    		   item.getCost().setPoincludeinvendorcost(value.charAt(0));
+    		   break;	
+    	   case "nonstockcostpct":
+    		   item.getCost().setNonstockcostpct(Float.parseFloat(value));
+    		   break;
+    	   case "priorcost": case "priorCost":
+    		   item.getCost().setPriorcost(new BigDecimal(value));
+    		   break; 
+    	   case "priorcost1": case "priorCost1":
+    		   item.getCost().setPriorcost1(new BigDecimal(value));
+    		   break;	   
+    	   case "futurecost": case "futureCost":
+    		   item.getCost().setFuturecost(new BigDecimal(value));
+    		   break;   
+    	   case "futurecost1": case "futureCost1":
+    		   item.getCost().setFuturecost1(new BigDecimal(value));
+    		   break;  
+    		   
     		/*---------- Vendor ----------*/	
     	   case "vendorId": case "vendornbr1":
     		   item.setVendornbr1(Integer.parseInt(value));
@@ -380,6 +478,9 @@ public class ImsQueryUtil {
     		   item.setVendorxrefcd(value);
     		   item.getVendors().get(0).setVendorXrefId(value);
     		   break; 
+    	   case "vendorOrder": case "vendororder": 
+    		   item.getVendors().get(0).setVendorOrder(Integer.parseInt(value));
+    		   break;
     	   case "vendorpriceunit": case "vendorPriceUnit":
     		   item.setVendorpriceunit(value);
     		   item.getVendors().get(0).setVendorPriceUnit(value);
@@ -419,11 +520,11 @@ public class ImsQueryUtil {
     		   item.setVendordiscpct3(Float.parseFloat(value));
     		   break;
     	   case "vendorlandedbasecost": case "vendorLandedBaseCost":
-    		   item.setVendorlandedbasecost(new BigDecimal(value));
+    		   item.setVendorLandedBaseCost(new BigDecimal(value));
         	   break;	   
     	   case "vendorfreightratecwt": case "vendorFreightRateCwt":
-    		   item.setVendorfreightratecwt(new BigDecimal(value));
-    		   item.getVendors().get(0).setVendorFreightRateCwt(new BigDecimal(value));
+    		   item.setVendorfreightratecwt(Float.parseFloat(value));
+    		   item.getVendors().get(0).setVendorFreightRateCwt(Float.parseFloat(value));
     		   break;
     	   case "vendorroundaccuracy": case "vendorRoundAccuracy": case "vendorpriceroundaccuracy":
     		   item.setVendorroundaccuracy(Integer.parseInt(value));
@@ -450,6 +551,9 @@ public class ImsQueryUtil {
     	   case "v2_xrefid": case "v2_vendorxrefcd": 
     		   item.getVendors().get(1).setVendorXrefId(value);
     		   break; 
+    	   case "v2_vendorOrder": case "v2_vendororder": 
+    		   item.getVendors().get(1).setVendorOrder(Integer.parseInt(value));
+    		   break;	   
     	   case "v2_vendorpriceunit": case "v2_vendorPriceUnit":
     		   item.getVendors().get(1).setVendorPriceUnit(value);
     		   break; 
@@ -477,11 +581,11 @@ public class ImsQueryUtil {
     	   case "v2_vendordiscpct": case "v2_vendordiscpct1": case "v2_vendorDiscPct":
     		   item.getVendors().get(1).setVendorDiscountPct(Float.parseFloat(value));
     		   break;	  
-    	   case "v2_vendorlandedbasecost": case "v_vendorLandedBaseCost":
-    		   item.getVendors().get(1).setVendorlandedbasecost(new BigDecimal(value));
+    	   case "v2_vendorlandedbasecost": case "v2_vendorLandedBaseCost":
+    		   item.getVendors().get(1).setVendorLandedBaseCost(new BigDecimal(value));
         	   break;	   
     	   case "v2_vendorfreightratecwt": case "v2_vendorFreightRateCwt":
-    		   item.getVendors().get(1).setVendorFreightRateCwt(new BigDecimal(value));
+    		   item.getVendors().get(1).setVendorFreightRateCwt(Float.parseFloat(value));
     		   break;
     	   case "v2_vendorroundaccuracy": case "v2_vendorRoundAccuracy": case "v2_vendorpriceroundaccuracy":
     		   item.getVendors().get(1).setVendorPriceRoundAccuracy(Integer.parseInt(value));
@@ -495,6 +599,9 @@ public class ImsQueryUtil {
     	   case "v3_xrefid": case "v3_vendorxrefcd": 
     		   item.getVendors().get(2).setVendorXrefId(value);
     		   break; 
+    	   case "v3_vendorOrder": case "v3_vendororder": 
+    		   item.getVendors().get(2).setVendorOrder(Integer.parseInt(value));
+    		   break;
     	   case "v3_vendorpriceunit": case "v3_vendorPriceUnit":
     		   item.getVendors().get(2).setVendorPriceUnit(value);
     		   break; 
@@ -521,9 +628,12 @@ public class ImsQueryUtil {
     		   break;	
     	   case "v3_vendordiscpct": case "v3_vendordiscpct1": case "v3_vendorDiscPct":
     		   item.getVendors().get(2).setVendorDiscountPct(Float.parseFloat(value));
-    		   break;	  
+    		   break;	
+    	   case "v3_vendorlandedbasecost": case "v3_vendorLandedBaseCost":
+    		   item.getVendors().get(1).setVendorLandedBaseCost(new BigDecimal(value));
+        	   break;	   
     	   case "v3_vendorfreightratecwt": case "v3_vendorFreightRateCwt":
-    		   item.getVendors().get(2).setVendorFreightRateCwt(new BigDecimal(value));
+    		   item.getVendors().get(2).setVendorFreightRateCwt(Float.parseFloat(value));
     		   break;
     	   case "v3_vendorroundaccuracy": case "v3_vendorRoundAccuracy": case "v3_vendorpriceroundaccuracy":
     		   item.getVendors().get(2).setVendorPriceRoundAccuracy(Integer.parseInt(value));
@@ -531,151 +641,151 @@ public class ImsQueryUtil {
     		   
     		 /*--------- units ----------*/
     	   case "stdunit": case "std_unit": case "standardUnit":
-    		   item.setStdunit(value);
+    		   item.getUnits().setStdunit(value);
     		   break; 
     	   case "ordunit": case "ord_unit": case "OrderUnit":
-    		   item.setOrdunit(value);
+    		   item.getUnits().setOrdunit(value);
     		   break; 	   
     	   case "stdratio": case "std_ratio": case "standardRatio":
-    		   item.setStdratio(Float.valueOf(value));
+    		   item.getUnits().setStdratio(Float.valueOf(value));
     		   break;	 
     	   case "ordratio": case "ord_ratio": case "OrderRatio":
-    		   item.setStdratio(Float.valueOf(value));
+    		   item.getUnits().setOrdratio(Float.valueOf(value));
     		   break;   
     	   case "baseunit": case "base_unit": case "BaseUnit":
-    		   item.setBaseunit(value);
+    		   item.getUnits().setBaseunit(value);
     		   break; 	 
     	   case "baseisstdsell": case "baseIsStdsell": 
-    		   item.setBaseisstdsell(value.charAt(0));
+    		   item.getUnits().setBaseisstdsell(value.charAt(0));
     		   break;	
     	   case "baseisstdord": case "baseIsStdOrder": 
-    		   item.setBaseisstdord(value.charAt(0));
+    		   item.getUnits().setBaseisstdord(value.charAt(0));
     		   break;
     	   case "baseisfractqty": case "baseIsFractQty": 
-    		   item.setBaseisfractqty(value.charAt(0));
+    		   item.getUnits().setBaseisfractqty(value.charAt(0));
     		   break;	
     	   case "baseispackunit": case "baseIsPackUnit": 
-    		   item.setBaseispackunit(value.charAt(0));
+    		   item.getUnits().setBaseispackunit(value.charAt(0));
     		   break;
     	   case "baseupc": case "baseUpc": 
-    		   item.setBaseupc(Long.valueOf(value));
+    		   item.getUnits().setBaseupc(Long.valueOf(value));
     		   break;   
     	   case "baseupcdesc": case "baseUpcDesc": 
-    		   item.setBaseupcdesc(value);
+    		   item.getUnits().setBaseupcdesc(value);
     		   break;   	   
     	   case "basevolperunit": case "baseVolPerUnit": 
-    		   item.setBasevolperunit(new BigDecimal(value));
+    		   item.getUnits().setBasevolperunit(new BigDecimal(value));
     		   break;	
     	   case "basewgtperunit": case "baseWgtPerUnit": 
-    		   item.setBasewgtperunit(new BigDecimal(value));
+    		   item.getUnits().setBasewgtperunit(new BigDecimal(value));
     		   break;
     	   case "unit1unit": case "unit1_unit": case "unit1Unit":
-    		   item.setUnit1unit(value);
+    		   item.getUnits().setUnit1unit(value);
     		   break;
     	   case "unit1ratio": case "unit1Ratio":
-    		   item.setUnit1unit(value);
+    		   item.getUnits().setUnit1ratio(Float.parseFloat(value));
     		   break; 	   
     	   case "unit1isstdsell": case "unit1IsStdsell": 
-    		   item.setUnit1isstdsell(value.charAt(0));
+    		   item.getUnits().setUnit1isstdsell(value.charAt(0));
     		   break;	
-    	   case "unit1isstdor": case "unit1IsStdOrder": 
-    		   item.setUnit1isstdord(value.charAt(0));
+    	   case "unit1isstdord": case "unit1IsStdOrder": 
+    		   item.getUnits().setUnit1isstdord(value.charAt(0));
     		   break;
     	   case "unit1isfractqty": case "unit1IsFractQty": 
-    		   item.setUnit1isfractqty(value.charAt(0));
+    		   item.getUnits().setUnit1isfractqty(value.charAt(0));
     		   break;	
     	   case "unit1ispackunit": case "unit1IsPackUnit": 
-    		   item.setUnit1ispackunit(value.charAt(0));
+    		   item.getUnits().setUnit1ispackunit(value.charAt(0));
     		   break;
     	   case "unit1upc": case "unit1Upc": 
-    		   item.setBaseupc(Long.valueOf(value));
+    		   item.getUnits().setUnit1upc(Long.valueOf(value));
     		   break; 
     	   case "unit1upcdesc": case "unit1UpcDesc": 
-    		   item.setUnit1upcdesc(value);
+    		   item.getUnits().setUnit1upcdesc(value);
     		   break;	   
     	   case "unit1wgtperunit": case "unit1WgtPerUnit": 
-    		   item.setUnit1wgtperunit(new BigDecimal(value));
+    		   item.getUnits().setUnit1wgtperunit(new BigDecimal(value));
     		   break;
     	   case "unit2unit": case "unit2Unit":
-    		   item.setUnit1unit(value);
+    		   item.getUnits().setUnit2unit(value);
     		   break;
     	   case "unit2ratio": case "unit2Ratio":
-    		   item.setUnit1unit(value);
+    		   item.getUnits().setUnit2ratio(Float.parseFloat(value));
     		   break; 	   
     	   case "unit2isstdsell": case "unit2IsStdsell": 
-    		   item.setUnit1isstdsell(value.charAt(0));
+    		   item.getUnits().setUnit2isstdsell(value.charAt(0));
     		   break;	
-    	   case "unit2isstdor": case "unit2IsStdOrder": 
-    		   item.setUnit1isstdord(value.charAt(0));
+    	   case "unit2isstdord": case "unit2IsStdOrder": 
+    		   item.getUnits().setUnit2isstdord(value.charAt(0));
     		   break;
     	   case "unit2isfractqty": case "unit2IsFractQty": 
-    		   item.setUnit1isfractqty(value.charAt(0));
+    		   item.getUnits().setUnit2isfractqty(value.charAt(0));
     		   break;	
     	   case "unit2ispackunit": case "unit2IsPackUnit": 
-    		   item.setUnit1ispackunit(value.charAt(0));
+    		   item.getUnits().setUnit2ispackunit(value.charAt(0));
     		   break;
     	   case "unit2upc": case "unit2Upc": 
-    		   item.setBaseupc(Long.valueOf(value));
+    		   item.getUnits().setUnit2upc(Long.valueOf(value));
     		   break;
     	   case "unit2upcdesc": case "unit2UpcDesc": 
-    		   item.setUnit2upcdesc(value);
+    		   item.getUnits().setUnit2upcdesc(value);
     		   break;	   
     	   case "unit2wgtperunit": case "unit2WgtPerUnit": 
-    		   item.setUnit2wgtperunit(new BigDecimal(value));
+    		   item.getUnits().setUnit2wgtperunit(new BigDecimal(value));
     		   break;
     	   case "unit3unit": case "unit3Unit":
-    		   item.setUnit1unit(value);
+    		   item.getUnits().setUnit3unit(value);
     		   break;
     	   case "unit3ratio": case "unit3Ratio":
-    		   item.setUnit1unit(value);
+    		   item.getUnits().setUnit3ratio(Float.parseFloat(value));
     		   break; 	   
     	   case "unit3isstdsell": case "unit3IsStdsell": 
-    		   item.setUnit1isstdsell(value.charAt(0));
+    		   item.getUnits().setUnit3isstdsell(value.charAt(0));
     		   break;	
-    	   case "unit3isstdor": case "unit3IsStdOrder": 
-    		   item.setUnit1isstdord(value.charAt(0));
+    	   case "unit3isstdord": case "unit3IsStdOrder": 
+    		   item.getUnits().setUnit3isstdord(value.charAt(0));
     		   break;
     	   case "unit3isfractqty": case "unit3IsFractQty": 
-    		   item.setUnit1isfractqty(value.charAt(0));
+    		   item.getUnits().setUnit3isfractqty(value.charAt(0));
     		   break;	
     	   case "unit3ispackunit": case "unit3IsPackUnit": 
-    		   item.setUnit1ispackunit(value.charAt(0));
+    		   item.getUnits().setUnit3ispackunit(value.charAt(0));
     		   break;
     	   case "unit3upc": case "unit3Upc": 
-    		   item.setBaseupc(Long.valueOf(value));
+    		   item.getUnits().setUnit3upc(Long.valueOf(value));
     		   break;   	
     	   case "unit3upcdesc": case "unit3UpcDesc": 
-    		   item.setUnit3upcdesc(value);
+    		   item.getUnits().setUnit3upcdesc(value);
     		   break;	   
     	   case "unit3wgtperunit": case "unit3WgtPerUnit": 
-    		   item.setUnit3wgtperunit(new BigDecimal(value));
+    		   item.getUnits().setUnit3wgtperunit(new BigDecimal(value));
     		   break;
     	   case "unit4unit": case "unit4Unit":
-    		   item.setUnit1unit(value);
+    		   item.getUnits().setUnit4unit(value);
     		   break;
     	   case "unit4ratio": case "unit4Ratio":
-    		   item.setUnit1unit(value);
+    		   item.getUnits().setUnit4ratio(Float.parseFloat(value));
     		   break; 	   
     	   case "unit4isstdsell": case "unit4IsStdsell": 
-    		   item.setUnit1isstdsell(value.charAt(0));
+    		   item.getUnits().setUnit4isstdsell(value.charAt(0));
     		   break;	
-    	   case "unit4isstdor": case "unit4IsStdOrder": 
-    		   item.setUnit1isstdord(value.charAt(0));
+    	   case "unit4isstdord": case "unit4IsStdOrder": 
+    		   item.getUnits().setUnit4isstdord(value.charAt(0));
     		   break;
     	   case "unit4isfractqty": case "unit4IsFractQty": 
-    		   item.setUnit1isfractqty(value.charAt(0));
+    		   item.getUnits().setUnit4isfractqty(value.charAt(0));
     		   break;	
     	   case "unit4ispackunit": case "unit4IsPackUnit": 
-    		   item.setUnit1ispackunit(value.charAt(0));
+    		   item.getUnits().setUnit4ispackunit(value.charAt(0));
     		   break;
     	   case "unit4upc": case "unit4Upc": 
-    		   item.setBaseupc(Long.valueOf(value));
+    		   item.getUnits().setUnit4upc(Long.valueOf(value));
     		   break; 
     	   case "unit4upcdesc": case "unit4UpcDesc": 
-    		   item.setUnit4upcdesc(value);
+    		   item.getUnits().setUnit4upcdesc(value);
     		   break;	   
     	   case "unit4wgtperunit": case "unit4WgtPerUnit": 
-    		   item.setUnit4wgtperunit(new BigDecimal(value));
+    		   item.getUnits().setUnit4wgtperunit(new BigDecimal(value));
     		   break;
     		   	
     	  /*---------New feature -------*/ 			
@@ -713,7 +823,7 @@ public class ImsQueryUtil {
     		   item.getImsNewFeature().setLaunchedDate(new Date(value));
     		   break;	
     	   case "warranty":
-    		   item.getImsNewFeature().setWarranty(Float.parseFloat(value));
+    		   item.getImsNewFeature().setWarranty(Integer.parseInt(value));
     	       break;
     	   case "recommendedGroutJointMin":
     		   item.getImsNewFeature().setRecommendedGroutJointMin(value);
@@ -723,68 +833,70 @@ public class ImsQueryUtil {
     	       break;    
     				   
     	   /*----------- test -----------*/	   
-    	   case "waterAbsorption":
-    		   item.getTest().setWaterAbsorption(Float.parseFloat(value));
+    	   case "waterabsorption": case "waterAbsorption":
+    		   item.getTestSpecification().setWaterabsorption(Float.parseFloat(value));
     		   break;	   
-    	   case "scratchResistance":
-    		   item.getTest().setScratchResistance(Float.parseFloat(value));
+    	   case "scratchresistance": case "scratchResistance":
+    		   item.getTestSpecification().setScratchresistance(Float.parseFloat(value));
     		   break;
-    	   case "frostResistance":
-    		   item.getTest().setFrostResistance(value.charAt(0));
+    	   case "frostresistance": case "frostResistance":
+    		   if("Pass".equalsIgnoreCase(value) || "Passed".equalsIgnoreCase(value))
+    		      item.getTestSpecification().setFrostresistance("P");
+    		   else if("Not Pass".equalsIgnoreCase(value) || "Not Passed".equalsIgnoreCase(value) || "N".equalsIgnoreCase(value))
+    			   item.getTestSpecification().setFrostresistance("N");
+    		   else
+    			   item.getTestSpecification().setFrostresistance(value);
+    			   break;
+    	   case "chemicalresistance": case "chemicalResistance":
+    		   item.getTestSpecification().setChemicalresistance(value);
+    		   break;	   
+    	   case "peiabrasion": case "peiAbrasion":
+    		   item.getTestSpecification().setPeiabrasion(Float.parseFloat(value));
+    		   break;	   
+    	   case "scofwet": case "scofWet":
+    		   item.getTestSpecification().setScofwet(Float.parseFloat(value));
     		   break;
-    	   case "chemicalResistance":
-    		   item.getTest().setChemicalResistance(value.charAt(0));
+    	   case "scofdry": case "scofDry":
+    		   item.getTestSpecification().setScofdry(Float.parseFloat(value));
     		   break;	   
-    	   case "peiAbrasion":
-    		   item.getTest().setPeiAbrasion(Float.parseFloat(value));
-    		   break;	   
-    	   case "scofWet":
-    		   item.getTest().setScofWet(Float.parseFloat(value));
-    		   break;
-    	   case "scofDry":
-    		   item.getTest().setScofDry(Float.parseFloat(value));
-    		   break;	   
-    	   case "breakingStrengt":
-    		   item.getTest().setBreakingStrength(Integer.parseInt(value));
-    		   break;	  
     	   case "restricted": 
-    		   item.getTest().setRestricted(value.charAt(0));
+    		   item.getTestSpecification().setRestricted(value.charAt(0));
     		   break;
     	   case "warpage": 
-    		   item.getTest().setWarpage(value.charAt(0));
+    		   item.getTestSpecification().setWarpage(value.charAt(0));
     		   break;
     	   case "wedging": 
-    		   item.getTest().setWedging(value.charAt(0));
+    		   item.getTestSpecification().setWedging(value.charAt(0));
     		   break;
     	   case "greenfriendly": 
-    		   item.getTest().setGreenfriendly(value.charAt(0));
+    		   item.getTestSpecification().setGreenfriendly(value.charAt(0));
     		   break;
-    	   case "thermalShock": 
-    		   item.getTest().setThermalShock(value.charAt(0));
+    	   case "thermalshock":  case "thermalShock": 
+    		   item.getTestSpecification().setThermalshock(value.charAt(0));
     		   break;
     	   case "dcof":
-    		   item.getTest().setDcof(Float.parseFloat(value));
+    		   item.getTestSpecification().setDcof(Float.parseFloat(value));
     		   break;	   
     	   case "moh":
-    		   item.getTest().setMoh(Float.parseFloat(value));
+    		   item.getTestSpecification().setMoh(Float.parseFloat(value));
     		   break;	   
-    	   case "bondStrength":
-    		   item.getTest().setBondStrength(value);
+    	   case "bondstrength": case "bondStrength":
+    		   item.getTestSpecification().setBondstrength(value);
     	       break;
-    	   case "brStrength":  case "breakingStrength":
-    		   item.getTest().setBreakingStrength(Integer.parseInt(value));
+    	   case "brStrength":  case "breakingstrength": case "breakingStrength":
+    		   item.getTestSpecification().setBreakingstrength(Integer.parseInt(value));
     	       break;	    
-    	   case "leadPoint":
-    		   item.getTest().setLeadPoint(value);
+    	   case "leadpoint": case "leadPoint":
+    		   item.getTestSpecification().setLeadpoint(value);
     	       break;	
-    	   case "preConsummer":
-    		   item.getTest().setPreConsummer(Float.parseFloat(value));
+    	   case "preconsummer": case "preConsummer":
+    		   item.getTestSpecification().setPreconsummer(Float.parseFloat(value));
     		   break;
-    	   case "posConsummer":
-    		   item.getTest().setPosConsummer(Float.parseFloat(value));
+    	   case "posconsummer": case "posConsummer":
+    		   item.getTestSpecification().setPosconsummer(Float.parseFloat(value));
     		   break;
     	   	   	
-    	   /*-------- application ------*/	   
+    	   /*-------- applications ------*/	   
     	   case "residential":
     		   item.getApplications().setResidential(value);
     		   break;	
@@ -792,63 +904,63 @@ public class ImsQueryUtil {
     		   item.getApplications().setCommercial(value);
     		   break;
     	   case "lightcommercial": case "lightCommercial":
-    		   item.getApplications().setCommercial(value);
+    		   item.getApplications().setLightcommercial(value);
     		   break;
-    	   case "application": 
-    		   item.setApplication(value);
-    		   break;
+    	   //case "application": 
+    	   //	   item.setApplication(value);
+    	   //	   break;
     		   
     	   /*---------icons -----------*/
        	   case "originCountry": case "origincountry":
-    		   item.getIcon().setOriginCountry(value);
+    		   item.getIconDescriptio().setOriginCountry(value);
     		   break;   
     	   case "adaAccessibility": case "adaaccessibility":
-        	   item.getIcon().setAdaAccessibility(Boolean.valueOf(value));
+        	   item.getIconDescriptio().setAdaAccessibility(Boolean.valueOf(value));
         	   break;
     	   case "exteriorProduct": case "exteriorproduct":
-    		   item.getIcon().setExteriorProduct(Boolean.valueOf(value));
+    		   item.getIconDescriptio().setExteriorProduct(Boolean.valueOf(value));
     		   break;
     	   case "throughColor": case "throughcolor": case "thruColor":
-    		   item.getIcon().setThroughColor(Boolean.valueOf(value));
+    		   item.getIconDescriptio().setThroughColor(Boolean.valueOf(value));
     		   break;
 	       case "colorBody": case "colorbody":
-		       item.getIcon().setColorBody(Boolean.valueOf(value));
+		       item.getIconDescriptio().setColorBody(Boolean.valueOf(value));
 		       break;
 	       case "inkJet": case "inkjet": case "ink_jet":
-		       item.getIcon().setInkJet(Boolean.valueOf(value));
+		       item.getIconDescriptio().setInkJet(Boolean.valueOf(value));
 		       break;
            case "glazed": 
-	           item.getIcon().setGlazed(Boolean.valueOf(value));
+	           item.getIconDescriptio().setGlazed(Boolean.valueOf(value));
 	           break;
            case "unGlazed": case "unglazed":
-	           item.getIcon().setUnglazed(Boolean.valueOf(value));
+	           item.getIconDescriptio().setUnglazed(Boolean.valueOf(value));
 	           break;
            case "rectifiedEdge": case "rectifiededge":
-	           item.getIcon().setRectifiedEdge(Boolean.valueOf(value));
+	           item.getIconDescriptio().setRectifiedEdge(Boolean.valueOf(value));
 	           break;
            case "chiseledEdge": case "chiselededge":
-               item.getIcon().setChiseledEdge(Boolean.valueOf(value));
+               item.getIconDescriptio().setChiseledEdge(Boolean.valueOf(value));
                break;
            case "versaillesPattern": case "versaillespattern":
-	           item.getIcon().setVersaillesPattern(Boolean.valueOf(value));
+	           item.getIconDescriptio().setVersaillesPattern(Boolean.valueOf(value));
 	           break;
            case "recycled": 
-	           item.getIcon().setRecycled(Boolean.valueOf(value));
+	           item.getIconDescriptio().setRecycled(Boolean.valueOf(value));
 	           break;
            case "preRecycled": case "prerecycled": 
-	           item.getIcon().setPreRecycled(Boolean.valueOf(value));
+	           item.getIconDescriptio().setPreRecycled(Boolean.valueOf(value));
 	           break;
            case "postRecycled": case "postrecycled": 
-	           item.getIcon().setPostRecycled(Boolean.valueOf(value));
+	           item.getIconDescriptio().setPostRecycled(Boolean.valueOf(value));
 	           break;
            case "icon_leadPoint": case "icon_leadpoint":
-               item.getIcon().setLeadPoint(Boolean.valueOf(value));
+               item.getIconDescriptio().setLeadPoint(Boolean.valueOf(value));
                break;
            case "icon_greenFriendly": case "icon_greenfriendly":
-               item.getIcon().setGreenFriendly(Boolean.valueOf(value));
+               item.getIconDescriptio().setGreenFriendly(Boolean.valueOf(value));
                break;
            case "coefficientOfFriction": case "coefficientoffriction":
-               item.getIcon().setCoefficientOfFriction(Boolean.valueOf(value));
+               item.getIconDescriptio().setCoefficientOfFriction(Boolean.valueOf(value));
                break;    
 	   	   
     	   /*--------- notes ----------*/
@@ -903,31 +1015,29 @@ public class ImsQueryUtil {
     		   
     		 //----- similar items -----//
     	   case "similarItemcd1": case "similaritemcd1":
-    		   item.setSimilarItemcd1(value);
+    		   item.getSimilarItemCode().setSimilaritemcd1(value);
     		   break;
     	   case "similarItemcd2": case "similaritemcd2":
-    		   item.setSimilarItemcd2(value);
+    		   item.getSimilarItemCode().setSimilaritemcd2(value);
     		   break;
     	   case "similarItemcd3": case "similaritemcd3":
-    		   item.setSimilarItemcd3(value);
+    		   item.getSimilarItemCode().setSimilaritemcd3(value);
     		   break;
     	   case "similarItemcd4": case "similaritemcd4":
-    		   item.setSimilarItemcd4(value);
+    		   item.getSimilarItemCode().setSimilaritemcd4(value);
     		   break;
     	   case "similarItemcd5": case "similaritemcd5":
-    		   item.setSimilarItemcd5(value);
+    		   item.getSimilarItemCode().setSimilaritemcd5(value);
     		   break;
     	   case "similarItemcd6": case "similaritemcd6":
-    		   item.setSimilarItemcd6(value);
+    		   item.getSimilarItemCode().setSimilaritemcd6(value);
     		   break;
     	   case "similarItemcd7": case "similaritemcd7":
-    		   item.setSimilarItemcd7(value);
+    		   item.getSimilarItemCode().setSimilaritemcd7(value);
     		   break;
      	   default:
       		   System.out.println("Field: "+ field + " is not supported");
       	       throw new BedDAOBadParamException("Invalid property name. Please check the property name. Property name is case senstive: " + field);
-      		  
-    		   //log it
     	}	
     	
     	return item;
