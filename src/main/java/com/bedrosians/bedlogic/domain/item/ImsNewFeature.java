@@ -68,6 +68,7 @@ public class ImsNewFeature implements java.io.Serializable {
 	public ImsNewFeature() {
 	}
 
+	@JsonIgnore
 	@GenericGenerator(name = "generator", strategy = "foreign", parameters = @Parameter(name = "property", value = "item"))
 	@Id
 	@GeneratedValue(generator = "generator")
@@ -104,7 +105,7 @@ public class ImsNewFeature implements java.io.Serializable {
 	@Column(name="mps_code")
 	@Enumerated(EnumType.STRING)
 	public MpsCode getMpsCode() {
-		return (mpsCode != null? mpsCode : ImsResultUtil.convertInactivecdToMpsCode(item.getInactivecd()));
+		return (mpsCode != null? mpsCode : item == null? null :ImsResultUtil.convertInactivecdToMpsCode(item.getInactivecd()));
 	}
 
 	public void setMpsCode(MpsCode mpsCode) {

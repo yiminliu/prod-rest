@@ -11,8 +11,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -25,18 +23,20 @@ import javax.persistence.Transient;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import com.bedrosians.bedlogic.domain.item.embeddable.Applications;
 import com.bedrosians.bedlogic.domain.item.embeddable.Cost;
-import com.bedrosians.bedlogic.domain.item.embeddable.Price;
+import com.bedrosians.bedlogic.domain.item.embeddable.Prices;
 import com.bedrosians.bedlogic.domain.item.embeddable.PriorVendor;
-import com.bedrosians.bedlogic.domain.item.embeddable.Buyer;
+import com.bedrosians.bedlogic.domain.item.embeddable.Purchasers;
 import com.bedrosians.bedlogic.domain.item.embeddable.SimilarItemCode;
-import com.bedrosians.bedlogic.domain.item.embeddable.Test;
-import com.bedrosians.bedlogic.domain.item.embeddable.Unit;
-import com.bedrosians.bedlogic.domain.item.enums.TaxClass;
+import com.bedrosians.bedlogic.domain.item.embeddable.TestSpecification;
+import com.bedrosians.bedlogic.domain.item.embeddable.Units;
+import com.bedrosians.bedlogic.util.FormatUtil;
 import com.bedrosians.bedlogic.util.ImsResultUtil;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -48,48 +48,25 @@ public class Item implements java.io.Serializable {
 	private static final long serialVersionUID = -3213582221787L;
 	
     //------basic info------//   		
-	private String itemCode;
-	private String description;//itemdesc1;
+	private String itemcode;
+	private String itemdesc1;
 	private String category;
-	private String seriesName;
+	private String seriesname;
 	private String type;
+	private Character itemtypecd;
 	private String origin;
-	private String shadeVariation;
-	private String offShade;
-	private String showOnWebsite;
-	private String showOnAlysedwards;
-	private String inventoryItemCode;
-	
-	//----- color ------//
-	private String color;
-	private String colorCategory;
-	
-	//----- dimension ------//
-	private String length;
-	private String width;
-	private String thickness;
-	private Float nominalLength;
-	private Float nominalWidth;
-	private Float nominalThickness;
-	private String sizeUnits;
-	private String thicknessUnit;
-	
-	//----- material info -------//
-	private String materialType;
-	private String materialCategory;
-	private String materialStyle;
-	private String materialFeature;
-	private String materialClassCode;
-
-	//-----legacy data ------//
-	private String itemtypecd;
 	private String inactivecd;
-	private String printlabel;
+	private Character showonwebsite;	
+	private String inventoryItemcd;
+	private String shadevariation;
+	private Character showonalysedwards;
+	private Character offshade;
+	private Character printlabel;
     private String itemcd2;
-	private TaxClass taxClass;
+	private Character taxClass;
 	private String lottype;
 	private String updatecd;
-	private String icons;
+	private String iconsystem;
 	private String abccd;
 	private String itemdesc2;
 	private String fulldesc;
@@ -100,62 +77,81 @@ public class Item implements java.io.Serializable {
 	private Integer itemgroupnbr;
 	private Date priorlastupdated;
 	
+	//----- color ------//
+	private String color;
+	private String colorcategory;
+	
+	//----- dimension ------//
+	private String length;
+	private String width;
+	private String thickness;
+	private Float nmLength;
+	private Float nmWidth;
+	private Float nmThickness;
+	private String sizeunits;
+	private String thicknessunit;
+	
+	//----- material info -------//
+	private String materialtype;
+	private String materialcategory;
+	private String materialstyle;
+	private String materialfeature;
+	private String materialclass;
+             
+
 	//------- new featureas --------//	
 	@JsonInclude
 	private ImsNewFeature imsNewFeature;
 	//------- icon (new inplementation/table) --------//	
 	@JsonInclude
-	private Icon icon;	
+	private IconDescription iconDescription;	
 	//------- vendor info --------//	
 	@JsonInclude
 	private List<Vendor> vendors=  new ArrayList<>();
 	//------- note (new inplementation/table) --------//
 	@JsonInclude
-	private List<Note> notes=  new ArrayList<>();	
+	private List<Notes> notes=  new ArrayList<>();	
 	//------- price info as embedded component--------//	
-    private Price price = new Price();
-  //------- cost info as embedded component--------//	
+    private Prices prices = new Prices();
+    //------- cost info as embedded component--------//	
     private Cost cost = new Cost();
     //------- unit info as embedded component--------//	
-    Unit unit = new Unit();
+    Units units = new Units();
     //------- test info as embedded component--------//	
-  	Test test = new Test();
+  	TestSpecification testSpecification = new TestSpecification();
     //------- applications as embedded component--------//	
   	Applications applications = new Applications(); 
-  	//------- buyer as embedded component--------//	
-  	Buyer buyer = new Buyer();
+  	//------- purchaser as embedded component--------//	
+  	Purchasers purchaser = new Purchasers();
     //------- prior vendor info as embedded component -------//
   	private PriorVendor priorVendor = new PriorVendor();
     //----- similar items as embedded component -----//
   	private SimilarItemCode similarItemCode = new SimilarItemCode();
   	
-  	
-  	
   	public Item() {
 	}
 
-	public Item(String itemCode) {
-		this.itemCode = itemCode;
+	public Item(String itemcode) {
+		this.itemcode = itemcode;
 	}
 	
 	@Id
 	@Column(name = "itemcd", unique = true, nullable = false, length = 18)
-	public String getItemCode() {
-		//return this.itemCode);
-		return itemCode;
+	public String getItemcode() {
+		return itemcode;
 	}
 
-	public void setItemCode(String itemCode) {
-		this.itemCode = itemCode;
+	public void setItemcode(String itemcode) {
+		this.itemcode = itemcode;
 	}
 	
 	@Embedded
-	public Price getPrice() {
-		return price;
+	public Prices getPrices() {
+		return prices;
 	}
 
-	public void setPrice(Price price) {
-		this.price = price;
+	public void setPrices(Prices prices) {
+		this.prices = prices;
 	}
 	
 	 @Embedded
@@ -168,21 +164,21 @@ public class Item implements java.io.Serializable {
 	}
     
     @Embedded	
-	public Unit getUnit() {
-		return unit;
+	public Units getUnits() {
+		return units;
 	}
 
-	public void setUnit(Unit unit) {
-		this.unit = unit;
+	public void setUnits(Units units) {
+		this.units = units;
 	}
 
 	@Embedded
-	public Test getTest() {
-		return test;
+	public TestSpecification getTestSpecification() {
+		return testSpecification;
 	}
 
-	public void setTest(Test test) {
-		this.test = test;
+	public void setTestSpecification(TestSpecification testSpecification) {
+		this.testSpecification = testSpecification;
 	}
 
 	@Embedded
@@ -195,12 +191,12 @@ public class Item implements java.io.Serializable {
 	}
     
 	@Embedded
-	public Buyer getBuyer() {
-		return buyer;
+	public Purchasers getPurchaser() {
+		return purchaser;
 	}
 
-	public void setBuyer(Buyer buyer) {
-		this.buyer = buyer;
+	public void setPurchaser(Purchasers purchaser) {
+		this.purchaser = purchaser;
 	}
 	
 	@Embedded
@@ -252,17 +248,17 @@ public class Item implements java.io.Serializable {
 	private String notes3;
 
 	@Column(name = "itemdesc1", length = 35)
-	public String getDescription() {
-		return this.description;
+	public String getItemdesc1() {
+		return FormatUtil.process(this.itemdesc1);
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setItemdesc1(String itemdesc1) {
+		this.itemdesc1 = itemdesc1;
 	}
 
 	@Column(name = "itemdesc2", length = 35)
 	public String getItemdesc2() {
-		return this.itemdesc2;
+		return FormatUtil.process(this.itemdesc2);
 	}
 
 	public void setItemdesc2(String itemdesc2) {
@@ -272,7 +268,7 @@ public class Item implements java.io.Serializable {
 	@Temporal(TemporalType.DATE)
 	@Column(name = "priorlastupdated", length = 13)
 	public Date getPriorlastupdated() {
-		return this.priorlastupdated;
+		return FormatUtil.process(this.priorlastupdated);
 	}
 
 	public void setPriorlastupdated(Date priorlastupdated) {
@@ -281,7 +277,7 @@ public class Item implements java.io.Serializable {
 
 	@Column(name = "abccd", length = 4)
     public String getAbccd() {
-		return this.abccd;
+		return FormatUtil.process(this.abccd);
 	}
 
 	public void setAbccd(String abccd) {
@@ -290,7 +286,7 @@ public class Item implements java.io.Serializable {
 
 	@Column(name = "category", length = 8)
 	public String getCategory() {
-		return this.category;
+		return FormatUtil.process(this.category);
 	}
 
 	public void setCategory(String category) {
@@ -299,7 +295,7 @@ public class Item implements java.io.Serializable {
 
 	@Column(name = "color", length = 30)
 	public String getColor() {
-		return this.color;
+		return FormatUtil.process(this.color);
 	}
 
 	public void setColor(String color) {
@@ -308,7 +304,7 @@ public class Item implements java.io.Serializable {
 
 	@Column(name = "directship", length = 1)
 	public Character getDirectship() {
-		return this.directship;
+		return FormatUtil.process(this.directship);
 	}
 
 	public void setDirectship(Character directship) {
@@ -318,7 +314,7 @@ public class Item implements java.io.Serializable {
 	@Temporal(TemporalType.DATE)
 	@Column(name = "dropdate", length = 13)
 	public Date getDropdate() {
-		return this.dropdate;
+		return FormatUtil.process(this.dropdate);
 	}
 
 	public void setDropdate(Date dropdate) {
@@ -327,7 +323,7 @@ public class Item implements java.io.Serializable {
 
 	@Column(name = "inactivecd", length = 3)
 	public String getInactivecd() {
-		return this.inactivecd;
+		return FormatUtil.process(this.inactivecd);
 	}
 
 	public void setInactivecd(String inactivecd) {
@@ -336,7 +332,7 @@ public class Item implements java.io.Serializable {
 
 	@Column(name = "itemgroupnbr", precision = 2, scale = 0)
 	public Integer getItemgroupnbr() {
-		return this.itemgroupnbr;
+		return FormatUtil.process(this.itemgroupnbr);
 	}
 
 	public void setItemgroupnbr(Integer itemgroupnbr) {
@@ -344,18 +340,18 @@ public class Item implements java.io.Serializable {
 	}
 
 	@Column(name = "itemtypecd", length = 1)
-	public String getItemtypecd() {
-		return this.itemtypecd;
+	public Character getItemtypecd() {
+		return FormatUtil.process(this.itemtypecd);
 	}
 	
-	public void setItemtypecd(String itemtypecd) {
+	public void setItemtypecd(Character itemtypecd) {
 		this.itemtypecd = itemtypecd;
 	}
 
 	@JsonIgnore
 	@Column(name = "leadtime", precision = 4, scale = 0)
 	public Integer getLeadtime() {
-		return this.leadtime;
+		return FormatUtil.process(this.leadtime);
 	}
 
 	public void setLeadtime(Integer leadtime) {
@@ -364,19 +360,17 @@ public class Item implements java.io.Serializable {
 
 	@Column(name = "lottype", length = 1)
 	public String getLottype() {
-		return this.lottype;
+		return FormatUtil.process(this.lottype);
 	}
 
 	public void setLottype(String lottype) {
 		this.lottype = lottype;
 	}
 
-	
-
 	@JsonIgnore
 	@Column(name = "notes1", length = 35)
 	public String getNotes1() {
-		return this.notes1;
+		return FormatUtil.process(this.notes1);
 	}
 
 	public void setNotes1(String notes1) {
@@ -386,7 +380,7 @@ public class Item implements java.io.Serializable {
 	@JsonIgnore
 	@Column(name = "notes2", length = 35)
 	public String getNotes2() {
-		return this.notes2;
+		return FormatUtil.process(this.notes2);
 	}
 
 	public void setNotes2(String notes2) {
@@ -396,7 +390,7 @@ public class Item implements java.io.Serializable {
 	@JsonIgnore
 	@Column(name = "notes3", length = 120)
 	public String getNotes3() {
-		return this.notes3;
+		return FormatUtil.process(this.notes3);
 	}
 
 	public void setNotes3(String notes3) {
@@ -404,17 +398,17 @@ public class Item implements java.io.Serializable {
 	}
 
 	@Column(name = "printlabel", length = 1)
-	public String getPrintlabel() {
-		return this.printlabel;
+	public Character getPrintlabel() {
+		return FormatUtil.process(this.printlabel);
 	}
 
-	public void setPrintlabel(String printlabel) {
+	public void setPrintlabel(Character printlabel) {
 		this.printlabel = printlabel;
 	}
 
 	@Column(name = "productline", length = 8)
 	public String getProductline() {
-		return this.productline;
+		return FormatUtil.process(this.productline);
 	}
 
 	public void setProductline(String productline) {
@@ -422,18 +416,18 @@ public class Item implements java.io.Serializable {
 	}
 
 	@Column(name = "seriesname", length = 40)
-	public String getSeriesName() {
-		return this.seriesName;
+	public String getSeriesname() {
+		return FormatUtil.process(this.seriesname);
 	}
 
-	public void setSeriesName(String seriesName) {
-		this.seriesName = seriesName;
+	public void setSeriesname(String seriesname) {
+		this.seriesname = seriesname;
 	}
 
 	@JsonIgnore
 	@Column(name = "updatecd", length = 10)
 	public String getUpdatecd() {
-		return this.updatecd;
+		return FormatUtil.process(this.updatecd);
 	}
 
 	public void setUpdatecd(String updatecd) {
@@ -443,7 +437,7 @@ public class Item implements java.io.Serializable {
 	@JsonIgnore
 	@Column(name = "vendorxrefcd", length = 30)
 	public String getVendorxrefcd() {
-		return this.vendorxrefcd;
+		return FormatUtil.process(this.vendorxrefcd);
 	}
 
 	public void setVendorxrefcd(String vendorxrefcd) {
@@ -453,7 +447,7 @@ public class Item implements java.io.Serializable {
 	@JsonIgnore
 	@Column(name = "vendornbr", precision = 6, scale = 0)
 	public Integer getVendornbr() {
-		return this.vendornbr;
+		return FormatUtil.process(this.vendornbr);
 	}
 
 	public void setVendornbr(Integer vendornbr) {
@@ -463,7 +457,7 @@ public class Item implements java.io.Serializable {
 	@JsonIgnore
 	@Column(name = "listpricemarginpct", precision = 5)
 	public Float getListpricemarginpct() {
-		return this.listpricemarginpct;
+		return FormatUtil.process(this.listpricemarginpct);
 	}
 
 	public void setListpricemarginpct(Float listpricemarginpct) {
@@ -473,7 +467,7 @@ public class Item implements java.io.Serializable {
 	@JsonIgnore
 	@Column(name = "vendorpriceunit", length = 4)
 	public String getVendorpriceunit() {
-		return this.vendorpriceunit;
+		return FormatUtil.process(this.vendorpriceunit);
 	}
 
 	public void setVendorpriceunit(String vendorpriceunit) {
@@ -483,7 +477,7 @@ public class Item implements java.io.Serializable {
 	@JsonIgnore
 	@Column(name = "vendorfob", length = 10)
 	public String getVendorfob() {
-		return this.vendorfob;
+		return FormatUtil.process(this.vendorfob);
 	}
 
 	public void setVendorfob(String vendorfob) {
@@ -493,7 +487,7 @@ public class Item implements java.io.Serializable {
 	@JsonIgnore
 	@Column(name = "vendorlistprice", precision = 9, scale = 4)
 	public BigDecimal getVendorlistprice() {
-		return this.vendorlistprice;
+		return FormatUtil.process(this.vendorlistprice);
 	}
 
 	public void setVendorlistprice(BigDecimal vendorlistprice) {
@@ -503,7 +497,7 @@ public class Item implements java.io.Serializable {
 	@JsonIgnore
 	@Column(name = "vendordiscpct1", precision = 5)
 	public Float getVendordiscpct() {
-		return this.vendordiscpct;
+		return FormatUtil.process(this.vendordiscpct);
 	}
 
 	public void setVendordiscpct(Float vendordiscpct) {
@@ -513,7 +507,7 @@ public class Item implements java.io.Serializable {
 	@JsonIgnore
 	@Column(name = "vendordiscpct2", precision = 5)
 	public Float getVendordiscpct2() {
-		return this.vendordiscpct2;
+		return FormatUtil.process(this.vendordiscpct2);
 	}
 
 	public void setVendordiscpct2(Float vendordiscpct2) {
@@ -523,7 +517,7 @@ public class Item implements java.io.Serializable {
 	@JsonIgnore
 	@Column(name = "vendordiscpct3", precision = 5)
 	public Float getVendordiscpct3() {
-		return this.vendordiscpct3;
+		return FormatUtil.process(this.vendordiscpct3);
 	}
 
 	public void setVendordiscpct3(Float vendordiscpct3) {
@@ -533,7 +527,7 @@ public class Item implements java.io.Serializable {
 	@JsonIgnore
 	@Column(name = "vendorroundaccuracy", precision = 1, scale = 0)
 	public Integer getVendorroundaccuracy() {
-		return this.vendorroundaccuracy;
+		return FormatUtil.process(this.vendorroundaccuracy);
 	}
 
 	public void setVendorroundaccuracy(Integer vendorroundaccuracy) {
@@ -543,7 +537,7 @@ public class Item implements java.io.Serializable {
 	@JsonIgnore
 	@Column(name = "vendornetprice", precision = 9, scale = 4)
 	public BigDecimal getVendornetprice() {
-		return this.vendornetprice;
+		return FormatUtil.process(this.vendornetprice);
 	}
 
 	public void setVendornetprice(BigDecimal vendornetprice) {
@@ -553,7 +547,7 @@ public class Item implements java.io.Serializable {
 	@JsonIgnore
 	@Column(name = "vendormarkuppct", precision = 4, scale = 1)
 	public Float getVendormarkuppct() {
-		return this.vendormarkuppct;
+		return FormatUtil.process(this.vendormarkuppct);
 	}
 
 	public void setVendormarkuppct(Float vendormarkuppct) {
@@ -563,20 +557,19 @@ public class Item implements java.io.Serializable {
 	@JsonIgnore
 	@Column(name = "vendorfreightratecwt", precision = 9, scale = 4)
 	public Float getVendorfreightratecwt() {
-		return this.vendorfreightratecwt;
+		return FormatUtil.process(this.vendorfreightratecwt);
 	}
 
 	public void setVendorfreightratecwt(Float vendorfreightratecwt) {
 		this.vendorfreightratecwt = vendorfreightratecwt;
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER')") 
+	@JsonIgnore
 	@Column(name = "vendorlandedbasecost", precision = 13, scale = 6)
 	public BigDecimal getVendorLandedBaseCost() {
-		return this.vendorLandedBaseCost;
+		return FormatUtil.process(this.vendorLandedBaseCost);
 	}
-	
-	@PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER')") 
+
 	public void setVendorLandedBaseCost(BigDecimal vendorLandedBaseCost) {
 		this.vendorLandedBaseCost = vendorLandedBaseCost;
 	}
@@ -584,7 +577,7 @@ public class Item implements java.io.Serializable {
 	@JsonIgnore
 	@Column(name = "vendornbr1", precision = 6, scale = 0)
 	public Integer getVendornbr1() {
-		return this.vendornbr1;
+		return FormatUtil.process(this.vendornbr1);
 	}
 
 	public void setVendornbr1(Integer vendornbr1) {
@@ -594,7 +587,7 @@ public class Item implements java.io.Serializable {
 	@JsonIgnore
 	@Column(name = "vendornbr2", precision = 6, scale = 0)
 	public Integer getVendornbr2() {
-		return this.vendornbr2;
+		return FormatUtil.process(this.vendornbr2);
 	}
 
 	public void setVendornbr2(Integer vendornbr2) {
@@ -604,7 +597,7 @@ public class Item implements java.io.Serializable {
 	@JsonIgnore
 	@Column(name = "vendornbr3", precision = 6, scale = 0)
 	public Integer getVendornbr3() {
-		return this.vendornbr3;
+		return FormatUtil.process(this.vendornbr3);
 	}
 
 	public void setVendornbr3(Integer vendornbr3) {
@@ -613,7 +606,7 @@ public class Item implements java.io.Serializable {
 
 	@Column(name = "length", length = 12)
 	public String getLength() {
-		return this.length;
+		return FormatUtil.process(this.length);
 	}
 
 	public void setLength(String length) {
@@ -622,7 +615,7 @@ public class Item implements java.io.Serializable {
 
 	@Column(name = "width", length = 12)
 	public String getWidth() {
-		return this.width;
+		return FormatUtil.process(this.width);
 	}
 
 	public void setWidth(String width) {
@@ -630,17 +623,17 @@ public class Item implements java.io.Serializable {
 	}
 
 	@Column(name = "mattype", length = 24)
-	public String getMaterialType() {
-		return this.materialType;
+	public String getMaterialtype() {
+		return FormatUtil.process(this.materialtype);
 	}
 
-	public void setMaterialType(String materialType) {
-		this.materialType = materialType;
+	public void setMaterialtype(String materialtype) {
+		this.materialtype = materialtype;
 	}
 
 	@Column(name = "thickness", length = 12)
 	public String getThickness() {
-		return this.thickness;
+		return FormatUtil.process(this.thickness);
 	}
 
 	public void setThickness(String thickness) {
@@ -648,17 +641,17 @@ public class Item implements java.io.Serializable {
 	}
 
 	@Column(name = "sizeunits", length = 3)
-	public String getSizeUnits() {
-		return this.sizeUnits;
+	public String getSizeunits() {
+		return FormatUtil.process(this.sizeunits);
 	}
 
-	public void setSizeUnits(String sizeUnits) {
-		this.sizeUnits = sizeUnits;
+	public void setSizeunits(String sizeunits) {
+		this.sizeunits = sizeunits;
 	}
 
 	@Column(name = "fulldesc", length = 70)
 	public String getFulldesc() {
-		return this.fulldesc;
+		return FormatUtil.process(this.fulldesc);
 	}
 
 	public void setFulldesc(String fulldesc) {
@@ -667,7 +660,7 @@ public class Item implements java.io.Serializable {
 
 	@Column(name = "origin", length = 18)
 	public String getOrigin() {
-		return this.origin;
+		return FormatUtil.process(this.origin);
 	}
 
 	public void setOrigin(String origin) {
@@ -675,62 +668,53 @@ public class Item implements java.io.Serializable {
 	}
 
 	@Column(name = "shadevariation", length = 2)
-	public String getShadeVariation() {
-		return this.shadeVariation;
+	public String getShadevariation() {
+		return FormatUtil.process(this.shadevariation);
 	}
 
-	public void setShadeVariation(String shadeVariation) {
-		this.shadeVariation = shadeVariation;
+	public void setShadevariation(String shadevariation) {
+		this.shadevariation = shadevariation;
 	}
-
-	//@Column(name = "application", length = 20)
-    //public String getApplication() {
-	//	return this.application;
-	//}
-
-	//public void setApplication(String application) {
-	//	this.application = application;
-	//}
 
 	@Column(name = "showonwebsite", length = 1)
-	public String getShowOnWebsite() {
-		return this.showOnWebsite;
+	public Character getShowonwebsite() {
+		return FormatUtil.process(this.showonwebsite);
 	}
 
-	public void setShowOnWebsite(String showOnWebsite) {
-		this.showOnWebsite = showOnWebsite;
+	public void setShowonwebsite(Character showonwebsite) {
+		this.showonwebsite = showonwebsite;
 	}
 
 	@Column(name = "colorcategory", length = 30)
-	public String getColorCategory() {
-		return this.colorCategory;
+	public String getColorcategory() {
+		return FormatUtil.process(this.colorcategory);
 	}
 
-	public void setColorCategory(String colorCategory) {
-		this.colorCategory = colorCategory;
+	public void setColorcategory(String colorcategory) {
+		this.colorcategory = colorcategory;
 	}
 
 	@Column(name = "showonalysedwards", length = 1)
-	public String getShowOnAlysedwards() {
-		return this.showOnAlysedwards;
+	public Character getShowonalysedwards() {
+		return FormatUtil.process(this.showonalysedwards);
 	}
 
-	public void setShowOnAlysedwards(String showOnAlysedwards) {
-		this.showOnAlysedwards = showOnAlysedwards;
+	public void setShowonalysedwards(Character showonalysedwards) {
+		this.showonalysedwards = showonalysedwards;
 	}
 
 	@Column(name = "offshade", length = 1)
-	public String getOffShade() {
-		return this.offShade;
+	public Character getOffshade() {
+		return FormatUtil.process(this.offshade);
 	}
 
-	public void setOffShade(String offShade) {
-		this.offShade = offShade;
+	public void setOffshade(Character offshade) {
+		this.offshade = offshade;
 	}
 
 	@Column(name = "itemcd2", length = 18)
 	public String getItemcd2() {
-		return this.itemcd2;
+		return FormatUtil.process(this.itemcd2);
 	}
 
 	public void setItemcd2(String itemcd2) {
@@ -739,46 +723,46 @@ public class Item implements java.io.Serializable {
 
 	
 	@Column(name = "materialclass_cd", length = 5)
-	public String getMaterialClassCode() {
-		return this.materialClassCode;
+	public String getMaterialclass() {
+		return FormatUtil.process(this.materialclass);
 	}
 
-	public void setMaterialClassCode(String materialClassCode) {
-		this.materialClassCode = materialClassCode;
+	public void setMaterialclass(String materialclass) {
+		this.materialclass = materialclass;
 	}
 
 	
 	@Column(name = "matcategory", length = 10)
-	public String getMaterialCategory() {
-		return this.materialCategory;
+	public String getMaterialcategory() {
+		return FormatUtil.process(this.materialcategory);
 	}
 
-	public void setMaterialCategory(String materialCategory) {
-		this.materialCategory = materialCategory;
+	public void setMaterialcategory(String materialcategory) {
+		this.materialcategory = materialcategory;
 	}
 
 	@Column(name = "matstyle", length = 7)
-	public String getMaterialStyle() {
-		return this.materialStyle;
+	public String getMaterialstyle() {
+		return FormatUtil.process(this.materialstyle);
 	}
 
-	public void setMaterialStyle(String materialStyle) {
-		this.materialStyle = materialStyle;
+	public void setMaterialstyle(String materialstyle) {
+		this.materialstyle = materialstyle;
 	}
 
 	@Column(name = "mfeature", length = 15)
-	public String getMaterialFeature() {
-		return this.materialFeature;
+	public String getMaterialfeature() {
+		return FormatUtil.process(this.materialfeature);
 	}
 
-	public void setMaterialFeature(String materialFeature) {
-		this.materialFeature = materialFeature;
+	public void setMaterialfeature(String materialfeature) {
+		this.materialfeature = materialfeature;
 	}
 
 	@JsonIgnore
 	@Column(name = "type", length = 16)
 	public String getType() {
-		return this.type;
+		return FormatUtil.process(this.type);
 	}
 
 	public void setType(String type) {
@@ -788,27 +772,26 @@ public class Item implements java.io.Serializable {
 	@JsonIgnore
 	@Column(name = "subtype", length = 32)
 	public String getSubtype() {
-		return this.subtype;
+		return FormatUtil.process(this.subtype);
 	}
 
     public void setSubtype(String subtype) {
 		this.subtype = subtype;
 	}
 
-	@JsonIgnore
 	@Column(name = "icons", length = 20)
-	public String getIcons() {
-		return this.icons;
+	public String getIconsystem() {
+		return FormatUtil.process(this.iconsystem);
 	}
 
-	public void setIcons(String icons) {
-		this.icons = icons;
+	public void setIconsystem(String iconsystem) {
+		this.iconsystem = iconsystem;
 	}
 
 	@JsonIgnore
 	@Column(name = "po_notes", length = 120)
 	public String getPoNotes() {
-		return this.poNotes;
+		return FormatUtil.process(this.poNotes);
 	}
 
 	public void setPoNotes(String poNotes) {
@@ -816,70 +799,66 @@ public class Item implements java.io.Serializable {
 	}
 
 	@Column(name = "thicknessunit", length = 3)
-	public String getThicknessUnit() {
-		return this.thicknessUnit;
+	public String getThicknessunit() {
+		return FormatUtil.process(this.thicknessunit);
 	}
 
-	public void setThicknessUnit(String thicknessUnit) {
-		this.thicknessUnit = thicknessUnit;
+	public void setThicknessunit(String thicknessunit) {
+		this.thicknessunit = thicknessunit;
 	}
 
 	@Column(name = "inventory_itemcd", length = 18)
-	public String getInventoryItemCode() {
-		return this.inventoryItemCode;
+	public String getInventoryItemcd() {
+		return FormatUtil.process(this.inventoryItemcd);
 	}
 
-	public void setInventoryItemCode(String inventoryItemCode) {
-		this.inventoryItemCode = inventoryItemCode;
+	public void setInventoryItemcd(String inventoryItemcd) {
+		this.inventoryItemcd = inventoryItemcd;
 	}
 
 	@Column(name = "nm_length", precision = 5)
-	public Float getNominalLength() {
-		return this.nominalLength;
+	public Float getNmLength() {
+		return FormatUtil.process(this.nmLength);
 	}
 
-	public void setNominalLength(Float nominalLength) {
-		this.nominalLength = nominalLength;
+	public void setNmLength(Float nmLength) {
+		this.nmLength = nmLength;
 	}
 
 	@Column(name = "nm_width", precision = 5)
-	public Float getNominalWidth() {
-		return this.nominalWidth;
+	public Float getNmWidth() {
+		return FormatUtil.process(this.nmWidth);
 	}
 
-	public void setNominalWidth(Float nominalWidth) {
-		this.nominalWidth = nominalWidth;
+	public void setNmWidth(Float nmWidth) {
+		this.nmWidth = nmWidth;
 	}
 
 	@Column(name = "nm_thickness", precision = 5)
-	public Float getNominalThickness() {
-		return this.nominalThickness;
+	public Float getNmThickness() {
+		return FormatUtil.process(this.nmThickness);
 	}
 
-	public void setNominalThickness(Float nominalThickness) {
-		this.nominalThickness = nominalThickness;
+	public void setNmThickness(Float nmThickness) {
+		this.nmThickness = nmThickness;
 	}
-
-	
-
 	
     @JsonIgnore
 	@Column(name = "dutypct", precision = 7, scale = 4)
 	public Float getDutypct() {
-		return this.dutypct;
+		return FormatUtil.process(this.dutypct);
 	}
 
 	public void setDutypct(Float dutypct) {
 		this.dutypct = dutypct;
 	}
 
-		@Column(name = "itemtaxclass")
-	@Enumerated(EnumType.STRING)
-	public TaxClass getTaxClass() {
+	@Column(name = "itemtaxclass")
+	public Character getTaxClass() {
 		return this.taxClass;
 	}
 
-	public void setTaxClass(TaxClass taxClass) {
+	public void setTaxClass(Character taxClass) {
 		this.taxClass = taxClass;
 	}
 	
@@ -898,17 +877,17 @@ public class Item implements java.io.Serializable {
 	}
 	
 	@OneToOne(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL)
-	public Icon getIcon() {	
-	    return icon != null? icon : ImsResultUtil.parseIcons(getIcons());
+	public IconDescription getIconDescriptio() {	
+	    return iconDescription != null? iconDescription : ImsResultUtil.parseIcons(getIconsystem());
 	}
 
-	public void setIcon(Icon icon) {
-		this.icon = icon;
+	public void setIconDescription(IconDescription iconDescription) {
+		this.iconDescription = iconDescription;
 	}
 	
-	public void addIcon(Icon icon ){
-		icon.setItem(this);
-		this.icon = icon;
+	public void addIcon(IconDescription iconDescription ){
+		iconDescription.setItem(this);
+		this.iconDescription = iconDescription;
 	}
 
 	@LazyCollection(LazyCollectionOption.FALSE)
@@ -934,16 +913,16 @@ public class Item implements java.io.Serializable {
 
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(/*fetch = FetchType.EAGER,*/ mappedBy = "item", cascade = CascadeType.ALL)
-	public List<Note> getNotes() {
+	public List<Notes> getNotes() {
 		return this.notes;
 	}
 
-	public void setNotes(List<Note> notes) {
+	public void setNotes(List<Notes> notes) {
 		this.notes = notes;
 	}
 
 
-	public void addNote(Note note){
+	public void addNote(Notes note){
 		note.setItem(this);
 		String noteType = note.getType();
 		switch(noteType){
@@ -964,27 +943,27 @@ public class Item implements java.io.Serializable {
 
 	public void initNotes(int numberOfNotes){
 		for(int i = 0; i < numberOfNotes; i++) {
-			addNote(new Note());
+			addNote(new Notes());
 		}
 	}
 	
 	@JsonIgnore
 	@Transient
 	public String getStandardSellUnit(){
-		return ImsResultUtil.getStandardSellUnit(this);
+		return FormatUtil.process(ImsResultUtil.getStandardSellUnit(this));
 	}
 	
 	@JsonIgnore
 	@Transient
 	public String getStandardOrderUnit(){
-		return ImsResultUtil.getStandardSellUnit(this);
+		return FormatUtil.process(ImsResultUtil.getStandardSellUnit(this));
 	}
 	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((itemCode == null) ? 0 : itemCode.hashCode());
+		result = prime * result + ((itemcode == null) ? 0 : itemcode.hashCode());
 		return result;
 	}
 
@@ -997,10 +976,10 @@ public class Item implements java.io.Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Item other = (Item) obj;
-		if (itemCode == null) {
-			if (other.itemCode != null)
+		if (itemcode == null) {
+			if (other.itemcode != null)
 				return false;
-		} else if (!itemCode.equals(other.itemCode))
+		} else if (!itemcode.equals(other.itemcode))
 			return false;
 		return true;
 	}
@@ -1009,8 +988,8 @@ public class Item implements java.io.Serializable {
 	@Override
 	public String toString() {
 		return "Item "
-				+ "[itemcd=" + itemCode 
-				+ ", description=" + description
+				+ "[itemcd=" + itemcode 
+				+ ", description=" + itemdesc1
 				+ ", itemdesc2=" + itemdesc2 
 				//+ ",  mpsCode=" +  mpsCode
 				//+ ",  grade=" +  grade
@@ -1085,7 +1064,7 @@ public class Item implements java.io.Serializable {
 				+ ", notes3=" + notes3 
 				+ ", printlabel=" + printlabel 
 				+ ", productline=" + productline 
-				+ ", seriesname=" + seriesName
+				+ ", seriesname=" + seriesname
 				//+ ", specialhandlecd1=" + specialhandlecd1
 				//+ ", specialhandlecd2=" + specialhandlecd2
 				//+ ", specialhandlecd3=" + specialhandlecd3 
@@ -1151,16 +1130,16 @@ public class Item implements java.io.Serializable {
 				+ ", vendornbr3=" + vendornbr3 
 				+ ", length=" + length 
 				+ ", width=" + width 
-				+ ", mattype=" + materialType
+				+ ", mattype=" + materialtype
 				+ ", thickness=" + thickness 
-				+ ", sizeunits=" + sizeUnits
+				+ ", sizeunits=" + sizeunits
 				+ ", fulldesc=" + fulldesc 
 				+ ", origin=" + origin
-				+ ", shadevariation=" + shadeVariation 
-				+ ", showonwebsite=" + showOnWebsite
-				+ ", colorcategory=" + colorCategory 
-				+ ", showonalysedwards=" + showOnAlysedwards 
-				+ ", offshade=" + offShade 
+				+ ", shadevariation=" + shadevariation 
+				+ ", showonwebsite=" + showonwebsite
+				+ ", colorcategory=" + colorcategory 
+				+ ", showonalysedwards=" + showonalysedwards 
+				+ ", offshade=" + offshade 
 				+ ", itemcd2=" + itemcd2 
 				//+ ", waterAbsorption=" + waterAbsorption
 				//+ ", scratchResistance=" + scratchResistance
@@ -1174,13 +1153,13 @@ public class Item implements java.io.Serializable {
 				//+ ", waterAbsorptionSign=" + waterAbsorptionSign
 				//+ ", scofWetSign=" + scofWetSign 
 				//+ ", scofDrySign=" + scofDrySign 
-				//+ ", materialclassCd=" + materialclassCd
+				+ ", materialclass=" + materialclass
 				//+ ", stdunit=" + stdunit + 
 				//", stdratio=" + stdratio
 				//+ ", ordunit=" + ordunit
 				//+ ", ordratio=" + ordratio
-				+ ", matcategory=" + materialCategory 
-				+ ", matstyle=" + materialStyle
+				+ ", matcategory=" + materialcategory 
+				+ ", matstyle=" + materialstyle
 				//+ ", moh=" + moh + 
 				//", mfeature=" + mfeature 
 				//+ ", price=" + price 
@@ -1188,16 +1167,16 @@ public class Item implements java.io.Serializable {
 				//+ ", greenfriendly=" + greenfriendly 
 				+ ", type=" + type
 				+ ", subtype=" + subtype 
-				+ ", icons=" + icons 
+				+ ", icons=" + iconsystem 
 				+ ", poNotes=" + poNotes
 				//+ ", pricegroup=" + pricegroup 
 				//+ ", srStandard=" + srStandard
-				+ ", thicknessunit=" + thicknessUnit
+				+ ", thicknessunit=" + thicknessunit
 				//+ ", bkStandard=" + bkStandard 
-				+ ", inventoryItemcd=" + inventoryItemCode
-				+ ", nmLength=" + nominalLength 
-				+ ", nmWidth=" + nominalWidth 
-				+ ", nmThickness=" + nominalThickness 
+				+ ", inventoryItemcd=" + inventoryItemcd 
+				+ ", nmLength=" + nmLength 
+				+ ", nmWidth=" + nmWidth 
+				+ ", nmThickness=" + nmThickness 
 				//+ ", residential=" + residential 
 				//+ ", lightcommercial=" + lightcommercial
 				//+ ", commercial=" + commercial 
@@ -1283,9 +1262,18 @@ public class Item implements java.io.Serializable {
 		*/
 
 
+	//@Column(name = "application", length = 20)
+    //public String getApplication() {
+	//	return FormatUtil.process(this.application);
+	//}
+
+	//public void setApplication(String application) {
+	//	this.application = application;
+	//}
+	
 	//@Column(name = "samplenbr", precision = 8, scale = 0)
 	//public Integer getSamplenbr() {
-	//	return this.samplenbr;
+	//	return FormatUtil.process(this.samplenbr;
 	//}
 
 	//public void setSamplenbr(Integer samplenbr) {
@@ -1294,7 +1282,7 @@ public class Item implements java.io.Serializable {
 
 	//@Column(name = "water_absorption_sign", length = 2)
 	//public String getWaterAbsorptionSign() {
-	//	return this.waterAbsorptionSign;
+	//	return FormatUtil.process(this.waterAbsorptionSign;
 	//}
 
 	//public void setWaterAbsorptionSign(String waterAbsorptionSign) {
@@ -1303,7 +1291,7 @@ public class Item implements java.io.Serializable {
 
 	//@Column(name = "scof_wet_sign", length = 2)
 	//public String getScofWetSign() {
-	//	return this.scofWetSign;
+	//	return FormatUtil.process(this.scofWetSign;
 	//}
 
 	//public void setScofWetSign(String scofWetSign) {
@@ -1312,7 +1300,7 @@ public class Item implements java.io.Serializable {
 
 	//@Column(name = "scof_dry_sign", length = 2)
 	//public String getScofDrySign() {
-	//	return this.scofDrySign;
+	//	return FormatUtil.process(this.scofDrySign;
 	//}
 
 	//public void setScofDrySign(String scofDrySign) {
@@ -1321,7 +1309,7 @@ public class Item implements java.io.Serializable {
 
 	//@Column(name = "itemtaxclass", length = 1)
 		//public Character getItemtaxclass() {
-		//	return this.itemtaxclass;
+		//	return FormatUtil.process(this.itemtaxclass;
 		//}
 
 		//public void setItemtaxclass(Character itemtaxclass) {
@@ -1329,7 +1317,7 @@ public class Item implements java.io.Serializable {
 		//}
 	//@Column(name = "specialhandlecd1", length = 10)
 		//public String getSpecialhandlecd1() {
-		//	return this.specialhandlecd1;
+		//	return FormatUtil.process(this.specialhandlecd1;
 		//}
 
 		//public void setSpecialhandlecd1(String specialhandlecd1) {
@@ -1338,7 +1326,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "specialhandlecd2", length = 10)
 		//public String getSpecialhandlecd2() {
-		//	return this.specialhandlecd2;
+		//	return FormatUtil.process(this.specialhandlecd2;
 		//}
 
 		//public void setSpecialhandlecd2(String specialhandlecd2) {
@@ -1347,7 +1335,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "specialhandlecd3", length = 10)
 	    //public String getSpecialhandlecd3() {
-		//	return this.specialhandlecd3;
+		//	return FormatUtil.process(this.specialhandlecd3;
 		//}
 
 		//public void setSpecialhandlecd3(String specialhandlecd3) {
@@ -1357,7 +1345,7 @@ public class Item implements java.io.Serializable {
 		
 		//@Column(name = "typealf", length = 8)
 		//public String getTypealf() {
-		//	return this.typealf;
+		//	return FormatUtil.process(this.typealf;
 		//}
 
 		//public void setTypealf(String typealf) {
@@ -1366,7 +1354,7 @@ public class Item implements java.io.Serializable {
 	
 	//@Column(name = "price", length = 1)
 		//public Character getPrice() {
-		//	return this.price;
+		//	return FormatUtil.process(this.price;
 		//}
 
 		//public void setPrice(Character price) {
@@ -1375,7 +1363,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "qualitychoice", length = 12)
 		//public String getQualitychoice() {
-		//	return this.qualitychoice;
+		//	return FormatUtil.process(this.qualitychoice;
 		//}
 
 		//public void setQualitychoice(String qualitychoice) {
@@ -1384,11 +1372,11 @@ public class Item implements java.io.Serializable {
 	
 	//@Column(name = "calcsellprice", precision = 9, scale = 4)
 		//public BigDecimal getCalcsellprice() {
-		//	return this.calcsellprice;
+		//	return FormatUtil.process(this.calcsellprice;
 		//}
 	//@Column(name = "listprice1", precision = 9, scale = 4)
 		//public BigDecimal getListprice1() {
-		//	return this.listprice1;
+		//	return FormatUtil.process(this.listprice1;
 		//}
 
 		//public void setListprice1(BigDecimal listprice1) {
@@ -1397,7 +1385,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "listprice2", precision = 9, scale = 4)
 		//public BigDecimal getListprice2() {
-		//	return this.listprice2;
+		//	return FormatUtil.process(this.listprice2;
 		//}
 
 		//public void setListprice2(BigDecimal listprice2) {
@@ -1406,7 +1394,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "listprice3", precision = 9, scale = 4)
 		//public BigDecimal getListprice3() {
-		//	return this.listprice3;
+		//	return FormatUtil.process(this.listprice3;
 		//}
 
 		//public void setListprice3(BigDecimal listprice3) {
@@ -1415,7 +1403,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "listprice4", precision = 9, scale = 4)
 		//public BigDecimal getListprice4() {
-		//	return this.listprice4;
+		//	return FormatUtil.process(this.listprice4;
 		//}
 
 		//public void setListprice4(BigDecimal listprice4) {
@@ -1424,7 +1412,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "listprice5", precision = 9, scale = 4)
 		//public BigDecimal getListprice5() {
-		//	return this.listprice5;
+		//	return FormatUtil.process(this.listprice5;
 		//}
 
 		//public void setListprice5(BigDecimal listprice5) {
@@ -1433,7 +1421,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "sellprice1", precision = 9, scale = 4)
 		//public BigDecimal getSellprice1() {
-		//	return this.sellprice1;
+		//	return FormatUtil.process(this.sellprice1;
 		//}
 
 		//public void setSellprice1(BigDecimal sellprice1) {
@@ -1442,7 +1430,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "sellprice2", precision = 9, scale = 4)
 		//public BigDecimal getSellprice2() {
-		//	return this.sellprice2;
+		//	return FormatUtil.process(this.sellprice2;
 		//}
 
 		//public void setSellprice2(BigDecimal sellprice2) {
@@ -1451,7 +1439,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "sellprice3", precision = 9, scale = 4)
 		//public BigDecimal getSellprice3() {
-		//	return this.sellprice3;
+		//	return FormatUtil.process(this.sellprice3;
 		//}
 
 		//public void setSellprice3(BigDecimal sellprice3) {
@@ -1460,7 +1448,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "sellprice4", precision = 9, scale = 4)
 		//public BigDecimal getSellprice4() {
-		//	return this.sellprice4;
+		//	return FormatUtil.process(this.sellprice4;
 		//}
 
 		//public void setSellprice4(BigDecimal sellprice4) {
@@ -1469,7 +1457,7 @@ public class Item implements java.io.Serializable {
 
 		///@Column(name = "sellprice5", precision = 9, scale = 4)
 		//public BigDecimal getSellprice5() {
-		//	return this.sellprice5;
+		//	return FormatUtil.process(this.sellprice5;
 		//}
 
 		//public void setSellprice5(BigDecimal sellprice5) {
@@ -1478,7 +1466,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "priorlistprice1", precision = 9, scale = 4)
 		//public BigDecimal getPriorlistprice1() {
-		//	return this.priorlistprice1;
+		//	return FormatUtil.process(this.priorlistprice1;
 		//}
 
 		//public void setPriorlistprice1(BigDecimal priorlistprice1) {
@@ -1487,7 +1475,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "priorlistprice2", precision = 9, scale = 4)
 		//public BigDecimal getPriorlistprice2() {
-		//	return this.priorlistprice2;
+		//	return FormatUtil.process(this.priorlistprice2;
 		//}
 
 		//public void setPriorlistprice2(BigDecimal priorlistprice2) {
@@ -1496,7 +1484,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "priorlistprice3", precision = 9, scale = 4)
 		//public BigDecimal getPriorlistprice3() {
-		//	return this.priorlistprice3;
+		//	return FormatUtil.process(this.priorlistprice3;
 		//}
 
 		//public void setPriorlistprice3(BigDecimal priorlistprice3) {
@@ -1505,7 +1493,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "priorlistprice4", precision = 9, scale = 4)
 		//public BigDecimal getPriorlistprice4() {
-		//	return this.priorlistprice4;
+		//	return FormatUtil.process(this.priorlistprice4;
 		//}
 
 		//public void setPriorlistprice4(BigDecimal priorlistprice4) {
@@ -1514,7 +1502,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "priorlistprice5", precision = 9, scale = 4)
 		//public BigDecimal getPriorlistprice5() {
-		//	return this.priorlistprice5;
+		//	return FormatUtil.process(this.priorlistprice5;
 		//}
 
 		//public void setPriorlistprice5(BigDecimal priorlistprice5) {
@@ -1523,7 +1511,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "priorsellprice1", precision = 9, scale = 4)
 		//public BigDecimal getPriorsellprice1() {
-		//	return this.priorsellprice1;
+		//	return FormatUtil.process(this.priorsellprice1;
 		//}
 
 		//public void setPriorsellprice1(BigDecimal priorsellprice1) {
@@ -1532,7 +1520,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "priorsellprice2", precision = 9, scale = 4)
 		//public BigDecimal getPriorsellprice2() {
-		//	return this.priorsellprice2;
+		//	return FormatUtil.process(this.priorsellprice2;
 		//}
 
 		//public void setPriorsellprice2(BigDecimal priorsellprice2) {
@@ -1541,7 +1529,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "priorsellprice3", precision = 9, scale = 4)
 		//public BigDecimal getPriorsellprice3() {
-		//	return this.priorsellprice3;
+		//	return FormatUtil.process(this.priorsellprice3;
 		//}
 
 		//public void setPriorsellprice3(BigDecimal priorsellprice3) {
@@ -1550,7 +1538,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "priorsellprice4", precision = 9, scale = 4)
 		//public BigDecimal getPriorsellprice4() {
-		//	return this.priorsellprice4;
+		//	return FormatUtil.process(this.priorsellprice4;
 		//}
 
 		//public void setPriorsellprice4(BigDecimal priorsellprice4) {
@@ -1559,7 +1547,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "priorsellprice5", precision = 9, scale = 4)
 		///public BigDecimal getPriorsellprice5() {
-		//	return this.priorsellprice5;
+		//	return FormatUtil.process(this.priorsellprice5;
 		//}
 
 		//public void setPriorsellprice5(BigDecimal priorsellprice5) {
@@ -1568,7 +1556,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "futurelist", precision = 9, scale = 4)
 		//public BigDecimal getFuturelist() {
-		//	return this.futurelist;
+		//	return FormatUtil.process(this.futurelist;
 		//}
 
 		//public void setFuturelist(BigDecimal futurelist) {
@@ -1577,7 +1565,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "futurelist1", precision = 9, scale = 4)
 		//public BigDecimal getFuturelist1() {
-		//	return this.futurelist1;
+		//	return FormatUtil.process(this.futurelist1;
 		//}
 
 		//public void setFuturelist1(BigDecimal futurelist1) {
@@ -1586,7 +1574,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "futuresell1", precision = 9, scale = 4)
 		//public BigDecimal getFuturesell1() {
-		//	return this.futuresell1;
+		//	return FormatUtil.process(this.futuresell1;
 		//}
 
 		//public void setFuturesell1(BigDecimal futuresell1) {
@@ -1598,7 +1586,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "calclistprice", precision = 9, scale = 4)
 		//public BigDecimal getCalclistprice() {
-		//	return this.calclistprice;
+		//	return FormatUtil.process(this.calclistprice;
 		//}
 
 		//public void setCalclistprice(BigDecimal calclistprice) {
@@ -1608,7 +1596,7 @@ public class Item implements java.io.Serializable {
 		
 	//@Column(name = "known_aliases1", length = 30)
 		//public String getKnownAliases1() {
-		//	return this.knownAliases1;
+		//	return FormatUtil.process(this.knownAliases1;
 		//}
 
 		//public void setKnownAliases1(String knownAliases1) {
@@ -1617,7 +1605,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "known_aliases2", length = 30)
 		//public String getKnownAliases2() {
-		//	return this.knownAliases2;
+		//	return FormatUtil.process(this.knownAliases2;
 		//}
 
 		//public void setKnownAliases2(String knownAliases2) {
@@ -1626,7 +1614,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "known_aliases3", length = 30)
 		//public String getKnownAliases3() {
-		//	return this.knownAliases3;
+		//	return FormatUtil.process(this.knownAliases3;
 		//}
 
 		//public void setKnownAliases3(String knownAliases3) {
@@ -1635,7 +1623,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "known_aliases4", length = 30)
 		//public String getKnownAliases4() {
-		//	return this.knownAliases4;
+		//	return FormatUtil.process(this.knownAliases4;
 		//}
 
 		//public void setKnownAliases4(String knownAliases4) {
@@ -1644,7 +1632,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "known_aliases5", length = 30)
 		//public String getKnownAliases5() {
-		//	return this.knownAliases5;
+		//	return FormatUtil.process(this.knownAliases5;
 		//}
 
 		//public void setKnownAliases5(String knownAliases5) {
@@ -1653,7 +1641,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "known_aliases6", length = 30)
 		//public String getKnownAliases6() {
-		//	return this.knownAliases6;
+		//	return FormatUtil.process(this.knownAliases6;
 		//}
 
 		//public void setKnownAliases6(String knownAliases6) {
@@ -1662,7 +1650,7 @@ public class Item implements java.io.Serializable {
 
 		//@Column(name = "known_aliases7", length = 30)
 		//public String getKnownAliases7() {
-		//	return this.knownAliases7;
+		//	return FormatUtil.process(this.knownAliases7;
 		//}
 
 		//public void setKnownAliases7(String knownAliases7) {
