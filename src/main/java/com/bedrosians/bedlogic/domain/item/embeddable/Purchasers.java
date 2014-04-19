@@ -15,7 +15,8 @@ public class Purchasers  implements java.io.Serializable {
 
 	@Column(name = "purchaser", length = 10)
 	public String getPurchaser() {
-		return FormatUtil.process(this.purchaser);
+		return this.purchaser;
+		//return FormatUtil.process(this.purchaser);
 	}
 
 	public void setPurchaser(String purchaser) {
