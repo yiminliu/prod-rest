@@ -13,12 +13,12 @@ public class ItemVendorId implements Serializable{
 	private static final long serialVersionUID = -5432421787L;
 	
 	private String itemcd;
-	private Long vendorId;
+	private Integer vendorId;
 
 	public ItemVendorId() {
 	}
 
-	public ItemVendorId(String itemcd, Long vendorId) {
+	public ItemVendorId(String itemcd, Integer vendorId) {
 		this.itemcd = itemcd;
 		this.vendorId = vendorId;
 	}
@@ -34,11 +34,11 @@ public class ItemVendorId implements Serializable{
 	}
 
 	@Column(name = "vendor_id", nullable = false, precision = 10, scale = 0)
-	public Long getVendorId() {
+	public Integer getVendorId() {
 		return this.vendorId;
 	}
 
-	public void setVendorId(long vendorId) {
+	public void setVendorId(Integer vendorId) {
 		this.vendorId = vendorId;
 	}
 
