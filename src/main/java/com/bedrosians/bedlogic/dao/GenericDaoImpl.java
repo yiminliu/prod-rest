@@ -68,7 +68,7 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
 	
 	@Override
 	public void delete(Session session, T persistentObject) {
-		
+		session.delete(persistentObject);
 	}
 	
 }
