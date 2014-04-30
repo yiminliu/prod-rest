@@ -8,11 +8,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.hibernate.annotations.Type;
-import org.joda.time.contrib.hibernate.PersistentDateTime;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 import com.bedrosians.bedlogic.util.FormatUtil;
 
@@ -21,131 +17,139 @@ public class Price implements java.io.Serializable {
 
 	private static final long serialVersionUID = -582221787L;
 	
-	private BigDecimal price;//sellprice;
-	private String priceGroup;
-	private Float priceMarginPct = 0F; //sellpriceMarginPct
-	private Float minimalMarginPct;
-	private Integer priceRoundAccuracy = 0; //sellpriceroundaccuracy
-	private BigDecimal futurePrice; //futuresell;
-	private BigDecimal priorPrice;//priorsellprice;
-	private BigDecimal tempPrice;
-	private Date tempDateFrom = null;
-	private Date tempDateThrough = null;
-	private BigDecimal listPrice;
-	private BigDecimal priorListPrice;
+	private BigDecimal sellprice;
+	private BigDecimal listprice;
+	private String pricegroup;
+	private Float sellpricemarginpct = 0F;
+	private Integer sellpriceroundaccuracy = 0;
+	private Float listpricemarginpct = 0F;
+	private Float minmarginpct;
+	private BigDecimal futuresell; 
+	private BigDecimal priorsellprice;
+	private BigDecimal tempprice;
+	private Date tempdatefrom = null;
+	private Date tempdatethru = null;
+	private BigDecimal priorlistprice;
 	
 	public Price(){}
 	
-	@Column(name = "listprice", precision = 9, scale = 4)
-	public BigDecimal getListPrice() {
-		return FormatUtil.process(this.listPrice);
-	}
-
-	public void setListPrice(BigDecimal listPrice) {
-		this.listPrice = listPrice;
-	}
-
 	@Column(name = "sellprice", precision = 9, scale = 4)
-	public BigDecimal getPrice() {
-		return FormatUtil.process(this.price);
+	public BigDecimal getSellprice() {
+		return FormatUtil.process(this.sellprice);
 	}
 
-	public void setPrice(BigDecimal price) {
-		this.price = price;
+	public void setSellprice(BigDecimal sellprice) {
+		this.sellprice = sellprice;
 	}
 	
 	@Column(name = "pricegroup", length = 2)
-	public String getPriceGroup() {
-		return FormatUtil.process(this.priceGroup);
+	public String getPricegroup() {
+		return FormatUtil.process(this.pricegroup);
 	}
 
-	public void setPriceGroup(String priceGroup) {
-		this.priceGroup = priceGroup;
+	public void setPricegroup(String pricegroup) {
+		this.pricegroup = pricegroup;
+	}
+	
+	@Column(name = "listprice", precision = 9, scale = 4)
+	public BigDecimal getListprice() {
+		return FormatUtil.process(this.listprice);
+	}
+
+	public void setListprice(BigDecimal listprice) {
+		this.listprice = listprice;
+	}
+	
+	@Column(name = "listpricemarginpct", precision = 5)
+	public Float getListpricemarginpct() {
+		return FormatUtil.process(this.listpricemarginpct);
+	}
+
+	public void setListpricemarginpct(Float listpricemarginpct) {
+		this.listpricemarginpct = listpricemarginpct;
 	}
 	
 	@Column(name = "futuresell", precision = 9, scale = 4)
-	public BigDecimal getFuturePrice() {
-		return FormatUtil.process(this.futurePrice);
+	public BigDecimal getFuturesell() {
+		return FormatUtil.process(this.futuresell);
 	}
 
-	public void setFuturePrice(BigDecimal futurePrice) {
-		this.futurePrice = futurePrice;
+	public void setFuturesell(BigDecimal futuresell) {
+		this.futuresell = futuresell;
 	}
 	
 	@Column(name = "tempprice", precision = 9, scale = 4)
-	public BigDecimal getTempPrice() {
-		return FormatUtil.process(this.tempPrice);
+	public BigDecimal getTempprice() {
+		return FormatUtil.process(this.tempprice);
 	}
 
-	public void setTempPrice(BigDecimal tempPrice) {
-		this.tempPrice = tempPrice;
+	public void setTempprice(BigDecimal tempprice) {
+		this.tempprice = tempprice;
 	}
 	
 	@Temporal(TemporalType.DATE)
 	@Column(name = "tempdatefrom", length = 13)
-	public Date getTempDateFrom() {
-		return FormatUtil.process(this.tempDateFrom);
+	public Date getTempdatefrom() {
+		return FormatUtil.process(this.tempdatefrom);
 	}
 
-	public void setTempDateFrom(Date tempDateFrom) {
-		this.tempDateFrom = tempDateFrom;
+	public void setTempdatefrom(Date tempdatefrom) {
+		this.tempdatefrom = tempdatefrom;
 	}
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "tempdatethru", length = 13, nullable = true)
-	public Date getTempDateThrough() {
-		return FormatUtil.process(this.tempDateThrough);
+	public Date getTempdatethru() {
+		return FormatUtil.process(this.tempdatethru);
 	}
 
-	public void setTempDateThrough(Date tempDateThrough) {
-		this.tempDateThrough = tempDateThrough;
+	public void setTempdatethru(Date tempdatethru) {
+		this.tempdatethru = tempdatethru;
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_BUYER')") 
 	@Column(name = "sellpricemarginpct", precision = 5)
-	public Float getPriceMarginPct() {
-		return FormatUtil.process(this.priceMarginPct);
+	public Float getSellpricemarginpct() {
+		return FormatUtil.process(this.sellpricemarginpct);
 	}
 
-	public void setPriceMarginPct(Float priceMarginPct) {
-		this.priceMarginPct = priceMarginPct;
+	public void setSellpricemarginpct(Float sellpricemarginpct) {
+		this.sellpricemarginpct = sellpricemarginpct;
 	}
 
 	@Column(name = "sellpriceroundaccuracy", precision = 1, scale = 0)
-	public Integer getPriceRoundAccuracy() {
-		return FormatUtil.process(this.priceRoundAccuracy);
+	public Integer getSellpriceroundaccuracy() {
+		return FormatUtil.process(this.sellpriceroundaccuracy);
 	}
 
-	public void setPriceRoundAccuracy(Integer priceRoundAccuracy) {
-		this.priceRoundAccuracy = priceRoundAccuracy;
+	public void setSellpriceroundaccuracy(Integer sellpriceroundaccuracy) {
+		this.sellpriceroundaccuracy = sellpriceroundaccuracy;
 	}
 	
-	@PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_BUYER')") 
 	@Column(name = "minmarginpct", precision = 4, scale = 1)
-	public Float getMinimalMarginPct() {
-		return FormatUtil.process(this.minimalMarginPct);
+	public Float getMinmarginpct() {
+		return FormatUtil.process(this.minmarginpct);
 	}
 
-	public void setMinimalMarginPct(Float minimalMarginPct) {
-		this.minimalMarginPct = minimalMarginPct;
+	public void setMinmarginpct(Float minmarginpct) {
+		this.minmarginpct = minmarginpct;
 	}
 	
 	@Column(name = "priorlistprice", precision = 9, scale = 4)
-	public BigDecimal getPriorListPrice() {
-		return FormatUtil.process(this.priorListPrice);
+	public BigDecimal getPriorlistprice() {
+		return FormatUtil.process(this.priorlistprice);
 	}
 
-	public void setPriorListPrice(BigDecimal priorListPrice) {
-		this.priorListPrice = priorListPrice;
+	public void setPriorlistprice(BigDecimal priorlistprice) {
+		this.priorlistprice = priorlistprice;
 	}
 
 	@Column(name = "priorsellprice", precision = 9, scale = 4)
-	public BigDecimal getPriorPrice() {
-		return FormatUtil.process(this.priorPrice);
+	public BigDecimal getPriorsellprice() {
+		return FormatUtil.process(this.priorsellprice);
 	}
 
-	public void setPriorPrice(BigDecimal priorPrice) {
-		this.priorPrice = priorPrice;
+	public void setPriorsellprice(BigDecimal priorsellprice) {
+		this.priorsellprice = priorsellprice;
 	}
 	
 }
