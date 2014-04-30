@@ -5,6 +5,8 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javassist.bytecode.Descriptor.Iterator;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -101,6 +103,8 @@ public class FormatUtil {
 		//process(item.getBuyer().getBuyer());
 		*/
 		item.setItemcode(process(item.getItemcode()));
+		if(item.getIconDescription() == null)
+		   item.setIconDescription(ImsResultUtil.parseIcons(item.getIconsystem()));	
 		return item;
 		/*
 		newItem.setAbccd(process(item.getAbccd()));

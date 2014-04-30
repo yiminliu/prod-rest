@@ -1,8 +1,17 @@
 package com.bedrosians.bedlogic.util;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
+import javax.ws.rs.core.MultivaluedMap;
+
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.codehaus.jettison.json.JSONObject;
 
 import com.bedrosians.bedlogic.domain.item.Item;
@@ -15,6 +24,7 @@ import com.bedrosians.bedlogic.domain.item.enums.SurfaceApplication;
 import com.bedrosians.bedlogic.domain.item.enums.SurfaceFinish;
 import com.bedrosians.bedlogic.domain.item.enums.SurfaceType;
 import com.bedrosians.bedlogic.models.Products;
+import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 public class JsonUtil {
 
@@ -24,6 +34,11 @@ public class JsonUtil {
 		try{
 			object = mapper.readValue(jsonString, obj.getClass());
 		}
+	    catch (JsonGenerationException e) {
+			e.printStackTrace();
+	    } catch (JsonMappingException e) { 
+   		    e.printStackTrace();
+   		}
 		catch(Exception e){
 			e.printStackTrace();
 		}
@@ -34,9 +49,19 @@ public class JsonUtil {
 		Object object = null; 
 		ObjectMapper mapper = new ObjectMapper();
 		try{
-			object = mapper.readValue(jsonObj.toString(), obj.getClass());
+			//object = mapper.readValue(jsonObj.toString(), obj.getClass());
+			object = mapper.readValue(mapper.writeValueAsString(jsonObj), obj.getClass());
 		}
-		catch(Exception e){
+        catch (JsonGenerationException e) {
+	      	e.printStackTrace();
+        } 
+		catch (JsonMappingException e) { 
+		    e.printStackTrace();
+        }
+		catch (JsonParseException e) { 
+		    e.printStackTrace();
+        }
+		catch(IOException e){
 			e.printStackTrace();
 		}
 		return object;
@@ -48,14 +73,154 @@ public class JsonUtil {
 		try{
 			object = mapper.readValue(new File(fileName), obj.getClass());
 		}
+	    catch (JsonGenerationException e) {
+			e.printStackTrace();
+	    } catch (JsonMappingException e) { 
+   		    e.printStackTrace();
+    	} catch (IOException e) {
+    		e.printStackTrace();
+     	}
+		return object;
+	}
+	
+	public static String PojoToJsonString(Object obj){
+		String jsonString = null; 
+		ObjectMapper mapper = new ObjectMapper();
+		try{
+			jsonString = mapper.writeValueAsString(obj.getClass());
+		}
+        catch (JsonGenerationException e) {
+	      	e.printStackTrace();
+        } 
+		catch (JsonMappingException e) { 
+		    e.printStackTrace();
+        }
+		catch(IOException e){
+			e.printStackTrace();
+		}
+		return jsonString;
+	}
+	
+	public static void PojoToJsonFile(Object obj, String fileName){
+		
+		ObjectMapper mapper = new ObjectMapper();
+		try{
+			mapper.writeValue(new File(fileName), obj.getClass());
+		}
+        catch (JsonGenerationException e) {
+	      	e.printStackTrace();
+        } 
+		catch (JsonMappingException e) { 
+		    e.printStackTrace();
+        }
+		catch(IOException e){
+			e.printStackTrace();
+		}		
+	}
+	/*
+	public static Object PojoToJsonObject(JSONObject jsonObj, Object obj){
+		Object object = null; 
+		ObjectMapper mapper = new ObjectMapper();
+		try{
+			object = mapper.writeValue(jsonObj, obj.getClass());
+		}
+        catch (JsonGenerationException e) {
+	      	e.printStackTrace();
+        } 
+		catch (JsonMappingException e) { 
+		    e.printStackTrace();
+        }
 		catch(Exception e){
 			e.printStackTrace();
 		}
 		return object;
 	}
+    */
 	
-
+	public static Map<String, String> JsonStringToMap(String jsonString){
+		Map<String, String> map = new HashMap<>();
+		ObjectMapper mapper = new ObjectMapper();
+		try{
+			map = mapper.readValue(jsonString, new TypeReference<HashMap<String, String>>(){});
+		}
+        catch (JsonGenerationException e) {
+	      	e.printStackTrace();
+        } 
+		catch (JsonMappingException e) { 
+		    e.printStackTrace();
+        }
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		return map;
+	}
 	
+	public static MultivaluedMap<String, String> JsonStringToMultivaluedMap(String jsonString){
+		MultivaluedMap<String, String> map = new  MultivaluedMapImpl();
+		ObjectMapper mapper = new ObjectMapper();
+		try{
+			map = mapper.readValue(jsonString, new TypeReference<MultivaluedMapImpl>(){});
+		}
+        catch (JsonGenerationException e) {
+	      	e.printStackTrace();
+        } 
+		catch (JsonMappingException e) { 
+		    e.printStackTrace();
+        }
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		return map;
+	}
+	
+	public static String mapToJsonString(Map map){
+	    String jsonString = null;
+		ObjectMapper mapper = new ObjectMapper();
+		try{
+			jsonString = mapper.writeValueAsString(map);
+		}
+        catch (JsonGenerationException e) {
+	      	e.printStackTrace();
+        } 
+		catch (JsonMappingException e) { 
+		    e.printStackTrace();
+        }
+		catch(IOException e){
+			e.printStackTrace();
+		}
+		return jsonString;
+	}
+	
+	public static void mapToJsonFile(Map map, String fileName){
+	    
+		ObjectMapper mapper = new ObjectMapper();
+		try{
+			mapper.writeValue(new File(fileName), map);
+		}
+        catch (JsonGenerationException e) {
+	      	e.printStackTrace();
+        } 
+		catch (JsonMappingException e) { 
+		    e.printStackTrace();
+        }
+		catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	public static String getItemCode(JSONObject inputJsonObj){
+    	String itemCode = null;
+    	try {
+    		itemCode = inputJsonObj.optString("itemcode") != ""?  inputJsonObj.optString("itemcode") : 
+    		         inputJsonObj.optString("itemCode") != ""?  inputJsonObj.optString("itemCode") : 
+    		         inputJsonObj.optString("itemcd") != ""?  inputJsonObj.optString("itemcd") :  	
+    		         inputJsonObj.optString("itemId");	 
+    	}
+    	catch(Exception e){
+    		e.printStackTrace(); // just swallow it
+    	}
+    	return itemCode;	         
+    }
 	
 	public static void main(String[] args) {
 		String fileName="/Users/yiminliu/Documents/workspace/bedlogic-hibernate/src/test/resources/item.json";
@@ -64,11 +229,11 @@ public class JsonUtil {
 				+ "\"color\" : \"Red\",  "
 				+ "\"category\" : \"Tool\",  "
 				+ "\"seriesName\": \"test\", "
-				+ "\"origin\": \"USA\", "
+				+ "\"countryorigin\": \"USA\", "
 				+ "\"type\" : \"Test\",  "
 				+ "\"category\" : \"Tool\",  "
 				+ "\"seriesName\": \"test\", "
-				+ "\"origin\": \"USA\", "
+				+ "\"countryorigin\": \"USA\", "
 				+ "\"length\" : 14,  "
 				+ "\"width\" : 4,  "
 				+ "\"thickness\": \"4 3/4\", "

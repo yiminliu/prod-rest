@@ -1,20 +1,17 @@
 package com.bedrosians.bedlogic.util;
 
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
 
-import com.bedrosians.bedlogic.domain.item.IconDescription;
+
+
+import com.bedrosians.bedlogic.domain.item.IconCollection;
 import com.bedrosians.bedlogic.domain.item.Item;
+import com.bedrosians.bedlogic.domain.item.Note;
 import com.bedrosians.bedlogic.domain.item.enums.MpsCode;
-import com.bedrosians.bedlogic.domain.item.enums.Origin;
+import com.bedrosians.bedlogic.domain.item.enums.OriginCountry;
 
 
 public class ImsResultUtil {
@@ -41,7 +38,7 @@ public class ImsResultUtil {
 		return mpsCode;
 	}
 	
-	public static IconDescription parseIcons(String icons){
+	public static IconCollection parseIcons(String icons){
 		 /*!
 		* Stored as 20 character string
 		*
@@ -70,24 +67,22 @@ public class ImsResultUtil {
 		
 		if(icons == null || icons.length() == 0)
 			return null;
-		
-		IconDescription icon = new IconDescription();
-		
-		String country = null;
-				
+		if(!icons.contains("Y"))
+		   return null;	
+		IconCollection icon = new IconCollection();
+        OriginCountry country = null;
 		if (icons.length() > 0 && icons.charAt(0) == 'Y' )
-		    country = Origin.Italy.getDescription();
+		    country = OriginCountry.Italy;
 		else if (icons.length() > 3 && icons.charAt(3) == 'Y' )
-		    country = Origin.USA.getDescription();
+		    country = OriginCountry.USA;
 		else if (icons.length() > 13 && icons.charAt(13) == 'Y' )
-			country = Origin.China.getDescription();
+			country = OriginCountry.China;
 		else if (icons.length() > 14 && icons.charAt(14) == 'Y' )
-		    country = Origin.Turkey.getDescription();
+		    country = OriginCountry.Turkey;
 		else if (icons.length() > 15 && icons.charAt(15) == 'Y' )
-		    country = Origin.Mexico.getDescription();
-		
-		icon.setOriginCountry(country);
-		
+		    country = OriginCountry.Mexico;
+		icon.setMadeInCountry(country);
+	
         icon.setExteriorProduct(icons.length() < 2? false : icons.charAt(1) == 'Y');
         icon.setAdaAccessibility(icons.length() < 4? false : icons.charAt(3) == 'Y');
         icon.setThroughColor(icons.length() < 5? false : icons.charAt(4) == 'Y');
@@ -105,6 +100,29 @@ public class ImsResultUtil {
         return icon;
 	}
 	
+	public static List<String> parseColorCategory(String colorCategory){
+		if(colorCategory == null)
+		   return null;	
+		return Arrays.asList(colorCategory.trim().split(":"));
+	}
+	
+	public static Item parseNotes(Item item){
+	    String additionalNoteText = null;
+	    Note buyerNote = null;
+	  	if(item.getNewNoteSystem() != null && !item.getNewNoteSystem().isEmpty()){
+           for(Note note : item.getNewNoteSystem())	{
+        	   if("buyer".equalsIgnoreCase(note.getNoteType()) || "buyer_note".equalsIgnoreCase(note.getNoteType()))
+        		   buyerNote = note;
+        	   else if("additional".equalsIgnoreCase(note.getNoteType()) || "additional_note".equalsIgnoreCase(note.getNoteType()))
+        		   additionalNoteText = note.getNote();
+           }  
+	       if(additionalNoteText != null) {
+			  buyerNote.setNote(buyerNote.getNote() + ". " +additionalNoteText);
+		      item.getNewNoteSystem().set(1, buyerNote);
+	       }
+	  	}
+	  	return item;
+	}
 	/*
 	public static Status convertAbcCodeToStatus(String inactiveCode){
 		 abc code: 
@@ -146,49 +164,49 @@ public class ImsResultUtil {
 	
 	public static String getStandardSellUnit(Item item) {
 		
-		String standardUnit = item.getUnits().getBaseunit();
+		String standardUnit = item.getPackaginginfo().getBaseunit();
 		
-        if (item.getUnits().getUnit1isstdsell() != null && item.getUnits().getUnit1isstdsell() == 'Y')
-        	standardUnit = item.getUnits().getUnit1unit();
-        else if (item.getUnits().getUnit2isstdsell() != null && item.getUnits().getUnit2isstdsell() == 'Y')
-        	standardUnit = item.getUnits().getUnit2unit();
-        else if (item.getUnits().getUnit3isstdsell() != null && item.getUnits().getUnit3isstdsell() == 'Y')
-        	standardUnit = item.getUnits().getUnit3unit();
-        else if (item.getUnits().getUnit4isstdsell() != null && item.getUnits().getUnit4isstdsell() == 'Y')
-        	standardUnit = item.getUnits().getUnit4unit();
+        if (item.getPackaginginfo().getUnit1isstdsell() != null && item.getPackaginginfo().getUnit1isstdsell() == 'Y')
+        	standardUnit = item.getPackaginginfo().getUnit1unit();
+        else if (item.getPackaginginfo().getUnit2isstdsell() != null && item.getPackaginginfo().getUnit2isstdsell() == 'Y')
+        	standardUnit = item.getPackaginginfo().getUnit2unit();
+        else if (item.getPackaginginfo().getUnit3isstdsell() != null && item.getPackaginginfo().getUnit3isstdsell() == 'Y')
+        	standardUnit = item.getPackaginginfo().getUnit3unit();
+        else if (item.getPackaginginfo().getUnit4isstdsell() != null && item.getPackaginginfo().getUnit4isstdsell() == 'Y')
+        	standardUnit = item.getPackaginginfo().getUnit4unit();
        
         return standardUnit;
     }
 	
 	public static String getStandardPurchaseUnit(Item item) {
 		
-		String standardUnit = item.getUnits().getBaseunit();
+		String standardUnit = item.getPackaginginfo().getBaseunit();
 		
-        if (item.getUnits().getUnit1isstdsell() != null && item.getUnits().getUnit1isstdord() == 'Y')
-        	standardUnit = item.getUnits().getUnit1unit();
-        else if (item.getUnits().getUnit2isstdsell() != null && item.getUnits().getUnit2isstdord() == 'Y')
-        	standardUnit = item.getUnits().getUnit2unit();
-        else if (item.getUnits().getUnit3isstdsell() != null && item.getUnits().getUnit3isstdord() == 'Y')
-        	standardUnit = item.getUnits().getUnit3unit();
-        else if (item.getUnits().getUnit4isstdsell() != null && item.getUnits().getUnit4isstdord() == 'Y')
-        	standardUnit = item.getUnits().getUnit4unit();
+        if (item.getPackaginginfo().getUnit1isstdsell() != null && item.getPackaginginfo().getUnit1isstdord() == 'Y')
+        	standardUnit = item.getPackaginginfo().getUnit1unit();
+        else if (item.getPackaginginfo().getUnit2isstdsell() != null && item.getPackaginginfo().getUnit2isstdord() == 'Y')
+        	standardUnit = item.getPackaginginfo().getUnit2unit();
+        else if (item.getPackaginginfo().getUnit3isstdsell() != null && item.getPackaginginfo().getUnit3isstdord() == 'Y')
+        	standardUnit = item.getPackaginginfo().getUnit3unit();
+        else if (item.getPackaginginfo().getUnit4isstdsell() != null && item.getPackaginginfo().getUnit4isstdord() == 'Y')
+        	standardUnit = item.getPackaginginfo().getUnit4unit();
        
         return standardUnit;
     }
 	
 	
-	public static float getUnitSellRatio(Item item)
+	public static float getPackaginginfoellRatio(Item item)
     {
 		float baseToSellRatio = 1f;
  
-        if(item.getUnits().getUnit1isstdsell() != null && "Y".equalsIgnoreCase(item.getUnits().getUnit1isstdsell().toString().trim()))
-            baseToSellRatio = item.getUnits().getUnit1ratio();
-        else if(item.getUnits().getUnit2isstdsell() != null && "Y".equalsIgnoreCase(item.getUnits().getUnit2isstdsell().toString().trim()))
-            baseToSellRatio = item.getUnits().getUnit2ratio();
-        else if(item.getUnits().getUnit3isstdsell() != null && "Y".equalsIgnoreCase(item.getUnits().getUnit3isstdsell().toString().trim()))
-            baseToSellRatio = item.getUnits().getUnit3ratio();
-        else if(item.getUnits().getUnit4isstdsell() != null && "Y".equalsIgnoreCase(item.getUnits().getUnit4isstdsell().toString().trim()));
-            baseToSellRatio = item.getUnits().getUnit4ratio();
+        if(item.getPackaginginfo().getUnit1isstdsell() != null && "Y".equalsIgnoreCase(item.getPackaginginfo().getUnit1isstdsell().toString().trim()))
+            baseToSellRatio = item.getPackaginginfo().getUnit1ratio();
+        else if(item.getPackaginginfo().getUnit2isstdsell() != null && "Y".equalsIgnoreCase(item.getPackaginginfo().getUnit2isstdsell().toString().trim()))
+            baseToSellRatio = item.getPackaginginfo().getUnit2ratio();
+        else if(item.getPackaginginfo().getUnit3isstdsell() != null && "Y".equalsIgnoreCase(item.getPackaginginfo().getUnit3isstdsell().toString().trim()))
+            baseToSellRatio = item.getPackaginginfo().getUnit3ratio();
+        else if(item.getPackaginginfo().getUnit4isstdsell() != null && "Y".equalsIgnoreCase(item.getPackaginginfo().getUnit4isstdsell().toString().trim()));
+            baseToSellRatio = item.getPackaginginfo().getUnit4ratio();
        
          if(baseToSellRatio == 0)
         	baseToSellRatio = 1;
@@ -198,16 +216,16 @@ public class ImsResultUtil {
 	
 	public static String getPackUnit(Item item)
     {
-		String packUnit = item.getUnits().getBaseunit();
+		String packUnit = item.getPackaginginfo().getBaseunit();
  
-        if(item.getUnits().getUnit1ispackunit() != null && "Y".equalsIgnoreCase(item.getUnits().getUnit1ispackunit().toString().trim()))
-           packUnit = item.getUnits().getUnit1unit();
-        else if(item.getUnits().getUnit2ispackunit() != null && "Y".equalsIgnoreCase(item.getUnits().getUnit2ispackunit().toString().trim()))
-           packUnit = item.getUnits().getUnit2unit();   
-        else if(item.getUnits().getUnit3ispackunit() != null && "Y".equalsIgnoreCase(item.getUnits().getUnit3ispackunit().toString().trim()))
-           packUnit = item.getUnits().getUnit3unit();   
-        else if(item.getUnits().getUnit4ispackunit() != null && "Y".equalsIgnoreCase(item.getUnits().getUnit4ispackunit().toString().trim()))
-           packUnit = item.getUnits().getUnit4unit();    
+        if(item.getPackaginginfo().getUnit1ispackunit() != null && "Y".equalsIgnoreCase(item.getPackaginginfo().getUnit1ispackunit().toString().trim()))
+           packUnit = item.getPackaginginfo().getUnit1unit();
+        else if(item.getPackaginginfo().getUnit2ispackunit() != null && "Y".equalsIgnoreCase(item.getPackaginginfo().getUnit2ispackunit().toString().trim()))
+           packUnit = item.getPackaginginfo().getUnit2unit();   
+        else if(item.getPackaginginfo().getUnit3ispackunit() != null && "Y".equalsIgnoreCase(item.getPackaginginfo().getUnit3ispackunit().toString().trim()))
+           packUnit = item.getPackaginginfo().getUnit3unit();   
+        else if(item.getPackaginginfo().getUnit4ispackunit() != null && "Y".equalsIgnoreCase(item.getPackaginginfo().getUnit4ispackunit().toString().trim()))
+           packUnit = item.getPackaginginfo().getUnit4unit();    
        
         return packUnit;
     }
@@ -247,7 +265,7 @@ public class ImsResultUtil {
 	
 	
 	/*
-	 public static function getUnitSellRatio($imsRec, $unit)
+	 public static function getPackaginginfoellRatio($imsRec, $unit)
 	    {
 	        $baseToSellRatio = 1;
 

@@ -25,8 +25,8 @@ public class ImsValidation {
 		validateItemCode(item);
 		validateFieldLength(item);
 		validateNewItemUnit(item);
-		if(item.getPrices() != null){
-		   validateDates(item.getPrices().getTempdatefrom(), item.getPrices().getTempdatethru());
+		if(item.getPrice() != null){
+		   validateDates(item.getPrice().getTempdatefrom(), item.getPrice().getTempdatethru());
 		}
 	}
 
@@ -35,9 +35,11 @@ public class ImsValidation {
 		   throw new BedDAOBadParamException("Item code cannot be empty.");
 		if(item.getItemcode().length() > 18)
 		   throw new BedDAOBadParamException("Item code cannot longer that 18 characters.");
+		//if(item.getImsNewFeature() != null && item.getImsNewFeature().getItemcd() == null)
+		//	item.getImsNewFeature().setItemcd(item.getItemcode());	
 	}
 	
-	private static void validateForNullParams( MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException{
+	private static void validateForNullParams(MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException{
 		if(queryParams == null || queryParams.isEmpty())
 		   throw new BedDAOBadParamException("Please enter valid query parameters!");	
 	}
@@ -47,7 +49,7 @@ public class ImsValidation {
 		   throw new BedDAOBadParamException("Description should not be longer that 35 characters.");
 		if(item.getIconsystem() != null && item.getIconsystem().length() > 20)
 		   throw new BedDAOBadParamException("Icons should not be longer than 20 charactors.");
-		if(item.getPrices().getPricegroup() != null && item.getPrices().getPricegroup().length() > 2)
+		if(item.getPrice().getPricegroup() != null && item.getPrice().getPricegroup().length() > 2)
 		   throw new BedDAOBadParamException("Pricegroup length should be two charactors or less.");
 		if(item.getItemgroupnbr() != null && item.getItemgroupnbr() > 99)
 		   throw new BedDAOBadParamException("Itemgroupnbr length should be two digits or less.");
@@ -70,37 +72,37 @@ public class ImsValidation {
 	//Validate the new item against the ims CHECK constraints
 	public static void validateNewItemUnit(Item item) throws BedDAOBadParamException{
 		
-		if(item.getUnits().getBaseunit() == null || item.getUnits().getBaseunit().length() < 1)
+		if(item.getPackaginginfo().getBaseunit() == null || item.getPackaginginfo().getBaseunit().length() < 1)
 		   throw new BedDAOBadParamException("BaseUnit cannot be null.");
 	
-		if((item.getUnits().getBaseunit() != null && item.getUnits().getBaseunit().length() > 4) || 
-		   (item.getUnits().getUnit1unit() != null && item.getUnits().getUnit1unit().length() > 4) ||
-		   (item.getUnits().getUnit2unit() != null && item.getUnits().getUnit2unit().length() > 4) ||
-		   (item.getUnits().getUnit3unit() != null && item.getUnits().getUnit3unit().length() > 4) ||
-		   (item.getUnits().getUnit4unit() != null && item.getUnits().getUnit4unit().length() > 4))
+		if((item.getPackaginginfo().getBaseunit() != null && item.getPackaginginfo().getBaseunit().length() > 4) || 
+		   (item.getPackaginginfo().getUnit1unit() != null && item.getPackaginginfo().getUnit1unit().length() > 4) ||
+		   (item.getPackaginginfo().getUnit2unit() != null && item.getPackaginginfo().getUnit2unit().length() > 4) ||
+		   (item.getPackaginginfo().getUnit3unit() != null && item.getPackaginginfo().getUnit3unit().length() > 4) ||
+		   (item.getPackaginginfo().getUnit4unit() != null && item.getPackaginginfo().getUnit4unit().length() > 4))
 			throw new BedDAOBadParamException("Unit cannot be longer than four characters.");
 		//db constraint ims_check 1
-		if((item.getUnits().getUnit1unit() == null || item.getUnits().getUnit1unit().length() == 0) && item.getUnits().getUnit1ratio() > 0)
+		if((item.getPackaginginfo().getUnit1unit() == null || item.getPackaginginfo().getUnit1unit().length() == 0) && item.getPackaginginfo().getUnit1ratio() > 0)
 			throw new BedDAOBadParamException("Unit1 ratio should be 0, since unit1 unit is empty.");
-		if((item.getUnits().getUnit1unit() != null && item.getUnits().getUnit1unit().length() > 0) && item.getUnits().getUnit1ratio() < 0)
+		if((item.getPackaginginfo().getUnit1unit() != null && item.getPackaginginfo().getUnit1unit().length() > 0) && item.getPackaginginfo().getUnit1ratio() < 0)
 			throw new BedDAOBadParamException("Please privide Unit1 ratio.");
 		
 		//db constraint ims_check 2
-		if((item.getUnits().getUnit2unit() == null || item.getUnits().getUnit2unit().length() == 0) && item.getUnits().getUnit2ratio() > 0)
+		if((item.getPackaginginfo().getUnit2unit() == null || item.getPackaginginfo().getUnit2unit().length() == 0) && item.getPackaginginfo().getUnit2ratio() > 0)
 			throw new BedDAOBadParamException("Unit2 ratio should be 0, since unit2 unit is empty.");
-		if((item.getUnits().getUnit2unit() != null && item.getUnits().getUnit2unit().length() > 0) && item.getUnits().getUnit2ratio() < 0)
+		if((item.getPackaginginfo().getUnit2unit() != null && item.getPackaginginfo().getUnit2unit().length() > 0) && item.getPackaginginfo().getUnit2ratio() < 0)
 			throw new BedDAOBadParamException("Please privide Unit2 ratio.");
 	
 		//db constraint ims_check 3
-		if((item.getUnits().getUnit3unit() == null || item.getUnits().getUnit3unit().length() == 0) && item.getUnits().getUnit3ratio() > 0)
+		if((item.getPackaginginfo().getUnit3unit() == null || item.getPackaginginfo().getUnit3unit().length() == 0) && item.getPackaginginfo().getUnit3ratio() > 0)
 			throw new BedDAOBadParamException("Unit3 ratio should be 0, since unit3 unit is empty.");
-		if((item.getUnits().getUnit3unit() != null && item.getUnits().getUnit3unit().length() > 0) && item.getUnits().getUnit3ratio() < 0)
+		if((item.getPackaginginfo().getUnit3unit() != null && item.getPackaginginfo().getUnit3unit().length() > 0) && item.getPackaginginfo().getUnit3ratio() < 0)
 			throw new BedDAOBadParamException("Please privide Unit3 ratio.");
 				
 		//db constraint ims_check 4
-		if((item.getUnits().getUnit4unit() == null || item.getUnits().getUnit4unit().length() == 0) && item.getUnits().getUnit4ratio() > 0)
+		if((item.getPackaginginfo().getUnit4unit() == null || item.getPackaginginfo().getUnit4unit().length() == 0) && item.getPackaginginfo().getUnit4ratio() > 0)
 			throw new BedDAOBadParamException("Unit4 ratio should be 0, since unit4 unit is empty.");
-		if((item.getUnits().getUnit4unit() != null && item.getUnits().getUnit4unit().length() > 0) && item.getUnits().getUnit4ratio() < 0)
+		if((item.getPackaginginfo().getUnit4unit() != null && item.getPackaginginfo().getUnit4unit().length() > 0) && item.getPackaginginfo().getUnit4ratio() < 0)
 			throw new BedDAOBadParamException("Please privide Unit1 rtio.");
 	/*		
 	 	//ims Check 5
@@ -135,11 +137,11 @@ public class ImsValidation {
         	 throw new IllegalArgumentException("Unit price related value.");
 	*/	 
 		//ims check 6
-		if (item.getUnits().getBaseunit() != null && checkIllegalValue(item.getUnits().getBaseunit()) ||
-	       (item.getUnits().getUnit1unit() != null && checkIllegalValue(item.getUnits().getUnit1unit())) ||
-	       (item.getUnits().getUnit2unit() != null && checkIllegalValue(item.getUnits().getUnit2unit())) ||
-	       (item.getUnits().getUnit3unit() != null && checkIllegalValue(item.getUnits().getUnit3unit())) ||
-	       (item.getUnits().getUnit4unit() != null && checkIllegalValue(item.getUnits().getUnit4unit())))
+		if (item.getPackaginginfo().getBaseunit() != null && checkIllegalValue(item.getPackaginginfo().getBaseunit()) ||
+	       (item.getPackaginginfo().getUnit1unit() != null && checkIllegalValue(item.getPackaginginfo().getUnit1unit())) ||
+	       (item.getPackaginginfo().getUnit2unit() != null && checkIllegalValue(item.getPackaginginfo().getUnit2unit())) ||
+	       (item.getPackaginginfo().getUnit3unit() != null && checkIllegalValue(item.getPackaginginfo().getUnit3unit())) ||
+	       (item.getPackaginginfo().getUnit4unit() != null && checkIllegalValue(item.getPackaginginfo().getUnit4unit())))
 	    	 throw new IllegalArgumentException("Unit or unit ratio is wrong.");
 		
 	}
