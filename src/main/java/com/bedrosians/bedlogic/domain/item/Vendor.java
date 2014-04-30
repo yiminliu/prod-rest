@@ -24,6 +24,7 @@ public class Vendor implements java.io.Serializable {
 
 	private static final long serialVersionUID = -582265865921787L;
 	
+	private ItemVendorId itemVendorId = new ItemVendorId();
 	private Integer vendorOrder;
 	private String vendorName;
 	private String vendorName2;
@@ -40,8 +41,6 @@ public class Vendor implements java.io.Serializable {
 	private Integer leadTime;
 	private Float dutyPct;
 	private Item item;
-
-	ItemVendorId itemVendorId = new ItemVendorId();
 		
 	public Vendor() {
 	}
@@ -76,7 +75,7 @@ public class Vendor implements java.io.Serializable {
 	}
 
 	@Transient
-	public Long getVendorId(){
+	public Integer getVendorId(){
 		return this.itemVendorId.getVendorId();
 	}
 	
@@ -88,6 +87,7 @@ public class Vendor implements java.io.Serializable {
 	public void setVendorOrder(Integer vendorOrder) {
 		this.vendorOrder = vendorOrder;
 	}
+	
 	@Column(name = "vendor_name", length = 60)
 	public String getVendorName() {
 		return this.vendorName;

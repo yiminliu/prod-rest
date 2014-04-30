@@ -45,7 +45,7 @@ public class ImsNewFeature implements java.io.Serializable {
    
 	private static final long serialVersionUID = -11135822658657L;
 	
-	private String itemcd;
+	private String itemCode;
 	private Grade grade;
 	private Status status;
 	private Body body;
@@ -67,18 +67,22 @@ public class ImsNewFeature implements java.io.Serializable {
 	
 	public ImsNewFeature() {
 	}
+	
+	public ImsNewFeature(String itemCode) {
+		this.itemCode = itemCode;
+	}
 
 	@JsonIgnore
 	@GenericGenerator(name = "generator", strategy = "foreign", parameters = @Parameter(name = "property", value = "item"))
 	@Id
 	@GeneratedValue(generator = "generator")
-	@Column(name = "itemcd", unique = true, nullable = false, length = 15)
-	public String getItemcd() {
-		return itemcd;
+	@Column(name = "item_code", unique = true, nullable = false, length = 15)
+	public String getItemCode() {
+		return itemCode;
 	}
 
-	public void setItemcd(String itemcd) {
-		this.itemcd = itemcd;
+	public void setItemCode(String itemCode) {
+		this.itemCode = itemCode;
 	}
 	
 	@JsonIgnore
@@ -105,7 +109,7 @@ public class ImsNewFeature implements java.io.Serializable {
 	@Column(name="mps_code")
 	@Enumerated(EnumType.STRING)
 	public MpsCode getMpsCode() {
-		return (mpsCode != null? mpsCode : item == null? null :ImsResultUtil.convertInactivecdToMpsCode(item.getInactivecd()));
+		return (mpsCode != null? mpsCode : item == null? null :ImsResultUtil.convertInactivecdToMpsCode(item.getInactivecode()));
 	}
 
 	public void setMpsCode(MpsCode mpsCode) {
@@ -278,7 +282,7 @@ public class ImsNewFeature implements java.io.Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((itemcd == null) ? 0 : itemcd.hashCode());
+		result = prime * result + ((itemCode == null) ? 0 : itemCode.hashCode());
 		return result;
 	}
 
@@ -291,10 +295,10 @@ public class ImsNewFeature implements java.io.Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		ImsNewFeature other = (ImsNewFeature) obj;
-		if (itemcd == null) {
-			if (other.itemcd != null)
+		if (itemCode == null) {
+			if (other.itemCode != null)
 				return false;
-		} else if (!itemcd.equals(other.itemcd))
+		} else if (!itemCode.equals(other.itemCode))
 			return false;
 		return true;
 	}
@@ -302,7 +306,7 @@ public class ImsNewFeature implements java.io.Serializable {
 	@Override
 	public String toString() {
 		return "ImsNewFeature ["
-				+ "itemcd=" + itemcd 
+				+ "itemcd=" + itemCode 
 				+ ", imsEdge=" + edge
 				+ ", mpsCode =" + mpsCode
 				+ ", body=" + body 

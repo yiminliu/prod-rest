@@ -20,13 +20,11 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 @Entity
 @Table(name = "ims_note", schema = "public")
-//@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-//@DiscriminatorColumn(name="note_type", discriminatorType = DiscriminatorType.STRING)
 public class Note implements java.io.Serializable {
 
 	private static final long serialVersionUID = -135822655921787L;
 	private long noteId;
-	private String type;
+	private String noteType;
 	private String note;
 	private Date createdDate;
 	private Date lastModifiedDate;
@@ -35,8 +33,8 @@ public class Note implements java.io.Serializable {
 	public Note() {
 	}
 
-	public Note(String type) {
-		this.type = type;
+	public Note(String noteType) {
+		this.noteType = noteType;
 	}
 	
 	public Note(long noteId) {
@@ -58,7 +56,7 @@ public class Note implements java.io.Serializable {
 
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "itemcd")//, nullable = false)
+	@JoinColumn(name = "item_code")//, nullable = false)
 	public Item getItem() {
 		return this.item;
 	}
@@ -68,12 +66,12 @@ public class Note implements java.io.Serializable {
 	}
 	
 	@Column(name="note_type")
-	public String getType() {
-		return type;
+	public String getNoteType() {
+		return noteType;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setNoteType(String noteType) {
+		this.noteType = noteType;
 	}
 	
 	@Column(name="note")
