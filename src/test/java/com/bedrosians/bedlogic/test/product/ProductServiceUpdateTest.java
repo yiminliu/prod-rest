@@ -32,7 +32,7 @@ import com.bedrosians.bedlogic.domain.item.enums.SurfaceType;
 import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.models.Products;
 import com.bedrosians.bedlogic.service.product.ProductService;
-import com.bedrosians.bedlogic.util.ListWraper;
+import com.bedrosians.bedlogic.util.ListWrapper;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 import static org.junit.Assert.*;
@@ -105,7 +105,7 @@ public class ProductServiceUpdateTest {
 			System.out.println("An existing Item retrieved");
 			System.out.println("Item = "+ item.toString());
 		
-			item.setItemdesc1("update-test");
+			item.getItemdesc().setItemdesc1("update-test");
 			try {
 	            productService.updateProduct(item);
 			}
@@ -135,7 +135,7 @@ public class ProductServiceUpdateTest {
             Item item = productService.getProductById(testItemId);
 	        
   	        assertEquals(testItemId, item.getItemcode());
-  	        assertEquals(testDescription, item.getItemdesc1());
+  	        assertEquals(testDescription, item.getItemdesc().getItemdesc1());
   	        assertEquals(testOrigin, item.getCountryorigin());
 	        assertEquals(testColor, item.getColor());
 	        
@@ -144,6 +144,21 @@ public class ProductServiceUpdateTest {
   	        assertEquals("4", item.getWidth());
 	           
 	        System.out.println("testUpdateItem Done");
+	 }
+     
+     @Test
+	 public void testUpdateItemColorHueByJsonObject() throws Exception {
+	        System.out.println("testUpdateItemByJsonBoject: ");
+	        JSONObject params = new JSONObject();
+	        params.put("itemcode", "TEST1274");
+	        params.put("itemdesc1", "test desc");
+	        params.put("colorhue", "White");
+	        productService.updateProduct(params);
+	        System.out.println("testUpdateItem Done");
+	        
+	        //Item item = productService.getProductById("TEST1274");
+	       // assertEquals(testItemId, item.getItemcode());
+	        //assertEquals(testIcons, item.getIconsystem());
 	 }
      
      @Test
@@ -159,10 +174,8 @@ public class ProductServiceUpdateTest {
 	        Item item = productService.getProductById(testItemId);
 	        assertEquals(testItemId, item.getItemcode());
 	        assertEquals(testIcons, item.getIconsystem());
-	        
 	 }
-     
-     
+       
      @Test
 	 public void testUpdateItemTestSpecByJsonObject() {
 	        System.out.println("testUpdateItemByJsonBoject: ");
@@ -252,7 +265,7 @@ public class ProductServiceUpdateTest {
             Item item = productService.getProductById(testItemId);
 	        
   	        assertEquals(testItemId, item.getItemcode());
-  	        assertEquals(testDescription, item.getItemdesc1());
+  	        assertEquals(testDescription, item.getItemdesc().getItemdesc1());
   	        assertEquals(testOrigin, item.getCountryorigin());
 	        assertEquals(testColor, item.getColor());
 	        

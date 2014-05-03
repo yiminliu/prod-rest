@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import javax.ws.rs.core.MultivaluedMap;
 
@@ -32,7 +33,7 @@ import com.bedrosians.bedlogic.domain.item.enums.SurfaceType;
 import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.models.Products;
 import com.bedrosians.bedlogic.service.product.ProductService;
-import com.bedrosians.bedlogic.util.ListWraper;
+import com.bedrosians.bedlogic.util.ListWrapper;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 import static org.junit.Assert.*;
@@ -60,6 +61,7 @@ public class ProductServiceCreationTest {
 	private static String testFullDescription = null;
 	private static String testColor = null;
 	private static String testColorCategory = null;
+	private static String testColorCategory2 = null;
     private static String testSeriesName = null;
     private static String testItemTypeCode = null;
     private static String testCategory = null;
@@ -80,6 +82,7 @@ public class ProductServiceCreationTest {
 	    //testColor = "Beige";
 	    testColor = "White";
 	    testColorCategory = "CLEAR";
+	    testColorCategory2 = "RED";
 	    testSeriesName = "Sky";
 	    testItemTypeCode = "#";
 	    testCategory = "BRECCIA";
@@ -96,8 +99,8 @@ public class ProductServiceCreationTest {
 	 public void testCreateItemWithItem(){
 			System.out.println("test create Item ...");
 			Item item = new Item();
-			item.setItemcode(testItemId +1);
-			item.setItemdesc1("test2");
+			item.setItemcode(testItemId + new Random().nextInt(4000));
+			item.getItemdesc().setItemdesc1("test2");
 			try{
 	           productService.createProduct(item);
 			}
@@ -110,9 +113,126 @@ public class ProductServiceCreationTest {
 	}
 	 
 	 @Test
-	 public void testCreateItemWithJson() throws Exception {
+	 public void testCreateItemWithBasicInfoByJsonObject() throws Exception {
+	        System.out.println("testCreateItemWithJsonObject: ");
+	        JSONObject params = new JSONObject();
+	        params.put("itemcode",testItemId + new Random().nextInt(10000));
+	        params.put("itemdesc1", "This is a test");
+	        params.put("color", testColor);
+			params.put("category", testCategory);
+			params.put("seriesname", testSeriesName);
+			params.put("type", "test");
+			params.put("itemtypecd", "F");
+		    params.put("origin", testOrigin);
+			params.put("inactivecd", "N");
+			params.put("showonwebsite", "Y");
+			params.put("taxClass", "Tax");
+
+			String id = productService.createProduct(params);
+		       
+	        assertNotNull(id);
+	        System.out.println("newly created Item id  = " + id);
+		        
+		    Item item = productService.getProductById(id);
+		    
+		    assertEquals(testColor, item.getColor());
+		    assertEquals(testCategory, item.getItemcategory());
+		    assertEquals(testSeriesName, item.getSeriesname());
+		    assertEquals(testOrigin, item.getCountryorigin());
+		    //assertEquals(String."T", item.getTaxclass());
+		    
+		    System.out.println("Item = " + item);	
+	
+    }
+				
+	 @Test
+	 public void testCreateItemWithColorHueByJsonObject() throws Exception {
+	        System.out.println("testCreateItemWithColorHueByJsonObject: ");
+	        JSONObject params = new JSONObject();
+	        params.put("itemcode",testItemId + new Random().nextInt(4000));
+	        params.put("itemdesc1", "This is a test");
+	        params.put("color", testColor);
+			params.put("category", testCategory);
+			params.put("seriesname", "test");
+			params.put("type", "test");
+			params.put("itemtypecd", "F");
+		    params.put("origin", "China");
+			params.put("inactivecd", "N");
+	        params.put("lottype", "S");
+			params.put("seriesname", "test");
+			params.put("subtype", "test");
+			params.put("itemtypecd", "F");
+		    params.put("pricegroup", "1");
+			params.put("productline", "Test");
+			params.put("directship", "N");
+			params.put("dropdate", "01/01/2015");
+			params.put("itemgroupnbr", "12");
+	    	
+			//-----color hue ----//
+			params.put("colorhue", "red");
+			
+	        String id = productService.createProduct(params);
+	       
+	        assertNotNull(id);
+	        System.out.println("newly created Item id  = " + id);
+	        
+	        Item item = productService.getProductById(id);
+			System.out.println("Item = " + item);
+			
+			for(ColorHue hue : item.getNewColorHueSystem()){
+				System.out.println("hue.getColorDescription() = " + hue.getColorDescription());
+				assertEquals("red".toUpperCase(), hue.getColorDescription().getDescription().toUpperCase());
+			}
+	        //System.out.println("Test Result = " + result.toJSONString());
+	 }
+	   
+	 @Test
+	 public void testCreateItemWithMultipleColorHueByJsonObject() throws Exception {
+	        System.out.println("testCreateItemWithColorHueByJsonObject: ");
+	        JSONObject params = new JSONObject();
+	        params.put("itemcode",testItemId + new Random().nextInt(3000));
+	        params.put("itemdesc1", "This is a test");
+	        params.put("color", testColor);
+			params.put("category", testCategory);
+			params.put("seriesname", "test");
+			params.put("type", "test");
+			params.put("itemtypecd", "F");
+		    params.put("origin", "China");
+			params.put("inactivecd", "N");
+	        params.put("lottype", "S");
+			params.put("seriesname", "test");
+			params.put("subtype", "test");
+			params.put("itemtypecd", "F");
+		    params.put("pricegroup", "1");
+			params.put("productline", "Test");
+			params.put("directship", "N");
+			params.put("dropdate", "01/01/2015");
+			params.put("itemgroupnbr", "12");
+	    	
+			//-----color hue ----//
+			params.put("colorhue", testColorCategory+":"+testColorCategory2);
+			//params.put("colorhue", "blue");
+			
+	        String id = productService.createProduct(params);
+	       
+	        assertNotNull(id);
+	        System.out.println("newly created Item id  = " + id);
+	        
+	        Item item = productService.getProductById(id);
+			System.out.println("Item = " + item);
+			
+			for(ColorHue hue : item.getNewColorHueSystem()){
+				//System.out.println("hue.getColorDescription() = " + hue.getColorDescription());
+				assertTrue(hue.getColorDescription().getDescription().equalsIgnoreCase(testColorCategory) || hue.getColorDescription().getDescription().equalsIgnoreCase(testColorCategory2));
+			}
+	        //System.out.println("Test Result = " + result.toJSONString());
+   }
+	   
+	 
+	 @Test
+	 public void testCreateItemWithTreeJsonString() throws Exception {
 	    System.out.println("testCreateItemWithJson: ");
-	    String jString = "{ \"itemcode\" : \"Test18\", "
+	    String jString = "{ \"itemcode\" : \"Test188\", "
 				+ "\"itemdesc1\" : \"a test desc\", "
 				+ "\"color\" : \"Red\",  "
 				+ "\"category\" : \"Tool\",  "
@@ -190,11 +310,347 @@ public class ProductServiceCreationTest {
 	    System.out.println("items   = " + jsonStr);
 	 }
 	 
+	 
+	 @Test
+	 public void testCreateItemWithMatrialByJsonObject() throws Exception {
+	        System.out.println("testCreateItemWithJsonObject: ");
+	        JSONObject params = new JSONObject();
+	        params.put("itemcode",testItemId + new Random().nextInt(10000));
+	        params.put("itemdesc1", "This is a test");
+	        params.put("color", testColor);
+			params.put("category", testCategory);
+			params.put("seriesname", "test");
+			params.put("type", "test");
+			params.put("itemtypecd", "F");
+		    params.put("origin", "China");
+			params.put("inactivecd", "N");
+			params.put("showonwebsite", "Y");
+			params.put("taxClass", "Tax");
+			
+			params.put("itemcd2", "TEST1-1");
+			params.put("abccd", "P");
+	        params.put("lottype", "S");
+	        params.put("updatecd", "Test");
+			params.put("icons", "NYYNYNYNYNYNYNYNYNYN");
+			params.put("seriesname", "test");
+			params.put("subtype", "test");
+			params.put("itemtypecd", "F");
+		    params.put("pricegroup", "1");
+			
+			//----- material info -------//
+			params.put("mattype", "test");
+			params.put("matcategory", "test");
+			params.put("matstyle", "test");
+			params.put("mfeature", "test");
+			params.put("materialclassCd", "test");
+		
+	        String id = productService.createProduct(params);
+	       
+	        assertNotNull(id);
+	        System.out.println("newly created Item id  = " + id);
+	        Item item = productService.getProductById(id);
+	        
+	        assertEquals("test", item.getMaterial().getMaterialtype());
+	        assertEquals("test", item.getMaterial().getMaterialclass());
+	        assertEquals("test", item.getMaterial().getMaterialstyle());
+	        assertEquals("test", item.getMaterial().getMaterialcategory());
+	 }
+	 
+	 @Test
+	 public void testCreateItemWithDimensionsByJsonObject() throws Exception {
+	        System.out.println("testCreateItemWithJsonObject: ");
+	        JSONObject params = new JSONObject();
+	        params.put("itemcode",testItemId + new Random().nextInt(3500));
+	        params.put("itemdesc1", "This is a test");
+	        params.put("color", testColor);
+			params.put("category", testCategory);
+			params.put("seriesname", "test");
+			params.put("type", "test");
+			params.put("itemtypecd", "F");
+		    params.put("origin", "China");
+			params.put("inactivecd", "N");
+			params.put("showonwebsite", "Y");
+			params.put("taxClass", "Tax");
+	   	
+			//----- dimension ------//
+			params.put("length", "14");
+			params.put("width", "4");
+			params.put("thickness", "2 1/2");
+			params.put("nmLength", "14.0");
+			params.put("nmWidth", "4.0");
+			params.put("nmThickness", "2.5");
+			params.put("sizeunits", "E");
+			params.put("thicknessunit", "E");
+		
+	        String id = productService.createProduct(params);
+	       
+	        assertNotNull(id);
+	        System.out.println("newly created Item id  = " + id);
+            Item item = productService.getProductById(id);
+	        
+	        assertEquals("14", item.getLength());
+	        assertEquals("4", item.getWidth());
+	        assertEquals("2 1/2", item.getThickness());
+	        assertEquals("E", item.getSizeunits());
+			//System.out.println("Item = " + item);
+	        //System.out.println("Test Result = " + result.toJSONString());
+	 }
+	 
+	 @Test
+	 public void testCreateItemWithUnitJsonObject() throws Exception {
+	        System.out.println("testCreateItemWithJsonObject: ");
+	        JSONObject params = new JSONObject();
+	        params.put("itemcode",testItemId + new Random().nextInt(6000));
+	        params.put("itemdesc1", "This is a test");
+	        params.put("color", testColor);
+			params.put("category", testCategory);
+			params.put("seriesname", "test");
+			params.put("type", "test");
+			params.put("itemtypecd", "F");
+		    params.put("origin", "China");
+			params.put("inactivecd", "N");
+			params.put("showonwebsite", "Y");
+			params.put("taxClass", "Tax");
+			
+			params.put("itemcd2", "TEST1-1");
+			params.put("abccd", "P");
+	        params.put("lottype", "S");
+	        params.put("updatecd", "Test");
+			params.put("icons", "NYYNYNYNYNYNYNYNYNYN");
+			params.put("seriesname", "test");
+			params.put("subtype", "test");
+			params.put("itemtypecd", "F");
+		    params.put("pricegroup", "1");
+			//params.put("application", "AA");
+			params.put("productline", "Test");
+			params.put("directship", "N");
+			params.put("dropdate", "01/01/2015");
+			params.put("itemgroupnbr", "12");
+
+			//--------- units ----------//
+			params.put("stdunit", "PCS");
+			params.put("stdratio", "1.0");
+			params.put("ordratio", "1.0");
+			
+			params.put("baseunit", "PCS");
+			params.put("baseisstdsell", "Y");
+			params.put("baseisstdord", "N");
+			params.put("baseisfractqty", "N");
+			params.put("baseispackunit", "Y");
+			params.put("basevolperunit", "765");
+			params.put("basewgtperunit", "115");
+			params.put("baseupc", "878775");
+			
+			params.put("unit1unit", "CTN");
+			params.put("unit1ratio", "10");
+			params.put("unit1isstdsell", "N");
+			params.put("unit1isstdord", "Y");
+			params.put("unit1isfractqty", "N");
+			params.put("unit1ispackunit", "Y");
+			params.put("unit1upc", "8787750");
+			params.put("unit1wgtperunit", "110");
+			
+			params.put("unit2unit", "PLA");
+			params.put("unit2ratio", "100");
+			params.put("unit2isstdsell", "N");
+			params.put("unit2isstdord", "Y");
+			params.put("unit2isfractqty", "N");
+			params.put("unit2ispackunit", "Y");
+			params.put("unit2upc", "878775");
+			params.put("unit2wgtperunit", "120");
+			
+			params.put("unit3unit", "PLA");
+			params.put("unit3ratio", "10");
+			params.put("unit3isstdsell", "N");
+			params.put("unit3isstdord", "Y");
+			params.put("unit3isfractqty", "N");
+			params.put("unit3ispackunit", "Y");
+			params.put("unit3upc", "878775");
+			params.put("unit3wgtperunit", "130");
+			
+			params.put("unit4unit", "CTN");
+			params.put("unit4ratio", "100");
+			params.put("unit4isstdsell", "N");
+			params.put("unit4isstdord", "Y");
+			params.put("unit4isfractqty", "N");
+			params.put("unit4ispackunit", "Y");
+			params.put("unit4upc", "878775");
+			params.put("unit4wgtperunit", "140");
+
+	        String id = productService.createProduct(params);
+	       
+	        assertNotNull(id);
+	        System.out.println("newly created Item id  = " + id);
+	        //Item item = productService.getProductById("Test1");
+			//System.out.println("Item = " + item);
+	        //System.out.println("Test Result = " + result.toJSONString());
+	 }
+	 
+	 
+	 @Test
+	 public void testCreateItemWithVendorsByJsonObject() throws Exception {
+	        System.out.println("testCreateItemWithJsonObject: ");
+	        JSONObject params = new JSONObject();
+	        params.put("itemcode",testItemId + + new Random().nextInt(4300));
+	        params.put("itemdesc1", "This is a test");
+	        params.put("color", testColor);
+			params.put("category", testCategory);
+			params.put("seriesname", "test");
+			params.put("type", "test");
+			params.put("itemtypecd", "F");
+		    params.put("origin", "China");
+			params.put("inactivecd", "N");
+			params.put("showonwebsite", "Y");
+			params.put("taxClass", "Tax");
+			
+			params.put("itemcd2", "TEST1-1");
+			params.put("abccd", "P");
+	        params.put("lottype", "S");
+	        params.put("updatecd", "Test");
+			params.put("icons", "NYYNYNYNYNYNYNYNYNYN");
+			params.put("seriesname", "test");
+			params.put("subtype", "test");
+			params.put("itemtypecd", "F");
+		    params.put("pricegroup", "1");
+			//params.put("application", "AA");
+			params.put("productline", "Test");
+			params.put("directship", "N");
+			params.put("dropdate", "01/01/2015");
+			params.put("itemgroupnbr", "12");
+	
+			//------ vendors ------//
+			params.put("vendorId", "800001");
+			params.put("vendorxrefcd", "43535ff");
+			params.put("vendorpriceunit", "PCS");
+			params.put("vendorfob", "test");
+			params.put("vendorlistprice", "45");
+			
+			params.put("vendorlistprice", "0.3");
+			params.put("vendordiscpct1", "0.435");
+			params.put("vendorroundaccuracy", "2");
+			params.put("vendornetprice", "45");
+				
+			params.put("vendormarkuppct", "2");
+			params.put("vendorfreightratecwt", "45");
+			
+			params.put("vendorlandedbasecost", "0.3");
+			params.put("dutypct", "0.435");
+			params.put("leadtime", "2");
+			
+			params.put("v2_vendorId", "800002");
+			params.put("v2_vendorxrefcd", "43535ff");
+			params.put("v2_vendorpriceunit", "PCS");
+			params.put("v2_vendorfob", "test");
+			params.put("v2_vendorlistprice", "43.3");
+			params.put("v2_vendordiscpct1", "0.435");
+			params.put("v2_vendorroundaccuracy", "2");
+			params.put("v2_vendornetprice", "45");
+			params.put("v2_vendormarkuppct", "2");
+			params.put("v2_vendorfreightratecwt", "45");
+			params.put("v2_vendorlandedbasecost", "0.3");
+			params.put("v2_dutypct", "0.435");
+			params.put("v2_leadtime", "2");
+			
+			params.put("v3_vendorId", "800003");
+			params.put("v3_vendorxrefcd", "4y6f");
+			params.put("v3_vendorpriceunit", "PCS");
+			params.put("v3_vendorfob", "testr");
+			params.put("v3_vendorlistprice", "66.3");
+			params.put("v3_vendordiscpct1", "0.735");
+			params.put("v3_vendorroundaccuracy", "3");
+			params.put("v3_vendornetprice", "54");
+			params.put("v3_vendormarkuppct", "3");
+			params.put("v3_vendorfreightratecwt", "44");
+			params.put("v3_vendorlandedbasecost", "0.3");
+			params.put("v3_dutypct", "0.435");
+			params.put("v3_leadtime", "4");
+		   
+			//prior vendor
+			params.put("priorvendorpriceunit", "PCS");
+			params.put("priorvendorfob", "test");
+			params.put("priorvendorlistprice", "45.44");
+			params.put("priorvendordiscpct1", "0.435");
+			params.put("priorvendorroundaccuracy", "2");
+			params.put("priorvendornetprice", "45");
+			params.put("priorvendormarkuppct", "2");
+			params.put("priorvendorfreightratecwt", "45");
+			params.put("priorvendorlandedbasecost", "0.3");
+
+	        String id = productService.createProduct(params);
+	       
+	        assertNotNull(id);
+	        System.out.println("newly created Item id  = " + id);
+	        //Item item = productService.getProductById("Test1");
+			//System.out.println("Item = " + item);
+	        //System.out.println("Test Result = " + result.toJSONString());
+	 }
+	 
+	 @Test
+	 public void testCreateItemWithTestsJsonObject() throws Exception {
+	        System.out.println("testCreateItemWithJsonObject: ");
+	        JSONObject params = new JSONObject();
+	        params.put("itemcode",testItemId + new Random().nextInt(3500));
+	        params.put("itemdesc1", "This is a test");
+	        params.put("color", testColor);
+			params.put("category", testCategory);
+			params.put("seriesname", "test");
+			params.put("type", "test");
+			params.put("itemtypecd", "F");
+		    params.put("origin", "China");
+			params.put("inactivecd", "N");
+			params.put("showonwebsite", "Y");
+			params.put("taxClass", "Tax");
+			
+			params.put("itemcd2", "TEST1-1");
+			params.put("abccd", "P");
+	        params.put("lottype", "S");
+	        params.put("updatecd", "Test");
+			params.put("icons", "NYYNYNYNYNYNYNYNYNYN");
+			params.put("seriesname", "test");
+			params.put("subtype", "test");
+			params.put("itemtypecd", "F");
+		    params.put("pricegroup", "1");
+			//params.put("application", "AA");
+			params.put("productline", "Test");
+			params.put("directship", "N");
+			params.put("dropdate", "01/01/2015");
+			params.put("itemgroupnbr", "12");
+	    	
+			//-----cost ----//
+			params.put("cost", "12.0");
+			params.put("priorCost", "21.0");
+			params.put("priorCost1", "12.0");
+			params.put("futureCost", "12.0");
+			params.put("futureCost1", "12.0");
+			params.put("poIncludeinVendorCost", "12.0");
+			//params.put("costRangePct", "12.0");
+			params.put("nonstockcostpct", "12.0");
+			
+			//------- test info -------//
+			params.put("waterAbsorption", "0.05");
+			params.put("scratchResistance", "0.05");
+			params.put("frostResistance", "Y");
+			params.put("chemicalResistance", "Y");
+			params.put("peiAbrasion", "0.05");
+			params.put("scofWet", "0.05");
+			params.put("breakingStrength", "5");
+			params.put("scofDry", "0.05");
+	
+	        String id = productService.createProduct(params);
+	       
+	        assertNotNull(id);
+	        System.out.println("newly created Item id  = " + id);
+	        //Item item = productService.getProductById("Test1");
+			//System.out.println("Item = " + item);
+	        //System.out.println("Test Result = " + result.toJSONString());
+	 }
+	 
+	 
 	 @Test
 	 public void testCreateItemWithJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject();
-	        params.put("itemcode",testItemId + 2);
+	        params.put("itemcode",testItemId + new Random().nextInt(4600));
 	        params.put("itemdesc1", "This is a test");
 	        params.put("color", testColor);
 			params.put("category", testCategory);
@@ -434,14 +890,297 @@ public class ProductServiceCreationTest {
 	        //Item item = productService.getProductById("Test1");
 			//System.out.println("Item = " + item);
 	        //System.out.println("Test Result = " + result.toJSONString());
+	 }
+	 
+	 
+	 @Test
+	 public void testCreateItemWithPriceingByJsonObject() throws Exception {
+	        System.out.println("testCreateItemWithJsonObject: ");
+	        JSONObject params = new JSONObject();
+	        params.put("itemcode",testItemId + new Random().nextInt(3600));
+	        params.put("itemdesc1", "This is a test");
+	        params.put("color", testColor);
+			params.put("category", testCategory);
+			params.put("seriesname", "test");
+			params.put("type", "test");
+			params.put("itemtypecd", "F");
+		    params.put("origin", "China");
+			params.put("inactivecd", "N");
+			params.put("showonwebsite", "Y");
+			params.put("taxClass", "Tax");
+			
+			params.put("itemcd2", "TEST1-1");
+			params.put("abccd", "P");
+	        params.put("lottype", "S");
+	        params.put("updatecd", "Test");
+			params.put("icons", "NYYNYNYNYNYNYNYNYNYN");
+			params.put("seriesname", "test");
+			params.put("subtype", "test");
+			params.put("itemtypecd", "F");
+		    params.put("pricegroup", "1");
+			//params.put("application", "AA");
+			params.put("productline", "Test");
+			params.put("directship", "N");
+			params.put("dropdate", "01/01/2015");
+			params.put("itemgroupnbr", "12");
+	    	
+			//------- price info --------//	
+			params.put("price", "5.5");
+			params.put("futurePrice", "4.0");
+			params.put("priorPrice", "5.5");
+			params.put("tempPrice", "4.0");
+			params.put("tempdatefrom", new Date().toString());
+			//params.put("tempdatethru", (new Date()).toString());
+			params.put("pricemarginpct", "0.435");
+			params.put("priceroundaccuracy", "2");
+			
+			//-----cost ----//
+			params.put("cost", "12.0");
+			params.put("priorCost", "21.0");
+			params.put("priorCost1", "12.0");
+			params.put("futureCost", "12.0");
+			params.put("futureCost1", "12.0");
+			params.put("poIncludeinVendorCost", "12.0");
+			//params.put("costRangePct", "12.0");
+			params.put("nonstockcostpct", "12.0");
+			
+	        String id = productService.createProduct(params);
+	       
+	        assertNotNull(id);
+	        System.out.println("newly created Item id  = " + id);
+	        //Item item = productService.getProductById("Test1");
+			//System.out.println("Item = " + item);
+	        //System.out.println("Test Result = " + result.toJSONString());
 	    }
+	 
+	 @Test
+	 public void testCreateItemWithUsageByJsonObject() throws Exception {
+	        System.out.println("testCreateItemWithJsonObject: ");
+	        JSONObject params = new JSONObject();
+	        params.put("itemcode",testItemId + new Random().nextInt(6000));
+	        params.put("itemdesc1", "This is a test");
+	        params.put("color", testColor);
+			params.put("category", testCategory);
+			params.put("seriesname", "test");
+			params.put("type", "test");
+			params.put("itemtypecd", "F");
+		    params.put("origin", "China");
+			params.put("inactivecd", "N");
+			params.put("showonwebsite", "Y");
+			params.put("taxClass", "Tax");
+			
+			params.put("itemcd2", "TEST1-1");
+			params.put("abccd", "P");
+	        params.put("lottype", "S");
+	        params.put("updatecd", "Test");
+			params.put("icons", "NYYNYNYNYNYNYNYNYNYN");
+			params.put("seriesname", "test");
+			params.put("subtype", "test");
+			params.put("itemtypecd", "F");
+		    params.put("pricegroup", "1");
+			//params.put("application", "AA");
+			params.put("productline", "Test");
+			params.put("directship", "N");
+			params.put("dropdate", "01/01/2015");
+			params.put("itemgroupnbr", "12");
+		
+			params.put("residential", "FR:WR:CR");
+			params.put("commercial", "FC:WC:CC");
+		
+	        String id = productService.createProduct(params);
+	       
+	        assertNotNull(id);
+	        System.out.println("newly created Item id  = " + id);
+	        //Item item = productService.getProductById("Test1");
+			//System.out.println("Item = " + item);
+	        //System.out.println("Test Result = " + result.toJSONString());
+	    }
+	 
+	 @Test
+	 public void testCreateItemWithNotesByJsonObject() throws Exception {
+	        System.out.println("testCreateItemWithJsonObject: ");
+	        JSONObject params = new JSONObject();
+	        params.put("itemcode",testItemId + new Random().nextInt(6000));
+	        params.put("itemdesc1", "This is a test");
+	        params.put("color", testColor);
+			params.put("category", testCategory);
+			params.put("seriesname", "test");
+			params.put("type", "test");
+			params.put("itemtypecd", "F");
+		    params.put("origin", "China");
+			params.put("inactivecd", "N");
+			params.put("showonwebsite", "Y");
+			params.put("taxClass", "Tax");
+			
+			params.put("itemcd2", "TEST1-1");
+			params.put("abccd", "P");
+	        params.put("lottype", "S");
+	        params.put("updatecd", "Test");
+			params.put("icons", "NYYNYNYNYNYNYNYNYNYN");
+			params.put("seriesname", "test");
+			params.put("subtype", "test");
+			params.put("itemtypecd", "F");
+		    params.put("pricegroup", "1");
+			//params.put("application", "AA");
+			params.put("productline", "Test");
+			params.put("directship", "N");
+			params.put("dropdate", "01/01/2015");
+			params.put("itemgroupnbr", "12");
+	    
+			params.put("poNote", "test Po note");
+			params.put("buyerNote", "test buyer note");
+			params.put("invoiceNote", "test invoice note");
+			params.put("internalNote", "test internal note");
+			
+	        // String id = rpcDao.createItem("guest", "", params);
+	        String id = productService.createProduct(params);
+	       
+	        assertNotNull(id);
+	        System.out.println("newly created Item id  = " + id);
+	        //Item item = productService.getProductById("Test1");
+			//System.out.println("Item = " + item);
+	        //System.out.println("Test Result = " + result.toJSONString());
+	    }
+	 
+	 @Test
+	 public void testCreateItemWithIconByJsonObject() throws Exception {
+	        System.out.println("testCreateItemWithJsonObject: ");
+	        JSONObject params = new JSONObject();
+	        params.put("itemcode",testItemId + new Random().nextInt(6000));
+	        params.put("itemdesc1", "This is a test");
+	        params.put("color", testColor);
+			params.put("category", testCategory);
+			params.put("seriesname", "test");
+			params.put("type", "test");
+			params.put("itemtypecd", "F");
+		    params.put("origin", "China");
+			params.put("inactivecd", "N");
+			params.put("showonwebsite", "Y");
+			params.put("taxClass", "Tax");
+			
+			params.put("itemcd2", "TEST1-1");
+			params.put("abccd", "P");
+	        params.put("lottype", "S");
+	        params.put("updatecd", "Test");
+			params.put("icons", "NYYNYNYNYNYNYNYNYNYN");
+			params.put("seriesname", "test");
+			params.put("subtype", "test");
+			params.put("itemtypecd", "F");
+		    params.put("pricegroup", "1");
+			//params.put("application", "AA");
+			params.put("productline", "Test");
+			params.put("directship", "N");
+			params.put("dropdate", "01/01/2015");
+			params.put("itemgroupnbr", "12");
+	 
+		// Icon
+			params.put("originCountry", "China");
+			params.put("exteriorProduct", "True");
+			params.put("adaAccessibility", "N");
+			params.put("throughColor", "True");
+			params.put("colorBody", "Y");
+			params.put("inkJet", "N");
+			params.put("glazed", "Y");
+			params.put("unglazed", "Y");
+			params.put("rectifiedEdge", "N");
+			params.put("chiseledEdge", "True");
+			params.put("versaillesPattern", "Y");
+			params.put("recycled", "N");
+			params.put("postRecycled", "Y");
+			params.put("preRecycled", "True");
+			params.put("icon_greenFriendly", "Y");
+			params.put("icon_leadPoint", "True");
+			params.put("recycled", "True");
+			params.put("coefficientOfFriction", "Y");
+		
+		/*	//notes
+			params.put("poNote", "test Po note");
+			params.put("buyerNote", "test buyer note");
+			params.put("invoiceNote", "test invoice note");
+			params.put("internalNote", "test internal note");
+		*/
+			//params.put("designLook", "Wood");
+			//System.out.println("Transaact is completed = " + TransactionAspectSupport.currentTransactionStatus().isCompleted());
+			//System.out.println("Transaact sRollbackOnly = " + TransactionAspectSupport.currentTransactionStatus().isRollbackOnly());
+		
+	        // String id = rpcDao.createItem("guest", "", params);
+	        String id = productService.createProduct(params);
+	       
+	        assertNotNull(id);
+	        System.out.println("newly created Item id  = " + id);
+	        //Item item = productService.getProductById("Test1");
+			//System.out.println("Item = " + item);
+	        //System.out.println("Test Result = " + result.toJSONString());
+	    }
+	 
+	 @Test
+	 public void testCreateItemWithNewFeatureByJsonObject() throws Exception {
+	        System.out.println("testCreateItemWithJsonObject: ");
+	        JSONObject params = new JSONObject();
+	        params.put("itemcode",testItemId + new Random().nextInt(6000));
+	        params.put("itemdesc1", "This is a test");
+	        params.put("color", testColor);
+			params.put("category", testCategory);
+			params.put("seriesname", "test");
+			params.put("type", "test");
+			params.put("itemtypecd", "F");
+		    params.put("origin", "China");
+			params.put("inactivecd", "N");
+			params.put("showonwebsite", "Y");
+			params.put("taxClass", "Tax");
+			
+			params.put("itemcd2", "TEST1-1");
+			params.put("abccd", "P");
+	        params.put("lottype", "S");
+	        params.put("updatecd", "Test");
+			params.put("icons", "NYYNYNYNYNYNYNYNYNYN");
+			params.put("seriesname", "test");
+			params.put("subtype", "test");
+			params.put("itemtypecd", "F");
+		    params.put("pricegroup", "1");
+		
+			params.put("grade", "First");//Grade.FIRST.getDescription());
+			params.put("status", "Good");	
+			params.put("mpsCode", "Drop");//Grade.FIRST.getDescription()}))
+			params.put("designStyle", "Modern");
+			params.put("designLook", "WOOD");
+			params.put("body", "Red Body");
+			params.put("edge", "Tumbled");
+			params.put("surfaceApplication", "Silk");
+			params.put("surfaceType", "Cross Cut");
+			params.put("surfaceFinish", "Antiquated");
+			params.put("warranty", "3");
+			params.put("recommendedGroutJointMin", "1");
+			params.put("recommendedGroutJointMax", "2");
+			
+		
+		/*	//notes
+			params.put("poNote", "test Po note");
+			params.put("buyerNote", "test buyer note");
+			params.put("invoiceNote", "test invoice note");
+			params.put("internalNote", "test internal note");
+		*/
+			//params.put("designLook", "Wood");
+			//System.out.println("Transaact is completed = " + TransactionAspectSupport.currentTransactionStatus().isCompleted());
+			//System.out.println("Transaact sRollbackOnly = " + TransactionAspectSupport.currentTransactionStatus().isRollbackOnly());
+		
+	        // String id = rpcDao.createItem("guest", "", params);
+	        String id = productService.createProduct(params);
+	       
+	        assertNotNull(id);
+	        System.out.println("newly created Item id  = " + id);
+	        //Item item = productService.getProductById("Test1");
+			//System.out.println("Item = " + item);
+	        //System.out.println("Test Result = " + result.toJSONString());
+	    }
+	 
 	   
 	 //No note record for the item in the ims_note table
 	 @Test
 	 public void testCreateItemWithJsonObjectWIthoutNote() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject();
-	        params.put("itemcode","Test29");
+	        params.put("itemcode","Test290");
 	        params.put("itemdesc1", "This is a test");
 	        params.put("color", testColor);
 			params.put("category", testCategory);
@@ -689,7 +1428,7 @@ public class ProductServiceCreationTest {
 	 public void testCreateItemWithJsonObjectWithoutIcon() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject();
-	        params.put("itemcode","Test29");
+	        params.put("itemcode","Test" + new Random().nextInt(5000));
 	        params.put("itemdesc1", "This is a test");
 	        params.put("color", testColor);
 			params.put("category", testCategory);
@@ -931,13 +1670,14 @@ public class ProductServiceCreationTest {
 			//System.out.println("Item = " + item);
 	        //System.out.println("Test Result = " + result.toJSONString());
 	    }
-	   
+	  
+	
 	 
 	 @Test
 	 public void testCreateItemWithMultivalues() throws Exception {
 	        System.out.println("testCreateItem: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
-	        params.put("itemcd", Arrays.asList(new String[]{testItemId + 3}));
+	        params.put("itemcode", Arrays.asList(new String[]{testItemId + new Random().nextInt(6000)}));
 	        params.put("description", Arrays.asList(new String[]{"This is a test"}));
 	        params.put("color", Arrays.asList(new String[]{testColor}));
 			params.put("category", Arrays.asList(new String[]{testCategory}));
