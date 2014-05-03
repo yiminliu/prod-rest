@@ -41,6 +41,7 @@ public class LoggingAspect {
 
 	@Resource
 	private Slf4jLogger logger;
+
 	//@Autowired
 	//private LoggingHelper loggingHelper;
 
@@ -48,7 +49,6 @@ public class LoggingAspect {
 	 * This class is used to store the start times of nested method calls. These values are used to calculate the total
 	 * time it took to process the method.
 	 * 
-	 * @author
 	 * 
 	 */
 	private class StartTimeStack extends Stack<Long> {
@@ -172,8 +172,8 @@ public class LoggingAspect {
 		} else if (arg instanceof Item) {
 			Item item = (Item) arg;
 			clazz = item.getClass().getSimpleName();
-			id = item.getItemCode();
-			descriptor = item.getDescription();
+			id = item.getItemcode();
+			descriptor = item.getItemdesc() == null? "" : item.getItemdesc().getItemdesc1();
 		} else if (arg instanceof HttpServletRequest || arg instanceof HttpServletResponse) {
 			return buffer.toString();
 		} else {

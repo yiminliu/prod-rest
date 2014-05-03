@@ -56,7 +56,7 @@ public class Note implements java.io.Serializable {
 
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "item_code")//, nullable = false)
+	@JoinColumn(name = "item_code", nullable = false)
 	public Item getItem() {
 		return this.item;
 	}

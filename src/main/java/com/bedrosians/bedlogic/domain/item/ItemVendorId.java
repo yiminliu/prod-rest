@@ -12,25 +12,25 @@ public class ItemVendorId implements Serializable{
 
 	private static final long serialVersionUID = -5432421787L;
 	
-	private String itemcd;
+	private String itemCode;
 	private Integer vendorId;
 
 	public ItemVendorId() {
 	}
 
-	public ItemVendorId(String itemcd, Integer vendorId) {
-		this.itemcd = itemcd;
+	public ItemVendorId(String itemCode, Integer vendorId) {
+		this.itemCode = itemCode;
 		this.vendorId = vendorId;
 	}
 
 	@JsonIgnore
-	@Column(name = "itemcd", nullable = false, length = 15)
-	public String getitemcd() {
-		return this.itemcd;
+	@Column(name = "item_code", nullable = false, length = 15)
+	public String getItemCode() {
+		return this.itemCode;
 	}
 
-	public void setItemcd(String itemcd) {
-		this.itemcd = itemcd;
+	public void setItemCode(String itemCode) {
+		this.itemCode = itemCode;
 	}
 
 	@Column(name = "vendor_id", nullable = false, precision = 10, scale = 0)
@@ -51,9 +51,9 @@ public class ItemVendorId implements Serializable{
 			return false;
 		ItemVendorId castOther = (ItemVendorId) other;
 
-		return ((this.getitemcd() == castOther.getitemcd()) || 
-				(this.getitemcd() != null && castOther.getitemcd() != null && 
-				this.getitemcd().equals(castOther.getitemcd()))) && 
+		return ((this.getItemCode() == castOther.getItemCode()) || 
+				(this.getItemCode() != null && castOther.getItemCode() != null && 
+				this.getItemCode().equals(castOther.getItemCode()))) && 
 				(this.getVendorId() == castOther.getVendorId());
 	}
 
@@ -61,7 +61,7 @@ public class ItemVendorId implements Serializable{
 		int result = 17;
 
 		result = 37 * result
-				+ (getitemcd() == null ? 0 : this.getitemcd().hashCode());
+				+ (getItemCode() == null ? 0 : this.getItemCode().hashCode());
 		result = 37 * result + getVendorId().intValue();
 		return result;
 	}

@@ -105,6 +105,10 @@ public class FormatUtil {
 		item.setItemcode(process(item.getItemcode()));
 		if(item.getIconDescription() == null)
 		   item.setIconDescription(ImsResultUtil.parseIcons(item.getIconsystem()));	
+		if(item.getPriorVendor() != null)
+		   ImsResultUtil.parsePriorVendor(item);	
+		if(item.getNewColorHueSystem() == null || item.getNewColorHueSystem().isEmpty())
+		   item.setNewColorHueSystem(ImsResultUtil.parseColorCategory(item.getColorhues()));
 		return item;
 		/*
 		newItem.setAbccd(process(item.getAbccd()));

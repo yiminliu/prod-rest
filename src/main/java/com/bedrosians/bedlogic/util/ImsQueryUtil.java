@@ -2,6 +2,7 @@ package com.bedrosians.bedlogic.util;
 
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -17,9 +18,11 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jettison.json.JSONObject;
 
+import com.bedrosians.bedlogic.domain.item.ColorHue;
 import com.bedrosians.bedlogic.domain.item.Item;
 import com.bedrosians.bedlogic.domain.item.Note;
-import com.bedrosians.bedlogic.domain.item.Vendor;
+import com.bedrosians.bedlogic.domain.item.ItemVendor;
+import com.bedrosians.bedlogic.domain.item.enums.Color;
 import com.bedrosians.bedlogic.domain.item.enums.Status;
 import com.bedrosians.bedlogic.domain.item.enums.Grade;
 import com.bedrosians.bedlogic.domain.item.enums.DesignLook;
@@ -157,9 +160,9 @@ public class ImsQueryUtil {
 				e.printStackTrace();
 			}
 		} 
-		for(Vendor vendor : item.getNewVendorSystem()){
-			if(vendor.getItemVendorId().getitemcd() == null)
-			vendor.getItemVendorId().setItemcd(item.getItemcode());
+		for(ItemVendor vendor : item.getNewVendorSystem()){
+			if(vendor.getItemVendorId().getItemCode() == null)
+			vendor.getItemVendorId().setItemCode(item.getItemcode());
 		}
 		return item;
 	}
@@ -183,9 +186,9 @@ public class ImsQueryUtil {
 				e.printStackTrace();
 			}
 		} 
-		for(Vendor vendor : item.getNewVendorSystem()){
-			if(vendor.getItemVendorId().getitemcd() == null)
-			vendor.getItemVendorId().setItemcd(item.getItemcode());
+		for(ItemVendor vendor : item.getNewVendorSystem()){
+			if(vendor.getItemVendorId().getItemCode() == null)
+			vendor.getItemVendorId().setItemCode(item.getItemcode());
 		}
 		return item;
 	}
@@ -211,9 +214,9 @@ public class ImsQueryUtil {
 				e.printStackTrace();
 			}
 		} 
-		for(Vendor vendor : item.getNewVendorSystem()){
-			if(vendor.getItemVendorId().getitemcd() == null)
-			vendor.getItemVendorId().setItemcd(item.getItemcode());
+		for(ItemVendor vendor : item.getNewVendorSystem()){
+			if(vendor.getItemVendorId().getItemCode() == null)
+			vendor.getItemVendorId().setItemCode(item.getItemcode());
 		}
 		return item;
 	}
@@ -240,16 +243,16 @@ public class ImsQueryUtil {
 	 * 
 	 */
     private static Item setParameter(Item item, String field, String value) throws BedDAOBadParamException{
-    	String itemcd = null;    	
+    	String itemCode = null;    	
     	switch(field){
 
     	   /*------- basic info ---------*/ 
     	   case "itemcd": case "itemcode": case "itemCode":
     		   item.setItemcode(value.toUpperCase());
-    		   itemcd = value;
+    		   itemCode = value;
       		   break;
     	   case "description": case "itemdesc1":
-    		   item.setItemdesc1(value);
+    		   item.getItemdesc().setItemdesc1(value);
     		   break;
     	   case "seriesname":  case "seriesName":
     		   item.setSeriesname(value);
@@ -258,7 +261,12 @@ public class ImsQueryUtil {
     		   item.setColor(value);
     		   break;	
     	   case "colorcategory": case "colorCategory":
-    		   item.setColorcategory(value);
+    		   item.setColorhues(value.toUpperCase());
+    		   saveColorHue(item, value); //update just adds new entry and old entries still remain
+    		   break;	   
+    	   case "colorhue": case "colorHue": case "colorhues": case "colorHues":
+    		   saveColorHue(item, value);
+    		   item.setColorhues(value.toUpperCase());
     		   break;	   
     	   case "category": case "itemcategory":
     		   item.setItemcategory(value);
@@ -308,11 +316,11 @@ public class ImsQueryUtil {
     	   case "abccd": case "abcCd": case "abccode": case "abcCode":
     		   item.setAbccd(value);
     		   break;	
-    	  case "itemdesc2":  case "itemDesc2": 
-    		   item.setItemdesc2(value);
+    	   case "itemdesc2":  case "itemDesc2": 
+    		   item.getItemdesc().setItemdesc2(value);
     		   break;
     	   case "fulldesc": case "fullDesc":
-    		   item.setFulldesc(value);
+    		   item.getItemdesc().setFulldesc(value);
     		   break;	   
     	   case "subtype": case "subType":
     		   item.setSubtype(value);
@@ -370,19 +378,19 @@ public class ImsQueryUtil {
     		   
     	/*----- material info -------*/
     	   case "mfeature": case "mFeature": case "materialfeature": case "materialFeature":
-    		   item.setMaterialfeature(value);
+    		   item.getMaterial().setMaterialfeature(value);
     		   break;	
     	   case "mattype": case "matType": case "materialtype": case "materialType":
-    		   item.setMaterialtype(value);
+    		   item.getMaterial().setMaterialtype(value);
     		   break;			   
     	   case "matcategory": case "matCategory": case "materialcategory": case "materialCategory":
-    		   item.setMaterialcategory(value);
+    		   item.getMaterial().setMaterialcategory(value);
     		   break;	   
     	   case "matstyle": case "matStyle": case "materialstyle": case "materialStyle":
-    		   item.setMaterialstyle(value);
+    		   item.getMaterial().setMaterialstyle(value);
     		   break;	
     	   case "materialclass": case "materialclassCd": case "materialClassCd": case "materialClassCode":
-    		   item.setMaterialclass(value);
+    		   item.getMaterial().setMaterialclass(value);
     		   break; 	   
     			
     		 //------- price info --------//	
@@ -480,8 +488,8 @@ public class ImsQueryUtil {
     		   item.getVendors().setVendornbr1(Integer.parseInt(value));
     		   item.getNewVendorSystem().get(0).getItemVendorId().setVendorId(Integer.parseInt(value));
     		   item.getNewVendorSystem().get(0).setVendorOrder(1);  //as default, it will be overwritten if "vendorOrder' is passed in
-    		   if(itemcd != null)
-    		      item.getNewVendorSystem().get(0).getItemVendorId().setItemcd(itemcd);
+    		   if(itemCode != null)
+    		      item.getNewVendorSystem().get(0).getItemVendorId().setItemCode(itemCode);
     		   break; 
     	   case "xrefid": case "vendorxrefcd":
     		   item.getVendors().setVendorxrefcd(value);
@@ -554,8 +562,8 @@ public class ImsQueryUtil {
     	   case "v2_vendorId": case "v2_vendornbr1":
     		   item.getNewVendorSystem().get(1).getItemVendorId().setVendorId(Integer.parseInt(value));
     		   item.getNewVendorSystem().get(1).setVendorOrder(2);
-    		   if(itemcd != null)
-     		      item.getNewVendorSystem().get(1).getItemVendorId().setItemcd(itemcd);
+    		   if(itemCode != null)
+     		      item.getNewVendorSystem().get(1).getItemVendorId().setItemCode(itemCode);
     		   break; 
     	   case "v2_xrefid": case "v2_vendorxrefcd": 
     		   item.getNewVendorSystem().get(1).setVendorXrefId(value);
@@ -602,8 +610,8 @@ public class ImsQueryUtil {
     	   case "v3_vendorId": case "v3_vendornbr1":
      		   item.getNewVendorSystem().get(2).getItemVendorId().setVendorId(Integer.parseInt(value));
      		  item.getNewVendorSystem().get(2).setVendorOrder(3);
-    		   if(itemcd != null)
-     		      item.getNewVendorSystem().get(2).getItemVendorId().setItemcd(itemcd);
+    		   if(itemCode != null)
+     		      item.getNewVendorSystem().get(2).getItemVendorId().setItemCode(itemCode);
     		   break; 
     	   case "v3_xrefid": case "v3_vendorxrefcd": 
     		   item.getNewVendorSystem().get(2).setVendorXrefId(value);
@@ -1123,9 +1131,9 @@ public class ImsQueryUtil {
 	
 	public static Item buildVendorInfo(MultivaluedMap<String, String> queryParams, Item item){
 	
-		List<Vendor> vendors = item.getNewVendorSystem();
+		List<ItemVendor> vendors = item.getNewVendorSystem();
 	    if(vendors.isEmpty()){
-	    	Vendor vendor = new Vendor();
+	    	ItemVendor vendor = new ItemVendor();
 	    }
 	    
 		Set<Map.Entry<String, List<String>>> set = queryParams.entrySet(); 
@@ -1155,4 +1163,27 @@ public class ImsQueryUtil {
 				  	
 		return item;
 	}
+	
+	public static void saveColorHue(Item item, String value){
+		if(value != null && !value.isEmpty()) {
+			item.setNewColorHueSystem(new ArrayList<ColorHue>());
+			if(!value.contains(":") )
+				item.addNewColorHueSystem(new ColorHue(Color.instanceOf(value)));	
+			else {
+				for(String color : value.trim().split(":")){
+  	                if(color != null && !color.isEmpty())
+		               item.addNewColorHueSystem(new ColorHue(Color.instanceOf(color)));
+				}    
+		    }	   
+		}
+	}
+	
+	public static void saveColorCategory(Item item, String value){
+		if(value != null && !value.isEmpty()){
+			String colorCategory = item.getColorhues();
+		    //item.setColorcategory((colorCategory == null && !colorCategory.isEmpty()) ?  value.toUpperCase() : colorCategory + ":" + value.toUpperCase());
+			item.setColorhues(value.toUpperCase());
+		}
+	}
+	
 }

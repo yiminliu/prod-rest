@@ -1,5 +1,6 @@
 package com.bedrosians.bedlogic.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -7,9 +8,16 @@ import java.util.List;
 
 
 
+
+
+
+
+import com.bedrosians.bedlogic.domain.item.ColorHue;
 import com.bedrosians.bedlogic.domain.item.IconCollection;
 import com.bedrosians.bedlogic.domain.item.Item;
 import com.bedrosians.bedlogic.domain.item.Note;
+import com.bedrosians.bedlogic.domain.item.embeddable.PriorVendor;
+import com.bedrosians.bedlogic.domain.item.enums.Color;
 import com.bedrosians.bedlogic.domain.item.enums.MpsCode;
 import com.bedrosians.bedlogic.domain.item.enums.OriginCountry;
 
@@ -100,13 +108,25 @@ public class ImsResultUtil {
         return icon;
 	}
 	
-	public static List<String> parseColorCategory(String colorCategory){
-		if(colorCategory == null)
+	//public static List<String> parseColorCategory(String colorCategory){
+	//	if(colorCategory == null)
+	//	   return null;	
+	//	return Arrays.asList(colorCategory.trim().split(":"));
+	//}
+	
+	public static List<ColorHue> parseColorCategory(String colorCategory){
+		if(colorCategory == null || colorCategory.isEmpty())
 		   return null;	
-		return Arrays.asList(colorCategory.trim().split(":"));
+		List<ColorHue> colorHues = new ArrayList<>();	
+		for(String color : colorCategory.trim().split(":")){
+			if(color != null && !color.isEmpty())
+			   colorHues.add(new ColorHue(Color.instanceOf(color)));
+			//colorHues.add(new ColorHue(color));
+		}
+		return colorHues;
 	}
 	
-	public static Item parseNotes(Item item){
+	/*public static Item parseNotes(Item item){
 	    String additionalNoteText = null;
 	    Note buyerNote = null;
 	  	if(item.getNewNoteSystem() != null && !item.getNewNoteSystem().isEmpty()){
@@ -122,7 +142,17 @@ public class ImsResultUtil {
 	       }
 	  	}
 	  	return item;
+	}*/
+	public static Item parsePriorVendor(Item item){
+		
+		if(item.getPriorVendor() != null && item.getPriorVendor().getPriorvendorpriceunit() == null 
+				                         && item.getPriorVendor().getPriorvendorfob() == null) 
+				                         //&& item.getPriorVendor().getPriorvendorlistprice() == null)
+			item.setPriorVendor(null);	
+		return item;
 	}
+	
+	
 	/*
 	public static Status convertAbcCodeToStatus(String inactiveCode){
 		 abc code: 

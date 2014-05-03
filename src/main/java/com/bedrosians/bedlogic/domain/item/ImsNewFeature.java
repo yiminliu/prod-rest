@@ -306,7 +306,7 @@ public class ImsNewFeature implements java.io.Serializable {
 	@Override
 	public String toString() {
 		return "ImsNewFeature ["
-				+ "itemcd=" + itemCode 
+				+ "itemcode=" + itemCode 
 				+ ", imsEdge=" + edge
 				+ ", mpsCode =" + mpsCode
 				+ ", body=" + body 

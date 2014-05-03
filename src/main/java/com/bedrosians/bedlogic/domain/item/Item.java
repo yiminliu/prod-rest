@@ -25,6 +25,8 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.stereotype.Component;
 
+import com.bedrosians.bedlogic.domain.item.embeddable.Description;
+import com.bedrosians.bedlogic.domain.item.embeddable.Material;
 import com.bedrosians.bedlogic.domain.item.embeddable.Notes;
 import com.bedrosians.bedlogic.domain.item.embeddable.Usage;
 import com.bedrosians.bedlogic.domain.item.embeddable.Cost;
@@ -52,21 +54,16 @@ public class Item implements java.io.Serializable {
 	private String seriesname;
 	private String countryorigin;
 	private String inactivecode;
-	private String itemdesc1;
-	private String itemdesc2;
-	private String fulldesc;
+	//----- decriptions ---------//
+	private Description itemdesc = new Description();
 	//----- material info -------//
-	private String materialtype;
-	private String materialcategory;
-	private String materialstyle;
-	private String materialfeature;
-	private String materialclass;
+	private Material material = new Material();
 	private String shadevariation;
+	private String colorhues;
 	//------- color hue info --------//	
-	//private List<ColorHue> colorHues=  new ArrayList<>();
-	private List<String> colorhues =  new ArrayList<>();
+	private List<ColorHue> newColorHueSystem =  new ArrayList<>();
+	//private List<String> colorhues =  new ArrayList<>();
 	private String color;
-	private String colorcategory;
 	//----- dimension ------//
 	private Float nominallength;
 	private Float nominalwidth;
@@ -116,8 +113,8 @@ public class Item implements java.io.Serializable {
 	//------- new featureas --------//	
 	private ImsNewFeature imsNewFeature;
 	//------- vendor info ( new vendor system) --------//	
-	private List<Vendor> newVendorSystem =  new ArrayList<>();
-	//------- cost info as embedded component--------//	
+	private List<ItemVendor> newVendorSystem =  new ArrayList<>();
+	//------- vendor info as embedded component--------//	
 	private VendorInfo vendors = new VendorInfo();
     //------- cost info as embedded component--------//	
     private Cost cost = new Cost();
@@ -141,56 +138,31 @@ public class Item implements java.io.Serializable {
 		this.itemcode = itemcode;
 	}
 
-	@Column(name = "mattype", length = 24)
-	public String getMaterialtype() {
-		return FormatUtil.process(this.materialtype);
+	
+	
+	@Embedded
+	public Description getItemdesc() {
+		return itemdesc;
 	}
 
-	public void setMaterialtype(String materialtype) {
-		this.materialtype = materialtype;
+	public void setItemdesc(Description itemdesc) {
+		this.itemdesc = itemdesc;
+	}
+    
+	@Embedded
+	public Material getMaterial() {
+		return material;
+	}
+
+	public void setMaterial(Material material) {
+		this.material = material;
 	}
 	
-	@Column(name = "materialclass_cd", length = 5)
-	public String getMaterialclass() {
-		return FormatUtil.process(this.materialclass);
-	}
-
-	public void setMaterialclass(String materialclass) {
-		this.materialclass = materialclass;
-	}
-	
-	@Column(name = "matcategory", length = 10)
-	public String getMaterialcategory() {
-		return FormatUtil.process(this.materialcategory);
-	}
-
-	public void setMaterialcategory(String materialcategory) {
-		this.materialcategory = materialcategory;
-	}
-
-	@Column(name = "matstyle", length = 7)
-	public String getMaterialstyle() {
-		return FormatUtil.process(this.materialstyle);
-	}
-
-	public void setMaterialstyle(String materialstyle) {
-		this.materialstyle = materialstyle;
-	}
-
-	@Column(name = "mfeature", length = 15)
-	public String getMaterialfeature() {
-		return FormatUtil.process(this.materialfeature);
-	}
-
-	public void setMaterialfeature(String materialfeature) {
-		this.materialfeature = materialfeature;
-	}
-
 	@Embedded
 	public Price getPrice() {
 		return price;
 	}
-	
+
 	public void setPrice(Price price) {
 		this.price = price;
 	}
@@ -347,24 +319,6 @@ public class Item implements java.io.Serializable {
 	public void setSizeunits(String sizeunits) {
 		this.sizeunits = sizeunits;
 	}
-	
-	@Column(name = "itemdesc1", length = 35)
-	public String getItemdesc1() {
-		return FormatUtil.process(this.itemdesc1);
-	}
-
-	public void setItemdesc1(String itemdesc1) {
-		this.itemdesc1 = itemdesc1;
-	}
-
-	@Column(name = "itemdesc2", length = 35)
-	public String getItemdesc2() {
-		return FormatUtil.process(this.itemdesc2);
-	}
-
-	public void setItemdesc2(String itemdesc2) {
-		this.itemdesc2 = itemdesc2;
-	}
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "priorlastupdated", length = 13)
@@ -493,15 +447,6 @@ public class Item implements java.io.Serializable {
 	public void setUpdatecd(String updatecd) {
 		this.updatecd = updatecd;
 	}
-    
-	@Column(name = "fulldesc", length = 70)
-	public String getFulldesc() {
-		return FormatUtil.process(this.fulldesc);
-	}
-
-	public void setFulldesc(String fulldesc) {
-		this.fulldesc = fulldesc;
-	}
 
 	@Column(name = "origin", length = 18)
 	public String getCountryorigin() {
@@ -531,12 +476,12 @@ public class Item implements java.io.Serializable {
 	}
 
     @Column(name = "colorcategory", length = 30)
-	public String getColorcategory() {
-		return FormatUtil.process(this.colorcategory);
+	public String getColorhues() {
+		return FormatUtil.process(this.colorhues);
 	}
 
-	public void setColorcategory(String colorcategory) {
-		this.colorcategory = colorcategory;
+	public void setColorhues(String colorhues) {
+		this.colorhues = colorhues;
 	}
 
 	@Column(name = "showonalysedwards", length = 1)
@@ -643,40 +588,39 @@ public class Item implements java.io.Serializable {
 		this.iconCollection = iconCollection;
 	}
 
-	/*@LazyCollection(LazyCollectionOption.FALSE)
+	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany( mappedBy = "item", cascade = CascadeType.ALL)
-	public List<ColorHue> getColorHues() {
-		return this.colorHues;
+	public List<ColorHue> getNewColorHueSystem() {
+		return this.newColorHueSystem;
 	}
 
-	public void setColorHues(List<ColorHue> colorHues) {
-		this.colorHues = colorHues;
+	public void setNewColorHueSystem(List<ColorHue> newColorHueSystem) {
+		this.newColorHueSystem = newColorHueSystem;
 	}
    
-	public void addColorHue(ColorHue colorHue){
-		colorHue.setItem(this);
-		getColorHues().add(colorHue);
+	public void addNewColorHueSystem(ColorHue newColorHueSystem){
+		newColorHueSystem.setItem(this);
+		getNewColorHueSystem().add(newColorHueSystem);
 	}
-	*/
 	
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(/*fetch = FetchType.EAGER,*/ mappedBy = "item", cascade = CascadeType.ALL)
-	public List<Vendor> getNewVendorSystem() {
+	public List<ItemVendor> getNewVendorSystem() {
 		return this.newVendorSystem;
 	}
 
-	public void setNewVendorSystem(List<Vendor> newVendorSystem) {
+	public void setNewVendorSystem(List<ItemVendor> newVendorSystem) {
 		this.newVendorSystem = newVendorSystem;
 	}
 
-	public void addNewVendorSystem(Vendor vendor){
+	public void addNewVendorSystem(ItemVendor vendor){
 		vendor.setItem(this);
 		getNewVendorSystem().add(vendor);
 	}
 	
 	public void initVendors(int numberOfVendors){
 		for(int i = 0; i < numberOfVendors; i++) {
-			addNewVendorSystem(new Vendor());
+			addNewVendorSystem(new ItemVendor());
 		}
 	}
 
@@ -720,10 +664,10 @@ public class Item implements java.io.Serializable {
 		}
 	}
 	
-	@Transient
-	public List<String> getColorhues() {
-		return ImsResultUtil.parseColorCategory(colorcategory);
-	}
+	//@Transient
+	//public List<String> getColorHues() {
+	//	return ImsResultUtil.parseColorCategory(colorcategory);
+	//}
 	
 	@JsonIgnore
 	@Transient
@@ -767,8 +711,8 @@ public class Item implements java.io.Serializable {
 	public String toString() {
 		return "Item "
 				+ "[itemcd=" + itemcode 
-				+ ", description=" + itemdesc1
-				+ ", itemdesc2=" + itemdesc2 
+				//+ ", description=" + itemdesc1
+				//+ ", itemdesc2=" + itemdesc2 
 				//+ ",  mpsCode=" +  mpsCode
 				//+ ",  grade=" +  grade
 				//+ ",  status=" +  status
@@ -911,11 +855,11 @@ public class Item implements java.io.Serializable {
 				//+ ", mattype=" + materialtype
 				//+ ", thickness=" + thickness 
 				//+ ", sizeunits=" + sizeunits
-				+ ", fulldesc=" + fulldesc 
+				//+ ", fulldesc=" + fulldesc 
 				+ ", origin=" + countryorigin
 				+ ", shadevariation=" + shadevariation 
 				+ ", showonwebsite=" + showonwebsite
-				+ ", colorcategory=" + colorcategory 
+				+ ", colorcategory=" + colorhues 
 				+ ", showonalysedwards=" + showonalysedwards 
 				+ ", offshade=" + offshade 
 				+ ", itemcd2=" + itemcd2 

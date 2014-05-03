@@ -1,14 +1,12 @@
 package com.bedrosians.bedlogic.service.product;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.ws.rs.core.MultivaluedMap;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.hibernate.HibernateException;
@@ -20,6 +18,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bedrosians.bedlogic.dao.item.ItemDao;
+import com.bedrosians.bedlogic.domain.item.ColorHue;
 import com.bedrosians.bedlogic.domain.item.IconCollection;
 import com.bedrosians.bedlogic.domain.item.ImsNewFeature;
 import com.bedrosians.bedlogic.domain.item.Item;
@@ -29,7 +28,7 @@ import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.exception.BedResException;
 import com.bedrosians.bedlogic.util.FormatUtil;
 import com.bedrosians.bedlogic.util.ImsQueryUtil;
-import com.bedrosians.bedlogic.util.ImsValidation;
+import com.bedrosians.bedlogic.util.ImsValidator;
 import com.bedrosians.bedlogic.util.JsonUtil;
 import com.bedrosians.bedlogic.util.logger.aspect.LogLevel;
 import com.bedrosians.bedlogic.util.logger.aspect.Loggable;
@@ -43,11 +42,9 @@ public class ProductServiceImpl implements ProductService {
     
     @Autowired
 	private SessionFactory sessionFactory;
-    
-    	    	
+      	    	
     @Loggable(value = LogLevel.TRACE)
     @Override
-	//@Transactional(readOnly=true)
 	public Item getProductById(String id) throws BedDAOBadParamException, BedDAOException{
     	Item item = null;
     	if(id == null || id.length() < 1)
@@ -57,9 +54,11 @@ public class ProductServiceImpl implements ProductService {
 		}
 		catch(HibernateException hbe){
 			hbe.printStackTrace();
-			throw new BedDAOException("Error occured during getProductById() due to: " + hbe.getMessage(), hbe);
+			if(hbe.getCause() != null)
+		  	   throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+		  	else
+		  	   throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage());	
 		}
-		//return item;
 		return FormatUtil.process(item);
 	}
 
@@ -67,14 +66,18 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public List<Item> getProducts(MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException, BedDAOException{
 			
-		ImsValidation.validateQueryParams(queryParams);	
+		ImsValidator.validateQueryParams(queryParams);	
 		List<Item> items = null;
 		try{
 			items = itemDao.getItemsByQueryParameters(queryParams);
 		}
 		catch(HibernateException hbe){
 			hbe.printStackTrace();
-			throw new BedDAOException("Error occured during getProductsByQueryParameters() due to: " + hbe.getMessage(), hbe);
+			if(hbe.getCause() != null)
+		       throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+		  	else
+		  	   throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage());
+		
 		}
 		List<Item> processedItems = new ArrayList<>();
 		for(Item item : items){
@@ -107,6 +110,10 @@ public class ProductServiceImpl implements ProductService {
 	 
 		} catch (Exception e) {
 			e.printStackTrace();
+			if(e.getCause() != null)
+		  	   throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+		  	else
+		  	   throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  e.getMessage());	
 		}
 		return items;
 		
@@ -114,16 +121,18 @@ public class ProductServiceImpl implements ProductService {
 	
 	@Loggable(value = LogLevel.TRACE)
 	@Override
-	//@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 	public synchronized String createProduct(Item item) throws BedDAOBadParamException, BedDAOException{
 		String id;
-		ImsValidation.validateNewItem(item);
+		ImsValidator.validateNewItem(item);
 		try{
 			id = itemDao.createItem(item); 
 		}
 		catch(HibernateException hbe){
-				hbe.printStackTrace();
-				throw new BedDAOException("Error occured during getProductsByQueryParameters() due to: " + hbe.getMessage(), hbe);
+			hbe.printStackTrace();
+			if(hbe.getCause() != null)
+			   throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+			else
+			   throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage());		
 		}
 		return id; 
 	}
@@ -142,13 +151,16 @@ public class ProductServiceImpl implements ProductService {
 			  e.printStackTrace();
 			  throw new BedDAOBadParamException(e);
 		   }
-		   ImsValidation.validateNewItem(item);
+		   ImsValidator.validateNewItem(item);
 		   try{
 		      id = itemDao.createItem(item);
 		   }
 		   catch(HibernateException hbe){
 			  hbe.printStackTrace();
-			  throw new BedDAOException("Error occured during createProduct() due to: " + hbe.getMessage(), hbe);
+			  if(hbe.getCause() != null)
+		  	     throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+		  	  else
+		  	     throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage());	
 	       }
 	   }		
 	   return id;		 	
@@ -216,7 +228,7 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public String createProduct(final MultivaluedMap<String, String> queryParams)throws BedDAOBadParamException, BedDAOException{
 		String id;
-		ImsValidation.validateInsertUpdateParams(queryParams);
+		ImsValidator.validateInsertUpdateParams(queryParams);
 		Item item = new Item(ImsQueryUtil.getItemCode(queryParams));
 		synchronized(item){
 		   item = initializeItemAssociationsForInsert(item, queryParams);
@@ -227,13 +239,16 @@ public class ProductServiceImpl implements ProductService {
 		      e.printStackTrace();
 		      throw new BedDAOBadParamException(e);
 	       }
-		   ImsValidation.validateNewItem(item);
+		   ImsValidator.validateNewItem(item);
 		   try{
 		      id = itemDao.createItem(item);
 		   }
 		   catch(HibernateException hbe){
 			  hbe.printStackTrace();
-			  throw new BedDAOException("Error occured during createProduct() due to: " + hbe.getMessage(), hbe);
+			  if(hbe.getCause() != null)
+		  	     throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+		  	  else
+		  		 throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage());
 	       }
 		}   
 		return id;		
@@ -254,7 +269,10 @@ public class ProductServiceImpl implements ProductService {
 		}
 		catch(HibernateException hbe){
 			hbe.printStackTrace();
-			throw new BedDAOException("Error occured during updateProduct() due to: " + hbe.getMessage(), hbe);
+			if(hbe.getCause() != null)
+		       throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+	  		else
+	  		   throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage());
 	    }   
 	}
 	
@@ -273,7 +291,10 @@ public class ProductServiceImpl implements ProductService {
 		    updateProduct(new JSONObject(jsonString));
 		}
 		catch(JSONException e){
-			throw new BedDAOBadParamException("Error occured during parsing the json input: " + e.getMessage());
+			if(e.getCause() != null)
+		  	   throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+		  	else
+		  	   throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  e.getMessage());	
 		}
 	}
 	
@@ -281,14 +302,14 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	//@Transactional(isolation = Isolation.REPEATABLE_READ)
 	public void updateProduct(JSONObject inputJsonObj) throws BedDAOBadParamException, BedDAOException, BedResException{
-		String itemcd = JsonUtil.getItemCode(inputJsonObj); 
-		if(itemcd == null || itemcd.length() == 0)
+		String itemCode = JsonUtil.getItemCode(inputJsonObj); 
+		if(itemCode == null || itemCode.length() == 0)
 		   throw new BedDAOBadParamException("Item code should not be empty");	
-		Item item = new Item(itemcd);
+		Item item = new Item(itemCode);
 		//item = initializeItemAssociations(item, inputJsonObj, "Update");
 		/*Session session = sessionFactory.getCurrentSession();
 		try{
-		   item = itemDao.loadItemById(session, itemcd.trim());
+		   item = itemDao.loadItemById(session, itemCode.trim());
 		}
 	    catch(HibernateException hbe){
 		    hbe.printStackTrace();
@@ -315,7 +336,10 @@ public class ProductServiceImpl implements ProductService {
 		}
 		catch(HibernateException hbe){
 			hbe.printStackTrace();
-			throw new BedDAOException("Error occured during updateProduct() due to: " + hbe.getMessage(), hbe);
+			if(hbe.getCause() != null)
+		       throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+		  	else
+			   throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage());	
 	    }  
 	}
 	
@@ -324,11 +348,9 @@ public class ProductServiceImpl implements ProductService {
 	//@Transactional(isolation = Isolation.REPEATABLE_READ)
 	public void updateProduct(final MultivaluedMap<String, String> queryParams) throws BedDAOException, BedResException{
 		
-		ImsValidation.validateInsertUpdateParams(queryParams);	
-		String itemcd = ImsQueryUtil.getValue(queryParams, "itemcd");
-		if(itemcd == null || itemcd.trim().length() == 0)
-			itemcd = ImsQueryUtil.getValue(queryParams, "itemcode");	
-		Item item = new Item(itemcd); 
+		ImsValidator.validateInsertUpdateParams(queryParams);	
+		String itemCode = ImsQueryUtil.getItemCode(queryParams);
+		Item item = new Item(itemCode); 
 		//item = initializeItemAssociations(item, queryParams, "Update");
 		/*Session session = sessionFactory.getCurrentSession();
 		try{
@@ -351,7 +373,10 @@ public class ProductServiceImpl implements ProductService {
 		}
 		catch(HibernateException hbe){
 			hbe.printStackTrace();
-			throw new BedDAOException("Error occured during updateProduct() due to: " + hbe.getMessage(), hbe);
+			if(hbe.getCause() != null)
+		  	   throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+		  	else
+		  	   throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage());
 	    }  
 	}
 	
@@ -366,23 +391,30 @@ public class ProductServiceImpl implements ProductService {
 		}
 		catch(HibernateException hbe){
 			hbe.printStackTrace();
-			throw new BedDAOException("Error occured during updateProduct() due to: " + hbe.getMessage(), hbe);
+			if(hbe.getCause() != null)
+		  	   throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+		  	else
+		  	   throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage());
+		
 		}  
 	}
 	
 	@Loggable(value = LogLevel.TRACE)
 	@Override
 	public void deleteProduct(MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException, BedDAOException, BedResException{
-		String itemcd = ImsQueryUtil.getItemCode(queryParams);
-		if(itemcd == null || itemcd.length() == 0)
+		String itemCode = ImsQueryUtil.getItemCode(queryParams);
+		if(itemCode == null || itemCode.length() == 0)
 		   throw new BedDAOBadParamException("Item code should not be empty");	
-		Item item = new Item(itemcd);
+		Item item = new Item(itemCode);
 		try{
 			itemDao.deleteItem(item);
 		}
 		catch(HibernateException hbe){
 			hbe.printStackTrace();
-			throw new BedDAOException("Error occured during updateProduct() due to: " + hbe.getMessage(), hbe);
+			if(hbe.getCause() != null)
+		  	   throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+		  	else
+		  	   throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage());	
 		}  
     }
 	
@@ -440,6 +472,8 @@ public class ProductServiceImpl implements ProductService {
 		}
 		//if(ImsQueryUtil.containsAnyKey(queryParams, IconCollection.allPropertis()))
 		   item.addIconDescription(new IconCollection());	
+		if(ImsQueryUtil.containsAnyKey(queryParams, Arrays.asList(new String[]{"colorHue", "colorhue", "colorHues", "colorHues", "colorCategory", "colorcategory"})))
+		   item.addNewColorHueSystem(new ColorHue());
 		if(ImsQueryUtil.containsKey(queryParams, "poNote")) {
 		   Note poNote = new Note("po");
 		   poNote.setLastModifiedDate(new Date());
@@ -518,9 +552,11 @@ public class ProductServiceImpl implements ProductService {
  	   if(item.getNewVendorSystem() == null || item.getNewVendorSystem().isEmpty()){
  		  item.initVendors(ImsQueryUtil.determineNumberOfVendors(inputJsonObj));
  	   }
- 	   if(ImsQueryUtil.containsAnyKey(inputJsonObj, IconCollection.allPropertis()))
+ 	  if(ImsQueryUtil.containsAnyKey(inputJsonObj, Arrays.asList(new String[]{"colorHue", "colorhue", "colorHues", "colorHues", "colorCategory", "colorcategory"})))
+		   item.addNewColorHueSystem(new ColorHue());
+	  if(ImsQueryUtil.containsAnyKey(inputJsonObj, IconCollection.allPropertis()))
  	      item.setIconDescription(new IconCollection());	
-        if(inputJsonObj.has("poNote")) {
+      if(inputJsonObj.has("poNote")) {
  		  Note poNote = new Note("po");
  		  poNote.setLastModifiedDate(new Date());
  		  item.addNote(poNote);
