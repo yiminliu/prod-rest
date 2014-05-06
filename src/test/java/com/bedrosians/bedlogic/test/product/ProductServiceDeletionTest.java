@@ -32,7 +32,7 @@ import com.bedrosians.bedlogic.domain.item.enums.SurfaceType;
 import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.models.Products;
 import com.bedrosians.bedlogic.service.product.ProductService;
-import com.bedrosians.bedlogic.util.ListWrapper;
+import com.bedrosians.bedlogic.util.JsonWrapper.ListWrapper;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 import static org.junit.Assert.*;

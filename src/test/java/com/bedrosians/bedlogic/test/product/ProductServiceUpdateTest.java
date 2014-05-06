@@ -32,7 +32,7 @@ import com.bedrosians.bedlogic.domain.item.enums.SurfaceType;
 import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.models.Products;
 import com.bedrosians.bedlogic.service.product.ProductService;
-import com.bedrosians.bedlogic.util.ListWrapper;
+import com.bedrosians.bedlogic.util.JsonWrapper.ListWrapper;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 import static org.junit.Assert.*;
@@ -57,6 +57,7 @@ public class ProductServiceUpdateTest {
 	private static String testItemId2 = null;
 	private static String testNewItemId = null;
 	private static String testDescription = null;
+	private static String testDescription2 = null;
 	private static String testFullDescription = null;
 	private static String testColor = null;
 	private static String testColorCategory = null;
@@ -76,8 +77,9 @@ public class ProductServiceUpdateTest {
 	public void setup(){
 		testItemId = "TCRPET459N"; 
 		testItemId2 = "AECBUB217NR"; 
-		testDescription = "13X13 Breccia Beige";
-	    testFullDescription = "Field Tile 13x13 Breccia Beige";
+		testDescription = "Test update";
+		testDescription2 = "Test update 2";
+	    testFullDescription = "Fulle Test description update";
 	    //testColor = "Beige";
 	    testColor = "White";
 	    testColorCategory = "CLEAR";
@@ -117,7 +119,80 @@ public class ProductServiceUpdateTest {
 			System.out.println("Item = "+ item.toString());
 			
 		}
-		 
+		
+	 @Test
+	 public void testUpdateItemDescriptionByJsonObject() throws Exception {
+	        System.out.println("testUpdateItemByJsonBoject: ");
+	        JSONObject params = new JSONObject();
+	        params.put("itemcd", testItemId);
+	        params.put("fulldesc", testFullDescription);
+	        params.put("itemdesc1", testDescription);
+	        params.put("itemdesc2", testDescription2);
+	       
+            productService.updateProduct(params);
+            
+            Item item = productService.getProductById(testItemId);
+	        
+  	        assertEquals(testItemId, item.getItemcode());
+  	        assertEquals(testFullDescription, item.getItemdesc().getFulldesc());
+  	        assertEquals(testDescription, item.getItemdesc().getItemdesc1());
+  	        assertEquals(testDescription2, item.getItemdesc().getItemdesc2());
+	           
+	        System.out.println("testUpdateItem Done");
+	 }
+	 
+	 @Test
+	 public void testUpdateItemPricesByJsonObject() throws Exception {
+	        System.out.println("testUpdateItemPricesByJsonObject: ");
+	        JSONObject params = new JSONObject();
+	        params.put("itemcd", testItemId);
+	        params.put("pricegroup", "2");
+	        params.put("price", "20.1");
+	        params.put("sellprice", "20.1");
+	        params.put("listprice", "21.6");
+	        params.put("tempprice", "19.5");
+	        params.put("tempdatefrom", "01/01/2015");
+	        params.put("tempdatethru", "01/01/2016");
+            productService.updateProduct(params);
+            
+            Item item = productService.getProductById(testItemId);
+	        
+  	        assertEquals(testItemId, item.getItemcode());
+  	     
+	        assertEquals("2", item.getPrice().getPricegroup());
+	        //assertEquals(20.2, item.getPrice().getSellprice().); 
+	        
+	        System.out.println("testUpdateItem Done");
+	 }
+	
+	 /*
+	 @Test
+	 public void testUpdateItemPricesByMultipleValuedMap() throws Exception {
+	        System.out.println("testUpdateItemPricesByJsonObject: ");
+	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        params.put("itemcd", Arrays.asList(new String[]{testItemId}));
+	        params.put("itemdesc1", Arrays.asList(new String[]{testDescription}));
+	        params.put("price", Arrays.asList(new String[]{"20.2"}));
+	        
+	        params.put("pricegroup", Arrays.asList(new String[]{"2");
+	        params.put("price", Arrays.asList(new String[]{"20.1");
+	        params.put("sellprice", Arrays.asList(new String[]{"20.1");
+	        params.put("listprice", Arrays.asList(new String[]{"21.6");
+	        params.put("tempprice", Arrays.asList(new String[]{"19.5");
+	        params.put("tempdatefrom", Arrays.asList(new String[]{new Date());
+	        params.put("tempdatethru", Arrays.asList(new String[]{new Date());
+            productService.updateProduct(params);
+            
+            Item item = productService.getProductById(testItemId);
+	        
+  	        assertEquals(testItemId, item.getItemcode());
+  	     
+	        assertEquals("2", item.getPrice().getPricegroup());
+	        //assertEquals(20.2, item.getPrice().getSellprice().); 
+	        
+	        System.out.println("testUpdateItem Done");
+	 }
+	 */
      @Test
 	 public void testUpdateItemBasicInfoByJsonObject() throws Exception {
 	        System.out.println("testUpdateItemByJsonBoject: ");
@@ -137,11 +212,11 @@ public class ProductServiceUpdateTest {
   	        assertEquals(testItemId, item.getItemcode());
   	        assertEquals(testDescription, item.getItemdesc().getItemdesc1());
   	        assertEquals(testOrigin, item.getCountryorigin());
-	        assertEquals(testColor, item.getColor());
+	        assertEquals(testColor, item.getSeries().getSeriescolor());
 	        
 	        //assertEquals(20.2, item.getPrice().getSellprice());
-  	        assertEquals("4", item.getLength());
-  	        assertEquals("4", item.getWidth());
+  	        assertEquals("4", item.getDimensions().getLength());
+  	        assertEquals("4", item.getDimensions().getWidth());
 	           
 	        System.out.println("testUpdateItem Done");
 	 }
@@ -150,9 +225,9 @@ public class ProductServiceUpdateTest {
 	 public void testUpdateItemColorHueByJsonObject() throws Exception {
 	        System.out.println("testUpdateItemByJsonBoject: ");
 	        JSONObject params = new JSONObject();
-	        params.put("itemcode", "TEST1274");
+	        params.put("itemcode", "TEST2467");
 	        params.put("itemdesc1", "test desc");
-	        params.put("colorhue", "White");
+	        params.put("colorhue", "Green");
 	        productService.updateProduct(params);
 	        System.out.println("testUpdateItem Done");
 	        
@@ -213,8 +288,8 @@ public class ProductServiceUpdateTest {
 	        JSONObject params = new JSONObject();
 	        params.put("itemcd", testItemId);
 	   	
-			params.put("productManager", Arrays.asList(new String[]{"Manager"}));
-			params.put("buyer", Arrays.asList(new String[]{"TestBuyer"}));
+			params.put("productManager", "Manager");
+			params.put("buyer", "TestBuyer");
 			
 			
 	        productService.updateProduct(params);
@@ -249,7 +324,7 @@ public class ProductServiceUpdateTest {
 	 }
      
      @Test
-	 public void testUpdateItemBasicInfoByMultiVluedMap() throws Exception {
+	 public void testUpdateItemBasicInfoByMultiValuedMap() throws Exception {
 	        System.out.println("testUpdateItemByMultiVluedMap: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
 	        params.put("itemcd", Arrays.asList(new String[]{testItemId}));
@@ -267,11 +342,11 @@ public class ProductServiceUpdateTest {
   	        assertEquals(testItemId, item.getItemcode());
   	        assertEquals(testDescription, item.getItemdesc().getItemdesc1());
   	        assertEquals(testOrigin, item.getCountryorigin());
-	        assertEquals(testColor, item.getColor());
+	        assertEquals(testColor, item.getSeries().getSeriescolor());
 	        
 	        //assertEquals(20.2, item.getPrice().getSellprice());
-  	        assertEquals("4", item.getLength());
-  	        assertEquals("4", item.getWidth());
+  	        assertEquals("4", item.getDimensions().getLength());
+  	        assertEquals("4", item.getDimensions().getWidth());
 	           
 	        System.out.println("testUpdateItem Done");
 	 }
