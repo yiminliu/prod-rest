@@ -12,16 +12,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 
 import com.bedrosians.bedlogic.domain.item.enums.OriginCountry;
 
@@ -32,8 +28,7 @@ public class IconCollection implements java.io.Serializable {
 	private static final long serialVersionUID = -1113582221787L;
 	
 	private Integer iconId;
-	//private String  itemCode;
-	private OriginCountry  madeInCountry;
+	private OriginCountry madeInCountry;
 	private Boolean exteriorProduct;
 	private Boolean adaAccessibility;
 	private Boolean throughColor;
@@ -54,11 +49,6 @@ public class IconCollection implements java.io.Serializable {
 	
 	public IconCollection() {
 	}
-
-	//public IconCollection(String itemCode) {
-	//	this.itemCode = itemCode;
-	//}	
-		
 	
 	public IconCollection(Integer iconId) {
 		this.iconId = iconId;
@@ -256,6 +246,7 @@ public class IconCollection implements java.io.Serializable {
 	public void setCoefficientOfFriction(Boolean coefficientOfFriction) {
 		this.coefficientOfFriction = coefficientOfFriction;
 	}
+	
 	
 	@Transient
 	static public List<String> allPropertis(){

@@ -26,8 +26,10 @@ import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.stereotype.Component;
 
 import com.bedrosians.bedlogic.domain.item.embeddable.Description;
+import com.bedrosians.bedlogic.domain.item.embeddable.Dimensions;
 import com.bedrosians.bedlogic.domain.item.embeddable.Material;
 import com.bedrosians.bedlogic.domain.item.embeddable.Notes;
+import com.bedrosians.bedlogic.domain.item.embeddable.Series;
 import com.bedrosians.bedlogic.domain.item.embeddable.Usage;
 import com.bedrosians.bedlogic.domain.item.embeddable.Cost;
 import com.bedrosians.bedlogic.domain.item.embeddable.Price;
@@ -35,7 +37,7 @@ import com.bedrosians.bedlogic.domain.item.embeddable.PriorVendor;
 import com.bedrosians.bedlogic.domain.item.embeddable.Purchasers;
 import com.bedrosians.bedlogic.domain.item.embeddable.SimilarItemCode;
 import com.bedrosians.bedlogic.domain.item.embeddable.TestSpecification;
-import com.bedrosians.bedlogic.domain.item.embeddable.Packaginginfo;
+import com.bedrosians.bedlogic.domain.item.embeddable.PackagingInfo;
 import com.bedrosians.bedlogic.domain.item.embeddable.VendorInfo;
 import com.bedrosians.bedlogic.util.FormatUtil;
 import com.bedrosians.bedlogic.util.ImsResultUtil;
@@ -51,48 +53,41 @@ public class Item implements java.io.Serializable {
     //------basic info------//   		
 	private String itemcode;
 	private String itemcategory;
-	private String seriesname;
 	private String countryorigin;
 	private String inactivecode;
-	//----- decriptions ---------//
+	//----- decriptions as embedded component ---------//
 	private Description itemdesc = new Description();
-	//----- material info -------//
+	//----- Series as embedded component ---------//
+	Series series = new Series();
+	//----- material info as embedded component -------//
 	private Material material = new Material();
 	private String shadevariation;
-	private String colorhues;
+	private String colorcategory;
+	private List<String> colorhues =  new ArrayList<>();
 	//------- color hue info --------//	
 	private List<ColorHue> newColorHueSystem =  new ArrayList<>();
-	//private List<String> colorhues =  new ArrayList<>();
-	private String color;
-	//----- dimension ------//
-	private Float nominallength;
-	private Float nominalwidth;
-	private Float nominalthickness;
-	private String length;
-	private String width;
-	private String thickness;
-	private String sizeunits;
-	private String thicknessunit;
+	//----- dimensions as embedded component ------//
+	private Dimensions dimensions = new Dimensions();
+	//------- price info as embedded component--------//	
+	private Price price = new Price();
+	//------- uage as embedded component--------//	
+	private Usage usage = new Usage();
+	//------- test info as embedded component--------//	
+	private TestSpecification testSpecification = new TestSpecification();
+	//------- purchaser as embedded component--------//	
+	private Purchasers purchasers = new Purchasers();
+	//------- unit info as embedded component--------//	
+	private PackagingInfo packaginginfo = new PackagingInfo();
+	//------- notes as embedded component--------//	
+	private Notes notes = new Notes();
+	//------- note (new inplementation/table) --------//
+	private List<Note> newNoteSystem = new ArrayList<>();
 	private String productline;
 	private String iconsystem;
 	//------- icon (new implementation/table) --------//	
-    private IconCollection iconCollection;	
-	//------- price info as embedded component--------//	
-    private Price price = new Price();
-    //------- uage as embedded component--------//	
-  	private Usage usage = new Usage();
-    //------- test info as embedded component--------//	
-  	private TestSpecification testSpecification = new TestSpecification();
-    //------- purchaser as embedded component--------//	
-  	private Purchasers purchasers = new Purchasers();
-    //------- unit info as embedded component--------//	
-    private Packaginginfo packaginginfo = new Packaginginfo();
-    //------- notes as embedded component--------//	
-  	private Notes notes = new Notes();
-    //------- note (new inplementation/table) --------//
-  	private List<Note> newNoteSystem = new ArrayList<>();
+    private IconCollection newIconSystem = new IconCollection();;	
     //----- similar items as embedded component -----//
-  	private SimilarItemCode similarItemCode = new SimilarItemCode();
+  	private SimilarItemCode relateditemcodes = new SimilarItemCode();
   	private Character showonwebsite;	
 	private String type;
 	private Character itemtypecd;
@@ -108,6 +103,7 @@ public class Item implements java.io.Serializable {
     private String subtype;
 	private Character directship;
 	private Date dropdate;
+	//private String color;
 	private Integer itemgroupnbr;
 	private Date priorlastupdated;	
 	//------- new featureas --------//	
@@ -138,8 +134,6 @@ public class Item implements java.io.Serializable {
 		this.itemcode = itemcode;
 	}
 
-	
-	
 	@Embedded
 	public Description getItemdesc() {
 		return itemdesc;
@@ -148,7 +142,25 @@ public class Item implements java.io.Serializable {
 	public void setItemdesc(Description itemdesc) {
 		this.itemdesc = itemdesc;
 	}
-    
+
+	@Embedded
+	public Series getSeries() {
+		return series;
+	}
+
+	public void setSeries(Series series) {
+		this.series = series;
+	}
+	
+	@Embedded
+	public Dimensions getDimensions() {
+		return dimensions;
+	}
+
+	public void setDimensions(Dimensions dimensions) {
+		this.dimensions = dimensions;
+	}
+	
 	@Embedded
 	public Material getMaterial() {
 		return material;
@@ -177,11 +189,11 @@ public class Item implements java.io.Serializable {
 	}
     
     @Embedded	
-	public Packaginginfo getPackaginginfo() {
+	public PackagingInfo getPackaginginfo() {
 		return packaginginfo;
 	}
 
-	public void setPackaginginfo(Packaginginfo packaginginfo) {
+	public void setPackaginginfo(PackagingInfo packaginginfo) {
 		this.packaginginfo = packaginginfo;
 	}
 
@@ -240,84 +252,12 @@ public class Item implements java.io.Serializable {
 	}
 
 	@Embedded
-	public SimilarItemCode getSimilarItemCode() {
-		return similarItemCode;
+	public SimilarItemCode getRelateditemcodes() {
+		return relateditemcodes;
 	}
 
-	public void setSimilarItemCode(SimilarItemCode similarItemCode) {
-		this.similarItemCode = similarItemCode;
-	}
-
-	@Column(name = "nm_length", precision = 5)
-	public Float getNominallength() {
-		return FormatUtil.process(this.nominallength);
-	}
-
-	public void setNominallength(Float nominallength) {
-		this.nominallength = nominallength;
-	}
-
-	@Column(name = "nm_width", precision = 5)
-	public Float getNominalwidth() {
-		return FormatUtil.process(this.nominalwidth);
-	}
-
-	public void setNominalwidth(Float nominalwidth) {
-		this.nominalwidth = nominalwidth;
-	}
-
-	@Column(name = "nm_thickness", precision = 5)
-	public Float getNominalthickness() {
-		return FormatUtil.process(this.nominalthickness);
-	}
-
-	public void setNominalthickness(Float nominalthickness) {
-		this.nominalthickness = nominalthickness;
-	}
-
-	@Column(name = "thicknessunit", length = 3)
-	public String getThicknessunit() {
-		return FormatUtil.process(this.thicknessunit);
-	}
-
-	public void setThicknessunit(String thicknessunit) {
-		this.thicknessunit = thicknessunit;
-	}
-	
-	@Column(name = "length", length = 12)
-	public String getLength() {
-		return FormatUtil.process(this.length);
-	}
-
-	public void setLength(String length) {
-		this.length = length;
-	}
-
-	@Column(name = "width", length = 12)
-	public String getWidth() {
-		return FormatUtil.process(this.width);
-	}
-
-	public void setWidth(String width) {
-		this.width = width;
-	}
-
-	@Column(name = "thickness", length = 12)
-	public String getThickness() {
-		return FormatUtil.process(this.thickness);
-	}
-
-	public void setThickness(String thickness) {
-		this.thickness = thickness;
-	}
-
-	@Column(name = "sizeunits", length = 3)
-	public String getSizeunits() {
-		return FormatUtil.process(this.sizeunits);
-	}
-
-	public void setSizeunits(String sizeunits) {
-		this.sizeunits = sizeunits;
+	public void setRelateditemcodes(SimilarItemCode relateditemcodes) {
+		this.relateditemcodes = relateditemcodes;
 	}
 
 	@Temporal(TemporalType.DATE)
@@ -346,15 +286,6 @@ public class Item implements java.io.Serializable {
 
 	public void setItemcategory(String itemcategory) {
 		this.itemcategory = itemcategory;
-	}
-
-	@Column(name = "color", length = 30)
-	public String getColor() {
-		return FormatUtil.process(this.color);
-	}
-
-	public void setColor(String color) {
-		this.color = color;
 	}
 
 	@Column(name = "directship", length = 1)
@@ -430,15 +361,6 @@ public class Item implements java.io.Serializable {
 		this.productline = productline;
 	}
 
-	@Column(name = "seriesname", length = 40)
-	public String getSeriesname() {
-		return FormatUtil.process(this.seriesname);
-	}
-
-	public void setSeriesname(String seriesname) {
-		this.seriesname = seriesname;
-	}
-
 	@Column(name = "updatecd", length = 10)
 	public String getUpdatecd() {
 		return FormatUtil.process(this.updatecd);
@@ -475,13 +397,19 @@ public class Item implements java.io.Serializable {
 		this.showonwebsite = showonwebsite;
 	}
 
+	@JsonIgnore
     @Column(name = "colorcategory", length = 30)
-	public String getColorhues() {
-		return FormatUtil.process(this.colorhues);
+	public String getColorcategory() {
+		return FormatUtil.process(this.colorcategory);
 	}
 
-	public void setColorhues(String colorhues) {
-		this.colorhues = colorhues;
+	public void setColorcategory(String colorcategory) {
+		this.colorcategory = colorcategory;
+	}
+	
+	@Transient
+	public List<String> getColorhues() {
+		return ImsResultUtil.parseColorCategory(colorcategory);
 	}
 
 	@Column(name = "showonalysedwards", length = 1)
@@ -573,23 +501,22 @@ public class Item implements java.io.Serializable {
 	}
 	
 	@OneToOne(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL)
-	//@JoinColumn(name="itemcd")
-	//@PrimaryKeyJoinColumn
-	public IconCollection getIconDescription() {	
-	    return iconCollection;// != null//? iconCollection : ImsResultUtil.parseIcons(getIconsystem());
+	public IconCollection getNewIconSystem() {	
+	    return newIconSystem;// != null//? iconCollection : ImsResultUtil.parseIcons(getIconsystem());
 	}
 
-	public void setIconDescription(IconCollection iconCollection) {
-		this.iconCollection = iconCollection;
+	public void setNewIconSystem(IconCollection newIconSystem) {
+		this.newIconSystem = newIconSystem;
 	}
 	
-	public void addIconDescription(IconCollection iconCollection ){
-		iconCollection.setItem(this);
-		this.iconCollection = iconCollection;
+	public void addNewIconSystem(IconCollection newIconSystem){
+		newIconSystem.setItem(this);
+		this.newIconSystem = newIconSystem;
 	}
 
+	@JsonIgnore
 	@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany( mappedBy = "item", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
 	public List<ColorHue> getNewColorHueSystem() {
 		return this.newColorHueSystem;
 	}
@@ -662,23 +589,18 @@ public class Item implements java.io.Serializable {
 			//addNote(new Note());
 			newNoteSystem.set(i, new Note());
 		}
-	}
+	}	
 	
-	//@Transient
-	//public List<String> getColorHues() {
-	//	return ImsResultUtil.parseColorCategory(colorcategory);
-	//}
-	
-	@JsonIgnore
-	@Transient
+    @JsonIgnore
+    @Transient
 	public String getStandardSellUnit(){
-		return FormatUtil.process(ImsResultUtil.getStandardSellUnit(this));
+    	return FormatUtil.process(ImsResultUtil.getStandardSellUnit(this));
 	}
-	
+    
 	@JsonIgnore
 	@Transient
 	public String getStandardOrderUnit(){
-		return FormatUtil.process(ImsResultUtil.getStandardSellUnit(this));
+		return FormatUtil.process(ImsResultUtil.getStandardPurchaseUnit(this));
 	}
 	
 	@Override
@@ -770,7 +692,7 @@ public class Item implements java.io.Serializable {
 				//+ ", priorPrice=" + priorPrice 
 				//+ ", abccd=" + abccd 
 				+ ", category=" + itemcategory 
-				+ ", color=" + color 
+				//+ ", color=" + color 
 				//+ ", directship=" + directship
 				//+ ", dropdate=" + dropdate 
 				+ ", inactivecd=" + inactivecode
@@ -786,7 +708,7 @@ public class Item implements java.io.Serializable {
 				//+ ", notes3=" + notes3 
 				+ ", printlabel=" + printlabel 
 				+ ", productline=" + productline 
-				+ ", seriesname=" + seriesname
+				//+ ", seriesname=" + seriesname
 				//+ ", specialhandlecd1=" + specialhandlecd1
 				//+ ", specialhandlecd2=" + specialhandlecd2
 				//+ ", specialhandlecd3=" + specialhandlecd3 
@@ -859,7 +781,7 @@ public class Item implements java.io.Serializable {
 				+ ", origin=" + countryorigin
 				+ ", shadevariation=" + shadevariation 
 				+ ", showonwebsite=" + showonwebsite
-				+ ", colorcategory=" + colorhues 
+				+ ", colorcategory=" + colorcategory 
 				+ ", showonalysedwards=" + showonalysedwards 
 				+ ", offshade=" + offshade 
 				+ ", itemcd2=" + itemcd2 
@@ -983,6 +905,14 @@ public class Item implements java.io.Serializable {
 		private String knownAliases7;
 		*/
 
+	    //@Column(name = "color", length = 30)
+		//public String getColor() {
+		//	return FormatUtil.process(this.color);
+		//}
+
+		//public void setColor(String color) {
+		//	this.color = color;
+		//}
 
 	//@Column(name = "application", length = 20)
     //public String getApplication() {
