@@ -83,7 +83,6 @@ public class ProductServiceImpl implements ProductService {
 		for(Item item : items){
 			processedItems.add(FormatUtil.process(item));			
 		}
-		//return items;
 		return processedItems;
 	}
 	
@@ -280,7 +279,7 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	public void updateProduct(Item item){
-		//itemDao.updateItem(item); 
+		itemDao.updateItem(item); 
 	}	
 	
 	@Loggable(value = LogLevel.TRACE)
@@ -306,7 +305,7 @@ public class ProductServiceImpl implements ProductService {
 		if(itemCode == null || itemCode.length() == 0)
 		   throw new BedDAOBadParamException("Item code should not be empty");	
 		Item item = new Item(itemCode);
-		//item = initializeItemAssociations(item, inputJsonObj, "Update");
+		item = initializeItemAssociationsForUpdate(item, inputJsonObj);
 		/*Session session = sessionFactory.getCurrentSession();
 		try{
 		   item = itemDao.loadItemById(session, itemCode.trim());
@@ -421,7 +420,7 @@ public class ProductServiceImpl implements ProductService {
 	private Item initializeItemAssociationsForInsert(Item item, MultivaluedMap<String, String> queryParams){
 		
 		if(ImsQueryUtil.containsAnyKey(queryParams, ImsNewFeature.allProperties()) &&
-		   item.getImsNewFeature() == null || item.getImsNewFeature().getItem() == null) {
+		   (item.getImsNewFeature() == null || item.getImsNewFeature().getItem() == null)) {
 		   ImsNewFeature imsNewFeature = new ImsNewFeature();	
   		   imsNewFeature.setCreatedDate(new Date());
 		   item.addImsNewFeature(imsNewFeature);	
@@ -429,8 +428,10 @@ public class ProductServiceImpl implements ProductService {
   	    if(item.getNewVendorSystem() == null || item.getNewVendorSystem().isEmpty()){
 		   item.initVendors(ImsQueryUtil.determineNumberOfVendors(queryParams));
 		}
+  	    if(ImsQueryUtil.containsAnyKey(queryParams, Arrays.asList(new String[]{"colorHue", "colorhue", "colorHues", "colorHues", "colorCategory", "colorcategory"})))
+		   item.addNewColorHueSystem(new ColorHue());
 		if(ImsQueryUtil.containsAnyKey(queryParams, IconCollection.allPropertis()))
-		   item.addIconDescription(new IconCollection());	
+		   item.addNewIconSystem(new IconCollection());	
 		if(ImsQueryUtil.containsKey(queryParams, "poNote")) {
 		   Note poNote = new Note("po");
 		   poNote.setCreatedDate(new Date());
@@ -462,7 +463,7 @@ public class ProductServiceImpl implements ProductService {
     private Item initializeItemAssociationForUpdate(Item item, MultivaluedMap<String, String> queryParams){
 		
 		if(ImsQueryUtil.containsAnyKey(queryParams, ImsNewFeature.allProperties()) &&
-		   item.getImsNewFeature() == null || item.getImsNewFeature().getItem() == null) {
+		   (item.getImsNewFeature() == null || item.getImsNewFeature().getItem() == null)) {
 		   ImsNewFeature imsNewFeature = new ImsNewFeature();	
 	  	   imsNewFeature.setLastModifiedDate(new Date());
 		   item.addImsNewFeature(imsNewFeature);	
@@ -470,10 +471,10 @@ public class ProductServiceImpl implements ProductService {
   	    if(item.getNewVendorSystem() == null || item.getNewVendorSystem().isEmpty()){
 		   item.initVendors(ImsQueryUtil.determineNumberOfVendors(queryParams));
 		}
-		//if(ImsQueryUtil.containsAnyKey(queryParams, IconCollection.allPropertis()))
-		   item.addIconDescription(new IconCollection());	
+		if(ImsQueryUtil.containsAnyKey(queryParams, IconCollection.allPropertis()))
+		   item.addNewIconSystem(new IconCollection());	
 		if(ImsQueryUtil.containsAnyKey(queryParams, Arrays.asList(new String[]{"colorHue", "colorhue", "colorHues", "colorHues", "colorCategory", "colorcategory"})))
-		   item.addNewColorHueSystem(new ColorHue());
+   		   item.addNewColorHueSystem(new ColorHue());
 		if(ImsQueryUtil.containsKey(queryParams, "poNote")) {
 		   Note poNote = new Note("po");
 		   poNote.setLastModifiedDate(new Date());
@@ -504,7 +505,8 @@ public class ProductServiceImpl implements ProductService {
 
     private Item initializeItemAssociationsForInsert(Item item, JSONObject inputJsonObj){
 		
-	   if(item.getImsNewFeature() == null || item.getImsNewFeature().getItem() == null) {
+    	if(ImsQueryUtil.containsAnyKey(inputJsonObj, ImsNewFeature.allProperties()) &&
+    	   (item.getImsNewFeature() == null || item.getImsNewFeature().getItem() == null)) {
 		   ImsNewFeature imsNewFeature = new ImsNewFeature();	
     	   imsNewFeature.setCreatedDate(new Date());
     	   item.addImsNewFeature(imsNewFeature);	
@@ -512,8 +514,10 @@ public class ProductServiceImpl implements ProductService {
 	   if(item.getNewVendorSystem() == null || item.getNewVendorSystem().isEmpty()){
 		  item.initVendors(ImsQueryUtil.determineNumberOfVendors(inputJsonObj));
 	   }
+	   if(ImsQueryUtil.containsAnyKey(inputJsonObj, Arrays.asList(new String[]{"colorHue", "colorhue", "colorHues", "colorHues", "colorCategory", "colorcategory"})))
+		  item.addNewColorHueSystem(new ColorHue());
 	   if(ImsQueryUtil.containsAnyKey(inputJsonObj, IconCollection.allPropertis()))
-	      item.addIconDescription(new IconCollection());	
+	      item.addNewIconSystem(new IconCollection());	
        if(inputJsonObj.has("poNote")) {
 		  Note poNote = new Note("po");
 		  poNote.setCreatedDate(new Date());
@@ -544,7 +548,8 @@ public class ProductServiceImpl implements ProductService {
     
     private Item initializeItemAssociationsForUpdate(Item item, JSONObject inputJsonObj){
 		
- 	   if(item.getImsNewFeature() == null || item.getImsNewFeature().getItem() == null) {
+    	if(ImsQueryUtil.containsAnyKey(inputJsonObj, ImsNewFeature.allProperties()) &&
+    	   (item.getImsNewFeature() == null || item.getImsNewFeature().getItem() == null)) {
  		   ImsNewFeature imsNewFeature = new ImsNewFeature();	
      	   imsNewFeature.setLastModifiedDate(new Date());
      	   item.addImsNewFeature(imsNewFeature);	
@@ -555,7 +560,7 @@ public class ProductServiceImpl implements ProductService {
  	  if(ImsQueryUtil.containsAnyKey(inputJsonObj, Arrays.asList(new String[]{"colorHue", "colorhue", "colorHues", "colorHues", "colorCategory", "colorcategory"})))
 		   item.addNewColorHueSystem(new ColorHue());
 	  if(ImsQueryUtil.containsAnyKey(inputJsonObj, IconCollection.allPropertis()))
- 	      item.setIconDescription(new IconCollection());	
+ 	      item.addNewIconSystem(new IconCollection());	
       if(inputJsonObj.has("poNote")) {
  		  Note poNote = new Note("po");
  		  poNote.setLastModifiedDate(new Date());

@@ -40,6 +40,7 @@ import com.bedrosians.bedlogic.domain.item.enums.DesignLook;
 import com.bedrosians.bedlogic.domain.item.enums.DesignStyle;
 import com.bedrosians.bedlogic.domain.item.enums.MpsCode;
 import com.bedrosians.bedlogic.exception.BedDAOException;
+import com.bedrosians.bedlogic.util.ImsQueryUtil;
 import com.bedrosians.bedlogic.util.logger.aspect.LogLevel;
 import com.bedrosians.bedlogic.util.logger.aspect.Loggable;
 
@@ -49,11 +50,11 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
     @Autowired
 	private SessionFactory sessionFactory;
 	 
-    private static final int MAX_RESULTS = 500;  
+    private static final int DEFAULT_MAX_RESULTS = 500; 
+    private int maxNumberOfResults = 0;
 	//private static final int OFF_SET = 0;
 	//private static final int TIMEOUT = 15;
- 
-     
+   
 	@Override
 	@Loggable(value = LogLevel.TRACE)
 	@Transactional(readOnly=true)
@@ -79,6 +80,7 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 		   return null;
 	   List<Item> items = null;
 	   boolean exactMatch = queryParams.containsKey("exactMatch")? true : false;
+	   maxNumberOfResults = ImsQueryUtil.getMaxResults(queryParams);
 	   Set<Map.Entry<String, List<String>>> entrySet = queryParams.entrySet();
 	   Iterator<Map.Entry<String, List<String>>> it = entrySet.iterator();
 	   Criteria newFeatureCriteria = null;
@@ -99,24 +101,31 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
     		   continue;
 	 	   	}   
     		value = values.get(0);
-    		//------ do exact match -------//
-    		if(exactMatch && ("itemcode".equalsIgnoreCase(key) || "color".equalsIgnoreCase(key)  || 
-      		                  "seriesname".equalsIgnoreCase(key)  || "materialcategory".equalsIgnoreCase(key))){ 
-	           itemCriteria.add(Restrictions.eq(key, value));
+    		//------ do pattern match -------//
+    		if(!exactMatch && "itemcode".equalsIgnoreCase(key)){// || "color".equalsIgnoreCase(key))) {
+	           itemCriteria.add(Restrictions.ilike(key, value + "%"));
 	           continue;
             }
-	        else if(exactMatch && ("colorcategory".equalsIgnoreCase(key) || "colorhues".equalsIgnoreCase(key))){
-	           itemCriteria.add(Restrictions.eq(key, value));
+    		else if(!exactMatch && ("series.seriescolor".equalsIgnoreCase(key) || "series.seriesname".equalsIgnoreCase(key))){ 
+               itemCriteria.add(Restrictions.ilike(key, value + "%"));
+               continue;
+            }
+	        else if(!exactMatch && ("colorcategory".equalsIgnoreCase(key) || "colorCategory".equalsIgnoreCase(key) || "colorhues".equalsIgnoreCase(key) | "colorHues".equalsIgnoreCase(key))){
+	           itemCriteria.add(Restrictions.ilike("colorcategory", wildCard(value)));
 	           continue;
 	        }  
-	        else if(exactMatch && ("fulldesc".equalsIgnoreCase(key)) || "fulldescription".equalsIgnoreCase(key) || "description".equalsIgnoreCase(key) || "itemdescription".equalsIgnoreCase(key)){
-		       itemCriteria.add(Restrictions.eq("itemdesc.fulldesc", value));
+	        else if(!exactMatch && ("fulldesc".equalsIgnoreCase(key)) || "fulldescription".equalsIgnoreCase(key) || "description".equalsIgnoreCase(key) || "itemdescription".equalsIgnoreCase(key)){
+		       itemCriteria.add(Restrictions.ilike("itemdesc.fulldesc", wildCard(value)));
 		       continue;
 		    }  	
-	        else if(exactMatch && "itemdesc1".equalsIgnoreCase(key)){
-		       itemCriteria.add(Restrictions.eq("itemdesc.itemdesc1", value));
+	        else if(!exactMatch && "itemdesc1".equalsIgnoreCase(key)){
+		       itemCriteria.add(Restrictions.ilike("itemdesc.itemdesc1", wildCard(value)));
 		       continue;
 		    }  	
+	        else if(!exactMatch && ("material.materialcategory".equalsIgnoreCase(key))){
+	        	itemCriteria.add(Restrictions.ilike(key , value + "%"));
+			    continue;
+	        }
     		//------- add association criteria --------//
 	 	   	if(ImsNewFeature.allProperties().contains(key)) {	
 	   		   if(newFeatureCriteria == null)
@@ -125,10 +134,10 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	       	   continue;
 		    }
 	 	   	switch(key) {
-	 	   	   //------- add association criteria --------//	    
+	  	   	   //------- add association criteria --------//	    
 	 	   	   case "colordescription": case "colorDescription":    
 	   		       if(colorHueCriteria == null)
-			       	  colorHueCriteria = itemCriteria.createCriteria("colorHues");
+			       	  colorHueCriteria = itemCriteria.createCriteria("newColorHueSystem");
 			       colorHueCriteria.add(Restrictions.eq(key, Color.instanceOf(value)));
 			       break;
 	 	   	   case "vendorid": case "vendorId": case "vendorNumber":
@@ -141,16 +150,18 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	   		          noteCriteria = itemCriteria.createCriteria("newNoteSystem");
 			       noteCriteria.add(Restrictions.eq(key, value).ignoreCase());
 			       break;
-	   	       // -------- add components Restrictions ------//
 	 	   	   case "fulldesc": case "fullDesc": case "itemdescription": case "itemDescription": case "description":	//pattern match
-	 		       itemCriteria.add(Restrictions.ilike("itemdesc.fulldesc", wildCard(value)));
+	 		       itemCriteria.add(Restrictions.eq("itemdesc.fulldesc", value));
 	 		       break;
 	 	   	   case "itemdesc1": case "itemDesc1":	
-	 		       itemCriteria.add(Restrictions.ilike("itemdesc.itemdesc1", wildCard(value)));
+	 		       itemCriteria.add(Restrictions.eq("itemdesc.itemdesc1", value));
 	 		       break;
+	 	   	   case "series.seriesname": case "series.seriescolor":	
+	 		       itemCriteria.add(Restrictions.eq(key, value));
+	 		       break;      
 	 	   	   case "colorcategory": case "colorCategory": case "colorhues": case "colorHues": case "colorhue": case "colorHue":     
-	 		      itemCriteria.add(Restrictions.ilike(key, wildCard(value)));
-	 		      break;
+	 		       itemCriteria.add(Restrictions.ilike("colorcategory", wildCard(value)));
+	 		       break;
 	 	       case "materialtype":	case "materialType": 
 	 	       case "materialcategory": case "materialCategory": 
 	 	       case "materialstyle": case "materialStyle": 
@@ -166,21 +177,21 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	 	           break;
 	           //------ add comparison Restrictions ------// 
 	 	   	   case "lengthmin": case "lengthMin":
-	 	   		   itemCriteria.add(Restrictions.ge("nominallength", Float.parseFloat(value))); 
+	 	   		   itemCriteria.add(Restrictions.ge("dimensions.nominallength", Float.parseFloat(value))); 
 	 	   		   break;
 	 	   	   case "widthmin": case "widthMin":
-	 	   		   itemCriteria.add(Restrictions.ge("nominalwidth", Float.parseFloat(value))); 
+	 	   		   itemCriteria.add(Restrictions.ge("dimensions.nominalwidth", Float.parseFloat(value))); 
 	 	   		   break;
 	 	   	   case "lengthmax": case "lengthMax":
-	 	   		   itemCriteria.add(Restrictions.le("nominallength", Float.parseFloat(value)));
-		    	   itemCriteria.add(Restrictions.gt("nominallength", 0F)); 	
+	 	   		   itemCriteria.add(Restrictions.le("dimensions.nominallength", Float.parseFloat(value)));
+		    	   itemCriteria.add(Restrictions.gt("dimensions.nominallength", 0F)); 	
 		    	   break;
 	 	   	   case "widthmax": case "widthMax":
-	 	   		   itemCriteria.add(Restrictions.le("nominalwidth", Float.parseFloat(value))); 
-		    	   itemCriteria.add(Restrictions.gt("nominalwidth", 0F));
+	 	   		   itemCriteria.add(Restrictions.le("dimensions.nominalwidth", Float.parseFloat(value))); 
+		    	   itemCriteria.add(Restrictions.gt("dimensions.nominalwidth", 0F));
 		    	   break;
 	 	   	   case "nominallength": case "nominalLength": case "nominalwidth": case "nominalWidth":	
-	 	   		   itemCriteria.add(Restrictions.eq(key, Float.parseFloat(value)));
+	 	   		   itemCriteria.add(Restrictions.eq("dimensions" + "." +key, Float.parseFloat(value)));
 	 	   		   break;
 	 	   	   case "size": case "sizes":
     	   		   itemCriteria = parseSize(itemCriteria, values);
@@ -191,7 +202,7 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	 	   	   case "waterabsorption": case "waterAbsorption": case "peiabrasion": case "peiAbrasion": case "moh": case "dcof": case "scof": case  "scratchresistance": case "scratchResistance":   
 	 	   	       itemCriteria.add(Restrictions.eq(key, Float.parseFloat(value)));
 	 	   	       break;
-	 	   	   case "exactmatch": case "exactMatch":
+	 	   	   case "exactMatch": case "exactmatch": case "maxresults": case "maxResults":
  	   		       break;    
 	 	   	   default:     
 	 	   		   itemCriteria.add(Restrictions.eq(key, value).ignoreCase());
@@ -201,9 +212,11 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	    itemCriteria.setReadOnly(true);
         itemCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         itemCriteria.addOrder(Order.asc("itemcode"));
-	    itemCriteria.setMaxResults(MAX_RESULTS);
-	    //criteria.setTimeout(TIMEOUT); //not is implememtated in Postgres
-		System.out.println("criteria = " +itemCriteria.toString());
+        if(maxNumberOfResults > 0)
+	      itemCriteria.setMaxResults(maxNumberOfResults);
+        else
+        	itemCriteria.setMaxResults(DEFAULT_MAX_RESULTS);	
+        System.out.println("criteria = " +itemCriteria.toString());
 		try {
 		    items =  (List<Item>)itemCriteria.list();			
 		}
@@ -215,144 +228,7 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 		}
 	  	return items;	
     }
- /*
-   @Override
-   @Loggable(value = LogLevel.TRACE)
-   @Transactional(readOnly=true)	
-   public List<Item> getItemsByQueryParameters(MultivaluedMap<String, String> queryParams) throws BedDAOException{
-	   if(queryParams == null) 
-		   return null;
-		List<Item> items = null;
-		boolean exactMatch = queryParams.containsKey("exactMatch")? true : false;
-		Set<Map.Entry<String, List<String>>> set = queryParams.entrySet();
-	    Iterator it = set.iterator();
-	    Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Item.class);
-	    Criteria newFeatureCriteria = null;
-	    Criteria vendorCriteria = null;
-	    Criteria noteCriteria = null;
-	    Criteria colorHueCriteria = null;
-	  	criteria.setReadOnly(true);
-	  	criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-   	   	String key, value = null;
-   	    List<String> values = null;
-	   	while(it.hasNext()) {
-   	    	Entry<String, List<String>> entry = (Entry<String, List<String>>)it.next();
-   		    key = normalizeKey((String)entry.getKey());
-   		   	values = entry.getValue();
-   		   	
-   		    if(values != null) {
-   		   	   value = values.get(0);	
-   		    if("exactMatch".equalsIgnoreCase(key))
-     		    continue;
-   		   	//Add associations criteria
-   	   	    if(ImsNewFeature.allProperties().contains(key)) {	
-   		   	   if(newFeatureCriteria == null)
-   		   	      newFeatureCriteria = criteria.createCriteria("imsNewFeature");
-   		       newFeatureCriteria = addNewFeatureRestrictions(newFeatureCriteria, key, value);
-   	       	   continue;
-   		    }
-   	   	    if("colorDescription".equalsIgnoreCase(key)) {	
-		       if(colorHueCriteria == null)
-		       	  colorHueCriteria = criteria.createCriteria("colorHues");
-		       colorHueCriteria.add(Restrictions.eq(key, Color.instanceOf(value)));
-		       continue;
-   	       }  	
-   	   	   if("vendorId".equalsIgnoreCase(key) || "vendorNumber".equalsIgnoreCase(key)) {	
-		      if(vendorCriteria == null)
- 		         vendorCriteria = criteria.createCriteria("newVendorSystem");
-		      vendorCriteria.add(Restrictions.eq("itemVendorId.vendorId", Integer.parseInt(value)));
-		      continue;
- 	       }
-   	   	   if("noteType".equalsIgnoreCase(key)) {	
-		      if(noteCriteria == null)
-   		         noteCriteria = criteria.createCriteria("newNoteSystem");
-		      noteCriteria.add(Restrictions.eq(key, value).ignoreCase());
-		      continue;
-   	       }
-   	       //Add components Restrictions
-   		   if("purchaser".equalsIgnoreCase(key)) {	
-   		       criteria.add(Restrictions.eq("purchasers.purchaser", value).ignoreCase());
-   		       continue;
-   		   }
-   		   if("fulldesc".equalsIgnoreCase(key) || "itemDescription".equalsIgnoreCase(key) || "description".equalsIgnoreCase(key)) {	
-		       criteria.add(Restrictions.ilike("itemdesc.fulldesc", wildCard(value)));
-		       continue;
-		   }
-   		   if("itemdesc1".equalsIgnoreCase(key)) {	
-		       criteria.add(Restrictions.ilike("itemdesc.itemdesc1", wildCard(value)));
-		       continue;
-		   }
-   		   if("pricemax".equalsIgnoreCase(key)){
- 	           criteria.add(Restrictions.le("price.sellprice", new BigDecimal(value))); 
- 	           continue;
-           }	   
-   		   //Add comparison Restrictions //criteria = addGtLtRestrictions(criteria, key, value); 
-   		   else if("lengthmin".equalsIgnoreCase(key)){
-   	    	   criteria.add(Restrictions.ge("nominallength", Float.parseFloat(value))); 	
-   	       }
-   		   else if("widthmin".equalsIgnoreCase(key)){
-	    	       criteria.add(Restrictions.ge("nominalwidth", Float.parseFloat(value))); 	
-	       }
-   		   else if("lengthmax".equalsIgnoreCase(key)){
-	    	       criteria.add(Restrictions.le("nominallength", Float.parseFloat(value)));
-	    	       criteria.add(Restrictions.gt("nominallength", 0F)); 	
-	       }
-   		   else if("widthmax".equalsIgnoreCase(key)){
-	    	       criteria.add(Restrictions.le("nominalwidth", Float.parseFloat(value))); 
-	    	       criteria.add(Restrictions.gt("nominalwidth", 0F));
-	       }
-   		   else if("pricemax".equalsIgnoreCase(key)){
-	    	       criteria.add(Restrictions.le("sellprice", new BigDecimal(value))); 	
-	       }
-   		   else if("size".equalsIgnoreCase(key) || "sizes".equalsIgnoreCase(key)){
-   		   		   criteria = parseSize(criteria, values);
-   		   }		
-   	       else{
-   	    		   if(values.size() > 1 || values.contains(",") || values.indexOf(",") >= 0 || values.toArray().length > 1 || values.toString().contains(","))
-   	    		      criteria.add(Restrictions.in(key, values));
-   	    		      //criteria.add(Restrictions.in(key, (String[])values.toArray()));
-   	    		   else {
-   	    		         if(!exactMatch && ("itemcode".equalsIgnoreCase(key) || "color".equalsIgnoreCase(key)  || 
-   	    		        		            "seriesname".equalsIgnoreCase(key)  || "materialcategory".equalsIgnoreCase(key))){ 
-   	    			        criteria.add(Restrictions.ilike(key, value + "%"));
-   	    		         }
-   	    			     else if(!exactMatch && "colorcategory".equalsIgnoreCase(key)|| "colorhues".equalsIgnoreCase(key) || "itemdesc1".equalsIgnoreCase(key) || "fulldesc".equalsIgnoreCase(key)){
-   	    			        	criteria.add(Restrictions.ilike(key, "%" + value + "%"));
-   	    			     }   	
-   	    		         else {
-   	    		        	if (key.contains("price") || key.endsWith("cost") || key.endsWith("Cost"))
-     	    		    	    criteria.add(Restrictions.eq(key, new BigDecimal(value))); 
-   	    		        	else if (key.toUpperCase().endsWith("RATIO") || 
-   	    		        			 key.toUpperCase().endsWith("PCT") || key.toUpperCase().endsWith("PCT1") ||  key.toUpperCase().endsWith("PCT2") ||  key.toUpperCase().endsWith("PCT3") ||
-   	    		        			 key.toUpperCase().endsWith("PERCENT") ||
-   	    		        			 "nominallength".equalsIgnoreCase(key) || "nominalwidth".equalsIgnoreCase(key) || 
-   	    		            	     key.contains("scof") || key.contains("dcof") || key.contains("Consummer") || "scratchResistance".equalsIgnoreCase(key) || 
-   	    		            	     "waterAbsorption".equalsIgnoreCase(key) || "peiAbrasion".equalsIgnoreCase(key) || "moh".equalsIgnoreCase(key))
-   	    		    	          criteria.add(Restrictions.eq(key, Float.parseFloat(value))); 
-   	    		           	else 
-   	        	                  criteria.add(Restrictions.eq(key, value).ignoreCase());
-   	    		         }     
-   	               }
-   	    	   }
-   		    }   
-	  	}
-	  	criteria.addOrder(Order.asc("itemcode"));
-	  	criteria.setMaxResults(MAX_RESULTS);
-	  	//criteria.setTimeout(TIMEOUT); //not is implememtated in Postgres
-	  	System.out.println("criteria = " +criteria.toString());
-	  	try {
-	  	    items =  (List<Item>)criteria.list();			
-	  	}
-	  	catch(HibernateException hbe){
-	  		if(hbe.getCause() != null)
-	  	       throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
-	  		else
-	  		   throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage());
-	  	}
-	  	return items;	
-    }
-	  
-   */
+	
 	@Override
 	@Loggable(value = LogLevel.TRACE)
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
@@ -375,27 +251,53 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	}
 
 	private String normalizeKey(String key){
-		
-	    if ("itemcd".equalsIgnoreCase(key) || "itemCode".equalsIgnoreCase(key) || "itemid".equalsIgnoreCase(key))
-	   		key = "itemcode";
-	    else if("materialCategory".equalsIgnoreCase(key) || "matcategory".equalsIgnoreCase(key) || "matCategory".equalsIgnoreCase(key))
-   		    key = "materialcategory";
-	    else if("colorCategory".equalsIgnoreCase(key) || "colorHues".equalsIgnoreCase(key) || "colorHue".equalsIgnoreCase(key))
-   		    key = "colorhues";
-	   // else if("colorHues".equalsIgnoreCase(key) || "colorHue".equalsIgnoreCase(key) || "colorDescription".equalsIgnoreCase(key))
-   		 //   key = "colorDescription";
-	    else if("seriesName".equalsIgnoreCase(key))
-   		    key = "seriesname";
-	    else if("category".equalsIgnoreCase(key))
-   		    key = "itemcategory";
-	    else if("length".equalsIgnoreCase(key) || ("nominallength".equalsIgnoreCase(key)) || ("nominalLength".equalsIgnoreCase(key)))
-   		    key = "nominallength";
-	    else if("width".equalsIgnoreCase(key) || ("nominalwidth".equalsIgnoreCase(key)) || ("nominalWidth".equalsIgnoreCase(key)))
-   		    key = "nominalwidth";
-	    else if("thickness".equalsIgnoreCase(key) || ("nominalthickness".equalsIgnoreCase(key)) || ("nominalThickness".equalsIgnoreCase(key)))
-   		    key = "nominalthickness";
-	    else if("productManager".equalsIgnoreCase(key) || "productmanager".equalsIgnoreCase(key))
-   		    key = "purchaser";
+       switch(key) {
+		  case "itemcd": case "itemCode": case "itemId": case "itemid": 
+	   		 key = "itemcode";
+	   		 break;
+		  case "materialcategory": case "materialCategory": case "matcategory": case "matCategory":
+   		     key = "material.materialcategory";
+   		     break;
+		  case "materialtype": case "materialType": case "matType":
+			 key = "material.materialtype";
+			 break;
+		  case "materialstyle": case "materialStyle": case "matStyle":
+			 key = "material.materialstyle";
+			 break;
+		  case "materialfeature": case "materialFeature": case "matFeature": case "matfeature":
+			 key = "material.materialfeature";
+			 break;
+		  case "materialclass": case "materialClass": case "matClass": case "matclass": case "matclasscode":  case "matClassCode": 
+			 key = "material.materialclass";
+			 break;
+		  case "colorCategory": case "colorhues": case "colorHues": case "colorhue": case "colorHue": 
+	         key = "colorcategory";
+	   		 break;	 
+		   //case "colorcategory": case "colorCategory": case "colorhues": case "colorHues": case "colorhue": case "colorHue": 
+   		   //  key = "colorhues";
+   		   //  break;
+		  case "seriesname": case "seriesName":
+   		     key = "series.seriesname";
+   		     break;
+   		  case "color": case "seriescolor": case "seriesColor":
+	   	     key = "series.seriescolor";
+		     break;
+		  case "category":
+   		     key = "itemcategory";
+   		     break;
+		  case "length": case "nomlength": case "nomLength": case "nominalLength":
+   		     key = "nominallength";
+   		     break;
+	 	  case "width": case "nomwidth": case "nomLwidth": case "nominalWidth":
+   		     key = "nominalwidth";
+   		     break;
+		  case "thickness": case "nomthickness": case "nomThickness": case "nominalthickness": case "nominalThickness":
+   		     key = "nominalthickness";
+   		     break;
+		  case "productManager": case "productmanager":
+   		     key = "purchasers.purchaser";
+   		     break;
+       }
         return key;
 	}    
 		
@@ -422,27 +324,6 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	            newFeatureCriteria.add(Restrictions.eq(key, DesignStyle.instanceOf(value)));
 		    return newFeatureCriteria;
 	}
-
-    private Criteria addGtLtRestrictions(Criteria criteria, String key, String value){
-       	if("lengthmin".equalsIgnoreCase(key)){
-    	    criteria.add(Restrictions.ge("nominallength", Float.parseFloat(value))); 	
-    	}
-	   	else if("widthmin".equalsIgnoreCase(key)){
- 	       criteria.add(Restrictions.ge("nominalwidth", Float.parseFloat(value))); 	
- 	    }
-	   	else if("lengthmax".equalsIgnoreCase(key)){
- 	       criteria.add(Restrictions.le("nominallength", Float.parseFloat(value)));
- 	       criteria.add(Restrictions.gt("nominallength", 0F)); 	
- 	    }
-	   	else if("widthmax".equalsIgnoreCase(key)){
- 	       criteria.add(Restrictions.le("nominalwidth", Float.parseFloat(value))); 
- 	       criteria.add(Restrictions.gt("nominalwidth", 0F));
- 	    }
-	   	else if("pricemax".equalsIgnoreCase(key)){
- 	       criteria.add(Restrictions.le("sellprice", new BigDecimal(value))); 	
-	   	}
-       	return criteria;
-    }
 	 
 	private Criteria parseSize(Criteria criteria, List<String> values){
 	   		   	
@@ -463,8 +344,8 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	 		           width = lengthAndWidth[0];	
 	   			   }
 	    		   LogicalExpression andExpression = Restrictions.and(
-	   					                       		                  Restrictions.eq("nominallength", Float.parseFloat(length)),
-	   					                       		                  Restrictions.eq("nominalwidth", Float.parseFloat(width))
+	   					                       		                  Restrictions.eq("dimensions.nominallength", Float.parseFloat(length)),
+	   					                       		                  Restrictions.eq("dimensions.nominalwidth", Float.parseFloat(width))
 	   					                                             ); 
 	    		   disjunction.add(andExpression);
 	          }  
