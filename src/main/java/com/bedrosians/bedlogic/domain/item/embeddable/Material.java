@@ -12,10 +12,10 @@ public class Material implements java.io.Serializable {
 	
 	private String materialtype;
 	private String materialcategory;
+	private String materialclass;
 	private String materialstyle;
 	private String materialfeature;
-	private String materialclass;
-	
+		
 	@Column(name = "mattype", length = 24)
 	public String getMaterialtype() {
 		return FormatUtil.process(this.materialtype);

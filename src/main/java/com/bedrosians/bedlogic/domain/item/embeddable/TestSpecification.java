@@ -55,11 +55,9 @@ public class TestSpecification  implements java.io.Serializable {
 	@Column(name = "frost_resistance", length = 1)
 	public String getFrostresistance() {
 		
-		if("P".equalsIgnoreCase(frostresistance))
-		   return "Passed";	
-		else if("N".equalsIgnoreCase(frostresistance))
-		   return "Not Passed";
-		else 
+		//if("P".equalsIgnoreCase(frostresistance))  return "Passed";	
+		//else if("N".equalsIgnoreCase(frostresistance)) return "Not Passed";
+		//else 
 		   return FormatUtil.process(this.frostresistance);
 	}
 
@@ -69,11 +67,9 @@ public class TestSpecification  implements java.io.Serializable {
 
 	@Column(name = "chemical_resistance", length = 1)
 	public String getChemicalresistance() {
-		if("P".equalsIgnoreCase(chemicalresistance))
-		   return "Passed";	
-		else if("N".equalsIgnoreCase(chemicalresistance))
-		   return "Not Passed";
-		else 
+		//if("P".equalsIgnoreCase(chemicalresistance))  return "Passed";	
+		//else if("N".equalsIgnoreCase(chemicalresistance)) return "Not Passed";
+		//else 
 		   return FormatUtil.process(chemicalresistance);
 	}
 

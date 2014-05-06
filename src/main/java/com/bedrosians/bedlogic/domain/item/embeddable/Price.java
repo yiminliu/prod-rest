@@ -7,19 +7,22 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 import com.bedrosians.bedlogic.util.FormatUtil;
+import com.bedrosians.bedlogic.util.ImsResultUtil;
 
 @Embeddable
 public class Price implements java.io.Serializable {
 
 	private static final long serialVersionUID = -582221787L;
 	
-	private BigDecimal sellprice;
 	private BigDecimal listprice;
+	private BigDecimal sellprice;
 	private String pricegroup;
+	private String priceunit;
 	private Float sellpricemarginpct = 0F;
 	private Integer sellpriceroundaccuracy = 0;
 	private Float listpricemarginpct = 0F;
@@ -151,5 +154,15 @@ public class Price implements java.io.Serializable {
 	public void setPriorsellprice(BigDecimal priorsellprice) {
 		this.priorsellprice = priorsellprice;
 	}
+
+	@Transient
+	public String getPriceunit() {
+	    return priceunit;
+	}
+
+	public void setPriceunit(String priceunit) {
+		this.priceunit = priceunit;
+	}
+
 	
 }

@@ -8,7 +8,7 @@ import javax.persistence.Embeddable;
 import com.bedrosians.bedlogic.util.FormatUtil;
 
 @Embeddable
-public class Packaginginfo  implements java.io.Serializable {
+public class PackagingInfo  implements java.io.Serializable {
 
 	private static final long serialVersionUID = -338982221787L;
 	
@@ -62,7 +62,7 @@ public class Packaginginfo  implements java.io.Serializable {
 	private String unit4upcdesc;
 	private BigDecimal unit4wgtperunit;
 	
-    public Packaginginfo(){}
+    public PackagingInfo(){}
     
     @Column(name = "stdunit", length = 4)
 	public String getStdunit() {
