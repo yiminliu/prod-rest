@@ -12,22 +12,16 @@ import java.util.Map.Entry;
 
 import javax.ws.rs.core.MultivaluedMap;
 
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jettison.json.JSONObject;
 
 import com.bedrosians.bedlogic.domain.item.ColorHue;
 import com.bedrosians.bedlogic.domain.item.Item;
 import com.bedrosians.bedlogic.domain.item.Note;
 import com.bedrosians.bedlogic.domain.item.ItemVendor;
-import com.bedrosians.bedlogic.domain.item.enums.Color;
 import com.bedrosians.bedlogic.domain.item.enums.Status;
 import com.bedrosians.bedlogic.domain.item.enums.Grade;
 import com.bedrosians.bedlogic.domain.item.enums.DesignLook;
 import com.bedrosians.bedlogic.domain.item.enums.DesignStyle;
-import com.bedrosians.bedlogic.domain.item.enums.TaxClass;
 import com.bedrosians.bedlogic.domain.item.enums.MpsCode;
 import com.bedrosians.bedlogic.domain.item.enums.Body;
 import com.bedrosians.bedlogic.domain.item.enums.SurfaceApplication;
@@ -88,6 +82,20 @@ public class ImsQueryUtil {
     		   getValue(queryParams, "itemCd") != null ? getValue(queryParams, "itemCd") :
     		   null;    		         
     }
+	
+	public static int getMaxResults(MultivaluedMap<String, String> queryParams){
+		int maxResults = 0;
+		String data = getValue(queryParams, "maxResults");
+		if(data != null && !data.isEmpty()){
+			try {
+			    maxResults = Integer.parseInt(data);
+			}
+			catch(NumberFormatException e){
+				//e.printStackTrace();
+			}
+		}
+		return maxResults;
+	}
 	
 	public static int determineNumberOfVendors(MultivaluedMap<String, String> queryParams) {
 		int numberOfVendors = 0;
@@ -162,7 +170,11 @@ public class ImsQueryUtil {
 		} 
 		for(ItemVendor vendor : item.getNewVendorSystem()){
 			if(vendor.getItemVendorId().getItemCode() == null)
-			vendor.getItemVendorId().setItemCode(item.getItemcode());
+			   vendor.getItemVendorId().setItemCode(item.getItemcode());
+		}
+		for(ColorHue colorHue : item.getNewColorHueSystem()){
+			if(colorHue.getItem() == null)
+				colorHue.setItem(item);
 		}
 		return item;
 	}
@@ -171,6 +183,7 @@ public class ImsQueryUtil {
     public static Item buildItemFromJsonObject(Item item, JSONObject inputJsonObj, String action){
 		Iterator<String> itrator = inputJsonObj.keys();
    		String key, value = null;
+   		Date dateValue = null;
 		while(itrator.hasNext()) {
 			try{
 		   	   key = (String)itrator.next();
@@ -180,7 +193,7 @@ public class ImsQueryUtil {
 		   			                                    key.equalsIgnoreCase("itemId")))
 			   	   continue;
 		   	   value = (String)inputJsonObj.get(key);
-		   	   setParameter(item, key, value);
+		    	 setParameter(item, key, value);
 			}
 			catch(Exception e){
 				e.printStackTrace();
@@ -255,18 +268,18 @@ public class ImsQueryUtil {
     		   item.getItemdesc().setItemdesc1(value);
     		   break;
     	   case "seriesname":  case "seriesName":
-    		   item.setSeriesname(value);
+    		   item.getSeries().setSeriesname(value);
     		   break;
-    	   case "color":
-    		   item.setColor(value);
-    		   break;	
-    	   case "colorcategory": case "colorCategory":
-    		   item.setColorhues(value.toUpperCase());
-    		   saveColorHue(item, value); //update just adds new entry and old entries still remain
+    	   case "seriescolor":  case "seriesColor": case "color":
+        	   item.getSeries().setSeriescolor(value);
+        	   break;	   
+      	   case "colorcategory": case "colorCategory":
+    		   item.setColorcategory(value.toUpperCase());
+    		   //saveColorHue(item, value.toUpperCase()); //update just adds new entry and old entries still remain
     		   break;	   
     	   case "colorhue": case "colorHue": case "colorhues": case "colorHues":
-    		   saveColorHue(item, value);
-    		   item.setColorhues(value.toUpperCase());
+    		   //saveColorHue(item, value.toUpperCase());
+    		   item.setColorcategory(value.toUpperCase());
     		   break;	   
     	   case "category": case "itemcategory":
     		   item.setItemcategory(value);
@@ -287,7 +300,7 @@ public class ImsQueryUtil {
     		   item.getPurchasers().setPurchaser(value);
     		   break;	
     	   case "purchaser2": case "buyer":
-    		   item.getPurchasers().setPurchaser(value);
+    		   item.getPurchasers().setPurchaser2(value);
     		   break;
     	   case "taxclass": case "taxClass": case "itemtaxclass": case "itemTaxClass":
     		   item.setTaxclass(value.charAt(0));	   
@@ -319,7 +332,7 @@ public class ImsQueryUtil {
     	   case "itemdesc2":  case "itemDesc2": 
     		   item.getItemdesc().setItemdesc2(value);
     		   break;
-    	   case "fulldesc": case "fullDesc":
+    	   case "fulldesc": case "fullDesc": case "fulldescription": case "fullDescription": case "itemfulldesc": case "itemFullDesc":
     		   item.getItemdesc().setFulldesc(value);
     		   break;	   
     	   case "subtype": case "subType":
@@ -352,28 +365,28 @@ public class ImsQueryUtil {
     		   item = generateItemSizeQuery(item, value);
     		   break;	   
     	   case "length":
-    		   item.setLength(value);
+    		   item.getDimensions().setLength(value);
     		   break;
     	   case "width":
-    		   item.setWidth(value);
+    		   item.getDimensions().setWidth(value);
     		   break;
     	   case "thickness":
-    		   item.setThickness(value);
+    		   item.getDimensions().setThickness(value);
     		   break;
     	   case "nmLength": case "nominallength": case "nominalLength":
-    		   item.setNominallength(Float.valueOf(value));
+    		   item.getDimensions().setNominallength(Float.valueOf(value));
     		   break;
     	   case "nmWidth": case "nominalwidth": case "nominalWidth":
-    		   item.setNominalwidth(Float.valueOf(value));
+    		   item.getDimensions().setNominalwidth(Float.valueOf(value));
     		   break;
     	   case "nmThickness": case "nominalthickness": case "nominalThickness":
-    		   item.setNominalthickness(Float.valueOf(value));
+    		   item.getDimensions().setNominalthickness(Float.valueOf(value));
     		   break;	
     	   case "sizeunits": case "sizeUnits":
-    		   item.setSizeunits(value);
+    		   item.getDimensions().setSizeunits(value);
     		   break;
     	   case "thicknessunit": case "thicknessUnit":
-    		   item.setThicknessunit(value);
+    		   item.getDimensions().setThicknessunit(value);
     		   break;	
     		   
     	/*----- material info -------*/
@@ -397,7 +410,7 @@ public class ImsQueryUtil {
     	   case "price": case "sellprice": case "sellPrice":
     		   item.getPrice().setSellprice(new BigDecimal(value));
     		   break;	
-    	   case "listPrice": case "lisrprice":
+    	   case "listPrice": case "listprice":
     		   item.getPrice().setListprice(new BigDecimal(value));
     		   break;	   
     	   case "futurePrice": case "futuresell":
@@ -859,7 +872,7 @@ public class ImsQueryUtil {
     	   case "frostresistance": case "frostResistance":
     		   if("Pass".equalsIgnoreCase(value) || "Passed".equalsIgnoreCase(value))
     		      item.getTestSpecification().setFrostresistance("P");
-    		   else if("Not Pass".equalsIgnoreCase(value) || "Not Passed".equalsIgnoreCase(value) || "N".equalsIgnoreCase(value))
+    		   else if("Not Pass".equalsIgnoreCase(value) || "Not Passed".equalsIgnoreCase(value))
     			   item.getTestSpecification().setFrostresistance("N");
     		   else
     			   item.getTestSpecification().setFrostresistance(value);
@@ -929,55 +942,55 @@ public class ImsQueryUtil {
     		   
     	   /*---------icons -----------*/
        	   case "madeInCountry": case "madeIncountry":
-    		   item.getIconDescription().setMadeInCountry(OriginCountry.instanceOf(value));
+    		   item.getNewIconSystem().setMadeInCountry(OriginCountry.instanceOf(value));
     		   break;   
     	   case "adaAccessibility": case "adaaccessibility":
-        	   item.getIconDescription().setAdaAccessibility(Boolean.valueOf(value));
+        	   item.getNewIconSystem().setAdaAccessibility(Boolean.valueOf(value));
         	   break;
     	   case "exteriorProduct": case "exteriorproduct":
-    		   item.getIconDescription().setExteriorProduct(Boolean.valueOf(value));
+    		   item.getNewIconSystem().setExteriorProduct(Boolean.valueOf(value));
     		   break;
     	   case "throughColor": case "throughcolor": case "thruColor":
-    		   item.getIconDescription().setThroughColor(Boolean.valueOf(value));
+    		   item.getNewIconSystem().setThroughColor(Boolean.valueOf(value));
     		   break;
 	       case "colorBody": case "colorbody":
-		       item.getIconDescription().setColorBody(Boolean.valueOf(value));
+		       item.getNewIconSystem().setColorBody(Boolean.valueOf(value));
 		       break;
 	       case "inkJet": case "inkjet": case "ink_jet":
-		       item.getIconDescription().setInkJet(Boolean.valueOf(value));
+		       item.getNewIconSystem().setInkJet(Boolean.valueOf(value));
 		       break;
            case "glazed": 
-	           item.getIconDescription().setGlazed(Boolean.valueOf(value));
+	           item.getNewIconSystem().setGlazed(Boolean.valueOf(value));
 	           break;
            case "unGlazed": case "unglazed":
-	           item.getIconDescription().setUnglazed(Boolean.valueOf(value));
+	           item.getNewIconSystem().setUnglazed(Boolean.valueOf(value));
 	           break;
            case "rectifiedEdge": case "rectifiededge":
-	           item.getIconDescription().setRectifiedEdge(Boolean.valueOf(value));
+	           item.getNewIconSystem().setRectifiedEdge(Boolean.valueOf(value));
 	           break;
            case "chiseledEdge": case "chiselededge":
-               item.getIconDescription().setChiseledEdge(Boolean.valueOf(value));
+               item.getNewIconSystem().setChiseledEdge(Boolean.valueOf(value));
                break;
            case "versaillesPattern": case "versaillespattern":
-	           item.getIconDescription().setVersaillesPattern(Boolean.valueOf(value));
+	           item.getNewIconSystem().setVersaillesPattern(Boolean.valueOf(value));
 	           break;
            case "recycled": 
-	           item.getIconDescription().setRecycled(Boolean.valueOf(value));
+	           item.getNewIconSystem().setRecycled(Boolean.valueOf(value));
 	           break;
            case "preRecycled": case "prerecycled": 
-	           item.getIconDescription().setPreRecycled(Boolean.valueOf(value));
+	           item.getNewIconSystem().setPreRecycled(Boolean.valueOf(value));
 	           break;
            case "postRecycled": case "postrecycled": 
-	           item.getIconDescription().setPostRecycled(Boolean.valueOf(value));
+	           item.getNewIconSystem().setPostRecycled(Boolean.valueOf(value));
 	           break;
            case "icon_leadPoint": case "icon_leadpoint":
-               item.getIconDescription().setLeadPoint(Boolean.valueOf(value));
+               item.getNewIconSystem().setLeadPoint(Boolean.valueOf(value));
                break;
            case "icon_greenFriendly": case "icon_greenfriendly":
-               item.getIconDescription().setGreenFriendly(Boolean.valueOf(value));
+               item.getNewIconSystem().setGreenFriendly(Boolean.valueOf(value));
                break;
            case "coefficientOfFriction": case "coefficientoffriction":
-               item.getIconDescription().setCoefficientOfFriction(Boolean.valueOf(value));
+               item.getNewIconSystem().setCoefficientOfFriction(Boolean.valueOf(value));
                break;    
 	   	   
     	   /*--------- notes ----------*/
@@ -1043,25 +1056,25 @@ public class ImsQueryUtil {
     		   
     		 //----- similar items -----//
     	   case "similarItemcd1": case "similaritemcd1":
-    		   item.getSimilarItemCode().setSimilaritemcd1(value);
+    		   item.getRelateditemcodes().setSimilaritemcd1(value);
     		   break;
     	   case "similarItemcd2": case "similaritemcd2":
-    		   item.getSimilarItemCode().setSimilaritemcd2(value);
+    		   item.getRelateditemcodes().setSimilaritemcd2(value);
     		   break;
     	   case "similarItemcd3": case "similaritemcd3":
-    		   item.getSimilarItemCode().setSimilaritemcd3(value);
+    		   item.getRelateditemcodes().setSimilaritemcd3(value);
     		   break;
     	   case "similarItemcd4": case "similaritemcd4":
-    		   item.getSimilarItemCode().setSimilaritemcd4(value);
+    		   item.getRelateditemcodes().setSimilaritemcd4(value);
     		   break;
     	   case "similarItemcd5": case "similaritemcd5":
-    		   item.getSimilarItemCode().setSimilaritemcd5(value);
+    		   item.getRelateditemcodes().setSimilaritemcd5(value);
     		   break;
     	   case "similarItemcd6": case "similaritemcd6":
-    		   item.getSimilarItemCode().setSimilaritemcd6(value);
+    		   item.getRelateditemcodes().setSimilaritemcd6(value);
     		   break;
     	   case "similarItemcd7": case "similaritemcd7":
-    		   item.getSimilarItemCode().setSimilaritemcd7(value);
+    		   item.getRelateditemcodes().setSimilaritemcd7(value);
     		   break;
      	   default:
       		   System.out.println("Field: "+ field + " is not supported");
@@ -1088,8 +1101,8 @@ public class ImsQueryUtil {
     		}
     		//Item.setLength(length);
  		    //Item.setWidth(width);
-    		item.setNominallength(Float.parseFloat(length));
- 		    item.setNominalwidth(Float.parseFloat(width));
+    		item.getDimensions().setNominallength(Float.parseFloat(length));
+ 		    item.getDimensions().setNominalwidth(Float.parseFloat(width));
     	}
     	return item;
     }
@@ -1168,22 +1181,22 @@ public class ImsQueryUtil {
 		if(value != null && !value.isEmpty()) {
 			item.setNewColorHueSystem(new ArrayList<ColorHue>());
 			if(!value.contains(":") )
-				item.addNewColorHueSystem(new ColorHue(Color.instanceOf(value)));	
+				item.addNewColorHueSystem(new ColorHue(value));	
 			else {
 				for(String color : value.trim().split(":")){
   	                if(color != null && !color.isEmpty())
-		               item.addNewColorHueSystem(new ColorHue(Color.instanceOf(color)));
+		               item.addNewColorHueSystem(new ColorHue(value));	
 				}    
 		    }	   
 		}
 	}
 	
-	public static void saveColorCategory(Item item, String value){
-		if(value != null && !value.isEmpty()){
-			String colorCategory = item.getColorhues();
+	//public static void saveColorCategory(Item item, String value){
+	//	if(value != null && !value.isEmpty()){
+	//		String colorCategory = item.getColorhues();
 		    //item.setColorcategory((colorCategory == null && !colorCategory.isEmpty()) ?  value.toUpperCase() : colorCategory + ":" + value.toUpperCase());
-			item.setColorhues(value.toUpperCase());
-		}
-	}
+	//		item.setColorhues(value.toUpperCase());
+	//	}
+	//}
 	
 }

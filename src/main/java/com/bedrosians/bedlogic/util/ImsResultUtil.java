@@ -1,23 +1,10 @@
 package com.bedrosians.bedlogic.util;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
-
-
-
-
-
-
-
-import com.bedrosians.bedlogic.domain.item.ColorHue;
 import com.bedrosians.bedlogic.domain.item.IconCollection;
 import com.bedrosians.bedlogic.domain.item.Item;
-import com.bedrosians.bedlogic.domain.item.Note;
-import com.bedrosians.bedlogic.domain.item.embeddable.PriorVendor;
-import com.bedrosians.bedlogic.domain.item.enums.Color;
 import com.bedrosians.bedlogic.domain.item.enums.MpsCode;
 import com.bedrosians.bedlogic.domain.item.enums.OriginCountry;
 
@@ -108,41 +95,12 @@ public class ImsResultUtil {
         return icon;
 	}
 	
-	//public static List<String> parseColorCategory(String colorCategory){
-	//	if(colorCategory == null)
-	//	   return null;	
-	//	return Arrays.asList(colorCategory.trim().split(":"));
-	//}
-	
-	public static List<ColorHue> parseColorCategory(String colorCategory){
-		if(colorCategory == null || colorCategory.isEmpty())
+	public static List<String> parseColorCategory(String colorCategory){
+		if(colorCategory == null)
 		   return null;	
-		List<ColorHue> colorHues = new ArrayList<>();	
-		for(String color : colorCategory.trim().split(":")){
-			if(color != null && !color.isEmpty())
-			   colorHues.add(new ColorHue(Color.instanceOf(color)));
-			//colorHues.add(new ColorHue(color));
-		}
-		return colorHues;
+		return Arrays.asList(colorCategory.trim().split(":"));
 	}
 	
-	/*public static Item parseNotes(Item item){
-	    String additionalNoteText = null;
-	    Note buyerNote = null;
-	  	if(item.getNewNoteSystem() != null && !item.getNewNoteSystem().isEmpty()){
-           for(Note note : item.getNewNoteSystem())	{
-        	   if("buyer".equalsIgnoreCase(note.getNoteType()) || "buyer_note".equalsIgnoreCase(note.getNoteType()))
-        		   buyerNote = note;
-        	   else if("additional".equalsIgnoreCase(note.getNoteType()) || "additional_note".equalsIgnoreCase(note.getNoteType()))
-        		   additionalNoteText = note.getNote();
-           }  
-	       if(additionalNoteText != null) {
-			  buyerNote.setNote(buyerNote.getNote() + ". " +additionalNoteText);
-		      item.getNewNoteSystem().set(1, buyerNote);
-	       }
-	  	}
-	  	return item;
-	}*/
 	public static Item parsePriorVendor(Item item){
 		
 		if(item.getPriorVendor() != null && item.getPriorVendor().getPriorvendorpriceunit() == null 
@@ -152,46 +110,7 @@ public class ImsResultUtil {
 		return item;
 	}
 	
-	
-	/*
-	public static Status convertAbcCodeToStatus(String inactiveCode){
-		 abc code: 
-		 * option value="A">A -High Volume</option>
-              <option value="B">B -Medium Volume</option>
-              <option value="C">C -Low Volume</option>
-              <option value="E">E -Exotic Slab</option>
-              <option value="S">S -Second</option>
-              <option value="SO">SO -Special Order</option>
-              <option value="D">D -Discontinued</option>
-              <option value="FRT">FRT -Freight</option>
-              <option value="MISC">MISC -Misc</option>
-              <option value="MKT">MKT -Marketing</option>
-              <option value="P">P -Promo</option>
-              
-		 
-	       return MpsCode.NONE;
-	    else
-	    	inactiveCode = inactiveCode.trim();
-	    
-	    switch(inactiveCode) {
-	        case "N":  
-	    	   mpsCode = MpsCode.ACTIVE_PRODUCT;
-	    	   break;
-	        case "Y":
-	    	   mpsCode = MpsCode.PRE_DROP;
-	    	   break;
-	        case "D":
-	    	   mpsCode = MpsCode.DROP;	
-	    	   break;
-	    }	
-		return mpsCode;
-	}
-	*/
-	public static String transformABCCode(String abcCode){
-		String result = "";
-		return result;
-	}
-	
+
 	public static String getStandardSellUnit(Item item) {
 		
 		String standardUnit = item.getPackaginginfo().getBaseunit();
@@ -261,6 +180,70 @@ public class ImsResultUtil {
     }
 	
 
+	//public static List<ColorHue> parseColorCategory(String colorCategory){
+	//	if(colorCategory == null || colorCategory.isEmpty())
+	//	   return null;	
+	//	List<ColorHue> colorHues = new ArrayList<>();	
+	//	for(String color : colorCategory.trim().split(":")){
+	//		if(color != null && !color.isEmpty())
+	//		   colorHues.add(new ColorHue(color));
+	//		//colorHues.add(new ColorHue(color));
+	//	}
+	//	return colorHues;
+	//}
+	
+	/*public static Item parseNotes(Item item){
+	    String additionalNoteText = null;
+	    Note buyerNote = null;
+	  	if(item.getNewNoteSystem() != null && !item.getNewNoteSystem().isEmpty()){
+           for(Note note : item.getNewNoteSystem())	{
+        	   if("buyer".equalsIgnoreCase(note.getNoteType()) || "buyer_note".equalsIgnoreCase(note.getNoteType()))
+        		   buyerNote = note;
+        	   else if("additional".equalsIgnoreCase(note.getNoteType()) || "additional_note".equalsIgnoreCase(note.getNoteType()))
+        		   additionalNoteText = note.getNote();
+           }  
+	       if(additionalNoteText != null) {
+			  buyerNote.setNote(buyerNote.getNote() + ". " +additionalNoteText);
+		      item.getNewNoteSystem().set(1, buyerNote);
+	       }
+	  	}
+	  	return item;
+	}*/
+
+/*
+public static Status convertAbcCodeToStatus(String inactiveCode){
+	 abc code: 
+	 * option value="A">A -High Volume</option>
+          <option value="B">B -Medium Volume</option>
+          <option value="C">C -Low Volume</option>
+          <option value="E">E -Exotic Slab</option>
+          <option value="S">S -Second</option>
+          <option value="SO">SO -Special Order</option>
+          <option value="D">D -Discontinued</option>
+          <option value="FRT">FRT -Freight</option>
+          <option value="MISC">MISC -Misc</option>
+          <option value="MKT">MKT -Marketing</option>
+          <option value="P">P -Promo</option>
+          
+	 
+       return MpsCode.NONE;
+    else
+    	inactiveCode = inactiveCode.trim();
+    
+    switch(inactiveCode) {
+        case "N":  
+    	   mpsCode = MpsCode.ACTIVE_PRODUCT;
+    	   break;
+        case "Y":
+    	   mpsCode = MpsCode.PRE_DROP;
+    	   break;
+        case "D":
+    	   mpsCode = MpsCode.DROP;	
+    	   break;
+    }	
+	return mpsCode;
+}
+*/
 	/*
 	$Ims_SellRatio = 1;
 	$Ims_SellUnit  = $Ims_BaseUnit;

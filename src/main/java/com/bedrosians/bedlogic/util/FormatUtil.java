@@ -1,19 +1,10 @@
 package com.bedrosians.bedlogic.util;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javassist.bytecode.Descriptor.Iterator;
-
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-
-import com.bedrosians.bedlogic.domain.authority.Role;
 import com.bedrosians.bedlogic.domain.item.Item;
-import com.bedrosians.bedlogic.domain.user.User;
-import com.bedrosians.bedlogic.domain.item.embeddable.Purchasers;
+
 
 public class FormatUtil {
   
@@ -103,12 +94,14 @@ public class FormatUtil {
 		//process(item.getBuyer().getBuyer());
 		*/
 		item.setItemcode(process(item.getItemcode()));
-		if(item.getIconDescription() == null)
-		   item.setIconDescription(ImsResultUtil.parseIcons(item.getIconsystem()));	
+		if(item.getNewIconSystem() == null)
+		   item.setNewIconSystem(ImsResultUtil.parseIcons(item.getIconsystem()));	
 		if(item.getPriorVendor() != null)
 		   ImsResultUtil.parsePriorVendor(item);	
-		if(item.getNewColorHueSystem() == null || item.getNewColorHueSystem().isEmpty())
-		   item.setNewColorHueSystem(ImsResultUtil.parseColorCategory(item.getColorhues()));
+		if(item.getPrice() != null)
+			item.getPrice().setPriceunit(item.getStandardSellUnit());	
+		//if(item.getNewColorHueSystem() == null || item.getNewColorHueSystem().isEmpty())
+		//   item.setNewColorHueSystem(ImsResultUtil.parseColorCategory(item.getColorhues()));
 		return item;
 		/*
 		newItem.setAbccd(process(item.getAbccd()));
