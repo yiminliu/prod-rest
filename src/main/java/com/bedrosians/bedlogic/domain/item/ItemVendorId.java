@@ -24,7 +24,7 @@ public class ItemVendorId implements Serializable{
 	}
 
 	@JsonIgnore
-	@Column(name = "item_code", nullable = false, length = 15)
+	@Column(name = "item_code", nullable = false)
 	public String getItemCode() {
 		return this.itemCode;
 	}
