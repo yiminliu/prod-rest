@@ -297,6 +297,9 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 		  case "productManager": case "productmanager":
    		     key = "purchasers.purchaser";
    		     break;
+		  case "countryOrigin": case "origin":
+	   		 key = "countryorigin";
+	   		 break;   
        }
         return key;
 	}    
