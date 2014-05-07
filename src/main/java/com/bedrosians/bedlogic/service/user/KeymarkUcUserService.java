@@ -7,7 +7,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import org.hibernate.Session;
 
 import com.bedrosians.bedlogic.domain.user.KeymarkUcUser;
-import com.bedrosians.bedlogic.domain.user.User;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.exception.BedResException;
