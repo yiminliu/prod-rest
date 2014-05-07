@@ -17,7 +17,6 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.codehaus.jackson.annotate.JsonValue;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,7 +29,8 @@ import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
 import com.bedrosians.bedlogic.models.Products;
 import com.bedrosians.bedlogic.service.product.ProductService;
 import com.bedrosians.bedlogic.service.security.KeymarkUcUserAuthentication;
-import com.bedrosians.bedlogic.util.ListWraper;
+import com.bedrosians.bedlogic.util.JsonWrapper.ItemWrapper;
+import com.bedrosians.bedlogic.util.JsonWrapper.ListWrapper;
 
 
 @Controller
@@ -55,7 +55,7 @@ public class ProductsResource
         try
         {
         	 //Check usercode
-       /*     UserCodeParser  userCodeParser = new UserCodeParser(requestHeaders);
+            UserCodeParser  userCodeParser = new UserCodeParser(requestHeaders);
             if (!userCodeParser.isValidFormat())
             {
                 throw new BedResUnAuthorizedException();
@@ -65,12 +65,12 @@ public class ProductsResource
             
             //Authenticate the user
             keymarkUcUserAuthentication.authenticate(userType, userCode);
-       */     
+            
             //Retrieve data from database based on the given query parameters
             List<Item> items = productService.getProducts(uriInfo.getQueryParameters());       
             
             //Convert the data to Json string
-            Products result = new Products(new ListWraper(items));
+            Products result = new Products(new ListWrapper(items));
             String jsonStr = result.toJSONStringWithJackson();
        
             //Return json reponse
@@ -105,7 +105,7 @@ public class ProductsResource
         try
         {
         	 //Check usercode
-       /*     UserCodeParser  userCodeParser = new UserCodeParser(requestHeaders);
+            UserCodeParser  userCodeParser = new UserCodeParser(requestHeaders);
             if (!userCodeParser.isValidFormat())
             {
                 throw new BedResUnAuthorizedException();
@@ -115,12 +115,12 @@ public class ProductsResource
             
             //Authenticate the user
             keymarkUcUserAuthentication.authenticate(userType, userCode);
-       */     
+            
             //Retrieve data from database based on the given query parameters
             List<Item> items = productService.getProducts(inputJsonObj);       
             
             //Convert the data to Json string
-            Products result = new Products(new ListWraper(items));
+            Products result = new Products(new ListWrapper(items));
             String jsonStr = result.toJSONStringWithJackson();
        
             //Return json reponse
@@ -146,31 +146,30 @@ public class ProductsResource
     }
 	
 	@GET
-	@Path("{itemCode}")
+	@Path("{itemcode}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getProductById(@Context HttpHeaders requestHeaders, @PathParam("itemCode") final String itemCode)
+    public Response getProductById(@Context HttpHeaders requestHeaders, @PathParam("itemcode") final String itemCode)
     {
         Response    response;
 
         try
         {
         	//Check usercode
-            /*     UserCodeParser  userCodeParser = new UserCodeParser(requestHeaders);
-                 if (!userCodeParser.isValidFormat())
-                 {
-                     throw new BedResUnAuthorizedException();
-                 }
-                 String userType = userCodeParser.getUserType();
-                 String userCode = userCodeParser.getUserCode();
+            UserCodeParser  userCodeParser = new UserCodeParser(requestHeaders);
+            if (!userCodeParser.isValidFormat())
+            {
+                throw new BedResUnAuthorizedException();
+            }
+            String userType = userCodeParser.getUserType();
+            String userCode = userCodeParser.getUserCode();
                  
-                 //Authenticate the user
+            //Authenticate the user
                  keymarkUcUserAuthentication.authenticate(userType, userCode);
-            */     
+                 
             //Retrieve data from database based on the give id
-            
             Item item = productService.getProductById(itemCode);
                 
-            Products result = new Products(item);
+            Products result = new Products(new ItemWrapper(item));
             String jsonStr = result.toJSONStringWithJackson();
        
             //Return json reponse
@@ -236,8 +235,8 @@ public class ProductsResource
 
         try
         {
-        	 //Check usercode
-       /*     UserCodeParser  userCodeParser = new UserCodeParser(requestHeaders);
+        	//Check usercode
+            UserCodeParser  userCodeParser = new UserCodeParser(requestHeaders);
             if (!userCodeParser.isValidFormat())
             {
                 throw new BedResUnAuthorizedException();
@@ -247,7 +246,7 @@ public class ProductsResource
             
             //Authenticate the user
             keymarkUcUserAuthentication.authenticate(userType, userCode);
-       */     
+           
             //Retrieve data from database based on the given query parameters
             String productId = productService.createProduct(uriInfo.getQueryParameters());       
             
@@ -318,6 +317,18 @@ public class ProductsResource
 
         try
         {
+        	//Check usercode
+            UserCodeParser  userCodeParser = new UserCodeParser(requestHeaders);
+            if (!userCodeParser.isValidFormat())
+            {
+                throw new BedResUnAuthorizedException();
+            }
+            String userType = userCodeParser.getUserType();
+            String userCode = userCodeParser.getUserCode();
+            
+            //Authenticate the user
+            keymarkUcUserAuthentication.authenticate(userType, userCode);
+            
         	//Update a product based on the input json data
             productService.updateProduct(inputJsonObj);    
             
@@ -348,8 +359,8 @@ public class ProductsResource
 
         try
         {
-        	 //Check usercode
-       /*     UserCodeParser  userCodeParser = new UserCodeParser(requestHeaders);
+        	//Check usercode
+            UserCodeParser  userCodeParser = new UserCodeParser(requestHeaders);
             if (!userCodeParser.isValidFormat())
             {
                 throw new BedResUnAuthorizedException();
@@ -359,7 +370,7 @@ public class ProductsResource
             
             //Authenticate the user
             keymarkUcUserAuthentication.authenticate(userType, userCode);
-       */     
+            
             //update data from database with the given query parameters
             productService.updateProduct(uriInfo.getQueryParameters());       
              
@@ -394,20 +405,19 @@ public class ProductsResource
 
         try
         {
-        	//Check usercode
-            /*     UserCodeParser  userCodeParser = new UserCodeParser(requestHeaders);
-                 if (!userCodeParser.isValidFormat())
-                 {
-                     throw new BedResUnAuthorizedException();
-                 }
-                 String userType = userCodeParser.getUserType();
-                 String userCode = userCodeParser.getUserCode();
+         	//Check usercode
+            UserCodeParser  userCodeParser = new UserCodeParser(requestHeaders);
+            if (!userCodeParser.isValidFormat())
+            {
+                throw new BedResUnAuthorizedException();
+            }
+            String userType = userCodeParser.getUserType();
+            String userCode = userCodeParser.getUserCode();
                  
-                 //Authenticate the user
-                 keymarkUcUserAuthentication.authenticate(userType, userCode);
-            */     
+            //Authenticate the user
+            keymarkUcUserAuthentication.authenticate(userType, userCode);
+                 
             //delete data from database with the given id
-            
             productService.deleteProductById(itemCode);
                 
             //Return json reponse
@@ -436,8 +446,8 @@ public class ProductsResource
 
         try
         {
-        	 //Check usercode
-       /*     UserCodeParser  userCodeParser = new UserCodeParser(requestHeaders);
+        	//Check usercode
+            UserCodeParser  userCodeParser = new UserCodeParser(requestHeaders);
             if (!userCodeParser.isValidFormat())
             {
                 throw new BedResUnAuthorizedException();
@@ -447,7 +457,7 @@ public class ProductsResource
             
             //Authenticate the user
             keymarkUcUserAuthentication.authenticate(userType, userCode);
-       */     
+            
             //Retrieve data from database based on the given query parameters
             productService.deleteProduct(uriInfo.getQueryParameters());       
                
