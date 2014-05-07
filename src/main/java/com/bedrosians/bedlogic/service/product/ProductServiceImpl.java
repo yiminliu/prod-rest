@@ -428,8 +428,8 @@ public class ProductServiceImpl implements ProductService {
   	    if(item.getNewVendorSystem() == null || item.getNewVendorSystem().isEmpty()){
 		   item.initVendors(ImsQueryUtil.determineNumberOfVendors(queryParams));
 		}
-  	    if(ImsQueryUtil.containsAnyKey(queryParams, Arrays.asList(new String[]{"colorHue", "colorhue", "colorHues", "colorHues", "colorCategory", "colorcategory"})))
-		   item.addNewColorHueSystem(new ColorHue());
+  	    //if(ImsQueryUtil.containsAnyKey(queryParams, Arrays.asList(new String[]{"colorHue", "colorhue", "colorHues", "colorHues", "colorCategory", "colorcategory"})))
+		//   item.addNewColorHueSystem(new ColorHue());
 		if(ImsQueryUtil.containsAnyKey(queryParams, IconCollection.allPropertis()))
 		   item.addNewIconSystem(new IconCollection());	
 		if(ImsQueryUtil.containsKey(queryParams, "poNote")) {
@@ -473,8 +473,8 @@ public class ProductServiceImpl implements ProductService {
 		}
 		if(ImsQueryUtil.containsAnyKey(queryParams, IconCollection.allPropertis()))
 		   item.addNewIconSystem(new IconCollection());	
-		if(ImsQueryUtil.containsAnyKey(queryParams, Arrays.asList(new String[]{"colorHue", "colorhue", "colorHues", "colorHues", "colorCategory", "colorcategory"})))
-   		   item.addNewColorHueSystem(new ColorHue());
+		//if(ImsQueryUtil.containsAnyKey(queryParams, Arrays.asList(new String[]{"colorHue", "colorhue", "colorHues", "colorHues", "colorCategory", "colorcategory"})))
+   		//   item.addNewColorHueSystem(new ColorHue());
 		if(ImsQueryUtil.containsKey(queryParams, "poNote")) {
 		   Note poNote = new Note("po");
 		   poNote.setLastModifiedDate(new Date());
@@ -514,8 +514,8 @@ public class ProductServiceImpl implements ProductService {
 	   if(item.getNewVendorSystem() == null || item.getNewVendorSystem().isEmpty()){
 		  item.initVendors(ImsQueryUtil.determineNumberOfVendors(inputJsonObj));
 	   }
-	   if(ImsQueryUtil.containsAnyKey(inputJsonObj, Arrays.asList(new String[]{"colorHue", "colorhue", "colorHues", "colorHues", "colorCategory", "colorcategory"})))
-		  item.addNewColorHueSystem(new ColorHue());
+	   //if(ImsQueryUtil.containsAnyKey(inputJsonObj, Arrays.asList(new String[]{"colorHue", "colorhue", "colorHues", "colorHues", "colorCategory", "colorcategory"})))
+	   //	  item.addNewColorHueSystem(new ColorHue());
 	   if(ImsQueryUtil.containsAnyKey(inputJsonObj, IconCollection.allPropertis()))
 	      item.addNewIconSystem(new IconCollection());	
        if(inputJsonObj.has("poNote")) {
@@ -557,8 +557,8 @@ public class ProductServiceImpl implements ProductService {
  	   if(item.getNewVendorSystem() == null || item.getNewVendorSystem().isEmpty()){
  		  item.initVendors(ImsQueryUtil.determineNumberOfVendors(inputJsonObj));
  	   }
- 	  if(ImsQueryUtil.containsAnyKey(inputJsonObj, Arrays.asList(new String[]{"colorHue", "colorhue", "colorHues", "colorHues", "colorCategory", "colorcategory"})))
-		   item.addNewColorHueSystem(new ColorHue());
+ 	  //if(ImsQueryUtil.containsAnyKey(inputJsonObj, Arrays.asList(new String[]{"colorHue", "colorhue", "colorHues", "colorHues", "colorCategory", "colorcategory"})))
+	  //	   item.addNewColorHueSystem(new ColorHue());
 	  if(ImsQueryUtil.containsAnyKey(inputJsonObj, IconCollection.allPropertis()))
  	      item.addNewIconSystem(new IconCollection());	
       if(inputJsonObj.has("poNote")) {

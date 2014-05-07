@@ -29,6 +29,7 @@ import com.bedrosians.bedlogic.domain.item.embeddable.Description;
 import com.bedrosians.bedlogic.domain.item.embeddable.Dimensions;
 import com.bedrosians.bedlogic.domain.item.embeddable.Material;
 import com.bedrosians.bedlogic.domain.item.embeddable.Notes;
+import com.bedrosians.bedlogic.domain.item.embeddable.PackagingInfo;
 import com.bedrosians.bedlogic.domain.item.embeddable.Series;
 import com.bedrosians.bedlogic.domain.item.embeddable.Usage;
 import com.bedrosians.bedlogic.domain.item.embeddable.Cost;
@@ -37,7 +38,7 @@ import com.bedrosians.bedlogic.domain.item.embeddable.PriorVendor;
 import com.bedrosians.bedlogic.domain.item.embeddable.Purchasers;
 import com.bedrosians.bedlogic.domain.item.embeddable.SimilarItemCode;
 import com.bedrosians.bedlogic.domain.item.embeddable.TestSpecification;
-import com.bedrosians.bedlogic.domain.item.embeddable.PackagingInfo;
+import com.bedrosians.bedlogic.domain.item.embeddable.Units;
 import com.bedrosians.bedlogic.domain.item.embeddable.VendorInfo;
 import com.bedrosians.bedlogic.util.FormatUtil;
 import com.bedrosians.bedlogic.util.ImsResultUtil;
@@ -65,7 +66,7 @@ public class Item implements java.io.Serializable {
 	private String colorcategory;
 	private List<String> colorhues =  new ArrayList<>();
 	//------- color hue info --------//	
-	private List<ColorHue> newColorHueSystem =  new ArrayList<>();
+	//private List<ColorHue> newColorHueSystem =  new ArrayList<>();
 	//----- dimensions as embedded component ------//
 	private Dimensions dimensions = new Dimensions();
 	//------- price info as embedded component--------//	
@@ -74,6 +75,8 @@ public class Item implements java.io.Serializable {
 	private Usage usage = new Usage();
 	//------- test info as embedded component--------//	
 	private TestSpecification testSpecification = new TestSpecification();
+	//----- similar items as embedded component -----//
+  	private SimilarItemCode relateditemcodes = new SimilarItemCode();
 	//------- purchaser as embedded component--------//	
 	private Purchasers purchasers = new Purchasers();
 	//------- unit info as embedded component--------//	
@@ -85,9 +88,8 @@ public class Item implements java.io.Serializable {
 	private String productline;
 	private String iconsystem;
 	//------- icon (new implementation/table) --------//	
-    private IconCollection newIconSystem = new IconCollection();;	
-    //----- similar items as embedded component -----//
-  	private SimilarItemCode relateditemcodes = new SimilarItemCode();
+    private IconCollection newIconSystem = new IconCollection();
+  	private Units units = new Units();
   	private Character showonwebsite;	
 	private String type;
 	private Character itemtypecd;
@@ -188,13 +190,22 @@ public class Item implements java.io.Serializable {
 		this.cost = cost;
 	}
     
-    @Embedded	
+    @Transient
 	public PackagingInfo getPackaginginfo() {
 		return packaginginfo;
 	}
 
 	public void setPackaginginfo(PackagingInfo packaginginfo) {
 		this.packaginginfo = packaginginfo;
+	}
+	
+	@Embedded	
+	public Units getUnits() {
+		return units;
+	}
+
+	public void setUnits(Units units) {
+		this.units = units;
 	}
 
 	@Embedded
@@ -514,21 +525,21 @@ public class Item implements java.io.Serializable {
 		this.newIconSystem = newIconSystem;
 	}
 
-	@JsonIgnore
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
-	public List<ColorHue> getNewColorHueSystem() {
-		return this.newColorHueSystem;
-	}
+	//@JsonIgnore
+	//@LazyCollection(LazyCollectionOption.FALSE)
+	//@OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+	//public List<ColorHue> getNewColorHueSystem() {
+	//	return this.newColorHueSystem;
+	//}
 
-	public void setNewColorHueSystem(List<ColorHue> newColorHueSystem) {
-		this.newColorHueSystem = newColorHueSystem;
-	}
+	//public void setNewColorHueSystem(List<ColorHue> newColorHueSystem) {
+	//	this.newColorHueSystem = newColorHueSystem;
+	//}
    
-	public void addNewColorHueSystem(ColorHue newColorHueSystem){
-		newColorHueSystem.setItem(this);
-		getNewColorHueSystem().add(newColorHueSystem);
-	}
+	//public void addNewColorHueSystem(ColorHue newColorHueSystem){
+	//	newColorHueSystem.setItem(this);
+	//	getNewColorHueSystem().add(newColorHueSystem);
+	//}
 	
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(/*fetch = FetchType.EAGER,*/ mappedBy = "item", cascade = CascadeType.ALL)

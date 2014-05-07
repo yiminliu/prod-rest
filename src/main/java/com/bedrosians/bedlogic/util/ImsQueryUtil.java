@@ -172,10 +172,10 @@ public class ImsQueryUtil {
 			if(vendor.getItemVendorId().getItemCode() == null)
 			   vendor.getItemVendorId().setItemCode(item.getItemcode());
 		}
-		for(ColorHue colorHue : item.getNewColorHueSystem()){
-			if(colorHue.getItem() == null)
-				colorHue.setItem(item);
-		}
+		//for(ColorHue colorHue : item.getNewColorHueSystem()){
+		//	if(colorHue.getItem() == null)
+		//		colorHue.setItem(item);
+		//}
 		return item;
 	}
     
@@ -671,151 +671,151 @@ public class ImsQueryUtil {
     		   
     		 /*--------- units ----------*/
     	   case "stdunit": case "std_unit": case "standardUnit":
-    		   item.getPackaginginfo().setStdunit(value);
+    		   item.getUnits().setStdunit(value);
     		   break; 
     	   case "ordunit": case "ord_unit": case "OrderUnit":
-    		   item.getPackaginginfo().setOrdunit(value);
+    		   item.getUnits().setOrdunit(value);
     		   break; 	   
     	   case "stdratio": case "std_ratio": case "standardRatio":
-    		   item.getPackaginginfo().setStdratio(Float.valueOf(value));
+    		   item.getUnits().setStdratio(Float.valueOf(value));
     		   break;	 
     	   case "ordratio": case "ord_ratio": case "OrderRatio":
-    		   item.getPackaginginfo().setOrdratio(Float.valueOf(value));
+    		   item.getUnits().setOrdratio(Float.valueOf(value));
     		   break;   
     	   case "baseunit": case "base_unit": case "BaseUnit":
-    		   item.getPackaginginfo().setBaseunit(value);
+    		   item.getUnits().setBaseunit(value);
     		   break; 	 
     	   case "baseisstdsell": case "baseIsStdsell": 
-    		   item.getPackaginginfo().setBaseisstdsell(value.charAt(0));
+    		   item.getUnits().setBaseisstdsell(value.charAt(0));
     		   break;	
     	   case "baseisstdord": case "baseIsStdOrder": 
-    		   item.getPackaginginfo().setBaseisstdord(value.charAt(0));
+    		   item.getUnits().setBaseisstdord(value.charAt(0));
     		   break;
     	   case "baseisfractqty": case "baseIsFractQty": 
-    		   item.getPackaginginfo().setBaseisfractqty(value.charAt(0));
+    		   item.getUnits().setBaseisfractqty(value.charAt(0));
     		   break;	
     	   case "baseispackunit": case "baseIsPackUnit": 
-    		   item.getPackaginginfo().setBaseispackunit(value.charAt(0));
+    		   item.getUnits().setBaseispackunit(value.charAt(0));
     		   break;
     	   case "baseupc": case "baseUpc": 
-    		   item.getPackaginginfo().setBaseupc(Long.valueOf(value));
+    		   item.getUnits().setBaseupc(Long.valueOf(value));
     		   break;   
     	   case "baseupcdesc": case "baseUpcDesc": 
-    		   item.getPackaginginfo().setBaseupcdesc(value);
+    		   item.getUnits().setBaseupcdesc(value);
     		   break;   	   
     	   case "basevolperunit": case "baseVolPerUnit": 
-    		   item.getPackaginginfo().setBasevolperunit(new BigDecimal(value));
+    		   item.getUnits().setBasevolperunit(new BigDecimal(value));
     		   break;	
     	   case "basewgtperunit": case "baseWgtPerUnit": 
-    		   item.getPackaginginfo().setBasewgtperunit(new BigDecimal(value));
+    		   item.getUnits().setBasewgtperunit(new BigDecimal(value));
     		   break;
     	   case "unit1unit": case "unit1_unit": case "unit1Unit":
-    		   item.getPackaginginfo().setUnit1unit(value);
+    		   item.getUnits().setUnit1unit(value);
     		   break;
     	   case "unit1ratio": case "unit1Ratio":
-    		   item.getPackaginginfo().setUnit1ratio(Float.parseFloat(value));
+    		   item.getUnits().setUnit1ratio(Float.parseFloat(value));
     		   break; 	   
     	   case "unit1isstdsell": case "unit1IsStdsell": 
-    		   item.getPackaginginfo().setUnit1isstdsell(value.charAt(0));
+    		   item.getUnits().setUnit1isstdsell(value.charAt(0));
     		   break;	
     	   case "unit1isstdord": case "unit1IsStdOrder": 
-    		   item.getPackaginginfo().setUnit1isstdord(value.charAt(0));
+    		   item.getUnits().setUnit1isstdord(value.charAt(0));
     		   break;
     	   case "unit1isfractqty": case "unit1IsFractQty": 
-    		   item.getPackaginginfo().setUnit1isfractqty(value.charAt(0));
+    		   item.getUnits().setUnit1isfractqty(value.charAt(0));
     		   break;	
     	   case "unit1ispackunit": case "unit1IsPackUnit": 
-    		   item.getPackaginginfo().setUnit1ispackunit(value.charAt(0));
+    		   item.getUnits().setUnit1ispackunit(value.charAt(0));
     		   break;
     	   case "unit1upc": case "unit1Upc": 
-    		   item.getPackaginginfo().setUnit1upc(Long.valueOf(value));
+    		   item.getUnits().setUnit1upc(Long.valueOf(value));
     		   break; 
     	   case "unit1upcdesc": case "unit1UpcDesc": 
-    		   item.getPackaginginfo().setUnit1upcdesc(value);
+    		   item.getUnits().setUnit1upcdesc(value);
     		   break;	   
     	   case "unit1wgtperunit": case "unit1WgtPerUnit": 
-    		   item.getPackaginginfo().setUnit1wgtperunit(new BigDecimal(value));
+    		   item.getUnits().setUnit1wgtperunit(new BigDecimal(value));
     		   break;
     	   case "unit2unit": case "unit2Unit":
-    		   item.getPackaginginfo().setUnit2unit(value);
+    		   item.getUnits().setUnit2unit(value);
     		   break;
     	   case "unit2ratio": case "unit2Ratio":
-    		   item.getPackaginginfo().setUnit2ratio(Float.parseFloat(value));
+    		   item.getUnits().setUnit2ratio(Float.parseFloat(value));
     		   break; 	   
     	   case "unit2isstdsell": case "unit2IsStdsell": 
-    		   item.getPackaginginfo().setUnit2isstdsell(value.charAt(0));
+    		   item.getUnits().setUnit2isstdsell(value.charAt(0));
     		   break;	
     	   case "unit2isstdord": case "unit2IsStdOrder": 
-    		   item.getPackaginginfo().setUnit2isstdord(value.charAt(0));
+    		   item.getUnits().setUnit2isstdord(value.charAt(0));
     		   break;
     	   case "unit2isfractqty": case "unit2IsFractQty": 
-    		   item.getPackaginginfo().setUnit2isfractqty(value.charAt(0));
+    		   item.getUnits().setUnit2isfractqty(value.charAt(0));
     		   break;	
     	   case "unit2ispackunit": case "unit2IsPackUnit": 
-    		   item.getPackaginginfo().setUnit2ispackunit(value.charAt(0));
+    		   item.getUnits().setUnit2ispackunit(value.charAt(0));
     		   break;
     	   case "unit2upc": case "unit2Upc": 
-    		   item.getPackaginginfo().setUnit2upc(Long.valueOf(value));
+    		   item.getUnits().setUnit2upc(Long.valueOf(value));
     		   break;
     	   case "unit2upcdesc": case "unit2UpcDesc": 
-    		   item.getPackaginginfo().setUnit2upcdesc(value);
+    		   item.getUnits().setUnit2upcdesc(value);
     		   break;	   
     	   case "unit2wgtperunit": case "unit2WgtPerUnit": 
-    		   item.getPackaginginfo().setUnit2wgtperunit(new BigDecimal(value));
+    		   item.getUnits().setUnit2wgtperunit(new BigDecimal(value));
     		   break;
     	   case "unit3unit": case "unit3Unit":
-    		   item.getPackaginginfo().setUnit3unit(value);
+    		   item.getUnits().setUnit3unit(value);
     		   break;
     	   case "unit3ratio": case "unit3Ratio":
-    		   item.getPackaginginfo().setUnit3ratio(Float.parseFloat(value));
+    		   item.getUnits().setUnit3ratio(Float.parseFloat(value));
     		   break; 	   
     	   case "unit3isstdsell": case "unit3IsStdsell": 
-    		   item.getPackaginginfo().setUnit3isstdsell(value.charAt(0));
+    		   item.getUnits().setUnit3isstdsell(value.charAt(0));
     		   break;	
     	   case "unit3isstdord": case "unit3IsStdOrder": 
-    		   item.getPackaginginfo().setUnit3isstdord(value.charAt(0));
+    		   item.getUnits().setUnit3isstdord(value.charAt(0));
     		   break;
     	   case "unit3isfractqty": case "unit3IsFractQty": 
-    		   item.getPackaginginfo().setUnit3isfractqty(value.charAt(0));
+    		   item.getUnits().setUnit3isfractqty(value.charAt(0));
     		   break;	
     	   case "unit3ispackunit": case "unit3IsPackUnit": 
-    		   item.getPackaginginfo().setUnit3ispackunit(value.charAt(0));
+    		   item.getUnits().setUnit3ispackunit(value.charAt(0));
     		   break;
     	   case "unit3upc": case "unit3Upc": 
-    		   item.getPackaginginfo().setUnit3upc(Long.valueOf(value));
+    		   item.getUnits().setUnit3upc(Long.valueOf(value));
     		   break;   	
     	   case "unit3upcdesc": case "unit3UpcDesc": 
-    		   item.getPackaginginfo().setUnit3upcdesc(value);
+    		   item.getUnits().setUnit3upcdesc(value);
     		   break;	   
     	   case "unit3wgtperunit": case "unit3WgtPerUnit": 
-    		   item.getPackaginginfo().setUnit3wgtperunit(new BigDecimal(value));
+    		   item.getUnits().setUnit3wgtperunit(new BigDecimal(value));
     		   break;
     	   case "unit4unit": case "unit4Unit":
-    		   item.getPackaginginfo().setUnit4unit(value);
+    		   item.getUnits().setUnit4unit(value);
     		   break;
     	   case "unit4ratio": case "unit4Ratio":
-    		   item.getPackaginginfo().setUnit4ratio(Float.parseFloat(value));
+    		   item.getUnits().setUnit4ratio(Float.parseFloat(value));
     		   break; 	   
     	   case "unit4isstdsell": case "unit4IsStdsell": 
-    		   item.getPackaginginfo().setUnit4isstdsell(value.charAt(0));
+    		   item.getUnits().setUnit4isstdsell(value.charAt(0));
     		   break;	
     	   case "unit4isstdord": case "unit4IsStdOrder": 
-    		   item.getPackaginginfo().setUnit4isstdord(value.charAt(0));
+    		   item.getUnits().setUnit4isstdord(value.charAt(0));
     		   break;
     	   case "unit4isfractqty": case "unit4IsFractQty": 
-    		   item.getPackaginginfo().setUnit4isfractqty(value.charAt(0));
+    		   item.getUnits().setUnit4isfractqty(value.charAt(0));
     		   break;	
     	   case "unit4ispackunit": case "unit4IsPackUnit": 
-    		   item.getPackaginginfo().setUnit4ispackunit(value.charAt(0));
+    		   item.getUnits().setUnit4ispackunit(value.charAt(0));
     		   break;
     	   case "unit4upc": case "unit4Upc": 
-    		   item.getPackaginginfo().setUnit4upc(Long.valueOf(value));
+    		   item.getUnits().setUnit4upc(Long.valueOf(value));
     		   break; 
     	   case "unit4upcdesc": case "unit4UpcDesc": 
-    		   item.getPackaginginfo().setUnit4upcdesc(value);
+    		   item.getUnits().setUnit4upcdesc(value);
     		   break;	   
     	   case "unit4wgtperunit": case "unit4WgtPerUnit": 
-    		   item.getPackaginginfo().setUnit4wgtperunit(new BigDecimal(value));
+    		   item.getUnits().setUnit4wgtperunit(new BigDecimal(value));
     		   break;
     		   	
     	  /*---------New feature -------*/ 			
@@ -1177,19 +1177,19 @@ public class ImsQueryUtil {
 		return item;
 	}
 	
-	public static void saveColorHue(Item item, String value){
-		if(value != null && !value.isEmpty()) {
-			item.setNewColorHueSystem(new ArrayList<ColorHue>());
-			if(!value.contains(":") )
-				item.addNewColorHueSystem(new ColorHue(value));	
-			else {
-				for(String color : value.trim().split(":")){
-  	                if(color != null && !color.isEmpty())
-		               item.addNewColorHueSystem(new ColorHue(value));	
-				}    
-		    }	   
-		}
-	}
+	//public static void saveColorHue(Item item, String value){
+	//	if(value != null && !value.isEmpty()) {
+	//		item.setNewColorHueSystem(new ArrayList<ColorHue>());
+	//		if(!value.contains(":") )
+	//			item.addNewColorHueSystem(new ColorHue(value));	
+	//		else {
+	//			for(String color : value.trim().split(":")){
+  	 //               if(color != null && !color.isEmpty())
+	//	               item.addNewColorHueSystem(new ColorHue(value));	
+	//			}    
+	//	    }	   
+	//	}
+	//}
 	
 	//public static void saveColorCategory(Item item, String value){
 	//	if(value != null && !value.isEmpty()){

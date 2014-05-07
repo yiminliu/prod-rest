@@ -1,10 +1,12 @@
 package com.bedrosians.bedlogic.util;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
 import com.bedrosians.bedlogic.domain.item.IconCollection;
 import com.bedrosians.bedlogic.domain.item.Item;
+import com.bedrosians.bedlogic.domain.item.embeddable.PackagingInfo;
 import com.bedrosians.bedlogic.domain.item.enums.MpsCode;
 import com.bedrosians.bedlogic.domain.item.enums.OriginCountry;
 
@@ -113,49 +115,91 @@ public class ImsResultUtil {
 
 	public static String getStandardSellUnit(Item item) {
 		
-		String standardUnit = item.getPackaginginfo().getBaseunit();
+		String standardUnit = item.getUnits().getBaseunit();
 		
-        if (item.getPackaginginfo().getUnit1isstdsell() != null && item.getPackaginginfo().getUnit1isstdsell() == 'Y')
-        	standardUnit = item.getPackaginginfo().getUnit1unit();
-        else if (item.getPackaginginfo().getUnit2isstdsell() != null && item.getPackaginginfo().getUnit2isstdsell() == 'Y')
-        	standardUnit = item.getPackaginginfo().getUnit2unit();
-        else if (item.getPackaginginfo().getUnit3isstdsell() != null && item.getPackaginginfo().getUnit3isstdsell() == 'Y')
-        	standardUnit = item.getPackaginginfo().getUnit3unit();
-        else if (item.getPackaginginfo().getUnit4isstdsell() != null && item.getPackaginginfo().getUnit4isstdsell() == 'Y')
-        	standardUnit = item.getPackaginginfo().getUnit4unit();
+        if (item.getUnits().getUnit1isstdsell() != null && item.getUnits().getUnit1isstdsell() == 'Y')
+        	standardUnit = item.getUnits().getUnit1unit();
+        else if (item.getUnits().getUnit2isstdsell() != null && item.getUnits().getUnit2isstdsell() == 'Y')
+        	standardUnit = item.getUnits().getUnit2unit();
+        else if (item.getUnits().getUnit3isstdsell() != null && item.getUnits().getUnit3isstdsell() == 'Y')
+        	standardUnit = item.getUnits().getUnit3unit();
+        else if (item.getUnits().getUnit4isstdsell() != null && item.getUnits().getUnit4isstdsell() == 'Y')
+        	standardUnit = item.getUnits().getUnit4unit();
        
         return standardUnit;
     }
 	
 	public static String getStandardPurchaseUnit(Item item) {
 		
-		String standardUnit = item.getPackaginginfo().getBaseunit();
+		String standardUnit = item.getUnits().getBaseunit();
 		
-        if (item.getPackaginginfo().getUnit1isstdsell() != null && item.getPackaginginfo().getUnit1isstdord() == 'Y')
-        	standardUnit = item.getPackaginginfo().getUnit1unit();
-        else if (item.getPackaginginfo().getUnit2isstdsell() != null && item.getPackaginginfo().getUnit2isstdord() == 'Y')
-        	standardUnit = item.getPackaginginfo().getUnit2unit();
-        else if (item.getPackaginginfo().getUnit3isstdsell() != null && item.getPackaginginfo().getUnit3isstdord() == 'Y')
-        	standardUnit = item.getPackaginginfo().getUnit3unit();
-        else if (item.getPackaginginfo().getUnit4isstdsell() != null && item.getPackaginginfo().getUnit4isstdord() == 'Y')
-        	standardUnit = item.getPackaginginfo().getUnit4unit();
+        if (item.getUnits().getUnit1isstdsell() != null && item.getUnits().getUnit1isstdord() == 'Y')
+        	standardUnit = item.getUnits().getUnit1unit();
+        else if (item.getUnits().getUnit2isstdsell() != null && item.getUnits().getUnit2isstdord() == 'Y')
+        	standardUnit = item.getUnits().getUnit2unit();
+        else if (item.getUnits().getUnit3isstdsell() != null && item.getUnits().getUnit3isstdord() == 'Y')
+        	standardUnit = item.getUnits().getUnit3unit();
+        else if (item.getUnits().getUnit4isstdsell() != null && item.getUnits().getUnit4isstdord() == 'Y')
+        	standardUnit = item.getUnits().getUnit4unit();
        
         return standardUnit;
     }
 	
+    public static PackagingInfo getPackagingInfo(Item item) {
 	
-	public static float getPackaginginfoellRatio(Item item)
-    {
+    	float boxPieces = 0f;
+    	float boxSF = 0f;
+    	float boxWeight = 0f;
+    	float palletBox = 0f;
+    	float palletSF = 0f;
+    	float palletWeight = 0f;	
+    	PackagingInfo packagingInfo = new PackagingInfo();
+       
+    	String unit1Unit = item.getUnits().getUnit1unit();
+    	String unit2Unit = item.getUnits().getUnit2unit();
+    	String unit4Unit = item.getUnits().getUnit4unit();	
+        float unit1Ratio = item.getUnits().getUnit1ratio();
+        float unit2Ratio = item.getUnits().getUnit2ratio();
+        float unit4Ratio = item.getUnits().getUnit4ratio();
+        float baseWgtPerUnit = (item.getUnits().getBasewgtperunit()).floatValue();
+		String standardUnit = item.getUnits().getBaseunit();
+		
+		if ("CTN".equalsIgnoreCase(unit1Unit)){
+            boxPieces = unit1Ratio;
+            boxWeight = unit1Ratio * baseWgtPerUnit;
+            if ("S/F".equalsIgnoreCase(unit4Unit))
+                boxSF = (1 / unit4Ratio) * unit1Ratio;
+        }
+        
+        if ("PLT".equalsIgnoreCase(unit2Unit)){
+            palletWeight = unit2Ratio * baseWgtPerUnit;
+            if ("S/F".equalsIgnoreCase(unit4Unit))
+                palletSF = (1 / unit4Ratio) * unit2Ratio;
+            if ("CTN".equalsIgnoreCase(unit1Unit))
+                palletBox = unit2Ratio / unit1Ratio;
+        }
+          
+        packagingInfo.setBoxPieces(boxPieces);
+        packagingInfo.setBoxSF(boxSF);
+        packagingInfo.setBoxWeight(boxWeight);
+        packagingInfo.setPalletBox(palletBox);
+        packagingInfo.setPalletSF(palletSF);
+        packagingInfo.setPalletWeight(palletWeight);
+        
+        return packagingInfo;
+    }
+   
+	public static float getBaseToSellRatio(Item item) {
 		float baseToSellRatio = 1f;
  
-        if(item.getPackaginginfo().getUnit1isstdsell() != null && "Y".equalsIgnoreCase(item.getPackaginginfo().getUnit1isstdsell().toString().trim()))
-            baseToSellRatio = item.getPackaginginfo().getUnit1ratio();
-        else if(item.getPackaginginfo().getUnit2isstdsell() != null && "Y".equalsIgnoreCase(item.getPackaginginfo().getUnit2isstdsell().toString().trim()))
-            baseToSellRatio = item.getPackaginginfo().getUnit2ratio();
-        else if(item.getPackaginginfo().getUnit3isstdsell() != null && "Y".equalsIgnoreCase(item.getPackaginginfo().getUnit3isstdsell().toString().trim()))
-            baseToSellRatio = item.getPackaginginfo().getUnit3ratio();
-        else if(item.getPackaginginfo().getUnit4isstdsell() != null && "Y".equalsIgnoreCase(item.getPackaginginfo().getUnit4isstdsell().toString().trim()));
-            baseToSellRatio = item.getPackaginginfo().getUnit4ratio();
+        if(item.getUnits().getUnit1isstdsell() != null && "Y".equalsIgnoreCase(item.getUnits().getUnit1isstdsell().toString().trim()))
+            baseToSellRatio = item.getUnits().getUnit1ratio();
+        else if(item.getUnits().getUnit2isstdsell() != null && "Y".equalsIgnoreCase(item.getUnits().getUnit2isstdsell().toString().trim()))
+            baseToSellRatio = item.getUnits().getUnit2ratio();
+        else if(item.getUnits().getUnit3isstdsell() != null && "Y".equalsIgnoreCase(item.getUnits().getUnit3isstdsell().toString().trim()))
+            baseToSellRatio = item.getUnits().getUnit3ratio();
+        else if(item.getUnits().getUnit4isstdsell() != null && "Y".equalsIgnoreCase(item.getUnits().getUnit4isstdsell().toString().trim()));
+            baseToSellRatio = item.getUnits().getUnit4ratio();
        
          if(baseToSellRatio == 0)
         	baseToSellRatio = 1;
@@ -163,18 +207,19 @@ public class ImsResultUtil {
         return baseToSellRatio;
     }
 	
+	
 	public static String getPackUnit(Item item)
     {
-		String packUnit = item.getPackaginginfo().getBaseunit();
+		String packUnit = item.getUnits().getBaseunit();
  
-        if(item.getPackaginginfo().getUnit1ispackunit() != null && "Y".equalsIgnoreCase(item.getPackaginginfo().getUnit1ispackunit().toString().trim()))
-           packUnit = item.getPackaginginfo().getUnit1unit();
-        else if(item.getPackaginginfo().getUnit2ispackunit() != null && "Y".equalsIgnoreCase(item.getPackaginginfo().getUnit2ispackunit().toString().trim()))
-           packUnit = item.getPackaginginfo().getUnit2unit();   
-        else if(item.getPackaginginfo().getUnit3ispackunit() != null && "Y".equalsIgnoreCase(item.getPackaginginfo().getUnit3ispackunit().toString().trim()))
-           packUnit = item.getPackaginginfo().getUnit3unit();   
-        else if(item.getPackaginginfo().getUnit4ispackunit() != null && "Y".equalsIgnoreCase(item.getPackaginginfo().getUnit4ispackunit().toString().trim()))
-           packUnit = item.getPackaginginfo().getUnit4unit();    
+        if(item.getUnits().getUnit1ispackunit() != null && "Y".equalsIgnoreCase(item.getUnits().getUnit1ispackunit().toString().trim()))
+           packUnit = item.getUnits().getUnit1unit();
+        else if(item.getUnits().getUnit2ispackunit() != null && "Y".equalsIgnoreCase(item.getUnits().getUnit2ispackunit().toString().trim()))
+           packUnit = item.getUnits().getUnit2unit();   
+        else if(item.getUnits().getUnit3ispackunit() != null && "Y".equalsIgnoreCase(item.getUnits().getUnit3ispackunit().toString().trim()))
+           packUnit = item.getUnits().getUnit3unit();   
+        else if(item.getUnits().getUnit4ispackunit() != null && "Y".equalsIgnoreCase(item.getUnits().getUnit4ispackunit().toString().trim()))
+           packUnit = item.getUnits().getUnit4unit();    
        
         return packUnit;
     }

@@ -100,6 +100,8 @@ public class FormatUtil {
 		   ImsResultUtil.parsePriorVendor(item);	
 		if(item.getPrice() != null)
 			item.getPrice().setPriceunit(item.getStandardSellUnit());	
+		if(item.getUnits() != null)
+			item.setPackaginginfo(ImsResultUtil.getPackagingInfo(item));	
 		//if(item.getNewColorHueSystem() == null || item.getNewColorHueSystem().isEmpty())
 		//   item.setNewColorHueSystem(ImsResultUtil.parseColorCategory(item.getColorhues()));
 		return item;

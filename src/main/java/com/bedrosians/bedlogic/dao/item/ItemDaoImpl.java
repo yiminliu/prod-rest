@@ -135,11 +135,11 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 		    }
 	 	   	switch(key) {
 	  	   	   //------- add association criteria --------//	    
-	 	   	   case "colordescription": case "colorDescription":    
-	   		       if(colorHueCriteria == null)
-			       	  colorHueCriteria = itemCriteria.createCriteria("newColorHueSystem");
-			       colorHueCriteria.add(Restrictions.eq(key, Color.instanceOf(value)));
-			       break;
+	 	   	   //case "colordescription": case "colorDescription":    
+	   		   //    if(colorHueCriteria == null)
+			   //    	  colorHueCriteria = itemCriteria.createCriteria("newColorHueSystem");
+			   //    colorHueCriteria.add(Restrictions.eq(key, Color.instanceOf(value)));
+			   //    break;
 	 	   	   case "vendorid": case "vendorId": case "vendorNumber":
 	   	           if(vendorCriteria == null)
 	 		          vendorCriteria = itemCriteria.createCriteria("newVendorSystem");
