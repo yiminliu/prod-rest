@@ -6,7 +6,7 @@ import javax.persistence.Embeddable;
 import com.bedrosians.bedlogic.util.FormatUtil;
 
 @Embeddable
-public class Usage  implements java.io.Serializable {
+public class Applications  implements java.io.Serializable {
 
 	private static final long serialVersionUID = -3342182221787L;
 	
