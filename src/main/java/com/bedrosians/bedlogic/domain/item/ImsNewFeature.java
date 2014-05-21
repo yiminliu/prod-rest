@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -18,8 +19,12 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.persistence.Version;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
@@ -38,9 +43,10 @@ import com.bedrosians.bedlogic.util.ImsResultUtil;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 
-@JsonInclude
+//@JsonInclude
 @Entity
 @Table(name = "ims_new_feature", schema = "public")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="imsNewFeature")
 public class ImsNewFeature implements java.io.Serializable {
    
 	private static final long serialVersionUID = -11135822658657L;
@@ -63,6 +69,7 @@ public class ImsNewFeature implements java.io.Serializable {
 	private Date launchedDate;
 	private Date droppedDate;
 	private Date lastModifiedDate;
+	private Integer version;
 	private Item item;
 	
 	public ImsNewFeature() {
@@ -71,6 +78,37 @@ public class ImsNewFeature implements java.io.Serializable {
 	public ImsNewFeature(String itemCode) {
 		this.itemCode = itemCode;
 	}
+	
+	public ImsNewFeature(String itemCode, Grade grade, Status status,
+			Body body, Edge edge, MpsCode mpsCode, DesignLook designLook,
+			DesignStyle designStyle, SurfaceApplication surfaceApplication,
+			SurfaceType surfaceType, SurfaceFinish surfaceFinish,
+			Integer warranty, String recommendedGroutJointMin,
+			String recommendedGroutJointMax, Date createdDate,
+			Date launchedDate, Date droppedDate, Date lastModifiedDate,
+			Integer version) {
+		super();
+		this.itemCode = itemCode;
+		this.grade = grade;
+		this.status = status;
+		this.body = body;
+		this.edge = edge;
+		this.mpsCode = mpsCode;
+		this.designLook = designLook;
+		this.designStyle = designStyle;
+		this.surfaceApplication = surfaceApplication;
+		this.surfaceType = surfaceType;
+		this.surfaceFinish = surfaceFinish;
+		this.warranty = warranty;
+		this.recommendedGroutJointMin = recommendedGroutJointMin;
+		this.recommendedGroutJointMax = recommendedGroutJointMax;
+		this.createdDate = createdDate;
+		this.launchedDate = launchedDate;
+		this.droppedDate = droppedDate;
+		this.lastModifiedDate = lastModifiedDate;
+		this.version = version;
+	}
+
 
 	@JsonIgnore
 	@GenericGenerator(name = "generator", strategy = "foreign", parameters = @Parameter(name = "property", value = "item"))
@@ -86,7 +124,7 @@ public class ImsNewFeature implements java.io.Serializable {
 	}
 	
 	@JsonIgnore
-	@OneToOne(fetch = FetchType.EAGER)
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
 	@PrimaryKeyJoinColumn
 	public Item getItem() {
 		return this.item;
@@ -94,6 +132,17 @@ public class ImsNewFeature implements java.io.Serializable {
 
 	public void setItem(Item item) {
 		this.item = item;
+	}
+	
+	@JsonIgnore
+	@Version
+	@Column(name = "version")
+	public Integer getVersion(){
+		return version;
+	}
+	
+	private void setVersion(Integer version){
+		this.version = version;
 	}
 	
 	@JoinColumn(name = "edge")
@@ -262,7 +311,7 @@ public class ImsNewFeature implements java.io.Serializable {
 	public void setLastModifiedDate(Date lastModifiedDate) {
 		this.lastModifiedDate = lastModifiedDate;
 	}
-
+	
 	@JsonIgnore
 	@Transient
 	public boolean isEmpty(){

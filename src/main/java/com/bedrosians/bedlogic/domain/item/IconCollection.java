@@ -16,19 +16,24 @@ import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.Version;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.bedrosians.bedlogic.domain.item.enums.OriginCountry;
 
 @Entity
 @Table(name = "ims_icon", schema = "public")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="iconCollection")
 public class IconCollection implements java.io.Serializable {
   
 	private static final long serialVersionUID = -1113582221787L;
 	
 	private Integer iconId;
 	private OriginCountry madeInCountry;
+    //The should be either "true" of "false when insert or update the following properties
 	private Boolean exteriorProduct;
 	private Boolean adaAccessibility;
 	private Boolean throughColor;
@@ -38,13 +43,14 @@ public class IconCollection implements java.io.Serializable {
 	private Boolean unglazed;
 	private Boolean rectifiedEdge;
 	private Boolean chiseledEdge;
-	private Boolean versaillesPattern = false;
+	private Boolean versaillesPattern;// = false;
 	private Boolean recycled;
 	private Boolean postRecycled;
 	private Boolean preRecycled;
-	private Boolean leadPoint = false;
-	private Boolean greenFriendly = false;
+	private Boolean leadPointIcon;// = false;
+	private Boolean greenFriendlyIcon;// = false;
 	private Boolean coefficientOfFriction;
+	private Integer version;
 	private Item item;
 	
 	public IconCollection() {
@@ -52,6 +58,37 @@ public class IconCollection implements java.io.Serializable {
 	
 	public IconCollection(Integer iconId) {
 		this.iconId = iconId;
+	}
+
+	public IconCollection(Integer iconId, OriginCountry madeInCountry,
+			Boolean exteriorProduct, Boolean adaAccessibility,
+			Boolean throughColor, Boolean colorBody, Boolean inkJet,
+			Boolean glazed, Boolean unglazed, Boolean rectifiedEdge,
+			Boolean chiseledEdge, Boolean versaillesPattern, Boolean recycled,
+			Boolean postRecycled, Boolean preRecycled, Boolean leadPointIcon,
+			Boolean greenFriendlyIcon, Boolean coefficientOfFriction,
+			Integer version, Item item) {
+		super();
+		this.iconId = iconId;
+		this.madeInCountry = madeInCountry;
+		this.exteriorProduct = exteriorProduct;
+		this.adaAccessibility = adaAccessibility;
+		this.throughColor = throughColor;
+		this.colorBody = colorBody;
+		this.inkJet = inkJet;
+		this.glazed = glazed;
+		this.unglazed = unglazed;
+		this.rectifiedEdge = rectifiedEdge;
+		this.chiseledEdge = chiseledEdge;
+		this.versaillesPattern = versaillesPattern;
+		this.recycled = recycled;
+		this.postRecycled = postRecycled;
+		this.preRecycled = preRecycled;
+		this.leadPointIcon = leadPointIcon;
+		this.greenFriendlyIcon = greenFriendlyIcon;
+		this.coefficientOfFriction = coefficientOfFriction;
+		this.version = version;
+		this.item = item;
 	}
 
 	@JsonIgnore
@@ -66,21 +103,6 @@ public class IconCollection implements java.io.Serializable {
 	public void setIconId(Integer iconId) {
 		this.iconId = iconId;
 	}
-
-	/*
-	@JsonIgnore
-	@GenericGenerator(name = "generator", strategy = "foreign", parameters = @Parameter(name = "property", value = "item"))
-	@Id
-	@GeneratedValue(generator = "generator")
-	@Column(name = "item_code", unique = true, nullable = false, length = 15)
-	public String getItemCode() {
-		return itemCode;
-	}
-
-	public void setItemCode(String itemCode) {
-		this.itemCode = itemCode;
-	}
-	*/
 	
 	@JsonIgnore
 	@OneToOne(fetch = FetchType.EAGER)
@@ -221,21 +243,21 @@ public class IconCollection implements java.io.Serializable {
 	}
 
 	@Column(name = "lead_point")
-	public Boolean getLeadPoint() {
-		return this.leadPoint;
+	public Boolean getLeadPointIcon() {
+		return this.leadPointIcon;
 	}
 
-	public void setLeadPoint(Boolean leadPoint) {
-		this.leadPoint = leadPoint;
+	public void setLeadPointIcon(Boolean leadPointIcon) {
+		this.leadPointIcon = leadPointIcon;
 	}
 
 	@Column(name = "green_friendly")
-	public Boolean getGreenFriendly() {
-		return this.greenFriendly;
+	public Boolean getGreenFriendlyIcon() {
+		return this.greenFriendlyIcon;
 	}
 
-	public void setGreenFriendly(Boolean greenFriendly) {
-		this.greenFriendly = greenFriendly;
+	public void setGreenFriendlyIcon(Boolean greenFriendlyIcon) {
+		this.greenFriendlyIcon = greenFriendlyIcon;
 	}
 
 	@Column(name = "coefficient_of_friction")
@@ -247,13 +269,82 @@ public class IconCollection implements java.io.Serializable {
 		this.coefficientOfFriction = coefficientOfFriction;
 	}
 	
+	@JsonIgnore
+    @Version
+    @Column(name = "version")
+    public Integer gerVersion(){
+    	return version;
+    }
 	
+    private void setVersion(Integer version){
+		this.version = version;
+	}
+	
+    @Transient
+    public String toLegancyIncons(){
+    	char[] legacyIcons = new char[20];
+    	
+    	/*
+		* Stored as 20 character string
+		* 0 - Made in Italy
+		* 1 - Outdoor
+		* 2 - Made in USA
+		* 3 - ADA
+		* 4 - Thru Color
+		* 5 - Inkjet
+		* 6 - Recycled
+		* 7 - Color Body
+		* 8 - Glazed
+		* 9 - Rectified
+		* 10 - Unglazed
+		* 11 - Post Recycled
+		* 12 - Pre Recycled
+		* 13 - Made in China
+		* 14 - Made in Turkey
+		* 15 - Made in Mexico
+		* 16 - Coefficient of Friction
+		* 17 - Chiseled Edge
+		* 18 - Unused
+		* 19 - Unused
+		*/
+    	legacyIcons[0] = OriginCountry.Italy.equals(madeInCountry) ? 'Y' : 'N'; 
+    	legacyIcons[1] = (exteriorProduct != null && exteriorProduct == true) ? 'Y' : 'N'; 
+    	legacyIcons[2] = OriginCountry.USA.equals(madeInCountry) ? 'Y' : 'N'; 
+    	legacyIcons[3] = (adaAccessibility != null && adaAccessibility == true) ? 'Y' : 'N'; 
+    	legacyIcons[4] = (throughColor != null && throughColor == true) ? 'Y' : 'N'; 
+    	legacyIcons[5] = (inkJet != null && inkJet == true) ? 'Y' : 'N'; 
+    	legacyIcons[6] = (recycled != null && recycled == true) ? 'Y' : 'N'; 
+    	legacyIcons[7] = (colorBody != null && colorBody == true) ? 'Y' : 'N'; 
+    	legacyIcons[8] = (glazed != null && glazed == true) ? 'Y' : 'N'; 
+    	legacyIcons[9] = (rectifiedEdge != null && rectifiedEdge == true) ? 'Y' : 'N'; 
+    	legacyIcons[10] = (unglazed != null && unglazed == true) ? 'Y' : 'N'; 
+    	legacyIcons[11] = (postRecycled != null && postRecycled == true) ? 'Y' : 'N'; 
+    	legacyIcons[12] = (preRecycled != null && preRecycled == true) ? 'Y' : 'N'; 
+    	legacyIcons[13] = OriginCountry.China.equals(madeInCountry) ? 'Y' : 'N'; 
+    	legacyIcons[14] = OriginCountry.Turkey.equals(madeInCountry) ? 'Y' : 'N'; 
+    	legacyIcons[15] = OriginCountry.Mexico.equals(madeInCountry) ? 'Y' : 'N'; 
+    	legacyIcons[16] = (coefficientOfFriction != null && coefficientOfFriction == true) ? 'Y' : 'N'; 
+    	legacyIcons[17] = (chiseledEdge != null && chiseledEdge == true) ? 'Y' : 'N'; 
+    	legacyIcons[18] = 'N'; 
+    	legacyIcons[19] = 'N'; 
+    	    
+    	return new String(legacyIcons);
+    }
+    
 	@Transient
 	static public List<String> allPropertis(){
-		return Arrays.asList("originCountry", "exteriorProduct", "adaAccessibility", "throughColor", "colorBody", "inkJet",
+		return Arrays.asList("madeInCountry", "exteriorProduct", "adaAccessibility", "throughColor", "colorBody", "inkJet",
 				             "glazed", "unglazed", "rectifiedEdge", "chiseledEdge", "versaillesPattern", "recycled", "postRecycled",
-				             "preRecycled", "icon_leadPoint", "icon_greenFriendly", "coefficientOfFriction");
+				             "preRecycled", "leadPointIcon", "greenFriendlyIcon", "coefficientOfFriction");
 	}
 
+	@JsonIgnore
+	@Transient
+	public boolean isEmpty(){
+		return exteriorProduct == null && adaAccessibility == null && throughColor == null && colorBody == null && 
+			   inkJet == null && glazed == null && unglazed == null && rectifiedEdge == null &&
+			   chiseledEdge == null && versaillesPattern == null && recycled == null && postRecycled == null && 
+			   preRecycled == null && leadPointIcon == null && greenFriendlyIcon == null && coefficientOfFriction == null;
+	}
 	
 }

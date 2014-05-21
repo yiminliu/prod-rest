@@ -1,6 +1,8 @@
 package com.bedrosians.bedlogic.domain.item;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -12,14 +14,18 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.Version;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.bedrosians.bedlogic.util.FormatUtil;
 
 
 @Entity
 @Table(name="ims_item_vendor")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="itemVendor")
 public class ItemVendor implements java.io.Serializable {
 
 	private static final long serialVersionUID = -582265865921787L;
@@ -40,6 +46,7 @@ public class ItemVendor implements java.io.Serializable {
 	private BigDecimal vendorLandedBaseCost = new BigDecimal(0.00);
 	private Integer leadTime;
 	private Float dutyPct;
+	private Integer version;
 	private Item item;
 	//private Vendor vendor;
 		
@@ -74,21 +81,25 @@ public class ItemVendor implements java.io.Serializable {
 		this.item = item;
 	}
 	
-	/*@JsonIgnore
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name="itemVendorId.vendorId", updatable=false, insertable=false)
-	public Vendor getVendor(){
-		return this.vendor;
-	}
+	//@JsonIgnore
+	//@ManyToOne(fetch = FetchType.EAGER)
+	//@JoinColumn(name="itemVendorId.vendorId")//, updatable=false, insertable=false)
+	//public Vendor getVendor(){
+	//	return this.vendor;
+	//}
 	
-	public void setVendor(Vendor vendor){
-		this.vendor = vendor;
-	}
-	*/
+	//public void setVendor(Vendor vendor){
+	//	this.vendor = vendor;
+	//}
+	
 
 	@Transient
 	public Integer getVendorId(){
 		return this.itemVendorId.getVendorId();
+	}
+	
+	public void setVendorId(Integer vendorId){
+	   this.itemVendorId.setVendorId(vendorId);
 	}
 	
 	@Column(name = "vendor_order", length = 2)
@@ -102,7 +113,8 @@ public class ItemVendor implements java.io.Serializable {
 	
 	@Column(name = "vendor_name", length = 60)
 	public String getVendorName() {
-		return this.vendorName;
+		return vendorName;
+		//return (vendorName != null) ? vendorName : vendor.getName();
 	}
 
 	public void setVendorName(String vendorName) {
@@ -199,7 +211,7 @@ public class ItemVendor implements java.io.Serializable {
 		this.leadTime = leadTime;
 	}
 
-	@Column(name = "vendorlandedbasecost", precision = 13, scale = 6)
+	@Column(name = "vendor_landed_base_cost", precision = 13, scale = 6)
 	public BigDecimal getVendorLandedBaseCost() {
 		return this.vendorLandedBaseCost;
 	}
@@ -225,7 +237,46 @@ public class ItemVendor implements java.io.Serializable {
 	public void setDutyPct(Float dutyPct) {
 		this.dutyPct = dutyPct;
 	}
+
+	@JsonIgnore
+	@Version
+	@Column(name = "version")
+	public Integer getVersion(){
+		return version;
+	}
 	
+	private void setVersion(Integer version){
+		this.version = version;
+	}
+	
+	public ItemVendor(ItemVendorId itemVendorId, Integer vendorOrder,
+			String vendorName, String vendorName2, String vendorXrefId,
+			BigDecimal vendorListPrice, BigDecimal vendorNetPrice,
+			String vendorPriceUnit, String vendorFob, Float vendorDiscountPct,
+			Integer vendorPriceRoundAccuracy, Float vendorMarkupPct,
+			Float vendorFreightRateCwt, BigDecimal vendorLandedBaseCost,
+			Integer leadTime, Float dutyPct, Integer version, Item item) {
+		super();
+		this.itemVendorId = itemVendorId;
+		this.vendorOrder = vendorOrder;
+		this.vendorName = vendorName;
+		this.vendorName2 = vendorName2;
+		this.vendorXrefId = vendorXrefId;
+		this.vendorListPrice = vendorListPrice;
+		this.vendorNetPrice = vendorNetPrice;
+		this.vendorPriceUnit = vendorPriceUnit;
+		this.vendorFob = vendorFob;
+		this.vendorDiscountPct = vendorDiscountPct;
+		this.vendorPriceRoundAccuracy = vendorPriceRoundAccuracy;
+		this.vendorMarkupPct = vendorMarkupPct;
+		this.vendorFreightRateCwt = vendorFreightRateCwt;
+		this.vendorLandedBaseCost = vendorLandedBaseCost;
+		this.leadTime = leadTime;
+		this.dutyPct = dutyPct;
+		this.version = version;
+		this.item = item;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -251,7 +302,22 @@ public class ItemVendor implements java.io.Serializable {
 			return false;
 		return true;
 	}
+	
+	@JsonIgnore
+	@Transient
+	static public List<String> allProperties(){
+		return Arrays.asList("vendorId", "vendorName", "vendorXrefId", "vendorPriceUnit", "vendorFob", "vendorlistprice", "vendorNetPrice", "vendorDiscountPct", 
+				               "vendorPriceRoundAccuracy" , "leadTime", "vendorFreightRateCwt", "dutyPct");
+	}
 
+	
+	@JsonIgnore
+	@Transient
+	public boolean isEmpty(){
+		return itemVendorId == null && vendorName == null && vendorXrefId == null && vendorListPrice == null && 
+			   vendorNetPrice == null && vendorPriceUnit == null && vendorFob == null;
+	}
+	
 	@Override
 	public String toString() {
 		return "Vendor ["

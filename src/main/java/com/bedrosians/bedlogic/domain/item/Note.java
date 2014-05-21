@@ -14,12 +14,16 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 
 @Entity
 @Table(name = "ims_note", schema = "public")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="note")
 public class Note implements java.io.Serializable {
 
 	private static final long serialVersionUID = -135822655921787L;
@@ -28,6 +32,7 @@ public class Note implements java.io.Serializable {
 	private String note;
 	private Date createdDate;
 	private Date lastModifiedDate;
+	private Integer version;
 	private Item item;
 
 	public Note() {
@@ -41,6 +46,19 @@ public class Note implements java.io.Serializable {
 		this.noteId = noteId;
 	}
 	
+	
+	public Note(long noteId, String noteType, String note, Date createdDate,
+			Date lastModifiedDate, Integer version, Item item) {
+		super();
+		this.noteId = noteId;
+		this.noteType = noteType;
+		this.note = note;
+		this.createdDate = createdDate;
+		this.lastModifiedDate = lastModifiedDate;
+		this.version = version;
+		this.item = item;
+	}
+
 	@JsonIgnore
 	@Id
 	@Column(name = "note_id", unique = true, nullable = false, precision = 10, scale = 0)
@@ -104,4 +122,51 @@ public class Note implements java.io.Serializable {
 		this.lastModifiedDate = lastModifiedDate;
 	}
 
+	@JsonIgnore
+	@Version
+	@Column(name = "version")
+	public Integer getVersion(){
+		return version;
+	}
+	
+	private void setVersion(Integer version){
+		this.version = version;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (noteId ^ (noteId >>> 32));
+		result = prime * result
+				+ ((noteType == null) ? 0 : noteType.hashCode());
+		result = prime * result + ((version == null) ? 0 : version.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Note other = (Note) obj;
+		if (noteId != other.noteId)
+			return false;
+		if (noteType == null) {
+			if (other.noteType != null)
+				return false;
+		} else if (!noteType.equals(other.noteType))
+			return false;
+		if (version == null) {
+			if (other.version != null)
+				return false;
+		} else if (!version.equals(other.version))
+			return false;
+		return true;
+	}
+	
+	
 }
