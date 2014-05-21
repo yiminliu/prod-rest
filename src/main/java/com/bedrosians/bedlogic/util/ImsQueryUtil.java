@@ -183,7 +183,6 @@ public class ImsQueryUtil {
     public static Item buildItemFromJsonObject(Item item, JSONObject inputJsonObj, String action){
 		Iterator<String> itrator = inputJsonObj.keys();
    		String key, value = null;
-   		Date dateValue = null;
 		while(itrator.hasNext()) {
 			try{
 		   	   key = (String)itrator.next();
@@ -193,7 +192,7 @@ public class ImsQueryUtil {
 		   			                                    key.equalsIgnoreCase("itemId")))
 			   	   continue;
 		   	   value = (String)inputJsonObj.get(key);
-		    	 setParameter(item, key, value);
+		       setParameter(item, key, value);
 			}
 			catch(Exception e){
 				e.printStackTrace();
@@ -312,7 +311,7 @@ public class ImsQueryUtil {
     		   item.setShadevariation(value);
     		   break;		
     	   case "inventoryitemcd": case "inventoryItemcd": case "inventoryItemCode":
-    		   item.setInventoryItemcd(value);
+    		   item.setInventoryitemcd(value);
     		   break;	
     	   case "showonalysedwards": case "showOnAlysedwards":
     		   item.setShowonalysedwards(value.charAt(0));
@@ -407,12 +406,15 @@ public class ImsQueryUtil {
     		   break; 	   
     			
     		 //------- price info --------//	
-    	   case "price": case "sellprice": case "sellPrice":
+    	       case "sellprice": case "sellPrice": //case "price": 
     		   item.getPrice().setSellprice(new BigDecimal(value));
     		   break;	
     	   case "listPrice": case "listprice":
     		   item.getPrice().setListprice(new BigDecimal(value));
-    		   break;	   
+    		   break;	
+    	   //case "price":
+    		//   item.getPrice().setPrice(new BigDecimal(value));
+    		//   break;	   
     	   case "futurePrice": case "futuresell":
     		   item.getPrice().setFuturesell(new BigDecimal(value));
     		   break;	
@@ -463,7 +465,7 @@ public class ImsQueryUtil {
     	   case "priorvendorfreightratecwt": case "priorVendorFreightRateCwt":
     		   item.getPriorVendor().setPriorvendorfreightratecwt(Float.parseFloat(value));
     		   break;
-    	   case "priorvendordiscpct1": case "priorVendorDiscPct1":
+    	   case "priorvendordiscpct": case "priorVendorDiscPct": case "priorvendordiscpct1": case "priorVendorDiscPct1":
     		   item.getPriorVendor().setPriorvendordiscpct1(Float.parseFloat(value));
     		   break;
     	   case "priorvendormarkuppct": case "priorVendorMarkupPct":
@@ -497,7 +499,7 @@ public class ImsQueryUtil {
     		   break;  
     		   
     		/*---------- Vendor ----------*/	
-    	   case "vendorId": case "vendornbr1":
+  /*  	   case "vendorId": case "vendornbr1":
     		   item.getVendors().setVendornbr1(Integer.parseInt(value));
     		   item.getNewVendorSystem().get(0).getItemVendorId().setVendorId(Integer.parseInt(value));
     		   item.getNewVendorSystem().get(0).setVendorOrder(1);  //as default, it will be overwritten if "vendorOrder' is passed in
@@ -550,7 +552,8 @@ public class ImsQueryUtil {
     		   item.getVendors().setVendordiscpct3(Float.parseFloat(value));
     		   break;
     	   case "vendorlandedbasecost": case "vendorLandedBaseCost":
-    		   item.getVendors().setVendorLandedBaseCost(new BigDecimal(value));
+    		   item.getVendors().setVendorlandedbasecost(new BigDecimal(value));
+    		   item.getNewVendorSystem().get(0).setVendorLandedBaseCost(new BigDecimal(value));
         	   break;	   
     	   case "vendorfreightratecwt": case "vendorFreightRateCwt":
     		   item.getVendors().setVendorfreightratecwt(Float.parseFloat(value));
@@ -660,7 +663,7 @@ public class ImsQueryUtil {
     		   item.getNewVendorSystem().get(2).setVendorDiscountPct(Float.parseFloat(value));
     		   break;	
     	   case "v3_vendorlandedbasecost": case "v3_vendorLandedBaseCost":
-    		   item.getNewVendorSystem().get(1).setVendorLandedBaseCost(new BigDecimal(value));
+    		   item.getNewVendorSystem().get(2).setVendorLandedBaseCost(new BigDecimal(value));
         	   break;	   
     	   case "v3_vendorfreightratecwt": case "v3_vendorFreightRateCwt":
     		   item.getNewVendorSystem().get(2).setVendorFreightRateCwt(Float.parseFloat(value));
@@ -668,8 +671,8 @@ public class ImsQueryUtil {
     	   case "v3_vendorroundaccuracy": case "v3_vendorRoundAccuracy": case "v3_vendorpriceroundaccuracy":
     		   item.getNewVendorSystem().get(2).setVendorPriceRoundAccuracy(Integer.parseInt(value));
     		   break; 
-    		   
-    		 /*--------- units ----------*/
+         */		   
+    		 //--------- units ----------//
     	   case "stdunit": case "std_unit": case "standardUnit":
     		   item.getUnits().setStdunit(value);
     		   break; 
@@ -928,69 +931,69 @@ public class ImsQueryUtil {
     	   	   	
     	   /*-------- usage ------*/	   
     	   case "residential":
-    		   item.getUsage().setResidential(value);
+    		   item.getApplications().setResidential(value);
     		   break;	
     	   case "commercial":
-    		   item.getUsage().setCommercial(value);
+    		   item.getApplications().setCommercial(value);
     		   break;
     	   case "lightcommercial": case "lightCommercial":
-    		   item.getUsage().setLightcommercial(value);
+    		   item.getApplications().setLightcommercial(value);
     		   break;
     	   //case "application": 
     	   //	   item.setApplication(value);
     	   //	   break;
     		   
     	   /*---------icons -----------*/
-       	   case "madeInCountry": case "madeIncountry":
-    		   item.getNewIconSystem().setMadeInCountry(OriginCountry.instanceOf(value));
+       	   case "madeInCountry": case "madeincountry": case "madeinCountry":
+    		   item.getIconDescription().setMadeInCountry(OriginCountry.instanceOf(value));
     		   break;   
-    	   case "adaAccessibility": case "adaaccessibility":
-        	   item.getNewIconSystem().setAdaAccessibility(Boolean.valueOf(value));
+    	   case "adaAccessibility": case "adaaccessibility":		  
+        	   item.getIconDescription().setAdaAccessibility(Boolean.valueOf(normalizeBooleanInput(value)));
         	   break;
     	   case "exteriorProduct": case "exteriorproduct":
-    		   item.getNewIconSystem().setExteriorProduct(Boolean.valueOf(value));
+    		   item.getIconDescription().setExteriorProduct(Boolean.valueOf(normalizeBooleanInput(value)));
     		   break;
     	   case "throughColor": case "throughcolor": case "thruColor":
-    		   item.getNewIconSystem().setThroughColor(Boolean.valueOf(value));
+    		   item.getIconDescription().setThroughColor(Boolean.valueOf(normalizeBooleanInput(value)));
     		   break;
-	       case "colorBody": case "colorbody":
-		       item.getNewIconSystem().setColorBody(Boolean.valueOf(value));
-		       break;
 	       case "inkJet": case "inkjet": case "ink_jet":
-		       item.getNewIconSystem().setInkJet(Boolean.valueOf(value));
+		       item.getIconDescription().setInkJet(Boolean.valueOf(normalizeBooleanInput(value)));
 		       break;
            case "glazed": 
-	           item.getNewIconSystem().setGlazed(Boolean.valueOf(value));
+	           item.getIconDescription().setGlazed(Boolean.valueOf(normalizeBooleanInput(value)));
 	           break;
+           case "colorBody": case "colorbody":
+		       item.getIconDescription().setColorBody(Boolean.valueOf(normalizeBooleanInput(value)));
+		       break;    
            case "unGlazed": case "unglazed":
-	           item.getNewIconSystem().setUnglazed(Boolean.valueOf(value));
+	           item.getIconDescription().setUnglazed(Boolean.valueOf(normalizeBooleanInput(value)));
 	           break;
            case "rectifiedEdge": case "rectifiededge":
-	           item.getNewIconSystem().setRectifiedEdge(Boolean.valueOf(value));
+	           item.getIconDescription().setRectifiedEdge(Boolean.valueOf(normalizeBooleanInput(value)));
 	           break;
            case "chiseledEdge": case "chiselededge":
-               item.getNewIconSystem().setChiseledEdge(Boolean.valueOf(value));
+               item.getIconDescription().setChiseledEdge(Boolean.valueOf(normalizeBooleanInput(value)));
                break;
            case "versaillesPattern": case "versaillespattern":
-	           item.getNewIconSystem().setVersaillesPattern(Boolean.valueOf(value));
+	           item.getIconDescription().setVersaillesPattern(Boolean.valueOf(normalizeBooleanInput(value)));
 	           break;
            case "recycled": 
-	           item.getNewIconSystem().setRecycled(Boolean.valueOf(value));
+	           item.getIconDescription().setRecycled(Boolean.valueOf(normalizeBooleanInput(value)));
 	           break;
            case "preRecycled": case "prerecycled": 
-	           item.getNewIconSystem().setPreRecycled(Boolean.valueOf(value));
+	           item.getIconDescription().setPreRecycled(Boolean.valueOf(normalizeBooleanInput(value)));
 	           break;
            case "postRecycled": case "postrecycled": 
-	           item.getNewIconSystem().setPostRecycled(Boolean.valueOf(value));
+	           item.getIconDescription().setPostRecycled(Boolean.valueOf(normalizeBooleanInput(value)));
 	           break;
-           case "icon_leadPoint": case "icon_leadpoint":
-               item.getNewIconSystem().setLeadPoint(Boolean.valueOf(value));
+           case "leadpointIcon": case "leadpointicon": case "icon_leadPoint": case "icon_leadpoint":
+               item.getIconDescription().setLeadPointIcon(Boolean.valueOf(normalizeBooleanInput(value)));
                break;
-           case "icon_greenFriendly": case "icon_greenfriendly":
-               item.getNewIconSystem().setGreenFriendly(Boolean.valueOf(value));
+           case "greenfriendlyIcon": case "greenfriendlyicon": case "icon_greenFriendly": case "icon_greenfriendly": 
+               item.getIconDescription().setGreenFriendlyIcon(Boolean.valueOf(normalizeBooleanInput(value)));
                break;
            case "coefficientOfFriction": case "coefficientoffriction":
-               item.getNewIconSystem().setCoefficientOfFriction(Boolean.valueOf(value));
+               item.getIconDescription().setCoefficientOfFriction(Boolean.valueOf(normalizeBooleanInput(value)));
                break;    
 	   	   
     	   /*--------- notes ----------*/
@@ -999,17 +1002,17 @@ public class ImsQueryUtil {
     		   if(item.getNewNoteSystem() != null && item.getNewNoteSystem().get(0) != null)
     		   item.getNewNoteSystem().get(0).setNote(value);
     		   break;
-           case "note1":
+           case "note1": case "notes1":
     		   item.getNotes().setNotes1(value);
-    		   if(item.getNewNoteSystem() != null && item.getNewNoteSystem().get(1) != null)
-        		   item.getNewNoteSystem().get(0).setNote(value);
-    		   break;
-    	   case "note2":
-    		   item.getNotes().setNotes2(value);
     		   if(item.getNewNoteSystem() != null && item.getNewNoteSystem().get(1) != null)
         		   item.getNewNoteSystem().get(1).setNote(value);
     		   break;
-    	   case "note3":
+    	   case "note2": case "notes2":
+    		   item.getNotes().setNotes2(value);
+    		   if(item.getNewNoteSystem() != null && item.getNewNoteSystem().get(3) != null)
+        		   item.getNewNoteSystem().get(3).setNote(value);
+    		   break;
+    	   case "note3": case "notes3":
     		   item.getNotes().setNotes3(value);
     		   if(item.getNewNoteSystem() != null && item.getNewNoteSystem().get(2) != null)
         		   item.getNewNoteSystem().get(2).setNote(value);
@@ -1045,15 +1048,24 @@ public class ImsQueryUtil {
     		   item.getNotes().setNotes3(value);
     		   break;	
     	   case "internalnote": case "internalNote":
-    		   if(item.getNewNoteSystem() == null || item.getNewNoteSystem().get(3) == null){
+    		   if(item.getNewNoteSystem() == null || item.getNewNoteSystem().get(4) == null){
      			  Note internalNote = new Note("internal");
+     		      internalNote.setNote(value);
+     	       }  
+     	       else {	
+     	    	   item.getNewNoteSystem().get(4).setNote(value);
+     	       }
+    		   break;
+    	   case "additionalnote": case "additionalNote":
+    		   if(item.getNewNoteSystem() == null || item.getNewNoteSystem().get(3) == null){
+     			  Note internalNote = new Note("additional");
      		      internalNote.setNote(value);
      	       }  
      	       else {	
      	    	   item.getNewNoteSystem().get(3).setNote(value);
      	       }
-    		   break;
-    		   
+    		   item.getNotes().setNotes2(value);
+    		   break;	   
     		 //----- similar items -----//
     	   case "similarItemcd1": case "similaritemcd1":
     		   item.getRelateditemcodes().setSimilaritemcd1(value);
@@ -1144,7 +1156,7 @@ public class ImsQueryUtil {
 	
 	public static Item buildVendorInfo(MultivaluedMap<String, String> queryParams, Item item){
 	
-		List<ItemVendor> vendors = item.getNewVendorSystem();
+		Set<ItemVendor> vendors = item.getNewVendorSystem();
 	    if(vendors.isEmpty()){
 	    	ItemVendor vendor = new ItemVendor();
 	    }
@@ -1175,6 +1187,14 @@ public class ImsQueryUtil {
 		//item.setImsNewFeature(newFeature);
 				  	
 		return item;
+	}
+	
+	private static  String normalizeBooleanInput(String value){
+	    if("Y".equalsIgnoreCase(value) || "Yes".equalsIgnoreCase(value))
+			   value = "true";
+		    else if("N".equalsIgnoreCase(value) || "No".equalsIgnoreCase(value))
+			   value = "false";
+		return value; 
 	}
 	
 	//public static void saveColorHue(Item item, String value){

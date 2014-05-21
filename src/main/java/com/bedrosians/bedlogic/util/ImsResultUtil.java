@@ -1,9 +1,11 @@
 package com.bedrosians.bedlogic.util;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import com.bedrosians.bedlogic.domain.item.ColorHue;
 import com.bedrosians.bedlogic.domain.item.IconCollection;
 import com.bedrosians.bedlogic.domain.item.Item;
 import com.bedrosians.bedlogic.domain.item.embeddable.PackagingInfo;
@@ -36,7 +38,7 @@ public class ImsResultUtil {
 	}
 	
 	public static IconCollection parseIcons(String icons){
-		 /*!
+		 /*
 		* Stored as 20 character string
 		*
 		* 0 - Made in Italy
@@ -103,6 +105,44 @@ public class ImsResultUtil {
 		return Arrays.asList(colorCategory.trim().split(":"));
 	}
 	
+	public static Set<ColorHue> convertColorCategoryToColorHues(String colorCategory){
+		if(colorCategory == null || colorCategory.isEmpty())
+		   return null;	
+		else
+		   return new HashSet(Arrays.asList(colorCategory.trim().split(":")));
+	}
+	
+	public static Set<ColorHue> convertColorCategoryToColorHueSet(Item item){
+		if(item.getColorcategory() == null || item.getColorcategory().isEmpty())
+		   return null;	
+		else{
+			Set<ColorHue> colorHues = new HashSet<>();
+			for(String color : Arrays.asList(item.getColorcategory().trim().split(":"))){
+				ColorHue colorHue = new ColorHue(color);
+				colorHue.setItem(item);
+				colorHues.add(colorHue);
+			}
+	        return colorHues;
+		}
+	}
+	
+	public static String convertColorHuesToColorCategory( Set<ColorHue> colorHues){
+		if(colorHues == null || colorHues.isEmpty())
+		   return null;	
+		else{
+		    int i = 0;	
+		    StringBuilder sBuilder = new StringBuilder();	
+			for(ColorHue colorHue : colorHues){
+				if(i == colorHues.size() - 1)
+				   sBuilder.append(colorHue.getColorHue());
+				else
+					sBuilder.append(colorHue.getColorHue()).append(":");
+				i++;
+			}
+		return sBuilder.toString();
+	  }
+	}	
+	
 	public static Item parsePriorVendor(Item item){
 		
 		if(item.getPriorVendor() != null && item.getPriorVendor().getPriorvendorpriceunit() == null 
@@ -112,7 +152,28 @@ public class ImsResultUtil {
 		return item;
 	}
 	
-
+	public static List<String> convertApplicationsToUsage(Item item){
+		StringBuilder stringBuilder = new StringBuilder();
+		if(item.getApplications() != null){
+	       if(item.getApplications().getResidential() != null && !item.getApplications().getResidential().isEmpty()){
+		      stringBuilder.append(item.getApplications().getResidential());
+	       }   
+		   if(item.getApplications().getLightcommercial() != null && !item.getApplications().getLightcommercial().isEmpty()){
+			  if(stringBuilder != null && stringBuilder.length() > 0)
+		         stringBuilder.append(":").append(item.getApplications().getLightcommercial());
+		      else
+			     stringBuilder.append(item.getApplications().getLightcommercial());
+		   }
+		   if(item.getApplications().getCommercial() != null && !item.getApplications().getCommercial().isEmpty()){
+			   if(stringBuilder != null && stringBuilder.length() > 0)
+			      stringBuilder.append(":").append(item.getApplications().getCommercial());
+			   else
+				  stringBuilder.append(item.getApplications().getCommercial());
+		   }
+		}
+		return Arrays.asList(stringBuilder.toString().split(":"));
+	}
+	
 	public static String getStandardSellUnit(Item item) {
 		
 		String standardUnit = item.getUnits().getBaseunit();
@@ -146,22 +207,28 @@ public class ImsResultUtil {
     }
 	
     public static PackagingInfo getPackagingInfo(Item item) {
-	
+	    if(item == null || item.getUnits() == null)
+	       return null;	
     	float boxPieces = 0f;
     	float boxSF = 0f;
     	float boxWeight = 0f;
     	float palletBox = 0f;
     	float palletSF = 0f;
     	float palletWeight = 0f;	
+    	Float baseWgtPerUnit = 0F;
+    	Float unit1Ratio = 0F;
+    	Float unit2Ratio = 0F;
+    	Float unit4Ratio = 0F;
     	PackagingInfo packagingInfo = new PackagingInfo();
-       
+    	
     	String unit1Unit = item.getUnits().getUnit1unit();
     	String unit2Unit = item.getUnits().getUnit2unit();
     	String unit4Unit = item.getUnits().getUnit4unit();	
-        float unit1Ratio = item.getUnits().getUnit1ratio();
-        float unit2Ratio = item.getUnits().getUnit2ratio();
-        float unit4Ratio = item.getUnits().getUnit4ratio();
-        float baseWgtPerUnit = (item.getUnits().getBasewgtperunit()).floatValue();
+        unit1Ratio = item.getUnits().getUnit1ratio();
+        unit2Ratio = item.getUnits().getUnit2ratio();
+        unit4Ratio = item.getUnits().getUnit4ratio();
+        if(item.getUnits().getBasewgtperunit() != null)
+           baseWgtPerUnit = (item.getUnits().getBasewgtperunit()).floatValue();
 		String standardUnit = item.getUnits().getBaseunit();
 		
 		if ("CTN".equalsIgnoreCase(unit1Unit)){
@@ -289,85 +356,6 @@ public static Status convertAbcCodeToStatus(String inactiveCode){
 	return mpsCode;
 }
 */
-	/*
-	$Ims_SellRatio = 1;
-	$Ims_SellUnit  = $Ims_BaseUnit;
-	$Ims_SellIsFractQty = $Ims_BaseIsFractQty;
-
-	$Ims_PackRatio = 1;
-	$Ims_PackUnit  = $Ims_BaseUnit;
-	$Ims_PackIsFractQty = $Ims_BaseIsFractQty;
-
-	$Ims_VPrcRatio = 1;
-	$Ims_VPrcUnit  = $Ims_BaseUnit;
-	$Ims_VPrcIsFractQty = $Ims_BaseIsFractQty;
-
-	for ($ii=0; $ii<5; $ii++)
-	{if ($Ims_IsStdOrd[$ii] == 'Y')
-	  {$Ims_PackRatio = $Ims_Ratio[$ii];
-	   $Ims_PackUnit  = $Ims_Unit[$ii];
-	   $Ims_PackIsFractQty = $Ims_IsFractQty[$ii];
-	  }
-	 if ($Ims_IsStdSell[$ii] == 'Y')
-	  {$Ims_SellRatio = $Ims_Ratio[$ii];
-	   $Ims_SellUnit  = $Ims_Unit[$ii];
-	   $Ims_SellIsFractQty = $Ims_IsFractQty[$ii];
-	  }
-	 if ($Ims_VendorPriceUnit == $Ims_Unit[$ii])
-	  {$Ims_VPrcRatio = $Ims_Ratio[$ii];
-	   $Ims_VPrcUnit  = $Ims_VendorPriceUnit;
-	   $Ims_VPrcIsFractQty = $Ims_IsFractQty[$ii];
-	  }
-	}
-    */
-	
-	
-	/*
-	 public static function getPackaginginfoellRatio($imsRec, $unit)
-	    {
-	        $baseToSellRatio = 1;
-
-	        if ($unit == trim($imsRec['baseunit']))
-	            $baseToSellRatio = 1;
-	        else if ($unit == trim($imsRec['unit1unit']))
-	            $baseToSellRatio = $imsRec['unit1ratio']; 
-	        else if ($unit == trim($imsRec['unit2unit']))
-	            $baseToSellRatio = $imsRec['unit2ratio']; 
-	        else if ($unit == trim($imsRec['unit3unit']))
-	            $baseToSellRatio = $imsRec['unit3ratio']; 
-	        else if ($unit == trim($imsRec['unit4unit']))
-	            $baseToSellRatio = $imsRec['unit4ratio']; 
-
-	        if ($baseToSellRatio == 0)
-	            $baseToSellRatio = 1;
-
-	        return $baseToSellRatio;
-	    }
-	    
-	 
-    public static Float getUnitToSellRatio(Item item)
-	    {
-	        Float ratio = 1f;
-	        
-	        if(item.getUnit1ratio())
-
-	        if ($unit == trim($imsRec['baseunit']))
-	            $baseToSellRatio = 1;
-	        else if ($unit == trim($imsRec['unit1unit']))
-	            $baseToSellRatio = $imsRec['unit1ratio']; 
-	        else if ($unit == trim($imsRec['unit2unit']))
-	            $baseToSellRatio = $imsRec['unit2ratio']; 
-	        else if ($unit == trim($imsRec['unit3unit']))
-	            $baseToSellRatio = $imsRec['unit3ratio']; 
-	        else if ($unit == trim($imsRec['unit4unit']))
-	            $baseToSellRatio = $imsRec['unit4ratio']; 
-
-	        if ($baseToSellRatio == 0)
-	            $baseToSellRatio = 1;
-
-	        return $baseToSellRatio;
-	    }
-	 
 	
 	//public ProdUnit getStandardUnit(Set<ProdUnit> prodUnits, String type){
 	//	ProdUnit baseUnit= null;
@@ -424,6 +412,5 @@ public static Status convertAbcCodeToStatus(String inactiveCode){
         return $adjPrice;
     }
     
-	 * 
 	 */
 }

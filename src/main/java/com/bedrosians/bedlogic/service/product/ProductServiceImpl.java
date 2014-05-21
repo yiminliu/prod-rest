@@ -3,7 +3,9 @@ package com.bedrosians.bedlogic.service.product;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.ws.rs.core.MultivaluedMap;
 
@@ -17,11 +19,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bedrosians.bedlogic.dao.item.ColorHueDao;
 import com.bedrosians.bedlogic.dao.item.ItemDao;
 import com.bedrosians.bedlogic.domain.item.ColorHue;
 import com.bedrosians.bedlogic.domain.item.IconCollection;
 import com.bedrosians.bedlogic.domain.item.ImsNewFeature;
 import com.bedrosians.bedlogic.domain.item.Item;
+import com.bedrosians.bedlogic.domain.item.ItemVendor;
 import com.bedrosians.bedlogic.domain.item.Note;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
@@ -39,6 +43,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
 	ItemDao itemDao;  
+    
+    @Autowired
+	ColorHueDao colorHueDao;  
     
     @Autowired
 	private SessionFactory sessionFactory;
@@ -138,12 +145,34 @@ public class ProductServiceImpl implements ProductService {
 	
 	@Loggable(value = LogLevel.TRACE)
 	@Override
-	public String createProduct(JSONObject inputJsonObj) throws BedDAOBadParamException, BedDAOException, BedResException{  	
-    	String id;
+	public String createProduct(JSONObject jsonObj) throws BedDAOBadParamException, BedDAOException, BedResException{  	
+		JsonUtil.validateItemCode(jsonObj);
+		String id;
+     	Item item = (Item)JsonUtil.jsonObjectToPOJO(jsonObj, new Item());
+     	Item newItem = FormatUtil.transformItem(item, "insert");
+     	ImsValidator.validateNewItem(newItem);
+   	    try{
+		   id = itemDao.createItem(newItem);
+		}
+		catch(HibernateException hbe){
+		   hbe.printStackTrace();
+		   if(hbe.getCause() != null)
+		      throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+		   else
+		  	  throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage());	
+	    }		
+	   return id;		 	
+    }
+	
+	@Loggable(value = LogLevel.TRACE)
+	@Override
+	public String createProductWithJsonInFlatFormat(JSONObject inputJsonObj) throws BedDAOBadParamException, BedDAOException, BedResException{  	
+		JsonUtil.validateItemCode(inputJsonObj);
+		String id;
     	Item item = new Item();
-    	item = initializeItemAssociationsForInsert(item, inputJsonObj);
 		synchronized(item){
-		   try{
+			item = initializeItemAssociations(item, inputJsonObj, "insert"); 
+			try{
 		      item = ImsQueryUtil.buildItemFromJsonObjectForInsert(item, inputJsonObj);
 		   }
 		   catch(Exception e){
@@ -230,7 +259,7 @@ public class ProductServiceImpl implements ProductService {
 		ImsValidator.validateInsertUpdateParams(queryParams);
 		Item item = new Item(ImsQueryUtil.getItemCode(queryParams));
 		synchronized(item){
-		   item = initializeItemAssociationsForInsert(item, queryParams);
+		   item = initializeItemAssociations(item, queryParams, "insert");
 		   try{
 		      item = ImsQueryUtil.buildItemForInsert(item, queryParams);
 		   }
@@ -300,12 +329,32 @@ public class ProductServiceImpl implements ProductService {
 	@Loggable(value = LogLevel.TRACE)
 	@Override
 	//@Transactional(isolation = Isolation.REPEATABLE_READ)
-	public void updateProduct(JSONObject inputJsonObj) throws BedDAOBadParamException, BedDAOException, BedResException{
+	public void updateProduct(JSONObject jsonObj) throws BedDAOBadParamException, BedDAOException, BedResException{
+		JsonUtil.validateItemCode(jsonObj);
+     	Item item = (Item)JsonUtil.jsonObjectToPOJO(jsonObj, new Item());
+     	Item newItem = FormatUtil.transformItem(item, "update");
+     	ImsValidator.validateNewItem(newItem);
+   		try{
+		   itemDao.updateItem(item);
+		}
+		catch(HibernateException hbe){
+			hbe.printStackTrace();
+			if(hbe.getCause() != null)
+		       throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+		  	else
+			   throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage());	
+	    }  
+	}
+	
+	@Loggable(value = LogLevel.TRACE)
+	@Override
+	//@Transactional(isolation = Isolation.REPEATABLE_READ)
+	public void updateProductWithJsonFlateFormat(JSONObject inputJsonObj) throws BedDAOBadParamException, BedDAOException, BedResException{
 		String itemCode = JsonUtil.getItemCode(inputJsonObj); 
 		if(itemCode == null || itemCode.length() == 0)
 		   throw new BedDAOBadParamException("Item code should not be empty");	
 		Item item = new Item(itemCode);
-		item = initializeItemAssociationsForUpdate(item, inputJsonObj);
+		item = initializeItemAssociations(item, inputJsonObj, "update");
 		/*Session session = sessionFactory.getCurrentSession();
 		try{
 		   item = itemDao.loadItemById(session, itemCode.trim());
@@ -328,8 +377,6 @@ public class ProductServiceImpl implements ProductService {
 			   throw new BedDAOBadParamException("Error occured during parse json input: " + e.getMessage());	
 		   }
 		}
-		if(item.getImsNewFeature() != null)
-		   item.getImsNewFeature().setLastModifiedDate(new Date());
 		try{
 		   itemDao.updateItem(item);
 		}
@@ -417,177 +464,142 @@ public class ProductServiceImpl implements ProductService {
 		}  
     }
 	
-	private Item initializeItemAssociationsForInsert(Item item, MultivaluedMap<String, String> queryParams){
+	private Item initializeItemAssociations(Item item, MultivaluedMap<String, String> queryParams, String operation){
 		
 		if(ImsQueryUtil.containsAnyKey(queryParams, ImsNewFeature.allProperties()) &&
 		   (item.getImsNewFeature() == null || item.getImsNewFeature().getItem() == null)) {
 		   ImsNewFeature imsNewFeature = new ImsNewFeature();	
-  		   imsNewFeature.setCreatedDate(new Date());
+		   if("insert".equalsIgnoreCase(operation))
+  		      imsNewFeature.setCreatedDate(new Date());
+		   else if("update".equalsIgnoreCase(operation))
+	  		  imsNewFeature.setLastModifiedDate(new Date());
 		   item.addImsNewFeature(imsNewFeature);	
 		}
-  	    if(item.getNewVendorSystem() == null || item.getNewVendorSystem().isEmpty()){
-		   item.initVendors(ImsQueryUtil.determineNumberOfVendors(queryParams));
+		if(ImsQueryUtil.containsAnyKey(queryParams, ItemVendor.allProperties()) &&
+  	      (item.getNewVendorSystem() == null || item.getNewVendorSystem().isEmpty())){
+    	   item.initVendors(ImsQueryUtil.determineNumberOfVendors(queryParams));
 		}
-  	    //if(ImsQueryUtil.containsAnyKey(queryParams, Arrays.asList(new String[]{"colorHue", "colorhue", "colorHues", "colorHues", "colorCategory", "colorcategory"})))
-		//   item.addNewColorHueSystem(new ColorHue());
-		if(ImsQueryUtil.containsAnyKey(queryParams, IconCollection.allPropertis()))
-		   item.addNewIconSystem(new IconCollection());	
-		if(ImsQueryUtil.containsKey(queryParams, "poNote")) {
+  	   	if(ImsQueryUtil.containsAnyKey(queryParams, IconCollection.allPropertis())){
+		   item.addIconDescription(new IconCollection());	
+		}   
+		if(ImsQueryUtil.containsAnyKey(queryParams, Arrays.asList(new String[] {"poNote", "poNotes", "ponotes"}))) {	
 		   Note poNote = new Note("po");
-		   poNote.setCreatedDate(new Date());
+		   if("insert".equalsIgnoreCase(operation))
+  		      poNote.setCreatedDate(new Date());
+		   else if("update".equalsIgnoreCase(operation))
+			   poNote.setLastModifiedDate(new Date()); 
 		   item.addNote(poNote);
 		}  
-		if(ImsQueryUtil.containsKey(queryParams, "buyerNote")) {
+		if(ImsQueryUtil.containsAnyKey(queryParams, Arrays.asList(new String[] {"buyerNote", "note1", "notes1"}))) {
 		   Note buyerNote = new Note("buyer");
-		   buyerNote.setCreatedDate(new Date());
+		   if("insert".equalsIgnoreCase(operation))
+		       buyerNote.setCreatedDate(new Date());
+		   else if("update".equalsIgnoreCase(operation))
+			   buyerNote.setLastModifiedDate(new Date());
 		   item.addNote(buyerNote);
 		}
-		if(ImsQueryUtil.containsKey(queryParams, "invoiceNote")) {
+		if(ImsQueryUtil.containsAnyKey(queryParams, Arrays.asList(new String[] {"invoiceNote", "note3", "notes3"}))) {
 		   Note invoiceNote = new Note("invoice");
-		   invoiceNote.setCreatedDate(new Date());
+		   if("insert".equalsIgnoreCase(operation))
+		      invoiceNote.setCreatedDate(new Date());
+		   else if("update".equalsIgnoreCase(operation))
+			   invoiceNote.setLastModifiedDate(new Date()); 
 		   item.addNote(invoiceNote);
 		}
 		if(ImsQueryUtil.containsKey(queryParams, "internalNote")) {
 		   Note internalNote = new Note("internal");
-		   internalNote.setCreatedDate(new Date());
+		   if("insert".equalsIgnoreCase(operation))
+		       internalNote.setCreatedDate(new Date());
+		   else if("update".equalsIgnoreCase(operation))
+			   internalNote.setLastModifiedDate(new Date()); 
 		   item.addNote(internalNote);
 		}
-		if(ImsQueryUtil.containsKey(queryParams, "additional")) {
-		   Note internalNote = new Note("additional");
-		   internalNote.setCreatedDate(new Date());
-		   item.addNote(internalNote);
+		if(ImsQueryUtil.containsAnyKey(queryParams, Arrays.asList(new String[] {"additionalNote", "note1", "notes2"}))) {
+		   Note additionalNote = new Note("additional");
+		   if("insert".equalsIgnoreCase(operation))
+  		      additionalNote.setCreatedDate(new Date());
+		   else if("update".equalsIgnoreCase(operation))
+			   additionalNote.setLastModifiedDate(new Date());
+		   item.addNote(additionalNote);
 		}
+		//if(ImsQueryUtil.containsAnyKey(queryParams, Arrays.asList(new String[]{"colorHue", "colorhue", "colorHues", "colorHues", "colorCategory", "colorcategory"})))
+		//   item.addNewColorHueSystem(new ColorHue());
 		return item;
 	}
 	
-    private Item initializeItemAssociationForUpdate(Item item, MultivaluedMap<String, String> queryParams){
+    private Item initializeItemAssociations(Item item, JSONObject inputJsonObj, String operation){
 		
-		if(ImsQueryUtil.containsAnyKey(queryParams, ImsNewFeature.allProperties()) &&
-		   (item.getImsNewFeature() == null || item.getImsNewFeature().getItem() == null)) {
-		   ImsNewFeature imsNewFeature = new ImsNewFeature();	
-	  	   imsNewFeature.setLastModifiedDate(new Date());
-		   item.addImsNewFeature(imsNewFeature);	
-		}
-  	    if(item.getNewVendorSystem() == null || item.getNewVendorSystem().isEmpty()){
-		   item.initVendors(ImsQueryUtil.determineNumberOfVendors(queryParams));
-		}
-		if(ImsQueryUtil.containsAnyKey(queryParams, IconCollection.allPropertis()))
-		   item.addNewIconSystem(new IconCollection());	
-		//if(ImsQueryUtil.containsAnyKey(queryParams, Arrays.asList(new String[]{"colorHue", "colorhue", "colorHues", "colorHues", "colorCategory", "colorcategory"})))
-   		//   item.addNewColorHueSystem(new ColorHue());
-		if(ImsQueryUtil.containsKey(queryParams, "poNote")) {
-		   Note poNote = new Note("po");
-		   poNote.setLastModifiedDate(new Date());
-		   item.addNote(poNote);
-		}  
-		if(ImsQueryUtil.containsKey(queryParams, "buyerNote")) {
-		   Note buyerNote = new Note("buyer");
-		   buyerNote.setLastModifiedDate(new Date());
-		   item.addNote(buyerNote);
-		}
-		if(ImsQueryUtil.containsKey(queryParams, "invoiceNote")) {
-		   Note invoiceNote = new Note("invoice");
-		   invoiceNote.setLastModifiedDate(new Date());
-		   item.addNote(invoiceNote);
-		}
-		if(ImsQueryUtil.containsKey(queryParams, "internalNote")) {
-		   Note internalNote = new Note("internal");
-		   internalNote.setLastModifiedDate(new Date());
-		   item.addNote(internalNote);
-		}
-		if(ImsQueryUtil.containsKey(queryParams, "additional")) {
-		   Note internalNote = new Note("additional");
-		   internalNote.setLastModifiedDate(new Date());
-		   item.addNote(internalNote);
-		}
-		return item;
-	}
-
-    private Item initializeItemAssociationsForInsert(Item item, JSONObject inputJsonObj){
-		
-    	if(ImsQueryUtil.containsAnyKey(inputJsonObj, ImsNewFeature.allProperties()) &&
+       if(ImsQueryUtil.containsAnyKey(inputJsonObj, ImsNewFeature.allProperties()) &&
     	   (item.getImsNewFeature() == null || item.getImsNewFeature().getItem() == null)) {
 		   ImsNewFeature imsNewFeature = new ImsNewFeature();	
-    	   imsNewFeature.setCreatedDate(new Date());
+		   if("insert".equalsIgnoreCase(operation))
+    	      imsNewFeature.setCreatedDate(new Date());
+		   else if("update".equalsIgnoreCase(operation))
+			  imsNewFeature.setLastModifiedDate(new Date());
     	   item.addImsNewFeature(imsNewFeature);	
 	   }
-	   if(item.getNewVendorSystem() == null || item.getNewVendorSystem().isEmpty()){
+       if(ImsQueryUtil.containsAnyKey(inputJsonObj, ItemVendor.allProperties()) &&
+         (item.getNewVendorSystem() == null || item.getNewVendorSystem().isEmpty())){
 		  item.initVendors(ImsQueryUtil.determineNumberOfVendors(inputJsonObj));
 	   }
-	   //if(ImsQueryUtil.containsAnyKey(inputJsonObj, Arrays.asList(new String[]{"colorHue", "colorhue", "colorHues", "colorHues", "colorCategory", "colorcategory"})))
-	   //	  item.addNewColorHueSystem(new ColorHue());
-	   if(ImsQueryUtil.containsAnyKey(inputJsonObj, IconCollection.allPropertis()))
-	      item.addNewIconSystem(new IconCollection());	
-       if(inputJsonObj.has("poNote")) {
+	   if(ImsQueryUtil.containsAnyKey(inputJsonObj, IconCollection.allPropertis())){
+	      item.addIconDescription(new IconCollection());	
+	   }   
+       if(inputJsonObj.has("poNote") || inputJsonObj.has("poNotes") || inputJsonObj.has("ponotes")) {   	  
 		  Note poNote = new Note("po");
-		  poNote.setCreatedDate(new Date());
+		  if("insert".equalsIgnoreCase(operation))
+		     poNote.setCreatedDate(new Date());
+		  else if("update".equalsIgnoreCase(operation))
+			  poNote.setLastModifiedDate(new Date());		  
 		  item.addNote(poNote);
 	   }  
-	   if(inputJsonObj.has("buyerNote")) {
+	    if(inputJsonObj.has("buyerNote") || inputJsonObj.has("note1") || inputJsonObj.has("notes1")) {	   
 		  Note buyerNote = new Note("buyer");
-		  buyerNote.setCreatedDate(new Date());
+		  if("insert".equalsIgnoreCase(operation))
+		     buyerNote.setCreatedDate(new Date());
+		  else if("update".equalsIgnoreCase(operation))
+			  buyerNote.setLastModifiedDate(new Date()); 
 		  item.addNote(buyerNote);
 	   }
-	   if(inputJsonObj.has("invoiceNote")) {
+	   if(inputJsonObj.has("invoiceNote") || inputJsonObj.has("note3") || inputJsonObj.has("notes3")) {	   
 	      Note invoiceNote = new Note("invoice");
-	      invoiceNote.setCreatedDate(new Date());
+	      if("insert".equalsIgnoreCase(operation))
+	         invoiceNote.setCreatedDate(new Date());
+	      else if("update".equalsIgnoreCase(operation))
+	    	  invoiceNote.setLastModifiedDate(new Date());
 	      item.addNote(invoiceNote);
 	   }
 	   if(inputJsonObj.has("internalNote")) {
 	      Note internalNote = new Note("internal");
-		  internalNote.setCreatedDate(new Date());
+	      if("insert".equalsIgnoreCase(operation))
+		     internalNote.setCreatedDate(new Date());
+	      else if("update".equalsIgnoreCase(operation))
+	    	  internalNote.setLastModifiedDate(new Date());
 		  item.addNote(internalNote);
 	   }
-	   if(inputJsonObj.has("additional")) {
-		      Note internalNote = new Note("additional");
-			  internalNote.setCreatedDate(new Date());
-			  item.addNote(internalNote);
-		   }
-		return item;
+	   if(inputJsonObj.has("additionalNote") || inputJsonObj.has("note2") || inputJsonObj.has("notes2")) {	   
+		  Note additionalNote = new Note("additional");
+		  if("insert".equalsIgnoreCase(operation))
+		     additionalNote.setCreatedDate(new Date());
+		  else if("update".equalsIgnoreCase(operation))
+			  additionalNote.setLastModifiedDate(new Date());
+		  item.addNote(additionalNote);
+	   }
+	   //if(ImsQueryUtil.containsAnyKey(inputJsonObj, Arrays.asList(new String[]{"colorHue", "colorhue", "colorHues", "colorHues", "colorCategory", "colorcategory"})))
+	   //	  item.addNewColorHueSystem(new ColorHue());
+	   return item;
 	}
+
+    @Transactional
+    public void createColorHues(){
+       List<Item> items = itemDao.findAll(sessionFactory.getCurrentSession());
+       Set<ColorHue> colorHues = new HashSet<>();
+       for(Item item : items){
+    	   for(ColorHue colorHue : item.getColorhues()){
+    		   colorHues.add(colorHue);   
+    	   }
+       }
+       colorHueDao.createColorHues(colorHues);
+    }
     
-    private Item initializeItemAssociationsForUpdate(Item item, JSONObject inputJsonObj){
-		
-    	if(ImsQueryUtil.containsAnyKey(inputJsonObj, ImsNewFeature.allProperties()) &&
-    	   (item.getImsNewFeature() == null || item.getImsNewFeature().getItem() == null)) {
- 		   ImsNewFeature imsNewFeature = new ImsNewFeature();	
-     	   imsNewFeature.setLastModifiedDate(new Date());
-     	   item.addImsNewFeature(imsNewFeature);	
- 	   }
- 	   if(item.getNewVendorSystem() == null || item.getNewVendorSystem().isEmpty()){
- 		  item.initVendors(ImsQueryUtil.determineNumberOfVendors(inputJsonObj));
- 	   }
- 	  //if(ImsQueryUtil.containsAnyKey(inputJsonObj, Arrays.asList(new String[]{"colorHue", "colorhue", "colorHues", "colorHues", "colorCategory", "colorcategory"})))
-	  //	   item.addNewColorHueSystem(new ColorHue());
-	  if(ImsQueryUtil.containsAnyKey(inputJsonObj, IconCollection.allPropertis()))
- 	      item.addNewIconSystem(new IconCollection());	
-      if(inputJsonObj.has("poNote")) {
- 		  Note poNote = new Note("po");
- 		  poNote.setLastModifiedDate(new Date());
- 		  item.addNote(poNote);
- 	   }  
- 	   if(inputJsonObj.has("buyerNote")) {
- 		  Note buyerNote = new Note("buyer");
- 		  buyerNote.setLastModifiedDate(new Date());
- 		  item.addNote(buyerNote);
- 	   }
- 	   if(inputJsonObj.has("invoiceNote")) {
- 	      Note invoiceNote = new Note("invoice");
- 	      invoiceNote.setLastModifiedDate(new Date());
- 	      item.addNote(invoiceNote);
- 	   }
- 	   if(inputJsonObj.has("internalNote")) {
- 	      Note internalNote = new Note("internal");
- 		  internalNote.setLastModifiedDate(new Date());
- 		  item.addNote(internalNote);
- 	   }
- 	  if(inputJsonObj.has("additional")) {
- 	      Note internalNote = new Note("additional");
- 		  internalNote.setLastModifiedDate(new Date());
- 		  item.addNote(internalNote);
- 	   }
- 		return item;
- 	}
-
-
 }
