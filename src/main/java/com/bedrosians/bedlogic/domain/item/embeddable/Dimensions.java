@@ -21,7 +21,7 @@ public class Dimensions implements java.io.Serializable {
 	
 	@Column(name = "nm_length", precision = 5)
 	public Float getNominallength() {
-		return FormatUtil.process(this.nominallength);
+		return this.nominallength;
 	}
 
 	public void setNominallength(Float nominallength) {
@@ -30,7 +30,7 @@ public class Dimensions implements java.io.Serializable {
 
 	@Column(name = "nm_width", precision = 5)
 	public Float getNominalwidth() {
-		return FormatUtil.process(this.nominalwidth);
+		return this.nominalwidth;
 	}
 
 	public void setNominalwidth(Float nominalwidth) {
@@ -39,7 +39,7 @@ public class Dimensions implements java.io.Serializable {
 
 	@Column(name = "nm_thickness", precision = 5)
 	public Float getNominalthickness() {
-		return FormatUtil.process(this.nominalthickness);
+		return this.nominalthickness;
 	}
 
 	public void setNominalthickness(Float nominalthickness) {
@@ -48,7 +48,7 @@ public class Dimensions implements java.io.Serializable {
 	
 	@Column(name = "thicknessunit", length = 3)
 	public String getThicknessunit() {
-		return FormatUtil.process(this.thicknessunit);
+		return this.thicknessunit;
 	}
 
 	public void setThicknessunit(String thicknessunit) {
@@ -57,7 +57,7 @@ public class Dimensions implements java.io.Serializable {
 	
 	@Column(name = "length", length = 12)
 	public String getLength() {
-		return FormatUtil.process(this.length);
+		return this.length;
 	}
 
 	public void setLength(String length) {
@@ -66,7 +66,7 @@ public class Dimensions implements java.io.Serializable {
 
 	@Column(name = "width", length = 12)
 	public String getWidth() {
-		return FormatUtil.process(this.width);
+		return this.width;
 	}
 
 	public void setWidth(String width) {
@@ -75,7 +75,7 @@ public class Dimensions implements java.io.Serializable {
 
 	@Column(name = "thickness", length = 12)
 	public String getThickness() {
-		return FormatUtil.process(this.thickness);
+		return this.thickness;
 	}
 
 	public void setThickness(String thickness) {
@@ -84,7 +84,7 @@ public class Dimensions implements java.io.Serializable {
 
 	@Column(name = "sizeunits", length = 3)
 	public String getSizeunits() {
-		return FormatUtil.process(this.sizeunits);
+		return this.sizeunits;
 	}
 
 	public void setSizeunits(String sizeunits) {

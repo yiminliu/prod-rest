@@ -25,7 +25,7 @@ public class Cost implements java.io.Serializable {
 	
 	@Column(name = "poincludeinvendorcost", length = 1)
 	public Character getPoincludeinvendorcost() {
-		return FormatUtil.process(this.poincludeinvendorcost);
+		return this.poincludeinvendorcost;
 	}
 
 	public void setPoincludeinvendorcost(Character poincludeinvendorcost) {
@@ -35,7 +35,7 @@ public class Cost implements java.io.Serializable {
 	
 	@Column(name = "cost1", precision = 9, scale = 4)
 	public BigDecimal getCost1() {
-		return FormatUtil.process(this.cost1);
+		return this.cost1;
 	}
 
 	public void setCost1(BigDecimal cost1) {
@@ -44,7 +44,7 @@ public class Cost implements java.io.Serializable {
 	
     @Column(name = "priorcost", precision = 9, scale = 4)
 	public BigDecimal getPriorcost() {
-		return FormatUtil.process(this.priorcost);
+		return this.priorcost;
     }
 
 	public void setPriorcost(BigDecimal priorcost) {
@@ -53,7 +53,7 @@ public class Cost implements java.io.Serializable {
 
 	@Column(name = "priorcost1", precision = 9, scale = 4)
 	public BigDecimal getPriorcost1() {
-		return FormatUtil.process(this.priorcost1);
+		return this.priorcost1;
 	}
 
 	public void setPriorcost1(BigDecimal priorcost1) {
@@ -62,7 +62,7 @@ public class Cost implements java.io.Serializable {
 
 	@Column(name = "futurecost", precision = 9, scale = 4)
 	public BigDecimal getFuturecost() {
-		return FormatUtil.process(this.futurecost);
+		return this.futurecost;
 	}
 
 	public void setFuturecost(BigDecimal futurecost) {
@@ -71,7 +71,7 @@ public class Cost implements java.io.Serializable {
 
 	@Column(name = "futurecost1", precision = 9, scale = 4)
 	public BigDecimal getFuturecost1() {
-		return FormatUtil.process(this.futurecost1);
+		return this.futurecost1;
 	}
 
 	public void setFuturecost1(BigDecimal futurecost1) {
@@ -80,7 +80,7 @@ public class Cost implements java.io.Serializable {
 
 	@Column(name = "nonstockcostpct", precision = 4, scale = 1)
 	public Float getNonstockcostpct() {
-		return FormatUtil.process(this.nonstockcostpct);
+		return this.nonstockcostpct;
 	}
 
 	public void setNonstockcostpct(Float nonstockcostpct) {
@@ -89,7 +89,7 @@ public class Cost implements java.io.Serializable {
 	
 	@Column(name = "costrangepct", precision = 4, scale = 1)
 	public Float getCostrangepct() {
-		return FormatUtil.process(this.costrangepct);
+		return this.costrangepct;
 	}
 
 	public void setCostrangepct(Float costrangepct) {

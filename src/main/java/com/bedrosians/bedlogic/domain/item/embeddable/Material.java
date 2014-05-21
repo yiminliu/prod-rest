@@ -18,7 +18,7 @@ public class Material implements java.io.Serializable {
 		
 	@Column(name = "mattype", length = 24)
 	public String getMaterialtype() {
-		return FormatUtil.process(this.materialtype);
+		return this.materialtype;
 	}
 
 	public void setMaterialtype(String materialtype) {
@@ -27,7 +27,7 @@ public class Material implements java.io.Serializable {
 	
 	@Column(name = "materialclass_cd", length = 5)
 	public String getMaterialclass() {
-		return FormatUtil.process(this.materialclass);
+		return this.materialclass;
 	}
 
 	public void setMaterialclass(String materialclass) {
@@ -36,7 +36,7 @@ public class Material implements java.io.Serializable {
 
 	@Column(name = "matcategory", length = 10)
 	public String getMaterialcategory() {
-		return FormatUtil.process(this.materialcategory);
+		return this.materialcategory;
 	}
 
 	public void setMaterialcategory(String materialcategory) {
@@ -45,7 +45,7 @@ public class Material implements java.io.Serializable {
 
 	@Column(name = "matstyle", length = 7)
 	public String getMaterialstyle() {
-		return FormatUtil.process(this.materialstyle);
+		return this.materialstyle;
 	}
 
 	public void setMaterialstyle(String materialstyle) {
@@ -54,7 +54,7 @@ public class Material implements java.io.Serializable {
 
 	@Column(name = "mfeature", length = 15)
 	public String getMaterialfeature() {
-		return FormatUtil.process(this.materialfeature);
+		return this.materialfeature;
 	}
 
 	public void setMaterialfeature(String materialfeature) {

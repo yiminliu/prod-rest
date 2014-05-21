@@ -15,7 +15,7 @@ public class Series implements java.io.Serializable {
 	
 	@Column(name = "seriesname", length = 40)
 	public String getSeriesname() {
-		return FormatUtil.process(this.seriesname);
+		return this.seriesname;
 	}
 
 	public void setSeriesname(String seriesname) {
@@ -24,7 +24,7 @@ public class Series implements java.io.Serializable {
 	
 	@Column(name = "color", length = 30)
 	public String getSeriescolor() {
-		return FormatUtil.process(this.seriescolor);
+		return this.seriescolor;
 	}
 
 	public void setSeriescolor(String seriescolor) {

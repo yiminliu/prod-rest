@@ -66,7 +66,7 @@ public class Units  implements java.io.Serializable {
     
     @Column(name = "stdunit", length = 4)
 	public String getStdunit() {
-		return FormatUtil.process(this.stdunit);
+		return this.stdunit;
 	}
 
 	public void setStdunit(String stdunit) {
@@ -75,7 +75,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "stdratio", precision = 9, scale = 4)
 	public Float getStdratio() {
-		return FormatUtil.process(this.stdratio);
+		return this.stdratio;
 	}
 
 	public void setStdratio(Float stdratio) {
@@ -84,7 +84,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "ordunit", length = 4)
 	public String getOrdunit() {
-		return FormatUtil.process(this.ordunit);
+		return this.ordunit;
 	}
 
 	public void setOrdunit(String ordunit) {
@@ -93,7 +93,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "ordratio", precision = 9, scale = 4)
 	public Float getOrdratio() {
-		return FormatUtil.process(this.ordratio);
+		return this.ordratio;
 	}
 
 	public void setOrdratio(Float ordratio) {
@@ -102,7 +102,7 @@ public class Units  implements java.io.Serializable {
 
     @Column(name = "baseunit", length = 4)
 	public String getBaseunit() {
-		return FormatUtil.process(this.baseunit);
+		return this.baseunit;
 	}
 
 	public void setBaseunit(String baseunit) {
@@ -111,7 +111,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "baseisstdsell", length = 1)
 	public Character getBaseisstdsell() {
-		return FormatUtil.process(this.baseisstdsell);
+		return this.baseisstdsell;
 	}
 
 	public void setBaseisstdsell(Character baseisstdsell) {
@@ -120,7 +120,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "baseisstdord", length = 1)
 	public Character getBaseisstdord() {
-		return FormatUtil.process(this.baseisstdord);
+		return this.baseisstdord;
 	}
 
 	public void setBaseisstdord(Character baseisstdord) {
@@ -129,7 +129,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "baseisfractqty", length = 1)
 	public Character getBaseisfractqty() {
-		return FormatUtil.process(this.baseisfractqty);
+		return this.baseisfractqty;
 	}
 
 	public void setBaseisfractqty(Character baseisfractqty) {
@@ -138,7 +138,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "baseispackunit", length = 1)
 	public Character getBaseispackunit() {
-		return FormatUtil.process(this.baseispackunit);
+		return this.baseispackunit;
 	}
 
 	public void setBaseispackunit(Character baseispackunit) {
@@ -147,7 +147,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "baseupc", precision = 17, scale = 0)
 	public Long getBaseupc() {
-		return FormatUtil.process(this.baseupc);
+		return this.baseupc;
 	}
 
 	public void setBaseupc(Long baseupc) {
@@ -156,7 +156,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "baseupcdesc", length = 15)
 	public String getBaseupcdesc() {
-		return FormatUtil.process(this.baseupcdesc);
+		return this.baseupcdesc;
 	}
 
 	public void setBaseupcdesc(String baseupcdesc) {
@@ -165,7 +165,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "basevolperunit", precision = 10, scale = 6)
 	public BigDecimal getBasevolperunit() {
-		return FormatUtil.process(this.basevolperunit);
+		return this.basevolperunit;
 	}
 
 	public void setBasevolperunit(BigDecimal basevolperunit) {
@@ -174,7 +174,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "basewgtperunit", precision = 10, scale = 6)
 	public BigDecimal getBasewgtperunit() {
-		return FormatUtil.process(this.basewgtperunit);
+		return this.basewgtperunit;
 	}
 
 	public void setBasewgtperunit(BigDecimal basewgtperunit) {
@@ -183,7 +183,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit1unit", length = 4)
 	public String getUnit1unit() {
-		return FormatUtil.process(this.unit1unit);
+		return this.unit1unit;
 	}
 
 	public void setUnit1unit(String unit1unit) {
@@ -192,7 +192,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit1ratio", precision = 9, scale = 4)
 	public Float getUnit1ratio() {
-		return FormatUtil.process(this.unit1ratio);
+		return this.unit1ratio;
 	}
 
 	public void setUnit1ratio(Float unit1ratio) {
@@ -201,7 +201,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit1isstdsell", length = 1)
 	public Character getUnit1isstdsell() {
-		return FormatUtil.process(this.unit1isstdsell);
+		return this.unit1isstdsell;
 	}
 
 	public void setUnit1isstdsell(Character unit1isstdsell) {
@@ -210,7 +210,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit1isstdord", length = 1)
 	public Character getUnit1isstdord() {
-		return FormatUtil.process(this.unit1isstdord);
+		return this.unit1isstdord;
 	}
 
 	public void setUnit1isstdord(Character unit1isstdord) {
@@ -219,7 +219,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit1isfractqty", length = 1)
 	public Character getUnit1isfractqty() {
-		return FormatUtil.process(this.unit1isfractqty);
+		return this.unit1isfractqty;
 	}
 
 	public void setUnit1isfractqty(Character unit1isfractqty) {
@@ -228,7 +228,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit1ispackunit", length = 1)
 	public Character getUnit1ispackunit() {
-		return FormatUtil.process(this.unit1ispackunit);
+		return this.unit1ispackunit;
 	}
 
 	public void setUnit1ispackunit(Character unit1ispackunit) {
@@ -237,7 +237,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit1upc", precision = 17, scale = 0)
 	public Long getUnit1upc() {
-		return FormatUtil.process(this.unit1upc);
+		return this.unit1upc;
 	}
 
 	public void setUnit1upc(Long unit1upc) {
@@ -246,7 +246,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit1upcdesc", length = 15)
 	public String getUnit1upcdesc() {
-		return FormatUtil.process(this.unit1upcdesc);
+		return this.unit1upcdesc;
 	}
 
 	public void setUnit1upcdesc(String unit1upcdesc) {
@@ -255,7 +255,7 @@ public class Units  implements java.io.Serializable {
 	
 	@Column(name = "unit1wgtperunit", precision = 12, scale = 6)
 	public BigDecimal getUnit1wgtperunit() {
-		return FormatUtil.process(this.unit1wgtperunit);
+		return this.unit1wgtperunit;
 	}
 
 	public void setUnit1wgtperunit(BigDecimal unit1wgtperunit) {
@@ -264,7 +264,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit2unit", length = 4)
 	public String getUnit2unit() {
-		return FormatUtil.process(this.unit2unit);
+		return this.unit2unit;
 	}
 
 	public void setUnit2unit(String unit2unit) {
@@ -273,7 +273,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit2ratio", precision = 9, scale = 4)
 	public Float getUnit2ratio() {
-		return FormatUtil.process(this.unit2ratio);
+		return this.unit2ratio;
 	}
 
 	public void setUnit2ratio(Float unit2ratio) {
@@ -282,7 +282,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit2isstdsell", length = 1)
 	public Character getUnit2isstdsell() {
-		return FormatUtil.process(this.unit2isstdsell);
+		return this.unit2isstdsell;
 	}
 
 	public void setUnit2isstdsell(Character unit2isstdsell) {
@@ -291,7 +291,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit2isstdord", length = 1)
 	public Character getUnit2isstdord() {
-		return FormatUtil.process(this.unit2isstdord);
+		return this.unit2isstdord;
 	}
 
 	public void setUnit2isstdord(Character unit2isstdord) {
@@ -300,7 +300,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit2isfractqty", length = 1)
 	public Character getUnit2isfractqty() {
-		return FormatUtil.process(this.unit2isfractqty);
+		return this.unit2isfractqty;
 	}
 
 	public void setUnit2isfractqty(Character unit2isfractqty) {
@@ -309,7 +309,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit2ispackunit", length = 1)
 	public Character getUnit2ispackunit() {
-		return FormatUtil.process(this.unit2ispackunit);
+		return this.unit2ispackunit;
 	}
 
 	public void setUnit2ispackunit(Character unit2ispackunit) {
@@ -318,7 +318,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit2upc", precision = 17, scale = 0)
 	public Long getUnit2upc() {
-		return FormatUtil.process(this.unit2upc);
+		return this.unit2upc;
 	}
 
 	public void setUnit2upc(Long unit2upc) {
@@ -327,7 +327,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit2upcdesc", length = 15)
 	public String getUnit2upcdesc() {
-		return FormatUtil.process(this.unit2upcdesc);
+		return this.unit2upcdesc;
 	}
 
 	public void setUnit2upcdesc(String unit2upcdesc) {
@@ -336,7 +336,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit2wgtperunit", precision = 12, scale = 6)
 	public BigDecimal getUnit2wgtperunit() {
-		return FormatUtil.process(this.unit2wgtperunit);
+		return this.unit2wgtperunit;
 	}
 
 	public void setUnit2wgtperunit(BigDecimal unit2wgtperunit) {
@@ -345,7 +345,7 @@ public class Units  implements java.io.Serializable {
 	
 	@Column(name = "unit3unit", length = 4)
 	public String getUnit3unit() {
-		return FormatUtil.process(this.unit3unit);
+		return this.unit3unit;
 	}
 	
 	public void setUnit3unit(String unit3unit) {
@@ -354,7 +354,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit3ratio", precision = 9, scale = 4)
 	public Float getUnit3ratio() {
-		return FormatUtil.process(this.unit3ratio);
+		return this.unit3ratio;
 	}
 
 	public void setUnit3ratio(Float unit3ratio) {
@@ -363,7 +363,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit3isstdsell", length = 1)
 	public Character getUnit3isstdsell() {
-		return FormatUtil.process(this.unit3isstdsell);
+		return this.unit3isstdsell;
 	}
 
 	public void setUnit3isstdsell(Character unit3isstdsell) {
@@ -372,7 +372,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit3isstdord", length = 1)
 	public Character getUnit3isstdord() {
-		return FormatUtil.process(this.unit3isstdord);
+		return this.unit3isstdord;
 	}
 
 	public void setUnit3isstdord(Character unit3isstdord) {
@@ -381,7 +381,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit3isfractqty", length = 1)
 	public Character getUnit3isfractqty() {
-		return FormatUtil.process(this.unit3isfractqty);
+		return this.unit3isfractqty;
 	}
 
 	public void setUnit3isfractqty(Character unit3isfractqty) {
@@ -390,7 +390,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit3ispackunit", length = 1)
 	public Character getUnit3ispackunit() {
-		return FormatUtil.process(this.unit3ispackunit);
+		return this.unit3ispackunit;
 	}
 
 	public void setUnit3ispackunit(Character unit3ispackunit) {
@@ -399,7 +399,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit3upc", precision = 17, scale = 0)
 	public Long getUnit3upc() {
-		return FormatUtil.process(this.unit3upc);
+		return this.unit3upc;
 	}
 
 	public void setUnit3upc(Long unit3upc) {
@@ -408,7 +408,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit3upcdesc", length = 15)
 	public String getUnit3upcdesc() {
-		return FormatUtil.process(this.unit3upcdesc);
+		return this.unit3upcdesc;
 	}
 
 	public void setUnit3upcdesc(String unit3upcdesc) {
@@ -417,7 +417,7 @@ public class Units  implements java.io.Serializable {
 	
 	@Column(name = "unit3wgtperunit", precision = 12, scale = 6)
 	public BigDecimal getUnit3wgtperunit() {
-		return FormatUtil.process(this.unit3wgtperunit);
+		return this.unit3wgtperunit;
 	}
 
 	public void setUnit3wgtperunit(BigDecimal unit3wgtperunit) {
@@ -426,7 +426,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit4unit", length = 4)
 	public String getUnit4unit() {
-		return FormatUtil.process(this.unit4unit);
+		return this.unit4unit;
 	}
 
 	public void setUnit4unit(String unit4unit) {
@@ -435,7 +435,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit4ratio", precision = 9, scale = 4)
 	public Float getUnit4ratio() {
-		return FormatUtil.process(this.unit4ratio);
+		return this.unit4ratio;
 	}
 
 	public void setUnit4ratio(Float unit4ratio) {
@@ -444,7 +444,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit4isstdsell", length = 1)
 	public Character getUnit4isstdsell() {
-		return FormatUtil.process(this.unit4isstdsell);
+		return this.unit4isstdsell;
 	}
 
 	public void setUnit4isstdsell(Character unit4isstdsell) {
@@ -453,7 +453,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit4isstdord", length = 1)
 	public Character getUnit4isstdord() {
-		return FormatUtil.process(this.unit4isstdord);
+		return this.unit4isstdord;
 	}
 
 	public void setUnit4isstdord(Character unit4isstdord) {
@@ -462,7 +462,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit4isfractqty", length = 1)
 	public Character getUnit4isfractqty() {
-		return FormatUtil.process(this.unit4isfractqty);
+		return this.unit4isfractqty;
 	}
 
 	public void setUnit4isfractqty(Character unit4isfractqty) {
@@ -471,7 +471,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit4ispackunit", length = 1)
 	public Character getUnit4ispackunit() {
-		return FormatUtil.process(this.unit4ispackunit);
+		return this.unit4ispackunit;
 	}
 
 	public void setUnit4ispackunit(Character unit4ispackunit) {
@@ -480,7 +480,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit4upc", precision = 17, scale = 0)
 	public Long getUnit4upc() {
-		return FormatUtil.process(this.unit4upc);
+		return this.unit4upc;
 	}
 
 	public void setUnit4upc(Long unit4upc) {
@@ -489,7 +489,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit4upcdesc", length = 15)
 	public String getUnit4upcdesc() {
-		return FormatUtil.process(this.unit4upcdesc);
+		return this.unit4upcdesc;
 	}
 
 	public void setUnit4upcdesc(String unit4upcdesc) {
@@ -498,7 +498,7 @@ public class Units  implements java.io.Serializable {
 
 	@Column(name = "unit4wgtperunit", precision = 12, scale = 6)
 	public BigDecimal getUnit4wgtperunit() {
-		return FormatUtil.process(this.unit4wgtperunit);
+		return this.unit4wgtperunit;
 	}
 
 	public void setUnit4wgtperunit(BigDecimal unit4wgtperunit) {

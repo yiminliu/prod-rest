@@ -9,10 +9,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-
-import com.bedrosians.bedlogic.util.FormatUtil;
-import com.bedrosians.bedlogic.util.ImsResultUtil;
 
 @Embeddable
 public class Price implements java.io.Serializable {
@@ -38,7 +34,7 @@ public class Price implements java.io.Serializable {
 	
 	@Column(name = "sellprice", precision = 9, scale = 4)
 	public BigDecimal getSellprice() {
-		return FormatUtil.process(this.sellprice);
+		return this.sellprice;
 	}
 
 	public void setSellprice(BigDecimal sellprice) {
@@ -47,7 +43,7 @@ public class Price implements java.io.Serializable {
 	
 	@Column(name = "pricegroup", length = 2)
 	public String getPricegroup() {
-		return FormatUtil.process(this.pricegroup);
+		return this.pricegroup;
 	}
 
 	public void setPricegroup(String pricegroup) {
@@ -56,7 +52,7 @@ public class Price implements java.io.Serializable {
 	
 	@Column(name = "listprice", precision = 9, scale = 4)
 	public BigDecimal getListprice() {
-		return FormatUtil.process(this.listprice);
+		return this.listprice;
 	}
 
 	public void setListprice(BigDecimal listprice) {
@@ -65,7 +61,7 @@ public class Price implements java.io.Serializable {
 	
 	@Column(name = "listpricemarginpct", precision = 5)
 	public Float getListpricemarginpct() {
-		return FormatUtil.process(this.listpricemarginpct);
+		return this.listpricemarginpct;
 	}
 
 	public void setListpricemarginpct(Float listpricemarginpct) {
@@ -74,7 +70,7 @@ public class Price implements java.io.Serializable {
 	
 	@Column(name = "futuresell", precision = 9, scale = 4)
 	public BigDecimal getFuturesell() {
-		return FormatUtil.process(this.futuresell);
+		return this.futuresell;
 	}
 
 	public void setFuturesell(BigDecimal futuresell) {
@@ -83,7 +79,7 @@ public class Price implements java.io.Serializable {
 	
 	@Column(name = "tempprice", precision = 9, scale = 4)
 	public BigDecimal getTempprice() {
-		return FormatUtil.process(this.tempprice);
+		return this.tempprice;
 	}
 
 	public void setTempprice(BigDecimal tempprice) {
@@ -93,7 +89,7 @@ public class Price implements java.io.Serializable {
 	@Temporal(TemporalType.DATE)
 	@Column(name = "tempdatefrom", length = 13)
 	public Date getTempdatefrom() {
-		return FormatUtil.process(this.tempdatefrom);
+		return this.tempdatefrom;
 	}
 
 	public void setTempdatefrom(Date tempdatefrom) {
@@ -103,7 +99,7 @@ public class Price implements java.io.Serializable {
 	@Temporal(TemporalType.DATE)
 	@Column(name = "tempdatethru", length = 13, nullable = true)
 	public Date getTempdatethru() {
-		return FormatUtil.process(this.tempdatethru);
+		return this.tempdatethru;
 	}
 
 	public void setTempdatethru(Date tempdatethru) {
@@ -112,7 +108,7 @@ public class Price implements java.io.Serializable {
 
 	@Column(name = "sellpricemarginpct", precision = 5)
 	public Float getSellpricemarginpct() {
-		return FormatUtil.process(this.sellpricemarginpct);
+		return this.sellpricemarginpct;
 	}
 
 	public void setSellpricemarginpct(Float sellpricemarginpct) {
@@ -121,7 +117,7 @@ public class Price implements java.io.Serializable {
 
 	@Column(name = "sellpriceroundaccuracy", precision = 1, scale = 0)
 	public Integer getSellpriceroundaccuracy() {
-		return FormatUtil.process(this.sellpriceroundaccuracy);
+		return this.sellpriceroundaccuracy;
 	}
 
 	public void setSellpriceroundaccuracy(Integer sellpriceroundaccuracy) {
@@ -130,7 +126,7 @@ public class Price implements java.io.Serializable {
 	
 	@Column(name = "minmarginpct", precision = 4, scale = 1)
 	public Float getMinmarginpct() {
-		return FormatUtil.process(this.minmarginpct);
+		return this.minmarginpct;
 	}
 
 	public void setMinmarginpct(Float minmarginpct) {
@@ -139,7 +135,7 @@ public class Price implements java.io.Serializable {
 	
 	@Column(name = "priorlistprice", precision = 9, scale = 4)
 	public BigDecimal getPriorlistprice() {
-		return FormatUtil.process(this.priorlistprice);
+		return this.priorlistprice;
 	}
 
 	public void setPriorlistprice(BigDecimal priorlistprice) {
@@ -148,7 +144,7 @@ public class Price implements java.io.Serializable {
 
 	@Column(name = "priorsellprice", precision = 9, scale = 4)
 	public BigDecimal getPriorsellprice() {
-		return FormatUtil.process(this.priorsellprice);
+		return this.priorsellprice;
 	}
 
 	public void setPriorsellprice(BigDecimal priorsellprice) {
@@ -163,6 +159,4 @@ public class Price implements java.io.Serializable {
 	public void setPriceunit(String priceunit) {
 		this.priceunit = priceunit;
 	}
-
-	
 }

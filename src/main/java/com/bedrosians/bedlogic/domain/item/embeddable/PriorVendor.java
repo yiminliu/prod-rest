@@ -26,7 +26,7 @@ public class PriorVendor  implements java.io.Serializable {
 	
 	@Column(name = "priorvendorpriceunit", length = 4)
 	public String getPriorvendorpriceunit() {
-		return FormatUtil.process(this.priorvendorpriceunit);
+		return this.priorvendorpriceunit;
 	}
 
 	public void setPriorvendorpriceunit(String priorvendorpriceunit) {
@@ -35,7 +35,7 @@ public class PriorVendor  implements java.io.Serializable {
 
 	@Column(name = "priorvendorfob", length = 10)
 	public String getPriorvendorfob() {
-		return FormatUtil.process(this.priorvendorfob);
+		return this.priorvendorfob;
 	}
 
 	public void setPriorvendorfob(String priorvendorfob) {
@@ -44,7 +44,7 @@ public class PriorVendor  implements java.io.Serializable {
 
 	@Column(name = "priorvendorlistprice", precision = 9, scale = 4)
 	public BigDecimal getPriorvendorlistprice() {
-		return FormatUtil.process(this.priorvendorlistprice);
+		return this.priorvendorlistprice;
 	}
 
 	public void setPriorvendorlistprice(BigDecimal priorvendorlistprice) {
@@ -53,7 +53,7 @@ public class PriorVendor  implements java.io.Serializable {
 
 	@Column(name = "priorvendordiscpct1", precision = 5)
 	public Float getPriorvendordiscpct1() {
-		return FormatUtil.process(this.priorvendordiscpct1);
+		return this.priorvendordiscpct1;
 	}
 
 	public void setPriorvendordiscpct1(Float priorvendordiscpct1) {
@@ -62,7 +62,7 @@ public class PriorVendor  implements java.io.Serializable {
 
 	@Column(name = "priorvendorroundaccuracy", precision = 1, scale = 0)
 	public Integer getPriorvendorroundaccuracy() {
-		return FormatUtil.process(this.priorvendorroundaccuracy);
+		return this.priorvendorroundaccuracy;
 	}
 
 	public void setPriorvendorroundaccuracy(Integer priorvendorroundaccuracy) {
@@ -71,7 +71,7 @@ public class PriorVendor  implements java.io.Serializable {
 
 	@Column(name = "priorvendornetprice", precision = 9, scale = 4)
 	public BigDecimal getPriorvendornetprice() {
-		return FormatUtil.process(this.priorvendornetprice);
+		return this.priorvendornetprice;
 	}
 
 	public void setPriorvendornetprice(BigDecimal priorvendornetprice) {
@@ -80,7 +80,7 @@ public class PriorVendor  implements java.io.Serializable {
 
 	@Column(name = "priorvendormarkuppct", precision = 4, scale = 1)
 	public Float getPriorvendormarkuppct() {
-		return FormatUtil.process(this.priorvendormarkuppct);
+		return this.priorvendormarkuppct;
 	}
 
 	public void setPriorvendormarkuppct(Float priorvendormarkuppct) {
@@ -89,7 +89,7 @@ public class PriorVendor  implements java.io.Serializable {
 
 	@Column(name = "priorvendorfreightratecwt", precision = 9, scale = 4)
 	public Float getPriorvendorfreightratecwt() {
-		return FormatUtil.process(this.priorvendorfreightratecwt);
+		return this.priorvendorfreightratecwt;
 	}
 
 	public void setPriorvendorfreightratecwt(Float priorvendorfreightratecwt) {
@@ -98,7 +98,7 @@ public class PriorVendor  implements java.io.Serializable {
 
 	@Column(name = "priorvendorlandedbasecost", precision = 13, scale = 6)
 	public BigDecimal getPriorvendorlandedbasecost() {
-		return FormatUtil.process(this.priorvendorlandedbasecost);
+		return this.priorvendorlandedbasecost;
 	}
 
 	public void setPriorvendorlandedbasecost(BigDecimal priorvendorlandedbasecost) {
@@ -107,7 +107,7 @@ public class PriorVendor  implements java.io.Serializable {
 
 	//@Column(name = "priorvendordiscpct2", precision = 5)
 		//public Float getPriorvendordiscpct2() {
-		//	return FormatUtil.process(this.priorvendordiscpct2;
+		//	return this.priorvendordiscpct2;
 		//}
 
 		//public void setPriorvendordiscpct2(Float priorvendordiscpct2) {
@@ -116,7 +116,7 @@ public class PriorVendor  implements java.io.Serializable {
 
 		//@Column(name = "priorvendordiscpct3", precision = 5)
 		//public Float getPriorvendordiscpct3() {
-		//	return FormatUtil.process(this.priorvendordiscpct3;
+		//	return this.priorvendordiscpct3;
 		//}
 
 		//public void setPriorvendordiscpct3(Float priorvendordiscpct3) {

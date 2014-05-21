@@ -26,7 +26,7 @@ public class Notes implements java.io.Serializable {
 	
 	@Column(name = "po_notes", length = 120)
 	public String getPonotes() {
-		return FormatUtil.process(this.ponotes);
+		return this.ponotes;
 	}
 
 	public void setPonotes(String ponotes) {
@@ -35,7 +35,7 @@ public class Notes implements java.io.Serializable {
 	
 	@Column(name = "notes1", length = 35)
 	public String getNotes1() {
-		return FormatUtil.process(this.notes1);
+		return this.notes1;
 	}
 
 	public void setNotes1(String notes1) {
@@ -44,7 +44,7 @@ public class Notes implements java.io.Serializable {
 
 	@Column(name = "notes2", length = 35)
 	public String getNotes2() {
-		return FormatUtil.process(this.notes2);
+		return this.notes2;
 	}
 
 	public void setNotes2(String notes2) {
@@ -53,7 +53,7 @@ public class Notes implements java.io.Serializable {
 
 	@Column(name = "notes3", length = 120)
 	public String getNotes3() {
-		return FormatUtil.process(this.notes3);
+		return this.notes3;
 	}
 
 	public void setNotes3(String notes3) {

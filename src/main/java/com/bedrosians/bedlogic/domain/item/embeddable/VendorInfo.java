@@ -30,14 +30,15 @@ public class VendorInfo  implements java.io.Serializable {
 		private Float dutypct;
 		private Integer leadtime;
 		//To meet ims_check5 constraint
-		private BigDecimal vendorLandedBaseCost = new BigDecimal(0.00);
+		private BigDecimal vendorlandedbasecost = new BigDecimal(0.00);
 		private Float vendordiscpct2 = 0F;
 		private Float vendordiscpct3 = 0F;
 
+		public VendorInfo(){}
 
 		@Column(name = "vendorxrefcd", length = 30)
 		public String getVendorxrefcd() {
-			return FormatUtil.process(this.vendorxrefcd);
+			return this.vendorxrefcd;
 		}
 
 		public void setVendorxrefcd(String vendorxrefcd) {
@@ -46,7 +47,7 @@ public class VendorInfo  implements java.io.Serializable {
 
 		@Column(name = "vendornbr", precision = 6, scale = 0)
 		public Integer getVendornbr() {
-			return FormatUtil.process(this.vendornbr);
+			return this.vendornbr;
 		}
 
 		public void setVendornbr(Integer vendornbr) {
@@ -55,7 +56,7 @@ public class VendorInfo  implements java.io.Serializable {
 
 		@Column(name = "vendorpriceunit", length = 4)
 		public String getVendorpriceunit() {
-			return FormatUtil.process(this.vendorpriceunit);
+			return this.vendorpriceunit;
 		}
 
 		public void setVendorpriceunit(String vendorpriceunit) {
@@ -64,7 +65,7 @@ public class VendorInfo  implements java.io.Serializable {
 
 		@Column(name = "vendorfob", length = 10)
 		public String getVendorfob() {
-			return FormatUtil.process(this.vendorfob);
+			return this.vendorfob;
 		}
 
 		public void setVendorfob(String vendorfob) {
@@ -73,7 +74,7 @@ public class VendorInfo  implements java.io.Serializable {
 	   
 		@Column(name = "vendorlistprice", precision = 9, scale = 4)
 		public BigDecimal getVendorlistprice() {
-			return FormatUtil.process(this.vendorlistprice);
+			return this.vendorlistprice;
 		}
 
 		public void setVendorlistprice(BigDecimal vendorlistprice) {
@@ -82,7 +83,7 @@ public class VendorInfo  implements java.io.Serializable {
 
 		@Column(name = "vendordiscpct1", precision = 5)
 		public Float getVendordiscpct() {
-			return FormatUtil.process(this.vendordiscpct);
+			return this.vendordiscpct;
 		}
 
 		public void setVendordiscpct(Float vendordiscpct) {
@@ -91,7 +92,7 @@ public class VendorInfo  implements java.io.Serializable {
 
 		@Column(name = "vendordiscpct2", precision = 5)
 		public Float getVendordiscpct2() {
-			return FormatUtil.process(this.vendordiscpct2);
+			return this.vendordiscpct2;
 		}
 
 		public void setVendordiscpct2(Float vendordiscpct2) {
@@ -100,7 +101,7 @@ public class VendorInfo  implements java.io.Serializable {
 
 		@Column(name = "vendordiscpct3", precision = 5)
 		public Float getVendordiscpct3() {
-			return FormatUtil.process(this.vendordiscpct3);
+			return this.vendordiscpct3;
 		}
 
 		public void setVendordiscpct3(Float vendordiscpct3) {
@@ -109,7 +110,7 @@ public class VendorInfo  implements java.io.Serializable {
 
 		@Column(name = "vendorroundaccuracy", precision = 1, scale = 0)
 		public Integer getVendorroundaccuracy() {
-			return FormatUtil.process(this.vendorroundaccuracy);
+			return this.vendorroundaccuracy;
 		}
 
 		public void setVendorroundaccuracy(Integer vendorroundaccuracy) {
@@ -118,7 +119,7 @@ public class VendorInfo  implements java.io.Serializable {
 
 		@Column(name = "vendornetprice", precision = 9, scale = 4)
 		public BigDecimal getVendornetprice() {
-			return FormatUtil.process(this.vendornetprice);
+			return this.vendornetprice;
 		}
 
 		public void setVendornetprice(BigDecimal vendornetprice) {
@@ -127,7 +128,7 @@ public class VendorInfo  implements java.io.Serializable {
 
 		@Column(name = "vendormarkuppct", precision = 4, scale = 1)
 		public Float getVendormarkuppct() {
-			return FormatUtil.process(this.vendormarkuppct);
+			return this.vendormarkuppct;
 		}
 
 		public void setVendormarkuppct(Float vendormarkuppct) {
@@ -136,7 +137,7 @@ public class VendorInfo  implements java.io.Serializable {
 
 		@Column(name = "vendorfreightratecwt", precision = 9, scale = 4)
 		public Float getVendorfreightratecwt() {
-			return FormatUtil.process(this.vendorfreightratecwt);
+			return this.vendorfreightratecwt;
 		}
 
 		public void setVendorfreightratecwt(Float vendorfreightratecwt) {
@@ -144,17 +145,17 @@ public class VendorInfo  implements java.io.Serializable {
 		}
 
 		@Column(name = "vendorlandedbasecost", precision = 13, scale = 6)
-		public BigDecimal getVendorLandedBaseCost() {
-			return FormatUtil.process(this.vendorLandedBaseCost);
+		public BigDecimal getVendorlandedbasecost() {
+			return this.vendorlandedbasecost;
 		}
 
-		public void setVendorLandedBaseCost(BigDecimal vendorLandedBaseCost) {
-			this.vendorLandedBaseCost = vendorLandedBaseCost;
+		public void setVendorlandedbasecost(BigDecimal vendorlandedbasecost) {
+			this.vendorlandedbasecost = vendorlandedbasecost;
 		}
 
 		@Column(name = "vendornbr1", precision = 6, scale = 0)
 		public Integer getVendornbr1() {
-			return FormatUtil.process(this.vendornbr1);
+			return this.vendornbr1;
 		}
 
 		public void setVendornbr1(Integer vendornbr1) {
@@ -163,7 +164,7 @@ public class VendorInfo  implements java.io.Serializable {
 		
 		@Column(name = "vendornbr2", precision = 6, scale = 0)
 		public Integer getVendornbr2() {
-			return FormatUtil.process(this.vendornbr2);
+			return this.vendornbr2;
 		}
 
 		public void setVendornbr2(Integer vendornbr2) {
@@ -172,7 +173,7 @@ public class VendorInfo  implements java.io.Serializable {
 
 		@Column(name = "vendornbr3", precision = 6, scale = 0)
 		public Integer getVendornbr3() {
-			return FormatUtil.process(this.vendornbr3);
+			return this.vendornbr3;
 		}
 
 		public void setVendornbr3(Integer vendornbr3) {
@@ -181,7 +182,7 @@ public class VendorInfo  implements java.io.Serializable {
 		
 		@Column(name = "dutypct", precision = 7, scale = 4)
 		public Float getDutypct() {
-			return FormatUtil.process(this.dutypct);
+			return this.dutypct;
 		}
 
 		public void setDutypct(Float dutypct) {
@@ -190,7 +191,7 @@ public class VendorInfo  implements java.io.Serializable {
 		
 		@Column(name = "leadtime", precision = 4, scale = 0)
 		public Integer getLeadtime() {
-			return FormatUtil.process(this.leadtime);
+			return this.leadtime;
 		}
 
 		public void setLeadtime(Integer leadtime) {

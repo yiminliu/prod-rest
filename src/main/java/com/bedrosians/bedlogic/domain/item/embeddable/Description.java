@@ -19,7 +19,7 @@ public class Description implements java.io.Serializable {
 	
 	@Column(name = "fulldesc", length = 70)
 	public String getFulldesc() {
-		return FormatUtil.process(this.fulldesc);
+		return this.fulldesc;
 	}
 
 	public void setFulldesc(String fulldesc) {
@@ -28,7 +28,7 @@ public class Description implements java.io.Serializable {
 	
 	@Column(name = "itemdesc1", length = 35)
 	public String getItemdesc1() {
-		return FormatUtil.process(this.itemdesc1);
+		return this.itemdesc1;
 	}
 
 	public void setItemdesc1(String itemdesc1) {
@@ -37,7 +37,7 @@ public class Description implements java.io.Serializable {
 
 	@Column(name = "itemdesc2", length = 35)
 	public String getItemdesc2() {
-		return FormatUtil.process(this.itemdesc2);
+		return this.itemdesc2;
 	}
 
 	public void setItemdesc2(String itemdesc2) {

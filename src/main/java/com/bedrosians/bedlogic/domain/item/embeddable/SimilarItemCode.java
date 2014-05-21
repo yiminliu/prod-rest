@@ -23,7 +23,7 @@ public class SimilarItemCode implements java.io.Serializable {
 	
 	@Column(name = "similar_itemcd1", length = 18)
 	public String getSimilaritemcd1() {
-		return FormatUtil.process(this.similaritemcd1);
+		return this.similaritemcd1;
 	}
 
 	public void setSimilaritemcd1(String similaritemcd1) {
@@ -32,7 +32,7 @@ public class SimilarItemCode implements java.io.Serializable {
 
 	@Column(name = "similar_itemcd2", length = 18)
 	public String getSimilaritemcd2() {
-		return FormatUtil.process(this.similaritemcd2);
+		return this.similaritemcd2;
 	}
 
 	public void setSimilaritemcd2(String similaritemcd2) {
@@ -41,7 +41,7 @@ public class SimilarItemCode implements java.io.Serializable {
 
 	@Column(name = "similar_itemcd3", length = 18)
 	public String getSimilaritemcd3() {
-		return FormatUtil.process(this.similaritemcd3);
+		return this.similaritemcd3;
 	}
 
 	public void setSimilaritemcd3(String similaritemcd3) {
@@ -50,7 +50,7 @@ public class SimilarItemCode implements java.io.Serializable {
 
 	@Column(name = "similar_itemcd4", length = 18)
 	public String getSimilaritemcd4() {
-		return FormatUtil.process(this.similaritemcd4);
+		return this.similaritemcd4;
 	}
 
 	public void setSimilaritemcd4(String similaritemcd4) {
@@ -59,7 +59,7 @@ public class SimilarItemCode implements java.io.Serializable {
 
 	@Column(name = "similar_itemcd5", length = 18)
 	public String getSimilaritemcd5() {
-		return FormatUtil.process(this.similaritemcd5);
+		return this.similaritemcd5;
 	}
 
 	public void setSimilaritemcd5(String similaritemcd5) {
@@ -68,7 +68,7 @@ public class SimilarItemCode implements java.io.Serializable {
 
 	@Column(name = "similar_itemcd6", length = 18)
 	public String getSimilaritemcd6() {
-		return FormatUtil.process(this.similaritemcd6);
+		return this.similaritemcd6;
 	}
 
 	public void setSimilaritemcd6(String similaritemcd6) {
@@ -77,7 +77,7 @@ public class SimilarItemCode implements java.io.Serializable {
 
 	@Column(name = "similar_itemcd7", length = 18)
 	public String getSimilaritemcd7() {
-		return FormatUtil.process(this.similaritemcd7);
+		return this.similaritemcd7;
 	}
 
 	public void setSimilaritemcd7(String similaritemcd7) {

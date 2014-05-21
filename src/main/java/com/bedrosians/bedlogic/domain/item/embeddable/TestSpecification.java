@@ -36,7 +36,7 @@ public class TestSpecification  implements java.io.Serializable {
 	
 	@Column(name = "water_absorption", precision = 4)
 	public Float getWaterabsorption() {
-		return FormatUtil.process(this.waterabsorption);
+		return this.waterabsorption;
 	}
 
 	public void setWaterabsorption(Float waterabsorption) {
@@ -45,7 +45,7 @@ public class TestSpecification  implements java.io.Serializable {
 
 	@Column(name = "scratch_resistance", precision = 5)
 	public Float getScratchresistance() {
-		return FormatUtil.process(this.scratchresistance);
+		return this.scratchresistance;
 	}
 
 	public void setScratchresistance(Float scratchresistance) {
@@ -54,11 +54,7 @@ public class TestSpecification  implements java.io.Serializable {
 
 	@Column(name = "frost_resistance", length = 1)
 	public String getFrostresistance() {
-		
-		//if("P".equalsIgnoreCase(frostresistance))  return "Passed";	
-		//else if("N".equalsIgnoreCase(frostresistance)) return "Not Passed";
-		//else 
-		   return FormatUtil.process(this.frostresistance);
+	   return this.frostresistance;
 	}
 
 	public void setFrostresistance(String frostresistance) {
@@ -67,10 +63,7 @@ public class TestSpecification  implements java.io.Serializable {
 
 	@Column(name = "chemical_resistance", length = 1)
 	public String getChemicalresistance() {
-		//if("P".equalsIgnoreCase(chemicalresistance))  return "Passed";	
-		//else if("N".equalsIgnoreCase(chemicalresistance)) return "Not Passed";
-		//else 
-		   return FormatUtil.process(chemicalresistance);
+	   return chemicalresistance;
 	}
 
 	public void setChemicalresistance(String chemicalresistance) {
@@ -79,12 +72,12 @@ public class TestSpecification  implements java.io.Serializable {
 
 	@Column(name = "pei_abrasion", precision = 4, scale = 1)
 	public Float getPeiabrasion() {
-		return FormatUtil.process(this.peiabrasion);
+		return this.peiabrasion;
 	}
 	
 	@Column(name = "moh", precision = 5)
 	public Float getMoh() {
-		return FormatUtil.process(this.moh);
+		return this.moh;
 	}
 
 	public void setMoh(Float moh) {
@@ -97,7 +90,7 @@ public class TestSpecification  implements java.io.Serializable {
 
 	@Column(name = "scof_wet", precision = 4)
 	public Float getScofwet() {
-		return FormatUtil.process(this.scofwet);
+		return this.scofwet;
 	}
 
 	public void setScofwet(Float scofwet) {
@@ -106,7 +99,7 @@ public class TestSpecification  implements java.io.Serializable {
 
 	@Column(name = "scof_dry", precision = 4)
 	public Float getScofdry() {
-		return FormatUtil.process(this.scofdry);
+		return this.scofdry;
 	}
 
 	public void setScofdry(Float scofdry) {
@@ -115,7 +108,7 @@ public class TestSpecification  implements java.io.Serializable {
 
 	@Column(name = "breaking_strength", precision = 5, scale = 0)
 	public Integer getBreakingstrength() {
-		return FormatUtil.process(this.breakingstrength);
+		return this.breakingstrength;
 	}
 
 	public void setBreakingstrength(Integer breakingstrength) {
@@ -124,7 +117,7 @@ public class TestSpecification  implements java.io.Serializable {
 	
 	@Column(name = "sr_standard", length = 15)
 	public String getScratchstandard() {
-		return FormatUtil.process(this.scratchstandard);
+		return this.scratchstandard;
 	}
 
 	public void setScratchstandard(String scratchstandard) {
@@ -133,7 +126,7 @@ public class TestSpecification  implements java.io.Serializable {
 
 	@Column(name = "bk_standard", length = 15)
 	public String getBreakingstandard() {
-		return FormatUtil.process(this.breakingstandard);
+		return this.breakingstandard;
 	}
 
 	public void setBreakingstandard(String breakingstandard) {
@@ -142,7 +135,7 @@ public class TestSpecification  implements java.io.Serializable {
 
 	@Column(name = "greenfriendly", length = 1)
 	public Character getGreenfriendly() {
-		return FormatUtil.process(this.greenfriendly);
+		return this.greenfriendly;
 	}
 
 	public void setGreenfriendly(Character greenfriendly) {
@@ -151,7 +144,7 @@ public class TestSpecification  implements java.io.Serializable {
 	
 	@Column(name = "pre_consummer", precision = 5)
 	public Float getPreconsummer() {
-		return FormatUtil.process(this.preconsummer);
+		return this.preconsummer;
 	}
 
 	public void setPreconsummer(Float preconsummer) {
@@ -160,7 +153,7 @@ public class TestSpecification  implements java.io.Serializable {
 
 	@Column(name = "pos_consummer", precision = 5)
 	public Float getPosconsummer() {
-		return FormatUtil.process(this.posconsummer);
+		return this.posconsummer;
 	}
 
 	public void setPosconsummer(Float posconsummer) {
@@ -169,7 +162,7 @@ public class TestSpecification  implements java.io.Serializable {
 
 	@Column(name = "lead_point", length = 4)
 	public String getLeadpoint() {
-		return FormatUtil.process(this.leadpoint);
+		return this.leadpoint;
 	}
 
 	public void setLeadpoint(String leadpoint) {
@@ -178,7 +171,7 @@ public class TestSpecification  implements java.io.Serializable {
 	
 	@Column(name = "restricted", length = 1)
 	public Character getRestricted() {
-		return FormatUtil.process(this.restricted);
+		return this.restricted;
 	}
 
 	public void setRestricted(Character restricted) {
@@ -187,7 +180,7 @@ public class TestSpecification  implements java.io.Serializable {
 
 	@Column(name = "warpage", length = 1)
 	public Character getWarpage() {
-		return FormatUtil.process(this.warpage);
+		return this.warpage;
 	}
 
 	public void setWarpage(Character warpage) {
@@ -196,7 +189,7 @@ public class TestSpecification  implements java.io.Serializable {
 
 	@Column(name = "wedging", length = 1)
 	public Character getWedging() {
-		return FormatUtil.process(this.wedging);
+		return this.wedging;
 	}
 
 	public void setWedging(Character wedging) {
@@ -205,7 +198,7 @@ public class TestSpecification  implements java.io.Serializable {
 
 	@Column(name = "dcof", precision = 4, scale = 4)
 	public Float getDcof() {
-		return FormatUtil.process(this.dcof);
+		return this.dcof;
 	}
 
 	public void setDcof(Float dcof) {
@@ -214,7 +207,7 @@ public class TestSpecification  implements java.io.Serializable {
 
 	@Column(name = "thermal_shock", length = 1)
 	public Character getThermalshock() {
-		return FormatUtil.process(this.thermalshock);
+		return this.thermalshock;
 	}
 
 	public void setThermalshock(Character thermalshock) {
@@ -223,7 +216,7 @@ public class TestSpecification  implements java.io.Serializable {
 
 	@Column(name = "bond_strength", length = 6)
 	public String getBondstrength() {
-		return FormatUtil.process(this.bondstrength);
+		return this.bondstrength;
 	}
 
 	public void setBondstrength(String bondstrength) {

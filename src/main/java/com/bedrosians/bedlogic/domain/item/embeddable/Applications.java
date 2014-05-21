@@ -3,8 +3,6 @@ package com.bedrosians.bedlogic.domain.item.embeddable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import com.bedrosians.bedlogic.util.FormatUtil;
-
 @Embeddable
 public class Applications  implements java.io.Serializable {
 
@@ -16,7 +14,7 @@ public class Applications  implements java.io.Serializable {
 	
 	@Column(name = "residential", length = 20)
 	public String getResidential() {
-		return FormatUtil.process(this.residential);
+		return this.residential;
 	}
 
 	public void setResidential(String residential) {
@@ -25,7 +23,7 @@ public class Applications  implements java.io.Serializable {
 
 	@Column(name = "lightcommercial", length = 20)
 	public String getLightcommercial() {
-		return FormatUtil.process(this.lightcommercial);
+		return this.lightcommercial;
 	}
 
 	public void setLightcommercial(String lightcommercial) {
@@ -34,7 +32,7 @@ public class Applications  implements java.io.Serializable {
 
 	@Column(name = "commercial", length = 20)
 	public String getCommercial() {
-		return FormatUtil.process(this.commercial);
+		return this.commercial;
 	}
 
 	public void setCommercial(String commercial) {
