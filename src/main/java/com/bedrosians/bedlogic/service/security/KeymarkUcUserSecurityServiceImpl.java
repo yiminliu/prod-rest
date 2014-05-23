@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import com.bedrosians.bedlogic.domain.item.enums.ProductOperation;
+import com.bedrosians.bedlogic.domain.item.enums.DBOperation;
 import com.bedrosians.bedlogic.domain.user.KeymarkUcUser;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
@@ -27,7 +27,7 @@ public class KeymarkUcUserSecurityServiceImpl implements KeymarkUcUserSecuritySe
 	KeymarkUcUser keymarkUcUser = null;
 	
 	@Override
-	public void doSecurityCheck(String userType, String userCode, String password, boolean isPasswordBasedAuth, ProductOperation permission) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{
+	public void doSecurityCheck(String userType, String userCode, String password, boolean isPasswordBasedAuth, DBOperation permission) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{
 		switch(userType) {
 		   case "guest": case "Guest":
 			   return;
@@ -39,7 +39,7 @@ public class KeymarkUcUserSecurityServiceImpl implements KeymarkUcUserSecuritySe
 	}
 	
 	@Override
-	public void doSecurityCheck(String userType, String userCode, ProductOperation permission) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{
+	public void doSecurityCheck(String userType, String userCode, DBOperation permission) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{
 		switch(userType) {
 		   case "guest": case "Guest":
 			   break;
@@ -51,7 +51,7 @@ public class KeymarkUcUserSecurityServiceImpl implements KeymarkUcUserSecuritySe
 		}
 	}
 	
-	private void validateUserInfo(String userCode, String password, boolean isPasswordBased, ProductOperation permission) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{
+	private void validateUserInfo(String userCode, String password, boolean isPasswordBased, DBOperation permission) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{
 		keymarkUcUser = getUser(userCode);        
 		keymarkUcUserAuthentication.authenticate(keymarkUcUser, password, isPasswordBased);
 		keymarkUcUserAuthorization.authorize(keymarkUcUser, permission);
