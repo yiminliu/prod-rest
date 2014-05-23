@@ -1,4 +1,4 @@
-package com.bedrosians.bedlogic.resources;
+package com.bedrosians.bedlogic.resources.v1;
 
 import java.util.Map;
 import javax.ws.rs.core.HttpHeaders;

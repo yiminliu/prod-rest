@@ -1,37 +1,31 @@
-package com.bedrosians.bedlogic.resources;
+package com.bedrosians.bedlogic.resources.v1;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.GET;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.MultivaluedMap;
 
 import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.exception.BedResException;
 import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
-import com.bedrosians.bedlogic.bedDataAccessDAO.MaterialOrdersDAO;
-import com.bedrosians.bedlogic.models.MaterialOrders;
+import com.bedrosians.bedlogic.bedDataAccessDAO.ProductsDAO;
+import com.bedrosians.bedlogic.models.Products;
 
-@Path("/materialorders")
-public class MaterialOrdersResource
+@Path("/products")
+public class ProductsResource
 {
     /**
-     * MaterialOrders resource
-     * Query Params
-     * - openCode: optional. Values can be: A, Y, N. Default: A
+     * Products resource
      */
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    @Path("{itemcode}/{locationcode}")
-    public Response getMaterialOrders(@Context HttpHeaders requestHeaders
-                                    , @PathParam("itemcode") String itemCode
-                                    , @PathParam("locationcode") String locationCode
-                                    , @QueryParam("opencode") String openCode)
+    public Response getProducts(@Context HttpHeaders requestHeaders
+                                    , @Context UriInfo uriInfo)
     {
         Response    response;
 
@@ -46,18 +40,15 @@ public class MaterialOrdersResource
             String userType = userCodeParser.getUserType();
             String userCode = userCodeParser.getUserCode();
             
-            // Get query params
-            if (openCode == null || openCode.trim().isEmpty())
-            {
-                openCode = "A";
-            }
-            
+            // Get queryParams
+            MultivaluedMap queryParams = uriInfo.getQueryParameters();
+                        
             // Retrieve DAO object
-            MaterialOrdersDAO  materialOrdersDAO = new MaterialOrdersDAO();
-            MaterialOrders     result = materialOrdersDAO.readMaterialOrders(userType, userCode, itemCode, locationCode, openCode);
+            ProductsDAO productsDAO = new ProductsDAO();
+            Products    result = productsDAO.readProductsByQueryParams(userType, userCode, queryParams);
             
             // Return json reponse
-            String  jsonStr = result.toJSONString();
+            String     jsonStr = result.toJSONString();
             response = Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();
         }
         catch (BedDAOException e)
