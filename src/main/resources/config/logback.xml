@@ -22,12 +22,12 @@
     </encoder>
   </appender>
 
-  <logger name="aspect" level="DEBUG">
+  <logger name="aspect" level="INFO">
     <appender-ref ref="AOP_ROLLINGFILE" />
   </logger>
 
-  <root level="DEBUG">
-    <appender-ref ref="STDOUT" />
+  <root level="INFO">
+   <!--  <appender-ref ref="STDOUT" /> -->
     <appender-ref ref="AOP_ROLLINGFILE" />    
   </root>
 
