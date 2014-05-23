@@ -17,6 +17,7 @@ import com.bedrosians.bedlogic.domain.item.embeddable.Notes;
 import com.bedrosians.bedlogic.domain.item.embeddable.Price;
 import com.bedrosians.bedlogic.domain.item.embeddable.Units;
 import com.bedrosians.bedlogic.domain.item.embeddable.VendorInfo;
+import com.bedrosians.bedlogic.domain.item.enums.DBOperation;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 
 
@@ -313,23 +314,20 @@ public class FormatUtil {
 		*/
 	}
 	
-	public static Item transformItem(Item item, String operation) throws BedDAOBadParamException{
-		Item newItem = new Item();
-		try{
-	    	String itemCode = item.getItemcode().toUpperCase();
-		    newItem.setItemcode(itemCode);				
-		    transferProperty(newItem, item);
-		    transferComponent(newItem, item);
-		    transferAssociation(newItem, item, operation);
-		}
-		catch(Exception e){
-		  throw new BedDAOBadParamException("Error occured while transforming the input json: " + e.getMessage(), e.getCause());	
-		}
-		
+	public static Item transformItem(Item newItem, Item origItem, DBOperation operation) throws BedDAOBadParamException{
+		//Item newItem = new Item();
+	    	//String itemCode = item.getItemcode().toUpperCase();
+		    //newItem.setItemcode(itemCode);	
+		if(origItem == null)
+	       throw new BedDAOBadParamException("The input is empty");		
+		transferProperty(newItem, origItem);
+		transferComponent(newItem, origItem);
+		transferAssociation(newItem, origItem, operation);	
 		return newItem;
 	}
 		
-	private static void transferProperty(Item newItem, Item originalItem){
+	private static void transferProperty(Item newItem, Item originalItem) throws BedDAOBadParamException{
+	  try{	
 		if(originalItem.getAbccd() != null) newItem.setAbccd(originalItem.getAbccd());
 		if(originalItem.getCountryorigin() != null) newItem.setCountryorigin(originalItem.getCountryorigin());
 		if(originalItem.getDimensions() != null) newItem.setDimensions(originalItem.getDimensions());
@@ -353,7 +351,8 @@ public class FormatUtil {
 		if(originalItem.getTaxclass() != null) newItem.setTaxclass(originalItem.getTaxclass());
 		if(originalItem.getType() != null) newItem.setType(originalItem.getType());
 		if(originalItem.getUpdatecd() != null) newItem.setUpdatecd(originalItem.getUpdatecd());
-	
+		if(originalItem.getProductline() != null) newItem.setProductline(originalItem.getProductline());
+		
 		if(originalItem.getColorcategory() != null){
 		   if(originalItem.getColorcategory().contains(":")){
 			  String[] colors = originalItem.getColorcategory().split(":");
@@ -363,11 +362,16 @@ public class FormatUtil {
 		   }
 		   newItem.setColorcategory(originalItem.getColorcategory());
 		}
+	  }
+	  catch(Exception e){
+			  throw new BedDAOBadParamException("Error occured while transferProperty(): " + e.getMessage(), e.getCause());	
+	  }	
 	}
 	
-	private static void transferComponent(Item newItem, Item originalItem){
+	private static void transferComponent(Item newItem, Item originalItem) throws BedDAOBadParamException{
+      try{
     	if(originalItem.getApplications() != null) newItem.setApplications(originalItem.getApplications());
-		if(originalItem.getCost() != null) newItem.setCost(originalItem.getCost());
+      	if(originalItem.getCost() != null) newItem.setCost(originalItem.getCost());
 		if(originalItem.getDimensions() != null) newItem.setDimensions(originalItem.getDimensions());
 		if(originalItem.getItemdesc() != null) newItem.setItemdesc(originalItem.getItemdesc());
 		if(originalItem.getMaterial() != null) newItem.setMaterial(originalItem.getMaterial());
@@ -397,10 +401,15 @@ public class FormatUtil {
 			   units.setBaseunit("PCS");
 			
 			newItem.setUnits(units);
-		}		
+		}
+      }
+	  catch(Exception e){
+			  throw new BedDAOBadParamException("Error occured while transferComponent(): " + e.getMessage(), e.getCause());	
+	  }		
 	}
 	
-	private static void transferAssociation(Item newItem, Item originalItem, String operation){
+	private static void transferAssociation(Item newItem, Item originalItem, DBOperation operation) throws BedDAOBadParamException{
+	  try{
 		ImsNewFeature newFeature = originalItem.getImsNewFeature();
 		Set<ColorHue> colorHueSet = originalItem.getColorhues();
 		IconCollection iconCollection = originalItem.getIconDescription();
@@ -409,12 +418,13 @@ public class FormatUtil {
 		VendorInfo vendorInfo = originalItem.getVendors();
 	    Notes legacyNotes = (originalItem.getNotes() != null)? originalItem.getNotes() : new Notes();
 	    
-		if(newFeature != null && !newFeature.isEmpty()){//!newFeature.equals(newItem.getImsNewFeature())){
-		   if("insert".equalsIgnoreCase(operation) && (newFeature.getCreatedDate() == null || newFeature.getCreatedDate().after(new Date())))
+		if(newFeature != null && !newFeature.isEmpty()){
+		    if(operation.equals(DBOperation.CREATE) && newFeature.getCreatedDate() == null)
 			   newFeature.setCreatedDate(new Date());
-		   else if("update".equalsIgnoreCase(operation) && (newFeature.getLastModifiedDate() == null || newFeature.getCreatedDate().before(new Date())))
+		    else if(operation.equals(DBOperation.UPDATE) && newFeature.getLastModifiedDate() == null)
 			   newFeature.setLastModifiedDate(new Date());
-		   newItem.addImsNewFeature(newFeature);	
+		    
+		    newItem.addImsNewFeature(newFeature);	
 		}
 		
 		if(colorHueSet != null && !colorHueSet.isEmpty()){
@@ -422,11 +432,11 @@ public class FormatUtil {
 			   if(color != null && color.getColorHue() != null && !color.getColorHue().isEmpty())
 			   newItem.addColorhue(color);	
 		   }
-		   if("insert".equalsIgnoreCase(operation) && (newItem.getColorcategory() == null || newItem.getColorcategory().isEmpty()))
+		   //if("insert".equalsIgnoreCase(operation) && (newItem.getColorcategory() == null || newItem.getColorcategory().isEmpty()))
 			  newItem.setColorcategory(ImsResultUtil.convertColorHuesToColorCategory(colorHueSet));
-		   else if("update".equalsIgnoreCase(operation)){
+		   //else if("update".equalsIgnoreCase(operation)){
 			   
-		   }
+		   //}
 	    }
 		
 		if(iconCollection != null && !iconCollection.isEmpty()){//!iconCollection.equals(newItem.getIconDescription())){
@@ -447,9 +457,9 @@ public class FormatUtil {
 		
 		if(noteList != null && !noteList.isEmpty()){
 			for(Note note : noteList){	
-				if("insert".equalsIgnoreCase(operation) && note.getCreatedDate() == null)
+				if(operation.equals(DBOperation.CREATE) && note.getCreatedDate() == null)
  		           note.setCreatedDate(new Date());
-				else if("update".equalsIgnoreCase(operation) && note.getLastModifiedDate() == null)
+				else if(operation.equals(DBOperation.UPDATE) && note.getLastModifiedDate() == null)
 				   note.setLastModifiedDate(new Date());	
 			    newItem.addNote(note);	
  		        //update legacy notes
@@ -464,7 +474,12 @@ public class FormatUtil {
 		    }
 			if(legacyNotes != null)
 				newItem.setNotes(legacyNotes);
-		}	
+		}
+	 }
+	  catch(Exception e){
+			  throw new BedDAOBadParamException("Error occured while transferAssociation(): " + e.getMessage(), e.getCause());	
+	  }	
+		
 	}
 	
 	

@@ -68,7 +68,7 @@ public class JsonUtil {
 		return object;
 	}
 	
-	public static Object jsonObjectToPOJO(JSONObject jsonObj, Object obj){
+	public static Object jsonObjectToPOJO(JSONObject jsonObj, Object obj) throws BedDAOBadParamException {
 		Object object = null; 
  		ObjectMapper mapper = new ObjectMapper();
 		try{
@@ -77,15 +77,19 @@ public class JsonUtil {
 		}
         catch (JsonGenerationException e) {
 	      	e.printStackTrace();
+	      	throw new BedDAOBadParamException("JsonGenerationException occured while jsonObjectToPOJO(): " + e.getMessage());
         } 
 		catch (JsonMappingException e) { 
 		    e.printStackTrace();
+		    throw new BedDAOBadParamException("JsonMappingException occured while jsonObjectToPOJO(): " + e.getMessage());
         }
 		catch (JsonParseException e) { 
 		    e.printStackTrace();
+		    throw new BedDAOBadParamException("JsonParseException occured while jsonObjectToPOJO(): " + e.getMessage());
         }
 		catch(IOException e){
 			e.printStackTrace();
+			throw new BedDAOBadParamException("IOException occured while jsonObjectToPOJO(): " + e.getMessage());
 		}
 		return object;
 	}
@@ -245,11 +249,13 @@ public class JsonUtil {
     	return itemCode;	         
     }
 	
-	public static void validateItemCode(JSONObject jsonObj) throws BedDAOBadParamException{
-		if(getItemCode(jsonObj) == null || getItemCode(jsonObj).length() < 1)
+	public static String validateItemCode(JSONObject jsonObj) throws BedDAOBadParamException{
+		String itemCode = getItemCode(jsonObj);
+		if(itemCode == null || itemCode.length() < 1)
 		   throw new BedDAOBadParamException("Item code cannot be empty.");
-		if(getItemCode(jsonObj).length() > 18)
+		if(itemCode.length() > 18)
 		   throw new BedDAOBadParamException("Item code cannot be longer that 18 characters.");
+		return itemCode.toUpperCase();
 	}
 	
 	

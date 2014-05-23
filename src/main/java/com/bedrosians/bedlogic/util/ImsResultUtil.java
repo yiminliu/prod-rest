@@ -117,13 +117,15 @@ public class ImsResultUtil {
 		   return null;	
 		else{
 			Set<ColorHue> colorHues = new HashSet<>();
-			for(String color : Arrays.asList(item.getColorcategory().trim().split(":"))){
-				ColorHue colorHue = new ColorHue(color);
+			ColorHue colorHue = null;
+			for(String color : item.getColorcategory().trim().split(":")){
+				colorHue = new ColorHue(color);
 				colorHue.setItem(item);
 				colorHues.add(colorHue);
 			}
 	        return colorHues;
 		}
+
 	}
 	
 	public static String convertColorHuesToColorCategory( Set<ColorHue> colorHues){
