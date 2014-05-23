@@ -3,14 +3,9 @@ package com.bedrosians.bedlogic.models;
 import java.io.StringWriter;
 import java.io.Writer;
 
-import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig.Feature;
 
-import com.bedrosians.bedlogic.domain.item.Item;
 import com.bedrosians.bedlogic.exception.BedResException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 import net.minidev.json.JSONObject;
 
