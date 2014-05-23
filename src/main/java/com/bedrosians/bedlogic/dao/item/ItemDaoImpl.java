@@ -20,7 +20,6 @@ import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.sql.Alias;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Isolation;
@@ -30,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bedrosians.bedlogic.dao.GenericDaoImpl;
 import com.bedrosians.bedlogic.domain.item.ImsNewFeature;
 import com.bedrosians.bedlogic.domain.item.Item;
-import com.bedrosians.bedlogic.domain.item.enums.Color;
 import com.bedrosians.bedlogic.domain.item.enums.Grade;
 import com.bedrosians.bedlogic.domain.item.enums.Status;
 import com.bedrosians.bedlogic.domain.item.enums.Body;
@@ -54,9 +52,7 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	 
     private static final int DEFAULT_MAX_RESULTS = 50000;//500; 
     private int maxResults = 0;
-	//private static final int OFF_SET = 0;
-	//private static final int TIMEOUT = 15;
-   
+	
 	@Override
 	@Loggable(value = LogLevel.TRACE)
 	@Transactional(readOnly=true)
@@ -74,168 +70,8 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
        return loadById(session, itemId);
 	}
  
-	/*
-	@Override
-	@Loggable(value = LogLevel.TRACE)
-	@Transactional(readOnly=true)	
-	public List<Item> getItemsByQueryParameters(MultivaluedMap<String, String> queryParams) throws BedDAOException{
-	   if(queryParams == null) 
-		   return null;
-	   List<Item> items = null;
-	   boolean exactMatch = queryParams.containsKey("exactmatch")? true : queryParams.containsKey("exactMatch")? true : false;
-	   maxNumberOfResults = ImsQueryUtil.getMaxResults(queryParams);
-	   Set<Map.Entry<String, List<String>>> entrySet = queryParams.entrySet();
-	   Iterator<Map.Entry<String, List<String>>> it = entrySet.iterator();
-	   Criteria newFeatureCriteria = null;
-	   Criteria vendorCriteria = null;
-	   Criteria noteCriteria = null;
-       Criteria colorHueCriteria = null;
-       Criteria itemCriteria = sessionFactory.getCurrentSession().createCriteria(Item.class);
-	   String key, value = null;
-	   List<String> values = null;
-	   while(it.hasNext()) {
-	     	Entry<String, List<String>> entry = (Entry<String, List<String>>)it.next();
-	 	    key = normalizeKey((String)entry.getKey());
-	 	   	values = entry.getValue();	
-	 	   	if(values == null || values.isEmpty())
-	 	   	   continue;
-    		value = values.get(0);
-    		//------ conditional pattern match -------//
-    		if(!exactMatch && "itemcode".equalsIgnoreCase(key)){
-    		   if(values.size() > 1)	
-    			   itemCriteria = generateLikeDisjunctionCriteria(itemCriteria, key, values);
-    		   else
-    			   itemCriteria.add(Restrictions.ilike(key, wildCardRight(value)));
-	           continue;
-            }
-   	        else if(!exactMatch && ("materialcategory".equalsIgnoreCase(key))){
-   	        	if(values.size() > 1)	
-     			   itemCriteria = generateLikeDisjunctionCriteria(itemCriteria, "material." + key, values);
-     		   else
-	        	   itemCriteria.add(Restrictions.ilike("material." + key, wildCardRight(value)));
-			    continue;
-	        }
-    		//------ unconditional pattern match -------//
-	        if("colorcategory".equalsIgnoreCase(key) || "colorhues".equalsIgnoreCase(key)){
-	        	if(values.size() > 1)	
-	     		   itemCriteria = generateLikeDisjunctionCriteria(itemCriteria, "colorcategory", values);
-	        	else
-	        	   itemCriteria.add(Restrictions.ilike("colorcategory", wildCardBoth(value)));
-		        continue;
-		    }  
-		    else if("itemdesc.fulldesc".equalsIgnoreCase(key) || "itemdesc.itemdesc1".equalsIgnoreCase(key)){
-		      	 if(values.size() > 1)	
-	     		    itemCriteria = generateLikeDisjunctionCriteria(itemCriteria, key, values);
-	     		 else
-			        itemCriteria.add(Restrictions.ilike(key, wildCardBoth(value)));
-			     continue;
-		    }  	
-	        //----- other multiple values case ------//
-	 	   	if(!"size".equals(key) && (values.size() > 1 || values.contains(",") || values.indexOf(",") >= 0 || values.toArray().length > 1 || values.toString().contains(","))){
-    		   itemCriteria.add(Restrictions.in(key, values));
-	 	       //criteria.add(Restrictions.in(key, (String[])values.toArray()));
-    		   continue;
-	 	   	}  
-    		//------- add association criteria --------//
-	 	   	if(ImsNewFeature.allProperties().contains(key)) {	
-	   		   if(newFeatureCriteria == null)
-	     	      newFeatureCriteria = itemCriteria.createCriteria("imsNewFeature");
-	   	       newFeatureCriteria = addNewFeatureRestrictions(newFeatureCriteria, key, value);
-	       	   continue;
-		    }
-	 	   	switch(key) {
-	   	   	   case "vendorid": case "vendorId": case "vendorNumber":
-	   	           if(vendorCriteria == null)
-	 		          vendorCriteria = itemCriteria.createCriteria("newVendorSystem");
-			       vendorCriteria.add(Restrictions.eq("itemVendorId.vendorId", Integer.parseInt(value)));
-			       break;
-	 	   	   case "notetype": case "noteType":
-	   		       if(noteCriteria == null)
-	   		          noteCriteria = itemCriteria.createCriteria("newNoteSystem");
-			       noteCriteria.add(Restrictions.eq(key, value).ignoreCase());
-			       break;
-			   //------ add comparison Restrictions ------//     
-	 	   	   case "series.seriesname": 
-	 	   		   if(values.size() > 1)	
-	     			  itemCriteria = generateLikeDisjunctionCriteria(itemCriteria, key, values);
-	     		   else
-	 		          itemCriteria.add(Restrictions.eq(key, value));
-	 		       break;  
-	 	   	   case "series.seriescolor":	
-	 		       itemCriteria.add(Restrictions.eq(key, value));
-	 		       break;     
-	 	       case "materialtype":	case "materialType": 
-	 	       case "materialcategory": case "materialCategory": 
-	 	       case "materialstyle": case "materialStyle": 
-	 	       case "materialfeature": case "materialFeature":
-	 	       case "materialclass": case "materialClass":
-	 	    	  if(values.size() > 1)	
-	     			  itemCriteria = generateLikeDisjunctionCriteria(itemCriteria, "material."+ key, values);
-	     		   else
-	   		          itemCriteria.add(Restrictions.eq("material."+ key, value).ignoreCase());
-	   		       break;
-	 	      case "size": case "sizes":
-   	   		       itemCriteria = parseSize(itemCriteria, values);
-	 	   		   break;    
-	  		   case "purchaser":	
-	   		       itemCriteria.add(Restrictions.eq("purchasers.purchaser", value).ignoreCase());
-	   		       break;
-	 	   	   case "lengthmin": case "lengthMin":
-	 	   		   itemCriteria.add(Restrictions.ge("dimensions.nominallength", Float.parseFloat(value))); 
-	 	   		   break;
-	 	   	   case "widthmin": case "widthMin":
-	 	   		   itemCriteria.add(Restrictions.ge("dimensions.nominalwidth", Float.parseFloat(value))); 
-	 	   		   break;
-	 	   	   case "lengthmax": case "lengthMax":
-	 	   		   itemCriteria.add(Restrictions.le("dimensions.nominallength", Float.parseFloat(value)));
-		    	   itemCriteria.add(Restrictions.gt("dimensions.nominallength", 0F)); 	
-		    	   break;
-	 	   	   case "widthmax": case "widthMax":
-	 	   		   itemCriteria.add(Restrictions.le("dimensions.nominalwidth", Float.parseFloat(value))); 
-		    	   itemCriteria.add(Restrictions.gt("dimensions.nominalwidth", 0F));
-		    	   break;
-	 	   	   case "nominallength": case "nominalLength": case "nominalwidth": case "nominalWidth":	
-	 	   		   itemCriteria.add(Restrictions.eq("dimensions" + "." +key, Float.parseFloat(value)));
-	 	   		   break;
-	 	   	   case "pricemax": case "priceMax":
-	 	   		   itemCriteria.add(Restrictions.le("price.sellprice", new BigDecimal(value))); 
-	 	   		   itemCriteria.add(Restrictions.gt("price.sellprice", new BigDecimal(0))); 
-	 	           break;
-	 	   	   case "sellprice": case "listprice": case "cost":  case "cost1": 
-                   itemCriteria.add(Restrictions.eq(key, new BigDecimal(value))); 
-                   break;
-	 	   	   case "waterabsorption": case "waterAbsorption": case "peiabrasion": case "peiAbrasion": case "moh": case "dcof": case "scof": case  "scratchresistance": case "scratchResistance":   
-	 	   	       itemCriteria.add(Restrictions.eq(key, Float.parseFloat(value)));
-	 	   	       break;
-	 	   	   case "exactMatch": case "exactmatch": case "maxresults": case "maxResults":
- 	   		       break;    
-	 	   	   default:     
-	 	   		   itemCriteria.add(Restrictions.eq(key, value).ignoreCase());
-	 	   		   break;
-	 	   	}	      	    	
-	    }
-	    itemCriteria.setReadOnly(true);
-        itemCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-        itemCriteria.addOrder(Order.asc("itemcode"));
-        if(maxNumberOfResults > 0)
-	      itemCriteria.setMaxResults(maxNumberOfResults);
-        //else
-        //	itemCriteria.setMaxResults(DEFAULT_MAX_RESULTS);	
-        System.out.println("criteria = " +itemCriteria.toString());
-		try {
-		    items =  (List<Item>)itemCriteria.list();			
-		}
-		catch(HibernateException hbe){
-			if(hbe.getCause() != null)
-		       throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
-    		else
-	  		   throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage());
-		}
-	  	return items;	
-    }
-	*/
 	
-	/*Rules for Pattern/Exact matches:
+	/*  Rules for Pattern/Exact matches:
 	 *  colorcategory: always use LIKE on both sides: like '%data%'
 	 *  fulldesc and itemdesc1 always use LIKE on right side: like 'data%'
 	 *  itemcode and materialcategory depend on the input exactmatch flag. If 'exactmatch' in input, use LIKE, otherwise, use exact match 
@@ -402,13 +238,8 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	 	   		   break;
 	 	   	}	      	    	
 	    }
-	   // itemCriteria.setReadOnly(true);
         itemCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         itemCriteria.addOrder(Order.asc("itemcode"));
-        //  if(maxNumberOfResults > 0)
-	   //   itemCriteria.setMaxResults(maxNumberOfResults);
-        //else
-        //	itemCriteria.setMaxResults(DEFAULT_MAX_RESULTS);	
         System.out.println("criteria = " +itemCriteria.toString());
 		try {
 			if(maxResults > 0)
@@ -425,15 +256,6 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	  	return items;	
     }
 	
-	//@Override
-	@Loggable(value = LogLevel.TRACE)
-	@Transactional(readOnly=true)	
-	public List<Item> executeCriteria(DetachedCriteria detachedCriteria) throws BedDAOException{
-		
-		return (List<Item>)detachedCriteria.getExecutableCriteria(sessionFactory.getCurrentSession()).list();
-	
-	}
-	
 	@Override
 	@Loggable(value = LogLevel.TRACE)
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
@@ -443,9 +265,8 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	
 	@Override
 	@Loggable(value = LogLevel.TRACE)
-	@Transactional(isolation = Isolation.REPEATABLE_READ)
-	public void updateItem(Item item){
-		update(sessionFactory.getCurrentSession(), item);
+	public void updateItem(Session session, Item item){
+		update(session, item);
 	}
 	
 	@Override

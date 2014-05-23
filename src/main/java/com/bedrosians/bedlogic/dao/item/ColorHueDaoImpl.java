@@ -2,7 +2,9 @@ package com.bedrosians.bedlogic.dao.item;
 
 
 import java.util.Set;
+import java.util.HashSet;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,11 @@ public class ColorHueDaoImpl extends GenericDaoImpl<ColorHue, String> implements
 	private SessionFactory sessionFactory;
 	 
     
+	@Override
+	public Set<ColorHue> getAllColorHues() {
+		return new HashSet<ColorHue>(findAll(sessionFactory.getCurrentSession()));
+	}
+
 	@Override
 	@Loggable(value = LogLevel.TRACE)
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
