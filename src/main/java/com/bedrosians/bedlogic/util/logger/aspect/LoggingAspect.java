@@ -2,6 +2,7 @@ package com.bedrosians.bedlogic.util.logger.aspect;
 
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 
 import javax.annotation.Resource;
@@ -16,7 +17,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
-
 
 import com.bedrosians.bedlogic.domain.item.Item;
 
@@ -182,13 +182,22 @@ public class LoggingAspect {
 			descriptor = arg;
 		}
 
-		if (arg instanceof java.util.Collection) {
+		if (arg instanceof java.util.List) {
 			buffer.append(constructArg((List<Object>) arg));
 		} else if (id != null && id.equals("unknown")) {
 			buffer.append(formatArg(clazz, arg));
 		} else {
 			buffer.append(formatArg(id, descriptor));
 		}
+		
+		/*if (arg instanceof java.util.Set) {
+			buffer.append(constructArg((Set<Object>) arg));
+		} else if (id != null && id.equals("unknown")) {
+			buffer.append(formatArg(clazz, arg));
+		} else {
+			buffer.append(formatArg(id, descriptor));
+		}
+		*/
 		return buffer.toString();
 	}
 	
