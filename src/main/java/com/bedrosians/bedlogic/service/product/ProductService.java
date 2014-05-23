@@ -27,10 +27,6 @@ public interface ProductService {
 	
 	public String createProduct(JSONObject inputJsonObj) throws BedDAOBadParamException, BedDAOException, BedResException;
 	
-	//public String createProduct(String inputJsonString) throws BedDAOBadParamException, BedDAOException, BedResException;
-	
-	public void updateProduct(String inputJsonString) throws BedDAOBadParamException, BedDAOException, BedResException;
-	
 	public void updateProduct(Item item) throws BedDAOBadParamException, BedDAOException, BedResException;
 	
 	public void updateProduct(String itemId, Item item) throws BedDAOBadParamException, BedDAOException, BedResException;
