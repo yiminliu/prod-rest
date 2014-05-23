@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.Cache;
@@ -25,6 +26,7 @@ public class ColorHue implements java.io.Serializable {
 	private Integer id;
 	private String colorHue;
 	private Item item;
+	private Integer version;
 	
 	public ColorHue() {
 	}
@@ -32,16 +34,18 @@ public class ColorHue implements java.io.Serializable {
 	public ColorHue(Integer id) {
 		this.id = id;
 	}
-
-	public ColorHue(Integer id, String colorHue) {
-		this.id = id;
-		this.colorHue = colorHue;
-	}
 	
 	public ColorHue(String colorHue) {
 		this.colorHue = colorHue;
 	}
 
+	public ColorHue(String colorHue, Item item) {
+		super();
+		this.colorHue = colorHue;
+		this.item = item;
+	}
+
+	
 	public ColorHue(Integer id, String colorHue, Item item) {
 		super();
 		this.id = id;
@@ -82,13 +86,24 @@ public class ColorHue implements java.io.Serializable {
 		this.colorHue = colorHue;
 	}
 
+	@JsonIgnore
+    @Version
+    @Column(name = "version")
+    public Integer gerVersion(){
+    	return version;
+    }
+	
+    private void setVersion(Integer version){
+		this.version = version;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
 				+ ((colorHue == null) ? 0 : colorHue.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((item == null) ? 0 : item.getItemcode().hashCode());
 		return result;
 	}
 
@@ -98,7 +113,7 @@ public class ColorHue implements java.io.Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof ColorHue))
 			return false;
 		ColorHue other = (ColorHue) obj;
 		if (colorHue == null) {
@@ -106,12 +121,15 @@ public class ColorHue implements java.io.Serializable {
 				return false;
 		} else if (!colorHue.equals(other.colorHue))
 			return false;
-		if (id == null) {
-			if (other.id != null)
+		if (item == null) {
+			if (other.item != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} else if (!item.getItemcode().equals(other.item.getItemcode()))
 			return false;
 		return true;
 	}
 
+	
+
+	
 }

@@ -9,11 +9,9 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.Version;
@@ -21,6 +19,8 @@ import javax.persistence.Version;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 import com.bedrosians.bedlogic.domain.item.enums.OriginCountry;
 
@@ -31,7 +31,7 @@ public class IconCollection implements java.io.Serializable {
   
 	private static final long serialVersionUID = -1113582221787L;
 	
-	private Integer iconId;
+	private String itemCode;
 	private OriginCountry madeInCountry;
     //The should be either "true" of "false when insert or update the following properties
 	private Boolean exteriorProduct;
@@ -56,11 +56,11 @@ public class IconCollection implements java.io.Serializable {
 	public IconCollection() {
 	}
 	
-	public IconCollection(Integer iconId) {
-		this.iconId = iconId;
+	public IconCollection(String itemCode) {
+		this.itemCode = itemCode;
 	}
 
-	public IconCollection(Integer iconId, OriginCountry madeInCountry,
+	public IconCollection(String itemCode, OriginCountry madeInCountry,
 			Boolean exteriorProduct, Boolean adaAccessibility,
 			Boolean throughColor, Boolean colorBody, Boolean inkJet,
 			Boolean glazed, Boolean unglazed, Boolean rectifiedEdge,
@@ -69,7 +69,7 @@ public class IconCollection implements java.io.Serializable {
 			Boolean greenFriendlyIcon, Boolean coefficientOfFriction,
 			Integer version, Item item) {
 		super();
-		this.iconId = iconId;
+		this.itemCode = itemCode;
 		this.madeInCountry = madeInCountry;
 		this.exteriorProduct = exteriorProduct;
 		this.adaAccessibility = adaAccessibility;
@@ -92,16 +92,16 @@ public class IconCollection implements java.io.Serializable {
 	}
 
 	@JsonIgnore
+	@GenericGenerator(name = "generator", strategy = "foreign", parameters = @Parameter(name = "property", value = "item"))
 	@Id
-	@Column(name = "icon_id", unique = true, nullable = false)
-	@GeneratedValue(strategy=GenerationType.AUTO, generator="ims_icon_id_seq_gen")
-	@SequenceGenerator(name="ims_icon_id_seq_gen", sequenceName="ims_icon_icon_id_seq")
-	public Integer getIconId() {
-		return this.iconId;
+	@GeneratedValue(generator = "generator")
+	@Column(name = "item_code", unique = true, nullable = false)
+	public String getItemCode() {
+		return itemCode;
 	}
 
-	public void setIconId(Integer iconId) {
-		this.iconId = iconId;
+	public void setItemCode(String itemCode) {
+		this.itemCode = itemCode;
 	}
 	
 	@JsonIgnore
@@ -346,5 +346,32 @@ public class IconCollection implements java.io.Serializable {
 			   chiseledEdge == null && versaillesPattern == null && recycled == null && postRecycled == null && 
 			   preRecycled == null && leadPointIcon == null && greenFriendlyIcon == null && coefficientOfFriction == null;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((itemCode == null) ? 0 : itemCode.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof IconCollection))
+			return false;
+		IconCollection other = (IconCollection) obj;
+		if (itemCode == null) {
+			if (other.itemCode != null)
+				return false;
+		} else if (!itemCode.equals(other.itemCode))
+			return false;
+		return true;
+	}
+
 	
 }

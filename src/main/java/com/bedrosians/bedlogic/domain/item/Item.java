@@ -3,11 +3,12 @@ package com.bedrosians.bedlogic.domain.item;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -26,8 +27,8 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonRootName;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.stereotype.Component;
 
 import com.bedrosians.bedlogic.domain.item.embeddable.Description;
@@ -45,13 +46,14 @@ import com.bedrosians.bedlogic.domain.item.embeddable.SimilarItemCode;
 import com.bedrosians.bedlogic.domain.item.embeddable.TestSpecification;
 import com.bedrosians.bedlogic.domain.item.embeddable.Units;
 import com.bedrosians.bedlogic.domain.item.embeddable.VendorInfo;
-import com.bedrosians.bedlogic.util.FormatUtil;
 import com.bedrosians.bedlogic.util.ImsResultUtil;
 
 @JsonRootName(value = "item")
 @Component
 @Entity
 @Table(name = "ims", schema = "public")
+@DynamicUpdate
+@DynamicInsert
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="item")
 public class Item implements java.io.Serializable {
 
@@ -85,30 +87,31 @@ public class Item implements java.io.Serializable {
 	private Date priorlastupdated;	
 	
 	//----- Embedded Components ---------//
-	private Description itemdesc = new Description();
-	private Series series = new Series();
-	private Material material = new Material();
-	private Dimensions dimensions = new Dimensions();
+	private Description itemdesc;
+	private Series series;
+	private Material material;
+	private Dimensions dimensions;
+	//this default is to meet ims_check5
 	private Price price = new Price();
+	private VendorInfo vendors = new VendorInfo();
 	private List<String> usage;
-	private TestSpecification testSpecification = new TestSpecification();
- 	private SimilarItemCode relateditemcodes = new SimilarItemCode();
-	private Purchasers purchasers = new Purchasers();
+	private TestSpecification testSpecification;
+ 	private SimilarItemCode relateditemcodes;
+	private Purchasers purchasers;
 	private PackagingInfo packaginginfo = new PackagingInfo();
-	private Notes notes = new Notes();
-	private Applications applications = new Applications();
-  	private Units units = new Units();
-  	private Cost cost = new Cost();
-  	private VendorInfo vendors = new VendorInfo();
-  	private PriorVendor priorVendor = new PriorVendor();
+	private Notes notes;
+	private Applications applications;
+  	private Units units;
+  	private Cost cost;
+  	private PriorVendor priorVendor;
   	
 	//------- Associations --------//
   	private ImsNewFeature imsNewFeature;
+    private IconCollection iconDescription;
   	private Set<ColorHue> colorhues =  new HashSet<>();
 	private Set<ItemVendor> newVendorSystem = new HashSet<>();
   	private List<Note> newNoteSystem = new ArrayList<>();
-    private IconCollection iconDescription = new IconCollection();
-   	
+     	
   	public Item() {
 	}
 
@@ -407,7 +410,6 @@ public class Item implements java.io.Serializable {
 		this.showonwebsite = showonwebsite;
 	}
 
-	//@JsonIgnore
     @Column(name = "colorcategory", length = 30)
 	public String getColorcategory() {
 		return this.colorcategory;
@@ -476,6 +478,7 @@ public class Item implements java.io.Serializable {
 	}
 	
 	@OneToOne(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL)
+	//@Cascade({org.hibernate.annotations.CascadeType.ALL})
 	public ImsNewFeature getImsNewFeature() {	
 	    return this.imsNewFeature;
 	}
@@ -503,7 +506,7 @@ public class Item implements java.io.Serializable {
 		this.iconDescription = iconDescription;
 	}
 
-	@LazyCollection(LazyCollectionOption.FALSE)
+	//@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL)
 	public Set<ColorHue> getColorhues() {
 		return this.colorhues;
@@ -541,8 +544,8 @@ public class Item implements java.io.Serializable {
 		}
 	}
 
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(/*fetch = FetchType.EAGER,*/ mappedBy = "item", cascade = CascadeType.ALL)
+	//@LazyCollection(LazyCollectionOption.FALSE)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL)
 	public List<Note> getNewNoteSystem() {
 		return this.newNoteSystem;
 	}
@@ -594,7 +597,6 @@ public class Item implements java.io.Serializable {
 		return ImsResultUtil.getStandardPurchaseUnit(this);
 	}
 
-	@JsonIgnore
 	@Column(name = "type", length = 16)
 	public String getType() {
 		return this.type;
@@ -604,7 +606,6 @@ public class Item implements java.io.Serializable {
 		this.type = type;
 	}
 
-	@JsonIgnore
 	@Column(name = "subtype", length = 32)
 	public String getSubtype() {
 		return this.subtype;
@@ -634,8 +635,77 @@ public class Item implements java.io.Serializable {
 			return false;
 		return true;
 	}
+
 	
 	
+	
+	public Item(String itemcode, String itemcategory, String countryorigin,
+			String inactivecode, String shadevariation, String colorcategory,
+			Character showonwebsite, String iconsystem, String type,
+			Character itemtypecd, String abccd, String itemcd2,
+			String inventoryitemcd, Character showonalysedwards,
+			Character offshade, Character printlabel, Character taxclass,
+			String lottype, String updatecd, String subtype,
+			Character directship, Date dropdate, String productline,
+			Integer itemgroupnbr, Date priorlastupdated, Description itemdesc,
+			Series series, Material material, Dimensions dimensions,
+			Price price, VendorInfo vendors, List<String> usage,
+			TestSpecification testSpecification,
+			SimilarItemCode relateditemcodes, Purchasers purchasers,
+			PackagingInfo packaginginfo, Notes notes,
+			Applications applications, Units units, Cost cost,
+			PriorVendor priorVendor, ImsNewFeature imsNewFeature,
+			IconCollection iconDescription, Set<ColorHue> colorhues,
+			Set<ItemVendor> newVendorSystem, List<Note> newNoteSystem) {
+		super();
+		this.itemcode = itemcode;
+		this.itemcategory = itemcategory;
+		this.countryorigin = countryorigin;
+		this.inactivecode = inactivecode;
+		this.shadevariation = shadevariation;
+		this.colorcategory = colorcategory;
+		this.showonwebsite = showonwebsite;
+		this.iconsystem = iconsystem;
+		this.type = type;
+		this.itemtypecd = itemtypecd;
+		this.abccd = abccd;
+		this.itemcd2 = itemcd2;
+		this.inventoryitemcd = inventoryitemcd;
+		this.showonalysedwards = showonalysedwards;
+		this.offshade = offshade;
+		this.printlabel = printlabel;
+		this.taxclass = taxclass;
+		this.lottype = lottype;
+		this.updatecd = updatecd;
+		this.subtype = subtype;
+		this.directship = directship;
+		this.dropdate = dropdate;
+		this.productline = productline;
+		this.itemgroupnbr = itemgroupnbr;
+		this.priorlastupdated = priorlastupdated;
+		this.itemdesc = itemdesc;
+		this.series = series;
+		this.material = material;
+		this.dimensions = dimensions;
+		this.price = price;
+		this.vendors = vendors;
+		this.usage = usage;
+		this.testSpecification = testSpecification;
+		this.relateditemcodes = relateditemcodes;
+		this.purchasers = purchasers;
+		this.packaginginfo = packaginginfo;
+		this.notes = notes;
+		this.applications = applications;
+		this.units = units;
+		this.cost = cost;
+		this.priorVendor = priorVendor;
+		this.imsNewFeature = imsNewFeature;
+		this.iconDescription = iconDescription;
+		this.colorhues = colorhues;
+		this.newVendorSystem = newVendorSystem;
+		this.newNoteSystem = newNoteSystem;
+	}
+
 	@Override
 	public String toString() {
 		return "Item "

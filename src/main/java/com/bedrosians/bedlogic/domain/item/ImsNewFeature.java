@@ -24,7 +24,6 @@ import javax.persistence.Version;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
@@ -114,7 +113,7 @@ public class ImsNewFeature implements java.io.Serializable {
 	@GenericGenerator(name = "generator", strategy = "foreign", parameters = @Parameter(name = "property", value = "item"))
 	@Id
 	@GeneratedValue(generator = "generator")
-	@Column(name = "item_code", unique = true, nullable = false, length = 15)
+	@Column(name = "item_code", unique = true, nullable = false)
 	public String getItemCode() {
 		return itemCode;
 	}
@@ -124,7 +123,7 @@ public class ImsNewFeature implements java.io.Serializable {
 	}
 	
 	@JsonIgnore
-	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@PrimaryKeyJoinColumn
 	public Item getItem() {
 		return this.item;

@@ -46,7 +46,6 @@ public class Note implements java.io.Serializable {
 		this.noteId = noteId;
 	}
 	
-	
 	public Note(long noteId, String noteType, String note, Date createdDate,
 			Date lastModifiedDate, Integer version, Item item) {
 		super();
@@ -137,6 +136,7 @@ public class Note implements java.io.Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((item == null) ? 0 : item.getItemcode().hashCode());
 		result = prime * result + (int) (noteId ^ (noteId >>> 32));
 		result = prime * result
 				+ ((noteType == null) ? 0 : noteType.hashCode());
@@ -150,9 +150,14 @@ public class Note implements java.io.Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof Note))
 			return false;
 		Note other = (Note) obj;
+		if (item == null) {
+			if (other.item != null)
+				return false;
+		} else if (!item.getItemcode().equals(other.item.getItemcode()))
+			return false;
 		if (noteId != other.noteId)
 			return false;
 		if (noteType == null) {
@@ -167,6 +172,4 @@ public class Note implements java.io.Serializable {
 			return false;
 		return true;
 	}
-	
-	
 }
