@@ -1,6 +1,5 @@
 package com.bedrosians.bedlogic.service.user;
 
-
 import java.util.List;
 
 import org.hibernate.HibernateException;
