@@ -1,8 +1,7 @@
-package com.bedrosians.bedlogic.resources;
+package com.bedrosians.bedlogic.resources.v1;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.GET;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -11,27 +10,32 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import com.bedrosians.bedlogic.exception.BedDAOException;
-import com.bedrosians.bedlogic.exception.BedResException;
-import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
-import com.bedrosians.bedlogic.bedDataAccessDAO.MaterialOrdersDAO;
-import com.bedrosians.bedlogic.models.MaterialOrders;
+import com.bedrosians.bedlogic.usercode.UserCodeParser;
 
-@Path("/materialorders")
-public class MaterialOrdersResource
+import com.bedrosians.bedlogic.exception.BedDAOException;
+import com.bedrosians.bedlogic.exception.BedDAOExceptionMapper;
+import com.bedrosians.bedlogic.exception.BedResException;
+import com.bedrosians.bedlogic.exception.BedResExceptionMapper;
+import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
+import com.bedrosians.bedlogic.bedDataAccessDAO.LocationsDAO;
+import com.bedrosians.bedlogic.models.Locations;
+
+@Path("/locations")
+public class LocationsResource
 {
     /**
-     * MaterialOrders resource
+     * Locations resource
      * Query Params
-     * - openCode: optional. Values can be: A, Y, N. Default: A
+     * - locationcodes:     optional comma separated list of location codes to match against
+     * - locationregion:    optional location region name to match against
+     * - branchname:        optional branchname to match against
      */
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    @Path("{itemcode}/{locationcode}")
-    public Response getMaterialOrders(@Context HttpHeaders requestHeaders
-                                    , @PathParam("itemcode") String itemCode
-                                    , @PathParam("locationcode") String locationCode
-                                    , @QueryParam("opencode") String openCode)
+    public Response getLocations(@Context HttpHeaders requestHeaders
+                                    , @QueryParam("locationcodes") String locationCodes
+                                    , @QueryParam("locationregion") String locationRegion
+                                    , @QueryParam("branchname") String branchName)    
     {
         Response    response;
 
@@ -47,14 +51,13 @@ public class MaterialOrdersResource
             String userCode = userCodeParser.getUserCode();
             
             // Get query params
-            if (openCode == null || openCode.trim().isEmpty())
-            {
-                openCode = "A";
-            }
+            locationCodes = (locationCodes == null) ? "" : locationCodes;
+            locationRegion = (locationRegion == null) ? "" : locationRegion;
+            branchName = (branchName == null) ? "" : branchName;            
             
             // Retrieve DAO object
-            MaterialOrdersDAO  materialOrdersDAO = new MaterialOrdersDAO();
-            MaterialOrders     result = materialOrdersDAO.readMaterialOrders(userType, userCode, itemCode, locationCode, openCode);
+            LocationsDAO    locationsDAO = new LocationsDAO();
+            Locations       result = locationsDAO.readLocations(userType, userCode, locationCodes, locationRegion, branchName);
             
             // Return json reponse
             String  jsonStr = result.toJSONString();

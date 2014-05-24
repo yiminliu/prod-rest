@@ -1,4 +1,4 @@
-package com.bedrosians.bedlogic.resources;
+package com.bedrosians.bedlogic.resources.v1;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.GET;
@@ -11,43 +11,46 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import com.bedrosians.bedlogic.usercode.UserCodeParser;
+
 import com.bedrosians.bedlogic.exception.BedDAOException;
+import com.bedrosians.bedlogic.exception.BedDAOExceptionMapper;
 import com.bedrosians.bedlogic.exception.BedResException;
+import com.bedrosians.bedlogic.exception.BedResExceptionMapper;
 import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
-import com.bedrosians.bedlogic.bedDataAccessDAO.SlabInventoryDAO;
-import com.bedrosians.bedlogic.models.SlabInventory;
+import com.bedrosians.bedlogic.bedDataAccessDAO.CostsDAO;
+import com.bedrosians.bedlogic.models.Costs;
 
-@Path("/slabinventory")
-public class SlabInventoryResource
+@Path("/costs")
+public class CostsResource
 {
-
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     @Path("{itemcode}")
-    public Response getSlabInventory(@Context HttpHeaders requestHeaders
+    public Response getCosts(@Context HttpHeaders requestHeaders
                                     , @PathParam("itemcode") String itemCode
                                     , @QueryParam("unit") String unit)
     {
-        return this.getSlabInventoryInternal(requestHeaders, itemCode, "", unit);
+        return this.getCostsInternal(requestHeaders, itemCode, "", unit);
     }
 
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     @Path("{itemcode}/{locationcode}")
-    public Response getSlabInventory(@Context HttpHeaders requestHeaders
+    public Response getCosts(@Context HttpHeaders requestHeaders
                                     , @PathParam("itemcode") String itemCode
                                     , @PathParam("locationcode") String locationCode
                                     , @QueryParam("unit") String unit)
     {
-        return this.getSlabInventoryInternal(requestHeaders, itemCode, locationCode, unit);
+        return this.getCostsInternal(requestHeaders, itemCode, locationCode, unit);
     }
 
     /**
-     * SlabInventory resource
+     * Costs resource
      * Query Params
      * - unit:         optional.
      */
-    private Response getSlabInventoryInternal(HttpHeaders requestHeaders
+    private Response getCostsInternal(HttpHeaders requestHeaders
                                     , String itemCode
                                     , String locationCode
                                     , String unit)
@@ -66,11 +69,12 @@ public class SlabInventoryResource
             String userCode = userCodeParser.getUserCode();
             
             // Get query params
+            locationCode = (locationCode == null) ? "" : locationCode;
             unit = (unit == null) ? "" : unit;
             
             // Retrieve DAO object
-            SlabInventoryDAO    slabInventoryDAO = new SlabInventoryDAO();
-            SlabInventory       result = slabInventoryDAO.readSlabInventory(userType, userCode, itemCode, locationCode, unit);
+            CostsDAO    costsDAO = new CostsDAO();
+            Costs       result = costsDAO.readCosts(userType, userCode, itemCode, locationCode, unit);
             
             // Return json reponse
             String  jsonStr = result.toJSONString();
@@ -88,4 +92,3 @@ public class SlabInventoryResource
         return response;
     }
 }
-

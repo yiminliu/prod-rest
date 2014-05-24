@@ -1,8 +1,7 @@
-package com.bedrosians.bedlogic.resources;
+package com.bedrosians.bedlogic.resources.v1;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.GET;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -11,25 +10,25 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MultivaluedMap;
 
-import com.bedrosians.bedlogic.exception.BedDAOException;
-import com.bedrosians.bedlogic.exception.BedResException;
-import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
-import com.bedrosians.bedlogic.bedDataAccessDAO.SlabCostsDAO;
-import com.bedrosians.bedlogic.models.SlabCosts;
+import com.bedrosians.bedlogic.usercode.UserCodeParser;
 
-@Path("/slabcosts")
-public class SlabCostsResource
+import com.bedrosians.bedlogic.exception.BedDAOException;
+import com.bedrosians.bedlogic.exception.BedDAOExceptionMapper;
+import com.bedrosians.bedlogic.exception.BedResException;
+import com.bedrosians.bedlogic.exception.BedResExceptionMapper;
+import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
+import com.bedrosians.bedlogic.bedDataAccessDAO.ProductPromosDAO;
+import com.bedrosians.bedlogic.models.ProductPromos;
+
+@Path("/productpromos")
+public class ProductPromosResource
 {
     /**
-     * SlabCosts resource
+     * ProductPromos resource
      */
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    @Path("{itemcode}/{locationcode}/{serialnumber}")
-    public Response getSlabCosts(@Context HttpHeaders requestHeaders
-                                    , @PathParam("itemcode") String itemCode
-                                    , @PathParam("locationcode") String locationCode
-                                    , @PathParam("serialnumber") String serialNumber
+    public Response getProductPromos(@Context HttpHeaders requestHeaders
                                     , @Context UriInfo uriInfo)
     {
         Response    response;
@@ -49,8 +48,8 @@ public class SlabCostsResource
             MultivaluedMap queryParams = uriInfo.getQueryParameters();
                         
             // Retrieve DAO object
-            SlabCostsDAO slabCostsDAO = new SlabCostsDAO();
-            SlabCosts    result = slabCostsDAO.readSlabCosts(userType, userCode, itemCode, locationCode, serialNumber, queryParams);
+            ProductPromosDAO productPromosDAO = new ProductPromosDAO();
+            ProductPromos    result = productPromosDAO.readProductPromosByQueryParams(userType, userCode, queryParams);
             
             // Return json reponse
             String     jsonStr = result.toJSONString();

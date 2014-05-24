@@ -1,7 +1,8 @@
-package com.bedrosians.bedlogic.resources;
+package com.bedrosians.bedlogic.resources.v1;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.GET;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -10,28 +11,30 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import com.bedrosians.bedlogic.exception.BedDAOException;
-import com.bedrosians.bedlogic.exception.BedResException;
-import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
-import com.bedrosians.bedlogic.bedDataAccessDAO.LocationsDAO;
-import com.bedrosians.bedlogic.models.Locations;
+import com.bedrosians.bedlogic.usercode.UserCodeParser;
 
-@Path("/locations")
-public class LocationsResource
+import com.bedrosians.bedlogic.exception.BedDAOException;
+import com.bedrosians.bedlogic.exception.BedDAOExceptionMapper;
+import com.bedrosians.bedlogic.exception.BedResException;
+import com.bedrosians.bedlogic.exception.BedResExceptionMapper;
+import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
+import com.bedrosians.bedlogic.bedDataAccessDAO.InventoryDAO;
+import com.bedrosians.bedlogic.models.Inventory;
+
+@Path("/inventory")
+public class InventoryResource
 {
     /**
-     * Locations resource
+     * Inventory resource
      * Query Params
-     * - locationcodes:     optional comma separated list of location codes to match against
-     * - locationregion:    optional location region name to match against
-     * - branchname:        optional branchname to match against
+     * - unit:
      */
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getLocations(@Context HttpHeaders requestHeaders
-                                    , @QueryParam("locationcodes") String locationCodes
-                                    , @QueryParam("locationregion") String locationRegion
-                                    , @QueryParam("branchname") String branchName)    
+    @Path("{itemcode}")
+    public Response getInventory(@Context HttpHeaders requestHeaders
+                                    , @PathParam("itemcode") String itemCode
+                                    , @QueryParam("unit") String unit)
     {
         Response    response;
 
@@ -47,13 +50,11 @@ public class LocationsResource
             String userCode = userCodeParser.getUserCode();
             
             // Get query params
-            locationCodes = (locationCodes == null) ? "" : locationCodes;
-            locationRegion = (locationRegion == null) ? "" : locationRegion;
-            branchName = (branchName == null) ? "" : branchName;            
+            unit = (unit == null) ? "" : unit;
             
             // Retrieve DAO object
-            LocationsDAO    locationsDAO = new LocationsDAO();
-            Locations       result = locationsDAO.readLocations(userType, userCode, locationCodes, locationRegion, branchName);
+            InventoryDAO  inventoryDAO = new InventoryDAO();
+            Inventory     result = inventoryDAO.readInventory(userType, userCode, itemCode, unit);
             
             // Return json reponse
             String  jsonStr = result.toJSONString();

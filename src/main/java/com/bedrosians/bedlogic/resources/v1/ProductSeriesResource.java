@@ -1,4 +1,4 @@
-package com.bedrosians.bedlogic.resources;
+package com.bedrosians.bedlogic.resources.v1;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.GET;
@@ -11,8 +11,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MultivaluedMap;
 
+import com.bedrosians.bedlogic.usercode.UserCodeParser;
+
 import com.bedrosians.bedlogic.exception.BedDAOException;
+import com.bedrosians.bedlogic.exception.BedDAOExceptionMapper;
 import com.bedrosians.bedlogic.exception.BedResException;
+import com.bedrosians.bedlogic.exception.BedResExceptionMapper;
 import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
 import com.bedrosians.bedlogic.bedDataAccessDAO.ProductSeriesDAO;
 import com.bedrosians.bedlogic.models.ProductSeries;

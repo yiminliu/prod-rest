@@ -1,31 +1,28 @@
-package com.bedrosians.bedlogic.resources;
+package com.bedrosians.bedlogic.resources.v2;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.MultivaluedMap;
 
-import com.bedrosians.bedlogic.exception.BedDAOException;
+import com.bedrosians.bedlogic.usercode.UserCodeParser;
+
 import com.bedrosians.bedlogic.exception.BedResException;
+import com.bedrosians.bedlogic.exception.BedResExceptionMapper;
 import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
-import com.bedrosians.bedlogic.bedDataAccessDAO.ProductPromosDAO;
-import com.bedrosians.bedlogic.models.ProductPromos;
 
-@Path("/productpromos")
-public class ProductPromosResource
+@Path("/hello")
+public class HelloResource
 {
     /**
-     * ProductPromos resource
+     * Hello resource
      */
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getProductPromos(@Context HttpHeaders requestHeaders
-                                    , @Context UriInfo uriInfo)
+    public Response getHello(@Context HttpHeaders requestHeaders)
     {
         Response    response;
 
@@ -40,20 +37,9 @@ public class ProductPromosResource
             String userType = userCodeParser.getUserType();
             String userCode = userCodeParser.getUserCode();
             
-            // Get queryParams
-            MultivaluedMap queryParams = uriInfo.getQueryParameters();
-                        
-            // Retrieve DAO object
-            ProductPromosDAO productPromosDAO = new ProductPromosDAO();
-            ProductPromos    result = productPromosDAO.readProductPromosByQueryParams(userType, userCode, queryParams);
-            
             // Return json reponse
-            String     jsonStr = result.toJSONString();
+            String     jsonStr = "{ \"hello\": \"world\" }";
             response = Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();
-        }
-        catch (BedDAOException e)
-        {
-            response = BedDAOExceptionMapper.MapToResponse(e);
         }
         catch (BedResException e)
         {

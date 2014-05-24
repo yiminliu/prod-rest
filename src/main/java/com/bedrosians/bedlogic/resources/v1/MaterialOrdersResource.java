@@ -1,7 +1,8 @@
-package com.bedrosians.bedlogic.resources;
+package com.bedrosians.bedlogic.resources.v1;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.GET;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -10,28 +11,31 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import com.bedrosians.bedlogic.exception.BedDAOException;
-import com.bedrosians.bedlogic.exception.BedResException;
-import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
-import com.bedrosians.bedlogic.bedDataAccessDAO.PromoSeriesDAO;
-import com.bedrosians.bedlogic.models.PromoSeries;
+import com.bedrosians.bedlogic.usercode.UserCodeParser;
 
-@Path("/promoseries")
-public class PromoSeriesResource
+import com.bedrosians.bedlogic.exception.BedDAOException;
+import com.bedrosians.bedlogic.exception.BedDAOExceptionMapper;
+import com.bedrosians.bedlogic.exception.BedResException;
+import com.bedrosians.bedlogic.exception.BedResExceptionMapper;
+import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
+import com.bedrosians.bedlogic.bedDataAccessDAO.MaterialOrdersDAO;
+import com.bedrosians.bedlogic.models.MaterialOrders;
+
+@Path("/materialorders")
+public class MaterialOrdersResource
 {
     /**
-     * Locations resource
+     * MaterialOrders resource
      * Query Params
-     * - promocode:
-     * - promoregion:
-     * - materialtype:
+     * - openCode: optional. Values can be: A, Y, N. Default: A
      */
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getPromoSeries(@Context HttpHeaders requestHeaders
-                                    , @QueryParam("promocode") String promoCode
-                                    , @QueryParam("promoregion") String promoRegion
-                                    , @QueryParam("materialtype") String materialType)
+    @Path("{itemcode}/{locationcode}")
+    public Response getMaterialOrders(@Context HttpHeaders requestHeaders
+                                    , @PathParam("itemcode") String itemCode
+                                    , @PathParam("locationcode") String locationCode
+                                    , @QueryParam("opencode") String openCode)
     {
         Response    response;
 
@@ -47,13 +51,14 @@ public class PromoSeriesResource
             String userCode = userCodeParser.getUserCode();
             
             // Get query params
-            promoCode = (promoCode == null) ? "" : promoCode;
-            promoRegion = (promoRegion == null) ? "" : promoRegion;
-            materialType = (materialType == null) ? "" : materialType;            
+            if (openCode == null || openCode.trim().isEmpty())
+            {
+                openCode = "A";
+            }
             
             // Retrieve DAO object
-            PromoSeriesDAO  promoSeriesDAO = new PromoSeriesDAO();
-            PromoSeries     result = promoSeriesDAO.readPromoSeries(userType, userCode, promoCode, promoRegion, materialType);
+            MaterialOrdersDAO  materialOrdersDAO = new MaterialOrdersDAO();
+            MaterialOrders     result = materialOrdersDAO.readMaterialOrders(userType, userCode, itemCode, locationCode, openCode);
             
             // Return json reponse
             String  jsonStr = result.toJSONString();

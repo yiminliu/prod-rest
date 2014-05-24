@@ -1,8 +1,7 @@
-package com.bedrosians.bedlogic.resources;
+package com.bedrosians.bedlogic.resources.v1;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.GET;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -11,26 +10,32 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import com.bedrosians.bedlogic.exception.BedDAOException;
-import com.bedrosians.bedlogic.exception.BedResException;
-import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
-import com.bedrosians.bedlogic.bedDataAccessDAO.InventoryDAO;
-import com.bedrosians.bedlogic.models.Inventory;
+import com.bedrosians.bedlogic.usercode.UserCodeParser;
 
-@Path("/inventory")
-public class InventoryResource
+import com.bedrosians.bedlogic.exception.BedDAOException;
+import com.bedrosians.bedlogic.exception.BedDAOExceptionMapper;
+import com.bedrosians.bedlogic.exception.BedResException;
+import com.bedrosians.bedlogic.exception.BedResExceptionMapper;
+import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
+import com.bedrosians.bedlogic.bedDataAccessDAO.PromoSeriesDAO;
+import com.bedrosians.bedlogic.models.PromoSeries;
+
+@Path("/promoseries")
+public class PromoSeriesResource
 {
     /**
-     * Inventory resource
+     * Locations resource
      * Query Params
-     * - unit:
+     * - promocode:
+     * - promoregion:
+     * - materialtype:
      */
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    @Path("{itemcode}")
-    public Response getInventory(@Context HttpHeaders requestHeaders
-                                    , @PathParam("itemcode") String itemCode
-                                    , @QueryParam("unit") String unit)
+    public Response getPromoSeries(@Context HttpHeaders requestHeaders
+                                    , @QueryParam("promocode") String promoCode
+                                    , @QueryParam("promoregion") String promoRegion
+                                    , @QueryParam("materialtype") String materialType)
     {
         Response    response;
 
@@ -46,11 +51,13 @@ public class InventoryResource
             String userCode = userCodeParser.getUserCode();
             
             // Get query params
-            unit = (unit == null) ? "" : unit;
+            promoCode = (promoCode == null) ? "" : promoCode;
+            promoRegion = (promoRegion == null) ? "" : promoRegion;
+            materialType = (materialType == null) ? "" : materialType;            
             
             // Retrieve DAO object
-            InventoryDAO  inventoryDAO = new InventoryDAO();
-            Inventory     result = inventoryDAO.readInventory(userType, userCode, itemCode, unit);
+            PromoSeriesDAO  promoSeriesDAO = new PromoSeriesDAO();
+            PromoSeries     result = promoSeriesDAO.readPromoSeries(userType, userCode, promoCode, promoRegion, materialType);
             
             // Return json reponse
             String  jsonStr = result.toJSONString();
