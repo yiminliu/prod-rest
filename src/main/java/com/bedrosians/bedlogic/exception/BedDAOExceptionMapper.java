@@ -1,21 +1,32 @@
-package com.bedrosians.bedlogic.resources.v1;
+package com.bedrosians.bedlogic.exception;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MediaType;
 
+
 import com.bedrosians.bedlogic.exception.*;
 
-public class BedResExceptionMapper
+public class BedDAOExceptionMapper
 {
-    public static Response MapToResponse(BedResException theException)
+    public static Response MapToResponse(BedDAOException theException)
     {
         int     code;
         String  message;
                 
-        if (theException instanceof BedResUnAuthorizedException)
+        if (theException instanceof BedDAOUnAuthorizedException)
         {
             code = 401;
             message = "Authentication Failed";
+        }
+        else if (theException instanceof BedDAOBadResultException)
+        {
+            code = 404;
+            message = "Resource Not Found";
+        }
+        else if (theException instanceof BedDAOBadParamException)
+        {
+            code = 400;
+            message = "Bad Request";
         }
         else
         {

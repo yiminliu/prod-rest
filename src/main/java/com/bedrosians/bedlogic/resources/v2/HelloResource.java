@@ -8,10 +8,10 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.bedrosians.bedlogic.resources.v1.UserCodeParser;
-import com.bedrosians.bedlogic.resources.v1.BedResExceptionMapper;
+import com.bedrosians.bedlogic.usercode.UserCodeParser;
 
 import com.bedrosians.bedlogic.exception.BedResException;
+import com.bedrosians.bedlogic.exception.BedResExceptionMapper;
 import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
 
 @Path("/hello")

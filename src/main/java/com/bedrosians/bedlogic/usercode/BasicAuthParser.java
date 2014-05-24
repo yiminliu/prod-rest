@@ -1,4 +1,4 @@
-package com.bedrosians.bedlogic.resources.v1;
+package com.bedrosians.bedlogic.usercode;
 
 import java.util.Map;
 import java.util.HashMap;
