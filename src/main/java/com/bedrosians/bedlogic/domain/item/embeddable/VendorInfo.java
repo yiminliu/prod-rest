@@ -5,15 +5,11 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import com.bedrosians.bedlogic.util.FormatUtil;
-
 @Embeddable
 public class VendorInfo  implements java.io.Serializable {
 
 	private static final long serialVersionUID = -338982221787L;
 	
-	//------ vendors ------//
-		//Used to update the existing items in ims table
 	    private Integer vendornbr;
 	    private Integer vendornbr1;
 	    private Integer vendornbr2;
@@ -52,6 +48,33 @@ public class VendorInfo  implements java.io.Serializable {
 
 		public void setVendornbr(Integer vendornbr) {
 			this.vendornbr = vendornbr;
+		}
+
+		@Column(name = "vendornbr1", precision = 6, scale = 0)
+		public Integer getVendornbr1() {
+			return this.vendornbr1;
+		}
+
+		public void setVendornbr1(Integer vendornbr1) {
+			this.vendornbr1 = vendornbr1;
+		}
+		
+		@Column(name = "vendornbr2", precision = 6, scale = 0)
+		public Integer getVendornbr2() {
+			return this.vendornbr2;
+		}
+
+		public void setVendornbr2(Integer vendornbr2) {
+			this.vendornbr2 = vendornbr2;
+		}
+
+		@Column(name = "vendornbr3", precision = 6, scale = 0)
+		public Integer getVendornbr3() {
+			return this.vendornbr3;
+		}
+
+		public void setVendornbr3(Integer vendornbr3) {
+			this.vendornbr3 = vendornbr3;
 		}
 
 		@Column(name = "vendorpriceunit", length = 4)
@@ -151,33 +174,6 @@ public class VendorInfo  implements java.io.Serializable {
 
 		public void setVendorlandedbasecost(BigDecimal vendorlandedbasecost) {
 			this.vendorlandedbasecost = vendorlandedbasecost;
-		}
-
-		@Column(name = "vendornbr1", precision = 6, scale = 0)
-		public Integer getVendornbr1() {
-			return this.vendornbr1;
-		}
-
-		public void setVendornbr1(Integer vendornbr1) {
-			this.vendornbr1 = vendornbr1;
-		}
-		
-		@Column(name = "vendornbr2", precision = 6, scale = 0)
-		public Integer getVendornbr2() {
-			return this.vendornbr2;
-		}
-
-		public void setVendornbr2(Integer vendornbr2) {
-			this.vendornbr2 = vendornbr2;
-		}
-
-		@Column(name = "vendornbr3", precision = 6, scale = 0)
-		public Integer getVendornbr3() {
-			return this.vendornbr3;
-		}
-
-		public void setVendornbr3(Integer vendornbr3) {
-			this.vendornbr3 = vendornbr3;
 		}
 		
 		@Column(name = "dutypct", precision = 7, scale = 4)
