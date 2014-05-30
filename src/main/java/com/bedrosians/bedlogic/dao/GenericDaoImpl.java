@@ -25,7 +25,7 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
 	@Override
 	@SuppressWarnings("unchecked")
 	public T findById(Session session, final PK id) {
-	   return (T)session.get(type, id);
+	   return (T)session.get(type, id, LockOptions.READ);
 	}
 	
 	//This method only gets a proxy of the persistent entity, without hitting the database
@@ -46,6 +46,7 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
 		try{
         	//session.update(transientObject);
             session.saveOrUpdate(transientObject); 
+        	//session.merge(transientObject);
 		}
 		catch(HibernateException e){
 			throw e;
