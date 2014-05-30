@@ -8,8 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -29,6 +27,10 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.stereotype.Component;
 
 import com.bedrosians.bedlogic.domain.item.embeddable.Description;
@@ -46,7 +48,7 @@ import com.bedrosians.bedlogic.domain.item.embeddable.SimilarItemCode;
 import com.bedrosians.bedlogic.domain.item.embeddable.TestSpecification;
 import com.bedrosians.bedlogic.domain.item.embeddable.Units;
 import com.bedrosians.bedlogic.domain.item.embeddable.VendorInfo;
-import com.bedrosians.bedlogic.util.ImsResultUtil;
+import com.bedrosians.bedlogic.util.ImsDataUtil;
 
 @JsonRootName(value = "item")
 @Component
@@ -108,9 +110,9 @@ public class Item implements java.io.Serializable {
 	//------- Associations --------//
   	private ImsNewFeature imsNewFeature;
     private IconCollection iconDescription;
-  	private Set<ColorHue> colorhues =  new HashSet<>();
-	private Set<ItemVendor> newVendorSystem = new HashSet<>();
-  	private List<Note> newNoteSystem = new ArrayList<>();
+  	private List<ColorHue> colorhues =  new ArrayList<>();
+	private List<ItemVendor> newVendorSystem = new ArrayList<>();
+  	//private List<Note> newNoteSystem = new ArrayList<>();
      	
   	public Item() {
 	}
@@ -478,7 +480,6 @@ public class Item implements java.io.Serializable {
 	}
 	
 	@OneToOne(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL)
-	//@Cascade({org.hibernate.annotations.CascadeType.ALL})
 	public ImsNewFeature getImsNewFeature() {	
 	    return this.imsNewFeature;
 	}
@@ -488,13 +489,15 @@ public class Item implements java.io.Serializable {
 	}
 	
 	public void addImsNewFeature(ImsNewFeature imsNewFeature ){
+		if(this.getImsNewFeature() != null)
+			setImsNewFeature(null);
 		imsNewFeature.setItem(this);
 		this.imsNewFeature = imsNewFeature;
 	}
 	
 	@OneToOne(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL)
 	public IconCollection getIconDescription() {	
-	    return iconDescription;// != null//? iconCollection : ImsResultUtil.parseIcons(getIconsystem());
+	    return iconDescription;// != null//? iconCollection : ImsDataUtil.parseIcons(getIconsystem());
 	}
 
 	public void setIconDescription(IconCollection iconDescription) {
@@ -508,11 +511,12 @@ public class Item implements java.io.Serializable {
 
 	//@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL)
-	public Set<ColorHue> getColorhues() {
+	@Fetch(FetchMode.SUBSELECT)
+	public List<ColorHue> getColorhues() {
 		return this.colorhues;
 	}
 
-	public void setColorhues(Set<ColorHue> colorhues) {
+	public void setColorhues(List<ColorHue> colorhues) {
 		this.colorhues = colorhues;
 	}
    
@@ -523,11 +527,12 @@ public class Item implements java.io.Serializable {
 	
 	//@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL)
-	public Set<ItemVendor> getNewVendorSystem() {
+	@Fetch(FetchMode.SUBSELECT)
+	public List<ItemVendor> getNewVendorSystem() {
 		return this.newVendorSystem;
 	}
 
-	public void setNewVendorSystem(Set<ItemVendor> newVendorSystem) {
+	public void setNewVendorSystem(List<ItemVendor> newVendorSystem) {
 		this.newVendorSystem = newVendorSystem;
 	}
 
@@ -535,6 +540,8 @@ public class Item implements java.io.Serializable {
 		if(vendor.getItemVendorId().getItemCode() == null)
 		   vendor.getItemVendorId().setItemCode(this.getItemcode());	
 		vendor.setItem(this);
+		if(getNewVendorSystem() == null)
+		   setNewVendorSystem(new ArrayList<ItemVendor>());	
 		getNewVendorSystem().add(vendor);
 	}
 	
@@ -545,7 +552,7 @@ public class Item implements java.io.Serializable {
 	}
 
 	//@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL)
+	/*@OneToMany(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL)
 	public List<Note> getNewNoteSystem() {
 		return this.newNoteSystem;
 	}
@@ -581,20 +588,22 @@ public class Item implements java.io.Serializable {
 	public void initNotes(int numberOfNotes){
 		newNoteSystem = Arrays.asList(new Note[numberOfNotes]);
 		for(int i = 0; i < numberOfNotes; i++) {
-			newNoteSystem.set(i, new Note());
+			Note note = new Note();
+			note.setItem(this);
+			newNoteSystem.set(i, note);
 		}
 	}	
-	
+	*/
     @JsonIgnore
     @Transient
 	public String getStandardSellUnit(){
-    	return ImsResultUtil.getStandardSellUnit(this);
+    	return ImsDataUtil.getStandardSellUnit(this);
 	}
     
 	@JsonIgnore
 	@Transient
 	public String getStandardOrderUnit(){
-		return ImsResultUtil.getStandardPurchaseUnit(this);
+		return ImsDataUtil.getStandardPurchaseUnit(this);
 	}
 
 	@Column(name = "type", length = 16)
@@ -636,9 +645,6 @@ public class Item implements java.io.Serializable {
 		return true;
 	}
 
-	
-	
-	
 	public Item(String itemcode, String itemcategory, String countryorigin,
 			String inactivecode, String shadevariation, String colorcategory,
 			Character showonwebsite, String iconsystem, String type,
@@ -655,8 +661,8 @@ public class Item implements java.io.Serializable {
 			PackagingInfo packaginginfo, Notes notes,
 			Applications applications, Units units, Cost cost,
 			PriorVendor priorVendor, ImsNewFeature imsNewFeature,
-			IconCollection iconDescription, Set<ColorHue> colorhues,
-			Set<ItemVendor> newVendorSystem, List<Note> newNoteSystem) {
+			IconCollection iconDescription, List<ColorHue> colorhues){
+			//Set<ItemVendor> newVendorSystem, List<Note> newNoteSystem) {
 		super();
 		this.itemcode = itemcode;
 		this.itemcategory = itemcategory;
@@ -703,7 +709,7 @@ public class Item implements java.io.Serializable {
 		this.iconDescription = iconDescription;
 		this.colorhues = colorhues;
 		this.newVendorSystem = newVendorSystem;
-		this.newNoteSystem = newNoteSystem;
+		//this.newNoteSystem = newNoteSystem;
 	}
 
 	@Override
@@ -718,51 +724,51 @@ public class Item implements java.io.Serializable {
 				+ ", imsNewFeature=" + imsNewFeature
 			    + ", vendors=" + newVendorSystem 
 				//+ ", baseunit=" + baseunit
-				/*+ ", baseisstdsell=" + baseisstdsell 
-				+ ", baseisstdord=" + baseisstdord 
-				+ ", baseisfractqty=" + baseisfractqty
-				+ ", baseispackunit=" + baseispackunit 
-				+ ", baseupc=" + baseupc 
-				+ ", baseupcdesc=" + baseupcdesc 
-				+ ", basevolperunit=" + basevolperunit 
-				+ ", basewgtperunit=" + basewgtperunit
-				+ ", unit1unit=" + unit1unit 
-				+ ", unit1ratio=" + unit1ratio
-				+ ", unit1isstdsell=" + unit1isstdsell 
-				+ ", unit1isstdord=" + unit1isstdord 
-				+ ", unit1isfractqty=" + unit1isfractqty
-				+ ", unit1ispackunit=" + unit1ispackunit 
-				+ ", unit1upc=" + unit1upc 
-				+ ", unit1upcdesc=" + unit1upcdesc 
-				+ ", unit2unit=" + unit2unit 
-				+ ", unit2ratio=" + unit2ratio
-				+ ", unit2isstdsell=" + unit2isstdsell 
-				+ ", unit2isstdord=" + unit2isstdord 
-				+ ", unit2isfractqty=" + unit2isfractqty
-				+ ", unit2ispackunit=" + unit2ispackunit 
-				+ ", unit2upc=" + unit2upc 
-				+ ", unit2upcdesc=" + unit2upcdesc 
-				+ ", unit3unit=" + unit3unit 
-				+ ", unit3ratio=" + unit3ratio
-				+ ", unit3isstdsell=" + unit3isstdsell 
-				+ ", unit3isstdord=" + unit3isstdord 
-				+ ", unit3isfractqty=" + unit3isfractqty
-				+ ", unit3ispackunit=" + unit3ispackunit
-				+ ", unit3upc=" + unit3upc 
-				+ ", unit3upcdesc=" + unit3upcdesc 
-				+ ", unit4unit=" + unit4unit 
-				+ ", unit4ratio=" + unit4ratio
-				+ ", unit4isstdsell=" + unit4isstdsell 
-				+ ", unit4isstdord=" + unit4isstdord 
-				+ ", unit4isfractqty=" + unit4isfractqty
-				+ ", unit4ispackunit=" + unit4ispackunit 
-				+ ", unit4upc=" + unit4upc 
-				+ ", unit4upcdesc=" + unit4upcdesc 
-					+ ", unit1wgtperunit=" + unit1wgtperunit 
-				+ ", unit2wgtperunit=" + unit2wgtperunit
-				+ ", unit3wgtperunit=" + unit3wgtperunit 
-				+ ", unit4wgtperunit=" + unit4wgtperunit 
-				*///+ ", listprice=" + listprice 
+				//+ ", baseisstdsell=" + baseisstdsell 
+				//+ ", baseisstdord=" + baseisstdord 
+				//+ ", baseisfractqty=" + baseisfractqty
+				//+ ", baseispackunit=" + baseispackunit 
+				//+ ", baseupc=" + baseupc 
+				//+ ", baseupcdesc=" + baseupcdesc 
+				//+ ", basevolperunit=" + basevolperunit 
+				//+ ", basewgtperunit=" + basewgtperunit
+				//+ ", unit1unit=" + unit1unit 
+				//+ ", unit1ratio=" + unit1ratio
+				//+ ", unit1isstdsell=" + unit1isstdsell 
+				//+ ", unit1isstdord=" + unit1isstdord 
+				//+ ", unit1isfractqty=" + unit1isfractqty
+				//+ ", unit1ispackunit=" + unit1ispackunit 
+				//+ ", unit1upc=" + unit1upc 
+				//+ ", unit1upcdesc=" + unit1upcdesc 
+				//+ ", unit2unit=" + unit2unit 
+				//+ ", unit2ratio=" + unit2ratio
+				//+ ", unit2isstdsell=" + unit2isstdsell 
+				//+ ", unit2isstdord=" + unit2isstdord 
+				//+ ", unit2isfractqty=" + unit2isfractqty
+				//+ ", unit2ispackunit=" + unit2ispackunit 
+				//+ ", unit2upc=" + unit2upc 
+				//+ ", unit2upcdesc=" + unit2upcdesc 
+				//+ ", unit3unit=" + unit3unit 
+				//+ ", unit3ratio=" + unit3ratio
+				//+ ", unit3isstdsell=" + unit3isstdsell 
+				//+ ", unit3isstdord=" + unit3isstdord 
+				//+ ", unit3isfractqty=" + unit3isfractqty
+				//+ ", unit3ispackunit=" + unit3ispackunit
+				//+ ", unit3upc=" + unit3upc 
+				//+ ", unit3upcdesc=" + unit3upcdesc 
+				//+ ", unit4unit=" + unit4unit 
+				//+ ", unit4ratio=" + unit4ratio
+				//+ ", unit4isstdsell=" + unit4isstdsell 
+				//+ ", unit4isstdord=" + unit4isstdord 
+				//+ ", unit4isfractqty=" + unit4isfractqty
+				//+ ", unit4ispackunit=" + unit4ispackunit 
+				//+ ", unit4upc=" + unit4upc 
+				//+ ", unit4upcdesc=" + unit4upcdesc 
+				//	+ ", unit1wgtperunit=" + unit1wgtperunit 
+				//+ ", unit2wgtperunit=" + unit2wgtperunit
+				//+ ", unit3wgtperunit=" + unit3wgtperunit 
+				//+ ", unit4wgtperunit=" + unit4wgtperunit 
+				//+ ", listprice=" + listprice 
 				//+ ", price=" + price
 				//+ ", priorlastupdated=" + priorlastupdated
 				//+ ", priorlistprice=" + priorlistprice 
