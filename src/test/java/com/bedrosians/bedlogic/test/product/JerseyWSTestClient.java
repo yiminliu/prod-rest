@@ -2,7 +2,10 @@ package com.bedrosians.bedlogic.test.product;
 
 
 import java.net.URI;
+import java.util.Arrays;
+
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriBuilder;
 
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
@@ -12,6 +15,7 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 public class JerseyWSTestClient {
 
@@ -19,12 +23,14 @@ public class JerseyWSTestClient {
 	private static final String rootPath = "bedlogic/rest";
 	private static final String appPath = "products";
 	private static final String testItemCode = "ADJASSETSALE";
+	private static final String colorHue = "RED";
 	private static WebResource service =null;
 	private static Client client = null;
 	
 	public static void main(String[] args) {
 	   init();
-	   testGetProductById(testItemCode);
+	   //testGetProductById(testItemCode);
+	   testGetProductByColorHues(colorHue);
 	   //testCreate();
 	   //testUpdateWithJsonString();
 	   System.out.println("Done test");
@@ -40,12 +46,13 @@ public class JerseyWSTestClient {
 	   service = client.resource(getByIdTestURI(""));
 	   //service.path(rootPath).path(appPath).accept(mediaTypeJson);
 	   service.queryParam("itemcode", itemCode);
-	   //service.type(mediaTypeJson);
-	   //service.accept(mediaTypeJson);
-	   //service.type(mediaTypeJson);
+	   service.type(mediaTypeJson);
+	   service.accept(mediaTypeJson);
 	   System.out.println("Resource URL = " + service.getURI().toASCIIString());
 	   //service.method("GET");
-	   ClientResponse response = service.accept("application/json").get(ClientResponse.class);
+	   //ClientResponse response = service.accept("application/json").get(ClientResponse.class);
+	   ClientResponse response = service.get(ClientResponse.class);
+		  
 	  
 	   System.out.println("Response status : "+ response.getStatus());
 	   System.out.println("Response type : "+ response.getType());
@@ -54,6 +61,36 @@ public class JerseyWSTestClient {
 	   String s = response.getEntity(String.class);
 	   System.out.println("Output = " + s);
 	}
+	
+	private static void testGetProductByColorHues(String colorHue){
+	  	   System.out.println("testGetProductByColorHues");
+	  	   MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	       params.put("inactivecd", Arrays.asList(new String[]{"N"}));
+	       	params.put("colorhues", Arrays.asList(new String[]{colorHue, "GREEN"}));
+	    
+		   service = client.resource(getTestBaseURI());
+		   //service.path(rootPath).path(appPath).accept(mediaTypeJson);
+		   service.queryParam("colorhue", colorHue);
+		   service.type(mediaTypeJson);
+		   service.accept(mediaTypeJson);
+		   System.out.println("Resource URL = " + service.getURI().toASCIIString());
+		   //service.method("GET");
+		   //ClientResponse response = service.accept("application/json").get(ClientResponse.class);
+		   ClientResponse response = service.queryParams(params).get(ClientResponse.class);
+			  
+		//   ClientResponse clientResponse = webResource .path("/listar")
+         //          .queryParams(params)
+         //          .header(HttpHeaders.AUTHORIZATION, AuthenticationHelper.getBasicAuthHeader())
+         //          .get(ClientResponse.class);
+
+		   
+		   System.out.println("Response status : "+ response.getStatus());
+		   System.out.println("Response type : "+ response.getType());
+		   System.out.println("Response data : "+ response.toString());
+		   
+		   String s = response.getEntity(String.class);
+		   System.out.println("Output = " + s);
+		}
 	
 	private static void testCreate(){
 		service = client.resource(getTestBaseURI());
@@ -175,7 +212,8 @@ public class JerseyWSTestClient {
 	}
 	
 	private static URI getByIdTestURI(String id) {
-		return UriBuilder.fromUri("http://localhost:8080/" + rootPath + "/" + appPath + "?itemcode=" + "{" + testItemCode +", AECBUB217NR" + "}").build();
+		return UriBuilder.fromUri("http://localhost:8080/" + rootPath + "/" + appPath + "?itemcode=" + testItemCode).build();
+		//return UriBuilder.fromUri("http://localhost:8080/" + rootPath + "/" + appPath + "?itemcode=" + "{" + testItemCode +", AECBUB217NR" + "}").build();
 	}
 	
 	

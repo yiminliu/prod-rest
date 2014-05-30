@@ -25,6 +25,7 @@ import com.bedrosians.bedlogic.domain.item.enums.DesignLook;
 import com.bedrosians.bedlogic.domain.item.enums.DesignStyle;
 import com.bedrosians.bedlogic.domain.item.enums.Edge;
 import com.bedrosians.bedlogic.domain.item.enums.Grade;
+import com.bedrosians.bedlogic.domain.item.enums.DBOperation;
 import com.bedrosians.bedlogic.domain.item.enums.Status;
 import com.bedrosians.bedlogic.domain.item.enums.SurfaceApplication;
 import com.bedrosians.bedlogic.domain.item.enums.SurfaceFinish;
@@ -32,6 +33,7 @@ import com.bedrosians.bedlogic.domain.item.enums.SurfaceType;
 import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.models.Products;
 import com.bedrosians.bedlogic.service.product.ProductService;
+import com.bedrosians.bedlogic.service.security.KeymarkUcUserSecurityService;
 import com.bedrosians.bedlogic.util.JsonWrapper.ListWrapper;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 
@@ -51,6 +53,8 @@ public class ProductServiceDeletionTest {
 	
 	@Autowired
 	ProductService productService;
+	@Autowired
+	KeymarkUcUserSecurityService keymarkUcUserSecurityService;
 	
 	
 	private static String testItemId = null;
@@ -91,9 +95,20 @@ public class ProductServiceDeletionTest {
 	    testNewItemId = "TEST1";
 	}
 	   
+	@Test
+	public void testKeymarkUcUserSecurityService(){
+		String userType = "keymark";
+		String userCode = "JBED";
+		//DBOperation productOperation
+		try{
+		   keymarkUcUserSecurityService.doSecurityCheck(userType, userCode, DBOperation.SEARCH);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
 	 @Test
 	 public void testDeleteItemById()throws Exception {
-	    productService.deleteProductById("TEST5");
+	    productService.deleteProductById("NEWITEMCODE");
 	     System.out.println("testUpdateItem Done");
 	        
 	 }

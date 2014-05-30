@@ -295,33 +295,33 @@ public class ProductServiceCreationWithJsonTest {
 	        assertEquals(new BigDecimal("1070.000000"), item.getUnits().getUnit2wgtperunit());
 	        
 	        assertEquals("test", item.getUnits().getUnit3unit());
-	        assertEquals(Float.valueOf("0"), item.getUnits().getUnit3ratio());
+	        assertEquals(Float.valueOf("10.0"), item.getUnits().getUnit3ratio());
 	        assertEquals(Character.valueOf('N'), item.getUnits().getUnit3isstdsell());
 	        assertEquals(Character.valueOf('N'), item.getUnits().getUnit3isstdord());
 	        assertEquals(Character.valueOf('N'), item.getUnits().getUnit3isfractqty());
 	        assertEquals(Character.valueOf('N'), item.getUnits().getUnit3ispackunit());
-	        assertEquals(Long.valueOf("0"), item.getUnits().getUnit3upc());
+	        assertEquals(Long.valueOf("12345"), item.getUnits().getUnit3upc());
 	        //assertEquals(new BigDecimal("0"), item.getUnits().getUnit3wgtperunit());
 	        
-	        assertEquals("", item.getUnits().getUnit4unit());
-	        assertEquals(Float.valueOf("0"), item.getUnits().getUnit4ratio());
+	        assertEquals("test", item.getUnits().getUnit4unit());
+	        assertEquals(Float.valueOf("10.0"), item.getUnits().getUnit4ratio());
 	        assertEquals(Character.valueOf('N'), item.getUnits().getUnit4isstdsell());
 	        assertEquals(Character.valueOf('N'), item.getUnits().getUnit4isstdord());
 	        assertEquals(Character.valueOf('N'), item.getUnits().getUnit4isfractqty());
 	        assertEquals(Character.valueOf('N'), item.getUnits().getUnit4ispackunit());
-	        assertEquals(Long.valueOf("0"), item.getUnits().getUnit4upc());
+	        assertEquals(Long.valueOf("12353"), item.getUnits().getUnit4upc());
 	        //assertEquals(new BigDecimal("0"), item.getUnits().getUnit4wgtperunit());
 	        //test spec
 		    assertEquals(Float.valueOf("0.5"), item.getTestSpecification().getWaterabsorption());
 	        assertEquals(Float.valueOf("0.6"), item.getTestSpecification().getScratchresistance());
 	        assertEquals(Float.valueOf("0.7"), item.getTestSpecification().getPeiabrasion());
 	        assertEquals(Float.valueOf("0.8"), item.getTestSpecification().getScofwet());
-	        assertEquals(Float.valueOf("0.0"), item.getTestSpecification().getScofdry());
+	        assertEquals(Float.valueOf("0.2"), item.getTestSpecification().getScofdry());
 	        //assertEquals(Float.valueOf("0.6"), item.getTestSpecification().getBreakingstrength());
-	        assertEquals(Float.valueOf("0.0"), item.getTestSpecification().getDcof());
-	        assertEquals(Float.valueOf("0.0"), item.getTestSpecification().getMoh());
-	        assertEquals(Float.valueOf("0.0"), item.getTestSpecification().getPreconsummer());
-	        assertEquals(Float.valueOf("0.0"), item.getTestSpecification().getPosconsummer());
+	        assertEquals(Float.valueOf("0.3"), item.getTestSpecification().getDcof());
+	        assertEquals(Float.valueOf("0.4"), item.getTestSpecification().getMoh());
+	        assertEquals(Float.valueOf("0.6"), item.getTestSpecification().getPreconsummer());
+	        assertEquals(Float.valueOf("0.9"), item.getTestSpecification().getPosconsummer());
 			//usage
 		    //assertEquals("[FR,WR,CR,SR,PR,FL,WL,CL,SL,PL,FC,WC,CC,SC,PC]", item.getUsage());
 	      	 
@@ -339,6 +339,29 @@ public class ProductServiceCreationWithJsonTest {
 		    assertEquals("ALICIAB", item.getPurchasers().getPurchaser());
 		    assertEquals("GFIL", item.getPurchasers().getPurchaser2());
 		    assertEquals("V2", item.getShadevariation());
+			
+		    //application
+		    assertEquals("FR:WR:CR:SR:PR", item.getApplications().getResidential());
+	        assertEquals("FL:WL:CL:SL:PL", item.getApplications().getLightcommercial());
+	        assertEquals("FC:WC:CC:SC:PC", item.getApplications().getCommercial());
+			//for(ColorHue hue : item.getNewColorHueSystem()){
+			//	System.out.println("hue.getColorDescription() = " + hue.getColorDescription());
+			//	assertEquals("red".toUpperCase(), hue.getColorDescription().getDescription().toUpperCase());
+	
+	        System.out.println("newly created Item id  = " + id);
+	 }
+	 
+	 @Test
+	 public void testCreateItemWithUsageWithoutApplicationsJsonObject() throws Exception {
+	        System.out.println("testCreateItemWithJsonObject: ");
+	        JSONObject params = new JSONObject(jStringWithUsageWithoutApplications);
+	        String id = productService.createProduct(params);
+	        assertNotNull(id);
+	        
+	        Item item = productService.getProductById(id);
+	        
+			//usage
+		    //assertEquals("[FR,WR,CR,SR,PR,FL,WL,CL,SL,PL,FC,WC,CC,SC,PC]", item.getUsage());
 			
 		    //application
 		    assertEquals("FR:WR:CR:SR:PR", item.getApplications().getResidential());
@@ -596,7 +619,7 @@ public class ProductServiceCreationWithJsonTest {
 	        assertEquals("Italy", item.getCountryorigin());
 	        assertEquals("N", item.getInactivecode());
 	        assertEquals("2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)", item.getItemdesc().getFulldesc());    
-		    assertEquals("YELLOW:BEIGE", item.getColorcategory());
+		    assertEquals("BEIGE:YELLOW", item.getColorcategory());
 		    //assertTrue(item.getColorhues().contains("BEIGE"));
 		    assertEquals("F", Character.toString(item.getItemtypecd()));
 		    //assertEquals("test", item.getType());
@@ -785,9 +808,15 @@ public class ProductServiceCreationWithJsonTest {
 	      		+ "\"showonwebsite\":\"Y\",\"itemtypecd\":\"F\",\"abccd\":\"C\",\"itemcd2\":\"\",\"inventoryitemcd\":\"\",\"showonalysedwards\":\"N\",\"offshade\":\"N\",\"printlabel\":\" \",\"taxclass\":\"T\",\"lottype\":\"\",\"updatecd\":\"CERA-CRD\",\"directship\":\" \",\"dropdate\":null,\"itemgroupnbr\":0,\"priorlastupdated\":\"2014-03-31\",\"imsNewFeature\":null,"
 	       		+ "\"cost\":{\"cost1\":0.0000,\"priorcost\":0.0000},"
 	      		+ "\"priorVendor\":null}";
+	 
+	 String jStringWithUsageWithoutApplications = 
+			   "{\"itemcode\":\"newItemcode9\","
+		  		+ "\"usage\":[\"FR\",\"WR\",\"CR\",\"SR\",\"PR\",\"FL\",\"WL\",\"CL\",\"SL\",\"PL\",\"FC\",\"WC\",\"CC\",\"SC\",\"PC\"],"
+	    		//+ "\"applications\":{\"residential\":\"FR:WR:CR:SR:PR\",\"lightcommercial\":\"FL:WL:CL:SL:PL\",\"commercial\":\"FC:WC:CC:SC:PC\"},"
+	       		+ "}";
 	 	 
 	 String jStringFullItemInfo = 
-			   "{\"itemcode\":\"newItemcode6\","
+			   "{\"itemcode\":\"newItemcode2\","
 			    + "\"itemcategory\":\"ATHENA\","
 			    + "\"countryorigin\":\"Italy\","
 			    + "\"inactivecode\":\"N\","
@@ -846,7 +875,7 @@ public class ProductServiceCreationWithJsonTest {
 	 
 	 String jStringFullItemAndAssociationInfo = 
 			    //basic info
-			     "{\"itemcode\":\"newItemcode14\","
+			     "{\"itemcode\":\"newItemcode4\","
 			    + "\"itemcategory\":\"ATHENA\","
 			    + "\"countryorigin\":\"Italy\","
 			    + "\"inactivecode\":\"N\","
@@ -895,7 +924,7 @@ public class ProductServiceCreationWithJsonTest {
 	    		+ "                     {\"vendorOrder\":3,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorNetPrice\":4.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"vendorId\":134587},"
  		        + "                     ],"
 	    		+ "\"imsNewFeature\":{\"grade\":\"First\",\"status\":\"Good\",\"body\":\"Red_Body\",\"edge\":\"Tumbled\",\"mpsCode\":\"Drop\",\"designLook\":\"Wood\",\"designStyle\":\"Modern\",\"surfaceApplication\":\"Silk\",\"surfaceType\":\"Cross_Cut\",\"surfaceFinish\":\"Antiquated\",\"warranty\":3,\"recommendedGroutJointMin\":\"1\",\"recommendedGroutJointMax\":\"2\",\"createdDate\":\"2014-05-14\",\"launchedDate\":null,\"droppedDate\":null,\"lastModifiedDate\":null},"
-	    		+ "\"newNoteSystem\":[{\"noteType\":\"po\",\"note\":\"test Po note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"buyer\",\"note\":\"test buyer note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"invoice\",\"note\":\"test invoice note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"additional\",\"note\":\"test additional note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"internal\",\"note\":\"test internal note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null}],"
+	    		//+ "\"newNoteSystem\":[{\"noteType\":\"po\",\"text\":\"test Po note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"buyer\",\"text\":\"test buyer note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"invoice\",\"text\":\"test invoice note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"additional\",\"text\":\"test additional note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"internal\",\"text\":\"test internal note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null}],"
 	    		+ "\"iconDescription\":{\"madeInCountry\":\"USA\",\"exteriorProduct\":true,\"adaAccessibility\":true,\"throughColor\":false,\"colorBody\":true,\"inkJet\":false,\"glazed\":true,\"unglazed\":false,\"rectifiedEdge\":true,\"chiseledEdge\":false,\"versaillesPattern\":true,\"recycled\":false,\"postRecycled\":true,\"preRecycled\":false,\"leadPointIcon\":true,\"greenFriendlyIcon\":false,\"coefficientOfFriction\":true},"
 		        + "}";
 }
