@@ -2,7 +2,6 @@ package com.bedrosians.bedlogic.util;
 
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -14,9 +13,7 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import org.codehaus.jettison.json.JSONObject;
 
-import com.bedrosians.bedlogic.domain.item.ColorHue;
 import com.bedrosians.bedlogic.domain.item.Item;
-import com.bedrosians.bedlogic.domain.item.Note;
 import com.bedrosians.bedlogic.domain.item.ItemVendor;
 import com.bedrosians.bedlogic.domain.item.enums.Status;
 import com.bedrosians.bedlogic.domain.item.enums.Grade;
@@ -131,29 +128,6 @@ public class ImsQueryUtil {
 	    return numberOfVendors;
 	}
 
-    /*
-    public static Item buildItemFromJsonObjectForInsert(Item item, JSONObject inputJsonObj) throws BedDAOBadParamException{
-    
-    	ObjectMapper mapper = new ObjectMapper(); // can reuse, share globally
-    	try{
-    	 //item = mapper.readValue(inputJsonObj.toString(), Item.class);
-    	  item = mapper.readValue(inputJsonObj.toString(), Item.class);
-    	}
-    	catch(JsonParseException e){
-			e.printStackTrace();
-			throw new BedDAOBadParamException("Json parse exception occured: "+ e.getMessage()); 
-	   	}
-    	catch(JsonMappingException e){
-			e.printStackTrace();
-			throw new BedDAOBadParamException("Json mapping exception occured: "+ e.getMessage()); 
-	   	}
-    	catch(Exception e){
-			e.printStackTrace();
-		}
-
-		return item;
-	}
-  */  
     public static Item buildItemFromJsonObjectForInsert(Item item, JSONObject inputJsonObj) throws BedDAOBadParamException{
         
     	Iterator<String> itrator = inputJsonObj.keys();
@@ -997,76 +971,77 @@ public class ImsQueryUtil {
                break;    
 	   	   
     	   /*--------- notes ----------*/
-    	   case "ponotes": case "poNotes":
+    	 /*  case "ponotes": case "poNotes":
     		   item.getNotes().setPonotes(value);
     		   if(item.getNewNoteSystem() != null && item.getNewNoteSystem().get(0) != null)
-    		   item.getNewNoteSystem().get(0).setNote(value);
+    		   item.getNewNoteSystem().get(0).setText(value);
     		   break;
            case "note1": case "notes1":
     		   item.getNotes().setNotes1(value);
     		   if(item.getNewNoteSystem() != null && item.getNewNoteSystem().get(1) != null)
-        		   item.getNewNoteSystem().get(1).setNote(value);
+        		   item.getNewNoteSystem().get(1).setText(value);
     		   break;
     	   case "note2": case "notes2":
     		   item.getNotes().setNotes2(value);
     		   if(item.getNewNoteSystem() != null && item.getNewNoteSystem().get(3) != null)
-        		   item.getNewNoteSystem().get(3).setNote(value);
+        		   item.getNewNoteSystem().get(3).setText(value);
     		   break;
     	   case "note3": case "notes3":
     		   item.getNotes().setNotes3(value);
     		   if(item.getNewNoteSystem() != null && item.getNewNoteSystem().get(2) != null)
-        		   item.getNewNoteSystem().get(2).setNote(value);
+        		   item.getNewNoteSystem().get(2).setText(value);
     		   break;	   
     	   case "ponote": case "poNote":
     		   if(item.getNewNoteSystem() == null || item.getNewNoteSystem().get(0) == null){
      			  Note poNote = new Note("po");
-     		      poNote.setNote(value);
+     		      poNote.setText(value);
      	       }  
      	       else {	
-        		   item.getNewNoteSystem().get(0).setNote(value);
+        		   item.getNewNoteSystem().get(0).setText(value);
      	       }	   
     		   item.getNotes().setPonotes(value);
     		   break;
     	   case "buyernote": case "buyerNote":
     		   if(item.getNewNoteSystem() == null || item.getNewNoteSystem().get(1) == null){
     			  Note buyerNote = new Note("buyer");
-    		      buyerNote.setNote(value);
+    		      buyerNote.setText(value);
     	       }  
     	       else {	   	   
-    		      item.getNewNoteSystem().get(1).setNote(value);
+    		      item.getNewNoteSystem().get(1).setText(value);
     		   }   
                item.getNotes().setNotes1(value);
     		   break;
     	   case "invoicenote": case "invoiceNote":
     		   if(item.getNewNoteSystem() == null || item.getNewNoteSystem().get(2) == null){
      			  Note invoiceNote = new Note("invoice");
-     		      invoiceNote.setNote(value);
+     		      invoiceNote.setText(value);
      	       }  
      	       else {	
-     	    	   item.getNewNoteSystem().get(2).setNote(value);
+     	    	   item.getNewNoteSystem().get(2).setText(value);
      	       }
     		   item.getNotes().setNotes3(value);
     		   break;	
     	   case "internalnote": case "internalNote":
     		   if(item.getNewNoteSystem() == null || item.getNewNoteSystem().get(4) == null){
      			  Note internalNote = new Note("internal");
-     		      internalNote.setNote(value);
+     		      internalNote.setText(value);
      	       }  
      	       else {	
-     	    	   item.getNewNoteSystem().get(4).setNote(value);
+     	    	   item.getNewNoteSystem().get(4).setText(value);
      	       }
     		   break;
     	   case "additionalnote": case "additionalNote":
     		   if(item.getNewNoteSystem() == null || item.getNewNoteSystem().get(3) == null){
      			  Note internalNote = new Note("additional");
-     		      internalNote.setNote(value);
+     		      internalNote.setText(value);
      	       }  
      	       else {	
-     	    	   item.getNewNoteSystem().get(3).setNote(value);
+     	    	   item.getNewNoteSystem().get(3).setText(value);
      	       }
     		   item.getNotes().setNotes2(value);
     		   break;	   
-    		 //----- similar items -----//
+    		 */
+            //----- similar items -----//
     	   case "similarItemcd1": case "similaritemcd1":
     		   item.getRelateditemcodes().setSimilaritemcd1(value);
     		   break;
@@ -1111,84 +1086,12 @@ public class ImsQueryUtil {
     		   length = lengthAndWidth[1];
      	       width = lengthAndWidth[0];	
     		}
-    		//Item.setLength(length);
- 		    //Item.setWidth(width);
     		item.getDimensions().setNominallength(Float.parseFloat(length));
  		    item.getDimensions().setNominalwidth(Float.parseFloat(width));
     	}
     	return item;
     }
     
-  
-	public static String generateInsertSqlStatment(String tableName, MultivaluedMap<String, String> queryParams){
-		Item item = new Item();
-		
-		StringBuilder columns = new StringBuilder();
-		StringBuilder values = new StringBuilder();
-		columns.append("INSERT INTO "+ tableName + " (");
-		values.append(" VALUES(");
-		String end = ")";
-		int i = 0;
-	    Set<Map.Entry<String, List<String>>> set = queryParams.entrySet();
-		Iterator it = set.iterator();
-		String key, value = null;
-		while(it.hasNext()) {
-			i += 1;
-		   	Entry<String, List<String>> entry = (Entry<String, List<String>>)it.next();
-		   	key = (String)entry.getKey();
-		   	value = ((List<String>)entry.getValue()).get(0);
-		   	if(i == set.size()) {
-		   		columns.append(key);
-			   	values.append(value);
-		   	}
-		   	else {
-		   	    columns.append(key).append(",");
-		   	    values.append(value).append(",");
-		   	}    
-		} 	
-		columns.append(")");
-		values.append(end);
-		columns.append(values);
-		  	
-		return columns.toString();
-	}
-
-	
-	public static Item buildVendorInfo(MultivaluedMap<String, String> queryParams, Item item){
-	
-		Set<ItemVendor> vendors = item.getNewVendorSystem();
-	    if(vendors.isEmpty()){
-	    	ItemVendor vendor = new ItemVendor();
-	    }
-	    
-		Set<Map.Entry<String, List<String>>> set = queryParams.entrySet(); 
-		
-		Iterator<Entry<String, List<String>>> it = set.iterator(); 
-		String key, value = null;
-		while(it.hasNext()) {
-			try{
-		   	   Entry<String, List<String>> entry = (Entry<String, List<String>>)it.next();
-		   	   key = (String)entry.getKey();
-		   	 
-		   	   //key = Character.toUpperCase(key.charAt(0)) + key.substring(1); 
-		   	   value = ((List<String>)entry.getValue()).get(0);
-		   	   setParameter(item, key, value);
-			}
-			catch(Exception e){
-				e.printStackTrace();
-			}
-		} 
-		//ImsNewFeature newFeature = item.getImsNewFeature();
-		//if(newFeature != null && newFeature.getItemcd() == null) 
-			//newFeature.setItemcd(item.getItemcd());
-		
-		//newFeature.setCreatedDate(new Date());
-		//newFeature.setItem(item);
-		//item.setImsNewFeature(newFeature);
-				  	
-		return item;
-	}
-	
 	private static  String normalizeBooleanInput(String value){
 	    if("Y".equalsIgnoreCase(value) || "Yes".equalsIgnoreCase(value))
 			   value = "true";
@@ -1197,26 +1100,5 @@ public class ImsQueryUtil {
 		return value; 
 	}
 	
-	//public static void saveColorHue(Item item, String value){
-	//	if(value != null && !value.isEmpty()) {
-	//		item.setNewColorHueSystem(new ArrayList<ColorHue>());
-	//		if(!value.contains(":") )
-	//			item.addNewColorHueSystem(new ColorHue(value));	
-	//		else {
-	//			for(String color : value.trim().split(":")){
-  	 //               if(color != null && !color.isEmpty())
-	//	               item.addNewColorHueSystem(new ColorHue(value));	
-	//			}    
-	//	    }	   
-	//	}
-	//}
-	
-	//public static void saveColorCategory(Item item, String value){
-	//	if(value != null && !value.isEmpty()){
-	//		String colorCategory = item.getColorhues();
-		    //item.setColorcategory((colorCategory == null && !colorCategory.isEmpty()) ?  value.toUpperCase() : colorCategory + ":" + value.toUpperCase());
-	//		item.setColorhues(value.toUpperCase());
-	//	}
-	//}
 	
 }

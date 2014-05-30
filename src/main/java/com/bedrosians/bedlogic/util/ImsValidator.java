@@ -5,8 +5,6 @@ import java.util.Date;
 
 import javax.ws.rs.core.MultivaluedMap;
 
-import org.codehaus.jettison.json.JSONObject;
-
 import com.bedrosians.bedlogic.domain.item.Item;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 
@@ -33,10 +31,8 @@ public class ImsValidator {
 	}
 
 	public static void validateItemCode(Item item) throws BedDAOBadParamException{
-		if(item.getItemcode() == null || item.getItemcode().length() < 1)
-		   throw new BedDAOBadParamException("Item code cannot be empty.");
-		if(item.getItemcode().length() > 18)
-		   throw new BedDAOBadParamException("Item code cannot be longer that 18 characters.");
+		if(item.getItemcode() == null || item.getItemcode().length() < 1 || item.getItemcode().length() > 18)
+		   throw new BedDAOBadParamException("Item code cannot be empty and should be less than 18 characters");
 	}
 	
 	private static void validateForNullParams(MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException{
@@ -92,12 +88,12 @@ public class ImsValidator {
 			throw new BedDAOBadParamException("End date should not be earlier than start date.");
 	}
 	
-	//Validate the new item against the ims CHECK constraints
+	//Validate new item against the ims table CHECK constraints
 	public static void validateNewItemUnit(Item item) throws BedDAOBadParamException{
 	    if(item.getUnits() == null) 
 	       return;
 	    
-		if(item.getUnits().getBaseunit() == null || item.getUnits().getBaseunit().length() < 1)
+		if(item.getUnits().getBaseunit() == null || item.getUnits().getBaseunit().trim().length() < 1)
 		   throw new BedDAOBadParamException("BaseUnit cannot be null.");
 	
 		if((item.getUnits().getBaseunit() != null && item.getUnits().getBaseunit().length() > 4) || 
@@ -107,27 +103,27 @@ public class ImsValidator {
 		   (item.getUnits().getUnit4unit() != null && item.getUnits().getUnit4unit().length() > 4))
 			throw new BedDAOBadParamException("Unit cannot be longer than four characters.");
 		//db constraint ims_check 1
-		if((item.getUnits().getUnit1unit() == null || item.getUnits().getUnit1unit().length() == 0) && (item.getUnits().getUnit1ratio() != null && item.getUnits().getUnit1ratio() > 0))
+		if((item.getUnits().getUnit1unit() == null || item.getUnits().getUnit1unit().trim().length() == 0) && (item.getUnits().getUnit1ratio() != null && item.getUnits().getUnit1ratio() > 0))
 			throw new BedDAOBadParamException("Unit1 ratio should be 0, since unit1 unit is empty.");
 		if((item.getUnits().getUnit1unit() != null && item.getUnits().getUnit1unit().length() > 0) && item.getUnits().getUnit1ratio() <= 0)
 			throw new BedDAOBadParamException("Please privide Unit1 ratio.");
 		
 		//db constraint ims_check 2
-		if((item.getUnits().getUnit2unit() == null || item.getUnits().getUnit2unit().length() == 0) && (item.getUnits().getUnit2ratio() != null && item.getUnits().getUnit2ratio() > 0))
+		if((item.getUnits().getUnit2unit() == null || item.getUnits().getUnit2unit().trim().length() == 0) && (item.getUnits().getUnit2ratio() != null && item.getUnits().getUnit2ratio() > 0))
 			throw new BedDAOBadParamException("Unit2 ratio should be 0, since unit2 unit is empty.");
 		if((item.getUnits().getUnit2unit() != null && item.getUnits().getUnit2unit().length() > 0) && item.getUnits().getUnit2ratio() <= 0)
 			throw new BedDAOBadParamException("Please privide Unit2 ratio.");
 	
 		//db constraint ims_check 3
-		if((item.getUnits().getUnit3unit() == null || item.getUnits().getUnit3unit().length() == 0) && (item.getUnits().getUnit3ratio()  != null && item.getUnits().getUnit3ratio() > 0))
+		if((item.getUnits().getUnit3unit() == null || item.getUnits().getUnit3unit().trim().length() == 0) && (item.getUnits().getUnit3ratio()  != null && item.getUnits().getUnit3ratio() > 0))
 			throw new BedDAOBadParamException("Unit3 ratio should be 0, since unit3 unit is empty.");
-		if((item.getUnits().getUnit3unit() != null && item.getUnits().getUnit3unit().length() > 0) && item.getUnits().getUnit3ratio() <= 0)
+		if((item.getUnits().getUnit3unit() != null && item.getUnits().getUnit3unit().trim().length() > 0) && item.getUnits().getUnit3ratio() <= 0)
 			throw new BedDAOBadParamException("Please privide Unit3 ratio.");
 				
 		//db constraint ims_check 4
-		if((item.getUnits().getUnit4unit() == null || item.getUnits().getUnit4unit().length() == 0) && (item.getUnits().getUnit4ratio() != null && item.getUnits().getUnit4ratio() > 0))
+		if((item.getUnits().getUnit4unit() == null || item.getUnits().getUnit4unit().trim().length() == 0) && (item.getUnits().getUnit4ratio() != null && item.getUnits().getUnit4ratio() > 0))
 			throw new BedDAOBadParamException("Unit4 ratio should be 0, since unit4 unit is empty.");
-		if((item.getUnits().getUnit4unit() != null && item.getUnits().getUnit4unit().length() > 0) && item.getUnits().getUnit4ratio() <= 0)
+		if((item.getUnits().getUnit4unit() != null && item.getUnits().getUnit4unit().trim().length() > 0) && item.getUnits().getUnit4ratio() <= 0)
 			throw new BedDAOBadParamException("Please privide Unit4 ratio.");		   
 		
 	 	//db constraint ims_check 5
@@ -256,15 +252,15 @@ public class ImsValidator {
          }
           */
 		//ims check 6
-		if (item.getUnits().getBaseunit() != null && checkIllegalValue(item.getUnits().getBaseunit()) ||
-	       (item.getUnits().getUnit1unit() != null && checkIllegalValue(item.getUnits().getUnit1unit())) ||
-	       (item.getUnits().getUnit2unit() != null && checkIllegalValue(item.getUnits().getUnit2unit())) ||
-	       (item.getUnits().getUnit3unit() != null && checkIllegalValue(item.getUnits().getUnit3unit())) ||
-	       (item.getUnits().getUnit4unit() != null && checkIllegalValue(item.getUnits().getUnit4unit())))
+		if (item.getUnits().getBaseunit() != null && validateUnitName(item.getUnits().getBaseunit()) ||
+	       (item.getUnits().getUnit1unit() != null && validateUnitName(item.getUnits().getUnit1unit())) ||
+	       (item.getUnits().getUnit2unit() != null && validateUnitName(item.getUnits().getUnit2unit())) ||
+	       (item.getUnits().getUnit3unit() != null && validateUnitName(item.getUnits().getUnit3unit())) ||
+	       (item.getUnits().getUnit4unit() != null && validateUnitName(item.getUnits().getUnit4unit())))
 	    	 throw new IllegalArgumentException("Unit or unit ratio is wrong.");
 	}
 	
-	private static boolean checkIllegalValue(String originalString){
+	private static boolean validateUnitName(String originalString){
 		String[] illegalValues = new String[]{"EA", "EACH", "PC", "LF", "SF", "CT", "CTM", "CTNH", "PK"};
 		for(String s : illegalValues){
 			if(originalString.equalsIgnoreCase(s))

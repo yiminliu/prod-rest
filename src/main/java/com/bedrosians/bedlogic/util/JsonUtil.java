@@ -22,7 +22,6 @@ import com.bedrosians.bedlogic.domain.item.IconCollection;
 import com.bedrosians.bedlogic.domain.item.ImsNewFeature;
 import com.bedrosians.bedlogic.domain.item.Item;
 import com.bedrosians.bedlogic.domain.item.ItemVendor;
-import com.bedrosians.bedlogic.domain.item.Note;
 import com.bedrosians.bedlogic.domain.item.embeddable.Applications;
 import com.bedrosians.bedlogic.domain.item.embeddable.Cost;
 import com.bedrosians.bedlogic.domain.item.embeddable.Dimensions;
@@ -251,7 +250,7 @@ public class JsonUtil {
 	
 	public static String validateItemCode(JSONObject jsonObj) throws BedDAOBadParamException{
 		String itemCode = getItemCode(jsonObj);
-		if(itemCode == null || itemCode.length() < 1)
+		if(itemCode == null || itemCode.trim().length() < 1)
 		   throw new BedDAOBadParamException("Item code cannot be empty.");
 		if(itemCode.length() > 18)
 		   throw new BedDAOBadParamException("Item code cannot be longer that 18 characters.");
@@ -311,7 +310,7 @@ public class JsonUtil {
 	    		+ "\"applications\":{\"residential\":\"\",\"lightcommercial\":\"\",\"commercial\":\"\"},"
 	    		+ "\"units\":{\"stdunit\":\"PCS\",\"stdratio\":1.0,\"ordunit\":\"PCS\",\"ordratio\":1.0,\"baseunit\":\"PCS\",\"baseisstdsell\":\" \",\"baseisstdord\":\" \",\"baseisfractqty\":\" \",\"baseispackunit\":\" \",\"baseupc\":0,\"baseupcdesc\":\"\",\"basevolperunit\":0.0000,\"basewgtperunit\":0.0000,\"unit1unit\":\"\",\"unit1ratio\":0.0,\"unit1isstdsell\":\" \",\"unit1isstdord\":\" \",\"unit1isfractqty\":\" \",\"unit1ispackunit\":\" \",\"unit1upc\":0,\"unit1upcdesc\":\"\",\"unit1wgtperunit\":0.0000,\"unit2unit\":\"\",\"unit2ratio\":0.0,\"unit2isstdsell\":\" \",\"unit2isstdord\":\" \",\"unit2isfractqty\":\" \",\"unit2ispackunit\":\" \",\"unit2upc\":0,\"unit2upcdesc\":\"\",\"unit2wgtperunit\":0.0000,\"unit3unit\":\"\",\"unit3ratio\":0.0,\"unit3isstdsell\":\" \",\"unit3isstdord\":\" \",\"unit3isfractqty\":\" \",\"unit3ispackunit\":\" \",\"unit3upc\":0,\"unit3upcdesc\":\"\",\"unit3wgtperunit\":0.0000,\"unit4unit\":\"\",\"unit4ratio\":0.0,\"unit4isstdsell\":\" \",\"unit4isstdord\":\" \",\"unit4isfractqty\":\" \",\"unit4ispackunit\":\" \",\"unit4upc\":0,\"unit4upcdesc\":\"\",\"unit4wgtperunit\":0.0000},"
 	    		+ "\"showonwebsite\":\" \",\"itemtypecd\":\" \",\"abccd\":\"\",\"itemcd2\":\"\",\"inventoryItemcd\":\"\",\"showonalysedwards\":\" \",\"offshade\":\" \",\"printlabel\":\" \",\"taxclass\":null,\"lottype\":\"\",\"updatecd\":\"\",\"directship\":\" \",\"dropdate\":null,\"itemgroupnbr\":0,\"priorlastupdated\":null,"
-	    		+ "\"imsNewFeature\":{\"grade\":\"First\",\"status\":\"Good\",\"body\":\"Red_Body\",\"edge\":\"Tumbled\",\"mpsCode\":\"Drop\",\"designLook\":\"Wood\",\"designStyle\":\"Modern\",\"surfaceApplication\":\"Silk\",\"surfaceType\":\"Cross_Cut\",\"surfaceFinish\":\"Antiquated\",\"warranty\":3,\"recommendedGroutJointMin\":\"1\",\"recommendedGroutJointMax\":\"2\",\"createdDate\":\"2014-05-14\",\"launchedDate\":null,\"droppedDate\":null,\"lastModifiedDate\":null,\"version\":0},"
+	    		+ "\"imsNewFeature\":{\"grade\":\"First\",\"status\":\"Good\",\"body\":\"Red_Body\",\"edge\":\"Tumbled\",\"mpsCode\":\"Drop\",\"designLook\":\"Wood\",\"designStyle\":\"Modern\",\"surfaceApplication\":\"Silk\",\"surfaceType\":\"Cross_Cut\",\"surfaceFinish\":\"Antiquated\",\"warranty\":3,\"recommendedGroutJointMin\":\"1\",\"recommendedGroutJointMax\":\"2\",\"createdDate\":\"2014-05-14\",\"launchedDate\":null,\"droppedDate\":null,\"version\":0},"
 	    		+ "\"newVendorSystem\":[],"
 	    		+ "\"vendors\":{\"vendornbr\":0,\"vendornbr1\":0,\"vendornbr2\":0,\"vendornbr3\":0,\"vendorxrefcd\":\"\",\"vendorlistprice\":0.0000,\"vendorpriceunit\":\"PCS\",\"vendorfob\":\"\",\"vendordiscpct\":0.0,\"vendorroundaccuracy\":1,\"vendornetprice\":0.0000,\"vendormarkuppct\":0.0,\"vendorfreightratecwt\":0.0,\"dutypct\":0.0,\"leadtime\":0,\"vendorLandedBaseCost\":0.0000,\"vendordiscpct2\":0.0,\"vendordiscpct3\":0.0},\"cost\":{\"cost1\":0.0000,\"priorcost\":0.0000,\"priorcost1\":0.0000,\"futurecost\":0.0000,\"futurecost1\":0.0000,\"poincludeinvendorcost\":\" \",\"nonstockcostpct\":0.0,\"costrangepct\":0.0},"
 	    		+ "\"priorVendor\":{\"priorvendorpriceunit\":\"\",\"priorvendorfob\":\"\",\"priorvendorlistprice\":0.0000,\"priorvendordiscpct1\":0.0,\"priorvendorroundaccuracy\":0,\"priorvendornetprice\":0.0000,\"priorvendormarkuppct\":0.0,\"priorvendorfreightratecwt\":0.0,\"priorvendorlandedbasecost\":0.0000}"

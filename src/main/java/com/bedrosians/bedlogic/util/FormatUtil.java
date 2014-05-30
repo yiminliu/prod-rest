@@ -1,24 +1,11 @@
 package com.bedrosians.bedlogic.util;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.HashSet;
 
-import org.codehaus.jackson.map.exc.UnrecognizedPropertyException;
-
-import com.bedrosians.bedlogic.domain.item.ColorHue;
-import com.bedrosians.bedlogic.domain.item.IconCollection;
-import com.bedrosians.bedlogic.domain.item.ImsNewFeature;
 import com.bedrosians.bedlogic.domain.item.Item;
-import com.bedrosians.bedlogic.domain.item.ItemVendor;
-import com.bedrosians.bedlogic.domain.item.Note;
-import com.bedrosians.bedlogic.domain.item.embeddable.Notes;
-import com.bedrosians.bedlogic.domain.item.embeddable.Price;
-import com.bedrosians.bedlogic.domain.item.embeddable.Units;
-import com.bedrosians.bedlogic.domain.item.embeddable.VendorInfo;
-import com.bedrosians.bedlogic.domain.item.enums.DBOperation;
-import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 
 
 public class FormatUtil {
@@ -73,7 +60,6 @@ public class FormatUtil {
 	public static BigDecimal process(BigDecimal data){
 		BigDecimal newData = BigDecimal.valueOf(0);
 		if (data != null)
-			//newData = BigDecimal.valueOf((String.valueOf(data).trim()));
 			newData = data;
 	    return newData.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
@@ -149,10 +135,10 @@ public class FormatUtil {
 			item.getPrice().setPricegroup(process(item.getPrice().getPricegroup()));
 		}
 		if(item.getVendors() != null){
-			//item.getVendors().setDutypct(process(item.getVendors().getDutypct()));
 			item.getVendors().setVendorfob(process(item.getVendors().getVendorfob()));
 			item.getVendors().setVendorxrefcd(process(item.getVendors().getVendorxrefcd()));
 			item.getVendors().setVendorpriceunit(process(item.getVendors().getVendorpriceunit()));
+			//item.getVendors().setDutypct(process(item.getVendors().getDutypct()));
 		}
 		if(item.getUnits() != null){
 			item.getUnits().setOrdunit(process(item.getUnits().getOrdunit()));
@@ -176,9 +162,9 @@ public class FormatUtil {
 		}
 		if(item.getNotes() != null){
 		   item.getNotes().setPonotes(process(item.getNotes().getPonotes()));	
-		   item.getNotes().setNotes1(process(item.getNotes().getNotes1()));
-		   item.getNotes().setNotes2(process(item.getNotes().getNotes2()));
-		   item.getNotes().setNotes3(process(item.getNotes().getNotes3()));
+		   item.getNotes().setBuyernotes(process(item.getNotes().getBuyernotes()));
+		   item.getNotes().setInternalnotes(process(item.getNotes().getInternalnotes()));
+		   item.getNotes().setInvoicenotes(process(item.getNotes().getInvoicenotes()));
 		}   
 		if(item.getRelateditemcodes() != null){
 			item.getRelateditemcodes().setSimilaritemcd1(process(item.getRelateditemcodes().getSimilaritemcd1()));
@@ -189,29 +175,32 @@ public class FormatUtil {
 			item.getRelateditemcodes().setSimilaritemcd6(process(item.getRelateditemcodes().getSimilaritemcd6()));
 		}
 		if(item.getPriorVendor() != null){
-		   //item.getPriorVendor().setPriorvendordiscpct1(process(item.getPriorVendor().getPriorvendordiscpct1()));	
 		   item.getPriorVendor().setPriorvendorfob(process(item.getPriorVendor().getPriorvendorfob()));
+		   item.getPriorVendor().setPriorvendorpriceunit(process(item.getPriorVendor().getPriorvendorpriceunit()));
+		   item.getPriorVendor().setPriorvendorroundaccuracy(process(item.getPriorVendor().getPriorvendorroundaccuracy()));
+		   //item.getPriorVendor().setPriorvendordiscpct1(process(item.getPriorVendor().getPriorvendordiscpct1()));	
 		   //item.getPriorVendor().setPriorvendorfreightratecwt(process(item.getPriorVendor().getPriorvendorfreightratecwt()));
 		   //item.getPriorVendor().setPriorvendorlandedbasecost(process(item.getPriorVendor().getPriorvendorlandedbasecost()));
 		   //item.getPriorVendor().setPriorvendorlistprice(process(item.getPriorVendor().getPriorvendorlistprice()));
 		   //item.getPriorVendor().setPriorvendormarkuppct(process(item.getPriorVendor().getPriorvendormarkuppct()));
 		   //item.getPriorVendor().setPriorvendornetprice(process(item.getPriorVendor().getPriorvendornetprice()));
-		   item.getPriorVendor().setPriorvendorpriceunit(process(item.getPriorVendor().getPriorvendorpriceunit()));
-		   item.getPriorVendor().setPriorvendorroundaccuracy(process(item.getPriorVendor().getPriorvendorroundaccuracy()));
 		}
 		if(item.getIconDescription() == null)
-		   item.setIconDescription(ImsResultUtil.parseIcons(item.getIconsystem()));	
+		   item.setIconDescription(ImsDataUtil.convertLegacyIconsToIconCollection(item.getIconsystem()));	
 	    if(item.getPriorVendor() != null)
-		   ImsResultUtil.parsePriorVendor(item);	
+		   ImsDataUtil.parsePriorVendor(item);	
 		if(item.getPrice() != null)
-		   item.getPrice().setPriceunit(ImsResultUtil.getStandardSellUnit(item));//item.getStandardSellUnit());	
+		   item.getPrice().setPriceunit(ImsDataUtil.getStandardSellUnit(item));//item.getStandardSellUnit());	
 		if(item.getUnits() != null)
-		   item.setPackaginginfo(ImsResultUtil.getPackagingInfo(item));
+		   item.setPackaginginfo(ImsDataUtil.getPackagingInfo(item));
 		if(item.getApplications() != null)
-		   item.setUsage(ImsResultUtil.convertApplicationsToUsage(item));
+		   item.setUsage(ImsDataUtil.convertApplicationsToUsage(item));
+		if(item.getImsNewFeature() != null && item.getImsNewFeature().getMpsCode() == null)
+	       item.getImsNewFeature().setMpsCode(ImsDataUtil.convertInactivecdToMpsCode(item.getInactivecode()));	
 		if(item.getColorhues() == null || item.getColorhues().isEmpty())
-		   item.setColorhues(ImsResultUtil.convertColorCategoryToColorHues(item.getColorcategory()));
-		
+		   item.setColorhues(new ArrayList<>(ImsDataUtil.convertColorCategoryToColorHueObjects(item)));
+		if(item.getNewVendorSystem() != null && !item.getNewVendorSystem().isEmpty())
+		   item.setNewVendorSystem(new ArrayList<>(new HashSet<>(item.getNewVendorSystem())));	
 		return item;
 		/*
 		//item.setOffShade(process(item.getOffShade()));
@@ -312,227 +301,6 @@ public class FormatUtil {
 		newItem.setVendorxrefcd(process(item.getVendorxrefcd()));	
 		newItem.setWidth(process(item.getWidth()));
 		*/
-	}
-	
-	public static Item transformItem(Item newItem, Item origItem, DBOperation operation) throws BedDAOBadParamException{
-		//Item newItem = new Item();
-	    	//String itemCode = item.getItemcode().toUpperCase();
-		    //newItem.setItemcode(itemCode);	
-		if(origItem == null)
-	       throw new BedDAOBadParamException("The input is empty");		
-		transferProperty(newItem, origItem);
-		transferComponent(newItem, origItem);
-		transferAssociation(newItem, origItem, operation);	
-		return newItem;
-	}
-		
-	private static void transferProperty(Item newItem, Item originalItem) throws BedDAOBadParamException{
-	  try{	
-		if(originalItem.getAbccd() != null) newItem.setAbccd(originalItem.getAbccd());
-		if(originalItem.getCountryorigin() != null) newItem.setCountryorigin(originalItem.getCountryorigin());
-		if(originalItem.getDimensions() != null) newItem.setDimensions(originalItem.getDimensions());
-		if(originalItem.getDirectship() != null) newItem.setDirectship(originalItem.getDirectship());
-		if(originalItem.getDropdate() != null) newItem.setDropdate(originalItem.getDropdate());
-		if(originalItem.getIconsystem() != null) newItem.setIconsystem(originalItem.getIconsystem());
-		if(originalItem.getInactivecode() != null) newItem.setInactivecode(originalItem.getInactivecode());
-		if(originalItem.getInventoryitemcd() != null) newItem.setInventoryitemcd(originalItem.getInventoryitemcd());
-		if(originalItem.getItemcd2() != null) newItem.setItemcd2(originalItem.getItemcd2());
-		if(originalItem.getItemgroupnbr() != null) newItem.setItemgroupnbr(originalItem.getItemgroupnbr());
-		if(originalItem.getItemtypecd() != null) newItem.setItemtypecd(originalItem.getItemtypecd());	
-		if(originalItem.getItemcategory() != null) newItem.setItemcategory(originalItem.getItemcategory());
-		if(originalItem.getLottype() != null) newItem.setLottype(originalItem.getLottype());
-		if(originalItem.getOffshade() != null) newItem.setOffshade(originalItem.getOffshade());
-		if(originalItem.getPriorlastupdated() != null) newItem.setPriorlastupdated(originalItem.getPriorlastupdated());
-		if(originalItem.getPrintlabel() != null) newItem.setPrintlabel(originalItem.getPrintlabel());
-		if(originalItem.getShadevariation() != null) newItem.setShadevariation(originalItem.getShadevariation());
-		if(originalItem.getShowonalysedwards() != null) newItem.setShowonalysedwards(originalItem.getShowonalysedwards());
-		if(originalItem.getShowonwebsite() != null) newItem.setShowonwebsite(originalItem.getShowonwebsite());
-		if(originalItem.getSubtype() != null) newItem.setSubtype(originalItem.getSubtype());
-		if(originalItem.getTaxclass() != null) newItem.setTaxclass(originalItem.getTaxclass());
-		if(originalItem.getType() != null) newItem.setType(originalItem.getType());
-		if(originalItem.getUpdatecd() != null) newItem.setUpdatecd(originalItem.getUpdatecd());
-		if(originalItem.getProductline() != null) newItem.setProductline(originalItem.getProductline());
-		
-		if(originalItem.getColorcategory() != null){
-		   if(originalItem.getColorcategory().contains(":")){
-			  String[] colors = originalItem.getColorcategory().split(":");
-			  for(String color : colors){
-				  newItem.addColorhue(new ColorHue(color));
-			  }
-		   }
-		   newItem.setColorcategory(originalItem.getColorcategory());
-		}
-	  }
-	  catch(Exception e){
-			  throw new BedDAOBadParamException("Error occured while transferProperty(): " + e.getMessage(), e.getCause());	
-	  }	
-	}
-	
-	private static void transferComponent(Item newItem, Item originalItem) throws BedDAOBadParamException{
-      try{
-    	if(originalItem.getApplications() != null) newItem.setApplications(originalItem.getApplications());
-      	if(originalItem.getCost() != null) newItem.setCost(originalItem.getCost());
-		if(originalItem.getDimensions() != null) newItem.setDimensions(originalItem.getDimensions());
-		if(originalItem.getItemdesc() != null) newItem.setItemdesc(originalItem.getItemdesc());
-		if(originalItem.getMaterial() != null) newItem.setMaterial(originalItem.getMaterial());
-		if(originalItem.getNotes() != null) newItem.setNotes(originalItem.getNotes());
-		if(originalItem.getPackaginginfo() != null) newItem.setPackaginginfo(originalItem.getPackaginginfo());
-		if(originalItem.getPriorVendor() != null) newItem.setPriorVendor(originalItem.getPriorVendor());
-		if(originalItem.getPurchasers() != null) newItem.setPurchasers(originalItem.getPurchasers());
-		if(originalItem.getRelateditemcodes() != null) newItem.setRelateditemcodes(originalItem.getRelateditemcodes());
-		if(originalItem.getSeries() != null) newItem.setSeries(originalItem.getSeries());
-		if(originalItem.getTestSpecification() != null) newItem.setTestSpecification(originalItem.getTestSpecification());
-		if(originalItem.getUsage() != null) newItem.setUsage(originalItem.getUsage());		
-		
-		if(originalItem.getPrice() != null){
-			Price price = originalItem.getPrice();
-			if(price.getSellpricemarginpct() == null)
-				price.setSellpricemarginpct(0f);
-			if(price.getSellpriceroundaccuracy() == null)
-				price.setSellpriceroundaccuracy(0);
-			if(price.getListpricemarginpct() == null)
-				price.setListpricemarginpct(0f);
-			newItem.setPrice(price);
-		}
-		
-		if(originalItem.getUnits() != null){
-			Units units = originalItem.getUnits();
-			if(units.getBaseunit() == null)
-			   units.setBaseunit("PCS");
-			
-			newItem.setUnits(units);
-		}
-      }
-	  catch(Exception e){
-			  throw new BedDAOBadParamException("Error occured while transferComponent(): " + e.getMessage(), e.getCause());	
-	  }		
-	}
-	
-	private static void transferAssociation(Item newItem, Item originalItem, DBOperation operation) throws BedDAOBadParamException{
-	  try{
-		ImsNewFeature newFeature = originalItem.getImsNewFeature();
-		Set<ColorHue> colorHueSet = originalItem.getColorhues();
-		IconCollection iconCollection = originalItem.getIconDescription();
-		Set<ItemVendor> itemVendorList = originalItem.getNewVendorSystem();
-		List<Note> noteList = originalItem.getNewNoteSystem();
-		VendorInfo vendorInfo = originalItem.getVendors();
-	    Notes legacyNotes = (originalItem.getNotes() != null)? originalItem.getNotes() : new Notes();
-	    
-		if(newFeature != null && !newFeature.isEmpty()){
-		    if(operation.equals(DBOperation.CREATE) && newFeature.getCreatedDate() == null)
-			   newFeature.setCreatedDate(new Date());
-		    else if(operation.equals(DBOperation.UPDATE) && newFeature.getLastModifiedDate() == null)
-			   newFeature.setLastModifiedDate(new Date());
-		    
-		    newItem.addImsNewFeature(newFeature);	
-		}
-		
-		if(colorHueSet != null && !colorHueSet.isEmpty()){
-		   for(ColorHue color : colorHueSet){	
-			   if(color != null && color.getColorHue() != null && !color.getColorHue().isEmpty())
-			   newItem.addColorhue(color);	
-		   }
-		   //if("insert".equalsIgnoreCase(operation) && (newItem.getColorcategory() == null || newItem.getColorcategory().isEmpty()))
-			  newItem.setColorcategory(ImsResultUtil.convertColorHuesToColorCategory(colorHueSet));
-		   //else if("update".equalsIgnoreCase(operation)){
-			   
-		   //}
-	    }
-		
-		if(iconCollection != null && !iconCollection.isEmpty()){//!iconCollection.equals(newItem.getIconDescription())){
-		   newItem.addIconDescription(iconCollection);
-		   newItem.setIconsystem(iconCollection.toLegancyIncons());
-		}
-		
-		if(itemVendorList != null && !itemVendorList.isEmpty()){
-			for(ItemVendor vendor : itemVendorList){
-				if(vendor != null && !vendor.isEmpty()){
- 		           newItem.addNewVendorSystem(vendor);	
- 			   	   if((vendorInfo == null || vendorInfo.getVendornbr() == null || vendorInfo.getVendornbr() == 0) && vendor.getVendorOrder() == 1){
- 			   	       newItem.setVendors(populateVendorInfo(vendor));	
- 			   	   }
-				}   
-			}    
-		}
-		
-		if(noteList != null && !noteList.isEmpty()){
-			for(Note note : noteList){	
-				if(operation.equals(DBOperation.CREATE) && note.getCreatedDate() == null)
- 		           note.setCreatedDate(new Date());
-				else if(operation.equals(DBOperation.UPDATE) && note.getLastModifiedDate() == null)
-				   note.setLastModifiedDate(new Date());	
-			    newItem.addNote(note);	
- 		        //update legacy notes
-			    if((legacyNotes.getPonotes() == null || legacyNotes.getPonotes().isEmpty()) && "po".equalsIgnoreCase(note.getNoteType()))
- 		        	legacyNotes.setPonotes(note.getNote());
- 		        else if((legacyNotes.getNotes1() == null || legacyNotes.getNotes1().isEmpty()) && "buyer".equalsIgnoreCase(note.getNoteType()))
- 		        	legacyNotes.setNotes1(note.getNote());
- 		        else if((legacyNotes.getNotes2() == null || legacyNotes.getNotes2().isEmpty()) && "additional".equalsIgnoreCase(note.getNoteType()))
- 	    	    	legacyNotes.setNotes2(note.getNote());
- 		        else if((legacyNotes.getNotes3() == null || legacyNotes.getNotes3().isEmpty()) && "invoice".equalsIgnoreCase(note.getNoteType()))
- 	    	    	legacyNotes.setNotes3(note.getNote());        
-		    }
-			if(legacyNotes != null)
-				newItem.setNotes(legacyNotes);
-		}
-	 }
-	  catch(Exception e){
-			  throw new BedDAOBadParamException("Error occured while transferAssociation(): " + e.getMessage(), e.getCause());	
-	  }	
-		
-	}
-	
-	
-	private static VendorInfo populateVendorInfo(ItemVendor itemVendor){
-		VendorInfo vendorInfo = new VendorInfo();
-		if(itemVendor != null){
-			vendorInfo.setVendornbr1(itemVendor.getVendorId());
-			vendorInfo.setVendorxrefcd(itemVendor.getVendorXrefId());
-			vendorInfo.setVendorfob(itemVendor.getVendorFob());
-			vendorInfo.setDutypct(itemVendor.getDutyPct());
-		    vendorInfo.setLeadtime(itemVendor.getLeadTime());
-			if(itemVendor.getVendorListPrice() != null) vendorInfo.setVendorlistprice(itemVendor.getVendorListPrice());
-			if(itemVendor.getVendorPriceUnit() != null) vendorInfo.setVendorpriceunit(itemVendor.getVendorPriceUnit());
-			if(itemVendor.getVendorDiscountPct() != null) vendorInfo.setVendordiscpct(itemVendor.getVendorDiscountPct());
-		    if(itemVendor.getVendorPriceRoundAccuracy() != null) vendorInfo.setVendorroundaccuracy(itemVendor.getVendorPriceRoundAccuracy());
-		    if(itemVendor.getVendorNetPrice() != null) vendorInfo.setVendornetprice(itemVendor.getVendorNetPrice());
- 	        if(itemVendor.getVendorMarkupPct() != null) vendorInfo.setVendormarkuppct(itemVendor.getVendorMarkupPct());
-		    if(itemVendor.getVendorFreightRateCwt() != null) vendorInfo.setVendorfreightratecwt(itemVendor.getVendorFreightRateCwt());
-		    if(itemVendor.getVendorLandedBaseCost() != null) vendorInfo.setVendorlandedbasecost(itemVendor.getVendorLandedBaseCost());
-		 } 
-		return vendorInfo;
 	}	
 	
-	//private Applications convertUsageToApplications(List<String> usage){
-		//Applications applications = new Applications();
-		//String residential = null;
-		//if(usage.c)
-		//return applications;
-	//}
-	//+ "\"usage\":[\"FR\",\"WR\",\"CR\",\"SR\",\"PR\",\"FL\",\"WL\",\"CL\",\"SL\",\"PL\",\"FC\",\"WC\",\"CC\",\"SC\",\"PC\"],"
-
-	
-	/*
-	public static Object process(Object obj){
-		String newString = "";
-		if (obj != null) {
-		   if(obj.getClass().isInstance(String.class)) {
-			  return process((String)obj);
-		   }
-		   else if(obj.getClass().isInstance(Integer.class)) {
-			   return process((Integer)obj);
-		   }
-		   else if(obj.getClass().isInstance(Long.class)) {
-			   return process((Long)obj);
-		   }
-		   else if(obj.getClass().isInstance(Float.class)) {
-			   return process((Float)obj);
-		   }
-		   else if(obj.getClass().isInstance(Date.class)) {
-			   return process((Date)obj);
-		   }
-		}   
-		return newString;
-	}
-	*/		
 }
