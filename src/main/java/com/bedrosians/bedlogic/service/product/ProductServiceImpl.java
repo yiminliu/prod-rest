@@ -5,12 +5,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 import javax.ws.rs.core.MultivaluedMap;
 
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -31,14 +29,11 @@ import com.bedrosians.bedlogic.domain.item.enums.DBOperation;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.exception.BedResException;
-import com.bedrosians.bedlogic.models.Products;
 import com.bedrosians.bedlogic.util.FormatUtil;
 import com.bedrosians.bedlogic.util.ImsDataUtil;
 import com.bedrosians.bedlogic.util.ImsQueryUtil;
 import com.bedrosians.bedlogic.util.ImsValidator;
 import com.bedrosians.bedlogic.util.JsonUtil;
-import com.bedrosians.bedlogic.util.JsonWrapper.ItemWrapper;
-import com.bedrosians.bedlogic.util.JsonWrapper.ListWrapper;
 import com.bedrosians.bedlogic.util.logger.aspect.LogLevel;
 import com.bedrosians.bedlogic.util.logger.aspect.Loggable;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
@@ -284,7 +279,7 @@ public class ProductServiceImpl implements ProductService {
 	 	itemToUpdate = ImsDataUtil.transformItem(itemToUpdate, itemFromInput, DBOperation.UPDATE);
      	ImsValidator.validateNewItem(itemToUpdate);
     	try{
-		   itemDao.updateItem(sessionFactory.getCurrentSession(),itemToUpdate);
+		   itemDao.updateItem(session,itemToUpdate);
 		}
 		catch(HibernateException hbe){
 			hbe.printStackTrace();
@@ -295,27 +290,6 @@ public class ProductServiceImpl implements ProductService {
 		}  
 	}
 	
-	/*
-	@Loggable(value = LogLevel.TRACE)
-	@Override
-	@Transactional(isolation = Isolation.REPEATABLE_READ)
-	public void updateProduct(JSONObject jsonObj) throws BedDAOBadParamException, BedDAOException, BedResException{
-		JsonUtil.validateItemCode(jsonObj);
-     	Item item = (Item)JsonUtil.jsonObjectToPOJO(jsonObj, new Item());
-     	Item newItem = FormatUtil.transformItem(item, "update");
-     	ImsValidator.validateNewItem(newItem);
-   		try{
-		   itemDao.updateItem(newItem);
-		}
-		catch(HibernateException hbe){
-			hbe.printStackTrace();
-			if(hbe.getCause() != null)
-		       throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
-		  	else
-			   throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage());	
-	    }  
-	}
-	*/
 	@Loggable(value = LogLevel.TRACE)
 	@Override
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
