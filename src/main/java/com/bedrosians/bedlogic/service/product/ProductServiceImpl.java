@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import javax.ws.rs.core.MultivaluedMap;
@@ -26,17 +27,21 @@ import com.bedrosians.bedlogic.domain.item.IconCollection;
 import com.bedrosians.bedlogic.domain.item.ImsNewFeature;
 import com.bedrosians.bedlogic.domain.item.Item;
 import com.bedrosians.bedlogic.domain.item.ItemVendor;
-import com.bedrosians.bedlogic.domain.item.Note;
 import com.bedrosians.bedlogic.domain.item.enums.DBOperation;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.exception.BedResException;
+import com.bedrosians.bedlogic.models.Products;
 import com.bedrosians.bedlogic.util.FormatUtil;
+import com.bedrosians.bedlogic.util.ImsDataUtil;
 import com.bedrosians.bedlogic.util.ImsQueryUtil;
 import com.bedrosians.bedlogic.util.ImsValidator;
 import com.bedrosians.bedlogic.util.JsonUtil;
+import com.bedrosians.bedlogic.util.JsonWrapper.ItemWrapper;
+import com.bedrosians.bedlogic.util.JsonWrapper.ListWrapper;
 import com.bedrosians.bedlogic.util.logger.aspect.LogLevel;
 import com.bedrosians.bedlogic.util.logger.aspect.Loggable;
+import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 
 @Service("productService")
@@ -53,12 +58,13 @@ public class ProductServiceImpl implements ProductService {
       	    	
     @Loggable(value = LogLevel.TRACE)
     @Override
+    @Transactional(readOnly = true)
 	public Item getProductById(String id) throws BedDAOBadParamException, BedDAOException{
     	Item item = null;
     	if(id == null || id.length() < 1)
     	   throw new BedDAOBadParamException("Please enter valid item code !");	
 		try{
-    	    item = itemDao.getItemById(id);
+    	    item = itemDao.getItemById(sessionFactory.getCurrentSession(), id);
 		}
 		catch(HibernateException hbe){
 			hbe.printStackTrace();
@@ -73,8 +79,10 @@ public class ProductServiceImpl implements ProductService {
 	@Loggable(value = LogLevel.TRACE)
 	@Override
 	public List<Item> getProducts(MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException, BedDAOException{
-			
-		ImsValidator.validateQueryParams(queryParams);	
+		if(queryParams == null || queryParams.isEmpty()){
+			queryParams = new MultivaluedMapImpl();
+			queryParams.put("inactivecode", Arrays.asList(new String[]{"N"}));
+		}
 		List<Item> items = null;
 		try{
 			items = itemDao.getItemsByQueryParameters(queryParams);
@@ -138,7 +146,7 @@ public class ProductServiceImpl implements ProductService {
 		String id;
 		Item newItem = new Item(itemCode);
      	Item item = (Item)JsonUtil.jsonObjectToPOJO(jsonObj, new Item());
-     	newItem = FormatUtil.transformItem(newItem, item, DBOperation.CREATE);
+     	newItem = ImsDataUtil.transformItem(newItem, item, DBOperation.CREATE);
      	ImsValidator.validateNewItem(newItem);
    	    try{
 		   id = itemDao.createItem(newItem);
@@ -261,23 +269,22 @@ public class ProductServiceImpl implements ProductService {
 	@Transactional(isolation = Isolation.REPEATABLE_READ)
 	public void updateProduct(JSONObject jsonObj) throws BedDAOBadParamException, BedDAOException, BedResException{
 		String itemCode = JsonUtil.validateItemCode(jsonObj);
-		Item item, newItem = null;
+		Item itemFromInput = (Item)JsonUtil.jsonObjectToPOJO(jsonObj, new Item());
+		Item itemToUpdate = null;
 		Session session = sessionFactory.getCurrentSession();
 		try{
-			newItem = itemDao.loadItemById(session, itemCode.trim());
+			itemToUpdate = itemDao.getItemById(session, itemCode.trim());
 		}
 	    catch(HibernateException hbe){
 		    hbe.printStackTrace();
 		    throw new BedDAOException("Error occured during gupdateProduct() due to: " + hbe.getMessage(), hbe);
 	    }
-		if(newItem == null)
+		if(itemToUpdate == null)
 	       throw new BedResException("No data found for the given item code");	
-		
-     	item = (Item)JsonUtil.jsonObjectToPOJO(jsonObj, new Item());
-     	newItem = FormatUtil.transformItem(newItem, item, DBOperation.UPDATE);
-     	ImsValidator.validateNewItem(newItem);
-   		try{
-		   itemDao.updateItem(session,newItem);
+	 	itemToUpdate = ImsDataUtil.transformItem(itemToUpdate, itemFromInput, DBOperation.UPDATE);
+     	ImsValidator.validateNewItem(itemToUpdate);
+    	try{
+		   itemDao.updateItem(sessionFactory.getCurrentSession(),itemToUpdate);
 		}
 		catch(HibernateException hbe){
 			hbe.printStackTrace();
@@ -285,7 +292,7 @@ public class ProductServiceImpl implements ProductService {
 		       throw new BedDAOException("Error occured during updateProduct(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
 		  	else
 			   throw new BedDAOException("Error occured during updateProduct(), due to: " +  hbe.getMessage());	
-	    }  
+		}  
 	}
 	
 	/*
@@ -445,7 +452,7 @@ public class ProductServiceImpl implements ProductService {
   	   	if(ImsQueryUtil.containsAnyKey(queryParams, IconCollection.allPropertis())){
 		   item.addIconDescription(new IconCollection());	
 		}   
-		if(ImsQueryUtil.containsAnyKey(queryParams, Arrays.asList(new String[] {"poNote", "poNotes", "ponotes"}))) {	
+		/*if(ImsQueryUtil.containsAnyKey(queryParams, Arrays.asList(new String[] {"poNote", "poNotes", "ponotes"}))) {	
 		   Note poNote = new Note("po");
 		   if("insert".equalsIgnoreCase(operation))
   		      poNote.setCreatedDate(new Date());
@@ -484,7 +491,7 @@ public class ProductServiceImpl implements ProductService {
 		   else if("update".equalsIgnoreCase(operation))
 			   additionalNote.setLastModifiedDate(new Date());
 		   item.addNote(additionalNote);
-		}
+		}*/
 		//if(ImsQueryUtil.containsAnyKey(queryParams, Arrays.asList(new String[]{"colorHue", "colorhue", "colorHues", "colorHues", "colorCategory", "colorcategory"})))
 		//   item.addNewColorHueSystem(new ColorHue());
 		return item;
@@ -508,7 +515,7 @@ public class ProductServiceImpl implements ProductService {
 	   if(ImsQueryUtil.containsAnyKey(inputJsonObj, IconCollection.allPropertis())){
 	      item.addIconDescription(new IconCollection());	
 	   }   
-       if(inputJsonObj.has("poNote") || inputJsonObj.has("poNotes") || inputJsonObj.has("ponotes")) {   	  
+     /*  if(inputJsonObj.has("poNote") || inputJsonObj.has("poNotes") || inputJsonObj.has("ponotes")) {   	  
 		  Note poNote = new Note("po");
 		  if("insert".equalsIgnoreCase(operation))
 		     poNote.setCreatedDate(new Date());
@@ -547,7 +554,7 @@ public class ProductServiceImpl implements ProductService {
 		  else if("update".equalsIgnoreCase(operation))
 			  additionalNote.setLastModifiedDate(new Date());
 		  item.addNote(additionalNote);
-	   }
+	   }*/
 	   //if(ImsQueryUtil.containsAnyKey(inputJsonObj, Arrays.asList(new String[]{"colorHue", "colorhue", "colorHues", "colorHues", "colorCategory", "colorcategory"})))
 	   //	  item.addNewColorHueSystem(new ColorHue());
 	   return item;

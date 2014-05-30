@@ -20,6 +20,7 @@ import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Isolation;
@@ -50,16 +51,17 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
     @Autowired
 	private SessionFactory sessionFactory;
 	 
-    private static final int DEFAULT_MAX_RESULTS = 50000;//500; 
+    //private static final int DEFAULT_MAX_RESULTS = 50000;//500; 
     private int maxResults = 0;
 	
+	
+    /*This method returns an Item with associated entities for the given item id.
+     * Note: it's not set "Read Only" because is could be called by update()
+     */
 	@Override
 	@Loggable(value = LogLevel.TRACE)
-	@Transactional(readOnly=true)
-	public Item getItemById(final String itemId) {
-       //return findById(sessionFactory.getCurrentSession(), itemId);
-		Query query = sessionFactory.getCurrentSession().createQuery("From Item where itemcode = :itemCode");
-		query.setReadOnly(true);
+	public Item getItemById(Session session, final String itemId) {
+    	Query query = session.createQuery("From Item where itemcode = :itemCode");
 		query.setString("itemCode", itemId);
 		return (Item)query.uniqueResult();
 	}
@@ -70,7 +72,6 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
        return loadById(session, itemId);
 	}
  
-	
 	/*  Rules for Pattern/Exact matches:
 	 *  colorcategory: always use LIKE on both sides: like '%data%'
 	 *  fulldesc and itemdesc1 always use LIKE on right side: like 'data%'
@@ -245,7 +246,7 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 			if(maxResults > 0)
 		       items =  (List<Item>)itemCriteria.getExecutableCriteria(sessionFactory.getCurrentSession()).setMaxResults(maxResults).setCacheable(true).list();//executeCriteria(itemCriteria);//(List<Item>)itemCriteria.list();			
 			else
-			   items =  (List<Item>)itemCriteria.getExecutableCriteria(sessionFactory.getCurrentSession()).setMaxResults(DEFAULT_MAX_RESULTS).setCacheable(true).list();	
+			   items =  (List<Item>)itemCriteria.getExecutableCriteria(sessionFactory.getCurrentSession()).setCacheable(true).list();	
 		}
 		catch(HibernateException hbe){
 			if(hbe.getCause() != null)
@@ -290,6 +291,9 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 		  case "colorCategory": 
 	         key = "colorcategory";
 	   		 break;	
+		  case "inactivecd": case "inactiveCode":
+		     key = "inactivecode";
+    		 break;	 
 		   case "colorhues": case "colorHues": case "colorhue": case "colorHue": 
    		     key = "colorHue";
    		     break;
