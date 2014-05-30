@@ -20,23 +20,15 @@ public interface ProductService {
 	public List<Item> getProducts(JSONObject inputJsonObj) throws BedDAOBadParamException, BedDAOException, BedResException;
 	
 	public String createProduct(Item item)throws BedDAOBadParamException, BedDAOException, BedResException;
-	
-	public String createProductWithJsonInFlatFormat(JSONObject inputJsonObj) throws BedDAOBadParamException, BedDAOException, BedResException;  	
-		   
-	public String createProduct(MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException, BedDAOException, BedResException;
-	
+			   	
 	public String createProduct(JSONObject inputJsonObj) throws BedDAOBadParamException, BedDAOException, BedResException;
 	
 	public void updateProduct(Item item) throws BedDAOBadParamException, BedDAOException, BedResException;
 	
 	public void updateProduct(String itemId, Item item) throws BedDAOBadParamException, BedDAOException, BedResException;
 	
-	public void updateProduct(MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException, BedDAOException, BedResException;
-	
 	public void updateProduct(JSONObject inputJsonObj) throws BedDAOBadParamException, BedDAOException, BedResException;
-	
-	public void updateProductWithJsonFlateFormat(JSONObject inputJsonObj) throws BedDAOBadParamException, BedDAOException, BedResException;
-		
+			
 	public void deleteProductById(String id) throws BedDAOBadParamException, BedDAOException, BedResException;
 	
 	public void deleteProduct(MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException, BedDAOException, BedResException;
