@@ -100,47 +100,6 @@ public class ProductsResource
         return response;
     }
 	
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response getProducts(@Context HttpHeaders requestHeaders, JSONObject inputJsonObj)
-    {
-        Response response = null;
-
-        try
-        {
-        	//Check user security
-        	doUserSecurityCheck(requestHeaders, DBOperation.SEARCH);
-            
-            //Retrieve data from database based on the given query parameters
-            List<Item> items = productService.getProducts(inputJsonObj);       
-            
-            //Convert the data to Json string
-            Products result = new Products(new ListWrapper(items));
-            String jsonStr = result.toJSONStringWithJackson();
-       
-            //Return json reponse
-            response = Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();
-        }
-        catch (BedResUnAuthorizedException e)
-        {
-        	response = BedResExceptionMapper.MapToResponse(e);
-        }
-        catch (BedDAOBadParamException e)
-        {
-        	response = BedDAOExceptionMapper.MapToResponse(e);
-        }
-        catch (BedDAOException e)
-        {
-            response = BedDAOExceptionMapper.MapToResponse(e);
-        }
-        catch (BedResException e)
-        {
-            response = BedResExceptionMapper.MapToResponse(e);
-        }
-        return response;
-    }
-	
 	/** This method retrieves an product for the given item code.
      * @param itemcode string.
      * @return Response object to include the status and a json object.
@@ -227,46 +186,7 @@ public class ProductsResource
     }
 	
 	
-	@POST
-    @Produces({MediaType.APPLICATION_JSON})
-	public Response createProducts(@Context HttpHeaders requestHeaders, @Context UriInfo uriInfo)
-    {
-        Response response = null;
-
-        try
-        {
-        	//Check user security
-        	doUserSecurityCheck(requestHeaders, DBOperation.CREATE);
-           
-            //Retrieve data from database based on the given query parameters
-            String productId = productService.createProduct(uriInfo.getQueryParameters());       
-            
-            Products result = new Products(productId);
-            String jsonStr = result.toJSONStringWithJackson();
-       
-            //Return json reponse
-            response = Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();
-        }
-        catch (BedResUnAuthorizedException e)
-        {
-        	response = BedResExceptionMapper.MapToResponse(e);
-        }
-        catch (BedDAOBadParamException e)
-        {
-        	response = BedDAOExceptionMapper.MapToResponse(e);
-        }
-        catch (BedDAOException e)
-        {
-            response = BedDAOExceptionMapper.MapToResponse(e);
-        }
-        catch (BedResException e)
-        {
-            response = BedResExceptionMapper.MapToResponse(e);
-        }
-        return response;
-    }
-	
-   /**
+	/**
 	* This method updates a product based on the given product info.
 	* @param A Json object containing information to upate.
 	* @return Response object to include the status.
@@ -306,42 +226,6 @@ public class ProductsResource
         return response;
     }
 	
-	@PUT
-    @Produces({MediaType.APPLICATION_JSON})
-	public Response updateProduct(@Context HttpHeaders requestHeaders, @Context UriInfo uriInfo)
-    {
-        Response response = null;
-
-        try
-        {
-        	//Check user security
-        	doUserSecurityCheck(requestHeaders, DBOperation.UPDATE);
-            
-            //update data from database with the given query parameters
-            productService.updateProduct(uriInfo.getQueryParameters());       
-             
-            //Return json reponse
-            response = Response.ok(MediaType.APPLICATION_JSON).build();
-        }
-        catch (BedResUnAuthorizedException e)
-        {
-        	response = BedResExceptionMapper.MapToResponse(e);
-        }
-        catch (BedDAOBadParamException e)
-        {
-        	response = BedDAOExceptionMapper.MapToResponse(e);
-        }
-        catch (BedDAOException e)
-        {
-            response = BedDAOExceptionMapper.MapToResponse(e);
-        }
-        catch (BedResException e)
-        {
-            response = BedResExceptionMapper.MapToResponse(e);
-        }
-        return response;
-    }
-
 	/**
 	* This method deletes a product based on the given item code.
 	* @param Item code string.
@@ -381,42 +265,6 @@ public class ProductsResource
         return response;
     }
 	
-	@DELETE
-    @Produces({MediaType.APPLICATION_JSON})
-	public Response deleteProduct(@Context HttpHeaders requestHeaders, @Context UriInfo uriInfo)
-    {
-        Response response = null;
-
-        try
-        {
-        	//Check user security
-        	doUserSecurityCheck(requestHeaders, DBOperation.DELETE);
-            
-            //Retrieve data from database based on the given query parameters
-            productService.deleteProduct(uriInfo.getQueryParameters());       
-               
-            //Return json reponse
-            response = Response.ok(MediaType.APPLICATION_JSON).build();
-        }
-        catch (BedResUnAuthorizedException e)
-        {
-        	response = BedResExceptionMapper.MapToResponse(e);
-        }
-        catch (BedDAOBadParamException e)
-        {
-        	response = BedDAOExceptionMapper.MapToResponse(e);
-        }
-        catch (BedDAOException e)
-        {
-            response = BedDAOExceptionMapper.MapToResponse(e);
-        }
-        catch (BedResException e)
-        {
-            response = BedResExceptionMapper.MapToResponse(e);
-        }
-        return response;
-    }
-
 	private void doUserSecurityCheck(HttpHeaders requestHeaders, DBOperation operation) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException {
 		 //Check usercode
         UserCodeParser  userCodeParser = new UserCodeParser(requestHeaders);
