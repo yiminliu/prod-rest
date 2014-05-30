@@ -35,7 +35,7 @@ public class ColorHueOperationTest {
 	@Autowired
 	ColorHueDao colorHueDao;
 	
-	@Test
+	//@Test
 	public void testCreateColorHue(){
        //List<Item> items = itemDao.findAll(sessionFactory.getCurrentSession());
 		Set<ColorHue> colorHues = new HashSet<>();
