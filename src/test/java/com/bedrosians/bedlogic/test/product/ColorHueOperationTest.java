@@ -52,7 +52,7 @@ public class ColorHueOperationTest {
         }
 	    System.out.println(items.size() + " items retrieved");
         for(Item item : items){
-        	System.out.println("colorHue = "+ item.getColorcategory());
+        	//System.out.println("colorHue = "+ item.getColorcategory());
         	Set<ColorHue> colors = ImsDataUtil.convertColorCategoryToColorHueObjects(item);
     	    if(colors != null)
     		  colorHues.addAll(colors);
@@ -65,4 +65,9 @@ public class ColorHueOperationTest {
   
         System.out.println("Finished test. " + colorHues.size() + " colorhues are created");
 	}
+	
+	@Test
+	public void testNothing(){
+	}
+	
 }

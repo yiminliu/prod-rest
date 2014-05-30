@@ -83,7 +83,7 @@ public class ProductServiceCreationWithJsonTest {
 	        assertEquals("E", item.getDimensions().getThicknessunit());
 	 }
 	  
-	 @Test
+	// // @Test
 	 public void testCreateItemWithColorCategoryJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithColorCategory: ");
 	        JSONObject params = new JSONObject(jStringWithColorCategory);
@@ -97,7 +97,7 @@ public class ProductServiceCreationWithJsonTest {
 	        } 
 	 }
 	 
-	 @Test
+	// // @Test
 	 public void testCreateItemWithPricesJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithBasicInfo);
@@ -111,7 +111,7 @@ public class ProductServiceCreationWithJsonTest {
 	       // assertEquals("SHT", item.getPrice().getPriceunit());
 	 }
 	 
-	 @Test
+	 // @Test
 	 public void testCreateItemWithMaterialJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithBasicInfo);
@@ -126,7 +126,7 @@ public class ProductServiceCreationWithJsonTest {
 	        assertEquals("Trim", item.getMaterial().getMaterialcategory());
 	 }
 	 
-	 @Test
+	 // @Test
 	 public void testCreateItemWithSeriesJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithBasicInfo);
@@ -137,7 +137,7 @@ public class ProductServiceCreationWithJsonTest {
 	        assertEquals("Ash", item.getSeries().getSeriescolor());
 	 }
 		    	
-	 @Test
+	 // @Test
 	 public void testCreateItemWithTestSpecsJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithBasicInfo);
@@ -160,7 +160,7 @@ public class ProductServiceCreationWithJsonTest {
 	        //assertEquals("N", item.getTestSpecification().getLeadpoint());
 	 }
 	
-	 @Test
+	 // @Test
 	 public void testCreateItemWithApplicationsJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithBasicInfo);
@@ -175,7 +175,7 @@ public class ProductServiceCreationWithJsonTest {
 	        //assertEquals("[FR,WR,CR,SR,PR,FL,WL,CL,SL,PL,FC,WC,CC,SC,PC]", item.getUsage());
 	 }
 		
-	 @Test
+	 // @Test
 	 public void testCreateItemWithUsageJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithBasicInfo);
@@ -187,7 +187,7 @@ public class ProductServiceCreationWithJsonTest {
 	        assertEquals("[FR,WR,CR,SR,PR,FL,WL,CL,SL,PL,FC,WC,CC,SC,PC]", item.getUsage());
 	 }
 	 
-	 @Test
+	 // @Test
 	 public void testCreateItemWithPackagingInfoJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithBasicInfo);
@@ -202,7 +202,7 @@ public class ProductServiceCreationWithJsonTest {
 	 
 	 String newItemcode = testItemId + new Random().nextInt(9000);
 
-	 @Test
+	 // @Test
 	 public void testCreateItemWithBasicInfoJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithBasicInfo);
@@ -234,7 +234,7 @@ public class ProductServiceCreationWithJsonTest {
 	        System.out.println("newly created Item id  = " + id);
 	 }
 	 
-	 @Test
+	 // @Test
 	 public void testCreateItemWithAllImsInfoJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringFullItemInfo);
@@ -351,7 +351,7 @@ public class ProductServiceCreationWithJsonTest {
 	        System.out.println("newly created Item id  = " + id);
 	 }
 	 
-	 @Test
+	 // @Test
 	 public void testCreateItemWithUsageWithoutApplicationsJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithUsageWithoutApplications);
@@ -376,7 +376,7 @@ public class ProductServiceCreationWithJsonTest {
 	 
 	 //-------------- Test Associations -------------//
 	 
-	 @Test
+	 // @Test
 	 public void testCreateItemWithColorHuesJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithColorHues: ");
 	        JSONObject params = new JSONObject(jStringWithColorHues);
@@ -390,7 +390,7 @@ public class ProductServiceCreationWithJsonTest {
 	        assertEquals("BEIGE",item.getColorcategory());
 	 }
 	 
-	 @Test
+	 // @Test
 	 public void testCreateItemWithMultipleColorHuesJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithColorHues: ");
 	        JSONObject params = new JSONObject(jStringWithMultipleColorHues);
@@ -404,7 +404,7 @@ public class ProductServiceCreationWithJsonTest {
 	        assertTrue("BEIGE".equals(item.getColorcategory()) || "RED".equals(item.getColorcategory()));
 	 }
 	 
-	 @Test
+	 // @Test
 	 public void testCreateItemWithNewFeatureByJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithNewFeature);            
@@ -428,7 +428,7 @@ public class ProductServiceCreationWithJsonTest {
 	        assertEquals("2", item.getImsNewFeature().getRecommendedGroutJointMax());
 	 }
 	 
-	 @Test
+	 // @Test
 	 public void testCreateItemWithUnitAndVendorJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithUnitAndVendor: ");
 	        JSONObject params = new JSONObject(jStringWithUnitAndVendor);
@@ -483,7 +483,7 @@ public class ProductServiceCreationWithJsonTest {
 	        System.out.println("newly created Item id  = " + id);
 	 }
 	 
-	 @Test
+	 // @Test
 	 public void testCreateItemWithNewNotesJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithNewNotes: ");
 	        JSONObject params = new JSONObject(jStringWithNewNotes);
@@ -495,7 +495,7 @@ public class ProductServiceCreationWithJsonTest {
 	        //assertEquals("First", item.getNewNoteSystem());
 	 }
 	 
-	 @Test
+	 // @Test
 	 public void testCreateItemWithNewIconJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithNewIcon: ");
 	        JSONObject params = new JSONObject(jStringWithNewIcons);
@@ -523,7 +523,7 @@ public class ProductServiceCreationWithJsonTest {
 	 }
 
 	 //---------- Item and associations ----------------//
-	 @Test
+	 // @Test
 	 public void testCreateItemWithAllImsAndAssociationsByJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringFullItemAndAssociationInfo);

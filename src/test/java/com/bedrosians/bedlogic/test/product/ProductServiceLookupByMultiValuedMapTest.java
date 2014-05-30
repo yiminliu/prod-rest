@@ -165,7 +165,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 		assertEquals("Item id should be " + testItemId, testItemId, item.getItemcode());
 	}
 	
-	@Test
+	//@Test
 	public void testGetItemByIdPatternMatch(){	
 		System.out.println("test if the Item is returned by searching its ID...");
 		MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -196,7 +196,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
        // System.out.println("items   = " + jsonStr);
     }
 	
-	@Test
+	//@Test
 	public void testGetItemByIdWithEaxctMatch(){	
 		System.out.println("test if the Item is returned by searching its ID...");
 		MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -225,7 +225,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
        // System.out.println("items   = " + jsonStr);
     }
 	
-	@Test
+	//@Test
 	public void testGetItemByMultipleIds(){
 		
 		System.out.println("test if the Item is returned by searching its ID...");
@@ -256,7 +256,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	    
 	}
 	
-	@Test
+	//@Test
 	public void testGetAllActiveItems(){
 		
 		System.out.println("test if the Item is returned by searching its ID...");
@@ -287,7 +287,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	   // System.out.println("items   = " + jsonStr);
 	}
 	
-	@Test
+	//@Test
 	public void testGetAllActiveAndShowOnWebsiteItems(){
 		
 		System.out.println("testGetAllActiveAndShowOnWebsiteItems...");
@@ -321,7 +321,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	}
 	
 	
-	@Test
+	//@Test
 	public void testGetActiveItemsWithMaxResult(){
 		
 		System.out.println("test if the Item is returned by ActiveItemsWithMaxResultSetting...");
@@ -355,7 +355,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	   // System.out.println("items   = " + jsonStr);
 	}
 	
-	@Test
+	//@Test
 	public void testDistinctItems(){
 		
 		System.out.println("test if the Item Are Distinct...");
@@ -401,7 +401,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	   // System.out.println("items   = " + jsonStr);
 	}
 	
-	@Test
+	//@Test
 	public void testGetAllInActiveItems(){
 		
 		System.out.println("test if the Item is returned by searching its ID...");
@@ -434,7 +434,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	}
 	
 	
-	@Test
+	//@Test
     public void testGetItemByDesciption() throws Exception {
 	        System.out.println("testGetItemByDescription: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -460,7 +460,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        //System.out.println("items   = " + jsonStr);
 	}
 	
-	@Test
+	//@Test
     public void testGetItemByMultiDesciptions() throws Exception {
 	        System.out.println("testGetItemByDescription: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -483,7 +483,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        //System.out.println("items   = " + jsonStr);
 	}
 	
-	@Test
+	//@Test
     public void testGetItemByItemDesc1() throws Exception {
 	        System.out.println("testGetItemBytestDescription1: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -510,7 +510,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        
 	}
 	
-	@Test
+	//@Test
     public void testGetItemByColor() throws Exception {
 	        System.out.println("testGetItemByColor: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -533,7 +533,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        System.out.println("items   = " + jsonStr);    
 	}
 	
-	@Test
+	//@Test
     public void testGetItemByMultiColors() throws Exception {
 	        System.out.println("testGetItemByColor: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -556,7 +556,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        //System.out.println("items   = " + jsonStr);        
 	}
 	
-	@Test
+	//@Test
     public void testGetItemByColorCategory() throws Exception {
 	        System.out.println("testGetItemByColorCategory: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -581,7 +581,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        //System.out.println("items   = " + jsonStr);
 	}
 	
-	@Test
+	//@Test
     public void testGetItemByMultipleColorCategory() throws Exception {
 	        System.out.println("testGetItemByColorCategory: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -605,7 +605,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        //System.out.println("items   = " + jsonStr);
 	}
 	
-	@Test
+	//@Test
     public void testGetItemByOrigin() throws Exception {
 	        System.out.println("testGetItemByOrigin: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -629,7 +629,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        //System.out.println("items   = " + jsonStr);
 	}
 	
-	@Test
+	//@Test
     public void testGetItemByMultiOrigins() throws Exception {
 	        System.out.println("testGetItemByColor: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -654,7 +654,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	}
 	
 	
-	@Test
+	//@Test
     public void testGetItemByCategory() throws Exception {
 	        System.out.println("testGetItemByCategory: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -678,7 +678,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	       // System.out.println("items   = " + jsonStr);
 	}
 	
-	@Test
+	//@Test
     public void testGetItemsByMultiCategories() throws Exception {
 	        System.out.println("testGetItemByCategory: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -702,7 +702,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	       // System.out.println("items   = " + jsonStr);
 	}
 	
-	@Test
+	//@Test
     public void testGetItemByMaterialCategory() throws Exception {
 	        System.out.println("testGetItemByMaterialCategory: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -726,7 +726,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	      // System.out.println("items   = " + jsonStr);
 	 }
 	
-	@Test
+	//@Test
     public void testGetItemByMultiMaterialCategory() throws Exception {
 	        System.out.println("testGetItemByMaterialCategory: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -751,7 +751,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	       //System.out.println("items   = " + jsonStr);
 	 }
 	
-	@Test
+	//@Test
     public void testGetItemByMaterialStyle() throws Exception {
 	        System.out.println("testGetItemBytestMaterialStyle: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -776,7 +776,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        //System.out.println("items   = " + jsonStr);
 	 }
 	
-	@Test
+	//@Test
     public void testGetItemByMaterialStyle2() throws Exception {
 	        System.out.println("testGetItemBytestMaterialStyle: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -800,7 +800,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        //System.out.println("items   = " + jsonStr);
 	 }
 	
-	@Test
+	//@Test
     public void testGetItemByMultiMaterialStyles() throws Exception {
 	        System.out.println("testGetItemBytestMaterialStyle: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -826,7 +826,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        //System.out.println("items   = " + jsonStr);
 	 }
 	
-	@Test
+	//@Test
     public void testGetItemByMaterialClass() throws Exception {
 	        System.out.println("testGetItemBytestMaterialClass: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -851,7 +851,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        //System.out.println("items   = " + jsonStr);
 	 }
 	
-	@Test
+	//@Test
     public void testGetItemByMaterialClass2() throws Exception {
 	        System.out.println("testGetItemBytestMaterialClass: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -875,7 +875,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        //System.out.println("items   = " + jsonStr);
 	 }
 	
-	@Test
+	//@Test
     public void testGetItemByMultipleMaterialClasses() throws Exception {
 	        System.out.println("testGetItemBytestMaterialClass: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -901,7 +901,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        //System.out.println("items   = " + jsonStr);
 	 }
 	
-	@Test
+	//@Test
     public void testGetItemByMaterialFeature() throws Exception {
 	        System.out.println("testGetItemBytestMaterialFeature: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -925,7 +925,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        //System.out.println("items   = " + jsonStr);
 	 }
 	
-	@Test
+	//@Test
     public void testGetItemByMaterialFeature2() throws Exception {
 	        System.out.println("testGetItemBytestMaterialFeature: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -949,7 +949,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        //System.out.println("items   = " + jsonStr);
 	 }
 	
-	@Test
+	//@Test
     public void testGetItemByMultipleMaterialFeatures() throws Exception {
 	        System.out.println("testGetItemBytestMaterialFeature: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -973,7 +973,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        //System.out.println("items   = " + jsonStr);
 	 }
 	
-	@Test
+	//@Test
     public void testGetItemByMaterialType() throws Exception {
 	        System.out.println("testGetItemBytestMaterialType: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -997,7 +997,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        //System.out.println("items   = " + jsonStr);
 	 }
 	
-	@Test
+	//@Test
     public void testGetItemByMaterialType2() throws Exception {
 	        System.out.println("testGetItemBytestMaterialType: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -1020,7 +1020,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        //System.out.println("items   = " + jsonStr);
 	 }
 	
-	@Test
+	//@Test
     public void testGetItemByMultipleMaterialTypes() throws Exception {
 	        System.out.println("testGetItemBytestMaterialType: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -1043,7 +1043,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        //System.out.println("items   = " + jsonStr);
 	 }
 	
-	@Test
+	//@Test
     public void testGetItemBySeriesName() throws Exception {
 	        System.out.println("testGetItemBySeriesName: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -1067,7 +1067,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        //System.out.println("items   = " + jsonStr);
 	 }
 	
-	@Test
+	//@Test
     public void testGetItemByMultipleSeriesName() throws Exception {
 	        System.out.println("testGetItemMultipleBySeriesName: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -1091,7 +1091,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        //System.out.println("items   = " + jsonStr);
 	 }
 	
-	@Test
+	//@Test
 	 public void testGetItemBySize() throws Exception {
 	        System.out.println("testGetItemBySize: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -1117,7 +1117,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        //System.out.println("items   = " + jsonStr);
 	    }
 	
-	 @Test
+	 //@Test
 	 public void testGetItemByMultipleSize() throws Exception {
 	        System.out.println("testGetItemBySize: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -1144,7 +1144,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        //System.out.println("items   = " + jsonStr);
 	    }
 	 
-	 @Test
+	 //@Test
 	    public void testGetItemByLengthAndWidth() throws Exception {
 	        System.out.println("testGetItemByLengthAndWidth: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -1169,7 +1169,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	       // System.out.println("items   = " + jsonStr);
 	    }
 	 
-	 @Test
+	 //@Test
 	 public void testGetItemByMinLength() throws Exception {
 	        System.out.println("testGetItemByMultivaluedMap: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -1193,7 +1193,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        //System.out.println("items   = " + jsonStr);
 	    }
 	 
-	 @Test
+	 //@Test
 	 public void testGetItemByMaxLength() throws Exception {
 	        System.out.println("testGetItemByMaxLength: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -1217,7 +1217,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	       // System.out.println("items   = " + jsonStr);
 	    }
 	 
-	 @Test
+	 //@Test
 	    public void testGetItemByMaxLengthAndMaxWidth() throws Exception {
 	        System.out.println("testGetItemByMaxLength: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -1242,7 +1242,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	       // System.out.println("items   = " + jsonStr);
 	    }
 	
-	 @Test
+	 //@Test
 	    public void testGetItemByMaxAndMinLength() throws Exception {
 	        System.out.println("testGetItemByMaxLength: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -1269,7 +1269,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	    }
 	 
 	
-	 @Test
+	 //@Test
      public void testGetItemByMultiPrameters() throws Exception {
 	        System.out.println("testGetItemByMultivaluedMap: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -1304,7 +1304,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	    }
 	
 	 
-	 @Test
+	 //@Test
 	 public void testGetItemByGrade() throws Exception {
 	        System.out.println("testGetItemBynewFeature: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -1327,7 +1327,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        //System.out.println("items   = " + jsonStr);
 	  }
 	 
-	 @Test
+	 //@Test
 	 public void testGetItemByStatus() throws Exception {
 	        System.out.println("testGetItemBynewFeature: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -1350,7 +1350,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        //System.out.println("items   = " + jsonStr);
 	  }
 	 
-	 @Test
+	 //@Test
 	 public void testGetItemByMpsCode() throws Exception {
 	        System.out.println("testGetItemBynewFeature: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -1373,7 +1373,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        //System.out.println("items   = " + jsonStr);
 	  }
 	 
-	 @Test
+	 //@Test
 	 public void testGetItemByColorHue() throws Exception {
 	        System.out.println("testGetItemByColorHue: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -1406,7 +1406,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	       // System.out.println("items   = " + jsonStr);
 	  }
 	 
-	 @Test
+	 //@Test
 	 public void testGetItemByMultipleColorHues() throws Exception {
 	        System.out.println("testGetItemByColorHue: ");
 	        
@@ -1435,7 +1435,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        //System.out.println("items   = " + jsonStr);
 	  }
 	
-	/* @Test
+	/* //@Test
 	 public void testGetItemByNote() throws Exception {
 	        System.out.println("testGetItemByNote: ");
 	        String noteType = "additional";
@@ -1463,7 +1463,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	 //       System.out.println(jsonStr);
 	  }
 	 */
-	 @Test
+	 //@Test
 	 public void testGetItemByPurchaser() throws Exception {
 	    System.out.println("testGetItemByPurchaser: ");
 	    MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -1488,7 +1488,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	 
 	 //test the equality between the vendor id in the new vendor table and the vendornb1/vendornbr2 in the ims table.
 	 //if they match, it means the migratted vendor info from ims table to the new ims_vendors table valid
-	 @Test
+	 //@Test
 	 public void testGetItemByVendorId() throws Exception {
 	        System.out.println("testGetItemByVendorId: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();

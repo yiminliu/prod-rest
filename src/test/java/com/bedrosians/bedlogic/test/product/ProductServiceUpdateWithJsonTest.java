@@ -179,7 +179,7 @@ public class ProductServiceUpdateWithJsonTest {
 	        System.out.println("newly Updated Item id  = " + id);
 	 }
 	 
-	 @Test
+	 //@Test
 	 public void testUpdateItemWithAllImsInfoNoUnitAndPriceJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringFullItemInfoWithouUnitAndPrice);
@@ -248,7 +248,7 @@ public class ProductServiceUpdateWithJsonTest {
 	 }
 	 //-------------- Test Associations -------------//
 	 
-	 @Test
+	 //@Test
 	 public void testUpdateItemWithColorHuesJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithColorHues: ");
 	        JSONObject params = new JSONObject(jStringWithColorHues);
@@ -262,7 +262,7 @@ public class ProductServiceUpdateWithJsonTest {
 	        assertEquals("GREEN",item.getColorcategory());
 	 }
 	 
-	 @Test
+	 //@Test
 	 public void testUpdateItemWithMultipleColorHuesJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithColorHues: ");
 	        JSONObject params = new JSONObject(jStringWithMultipleColorHues);
@@ -276,7 +276,7 @@ public class ProductServiceUpdateWithJsonTest {
 	        assertTrue("BEIGE".equals(item.getColorcategory()) || "RED".equals(item.getColorcategory()));
 	 }
 	 
-	 @Test
+	 //@Test
 	 public void testUpdateItemWithNewFeatureByJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithNewFeature);            
@@ -301,7 +301,7 @@ public class ProductServiceUpdateWithJsonTest {
 	        assertEquals(new Date(), item.getImsNewFeature().getLastModifiedDate());
 	 }
 	 
-	 @Test
+	 //@Test
 	 public void testUpdateItemWithUnitAndVendorJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithUnitAndVendor: ");
 	        JSONObject params = new JSONObject(jStringWithUnitAndVendor);
@@ -356,7 +356,7 @@ public class ProductServiceUpdateWithJsonTest {
 	        System.out.println("newly Updated Item id  = " + id);
 	 }
 	 
-	 /*@Test
+	 /*//@Test
 	 public void testUpdateItemWithNewNotesJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithNewNotes: ");
 	        JSONObject params = new JSONObject(jStringWithNewNotes);
@@ -369,7 +369,7 @@ public class ProductServiceUpdateWithJsonTest {
 	        }    
 	 }
 	 */
-	 @Test
+	 //@Test
 	 public void testUpdateItemWithNewIconJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithNewIcon: ");
 	        JSONObject params = new JSONObject(jStringWithNewIcons);
@@ -397,7 +397,7 @@ public class ProductServiceUpdateWithJsonTest {
 	 }
 
 	 //---------- Item and associations ----------------//
-	 @Test
+	 //@Test
 	 public void testUpdateItemWithAllImsAndAssociationsByJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringFullItemAndAssociationInfo);
