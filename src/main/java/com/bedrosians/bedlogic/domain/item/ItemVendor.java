@@ -114,7 +114,6 @@ public class ItemVendor implements java.io.Serializable {
 	@Column(name = "vendor_name", length = 60)
 	public String getVendorName() {
 		return vendorName;
-		//return (vendorName != null) ? vendorName : vendor.getName();
 	}
 
 	public void setVendorName(String vendorName) {

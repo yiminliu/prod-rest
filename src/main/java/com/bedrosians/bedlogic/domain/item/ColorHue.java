@@ -129,7 +129,4 @@ public class ColorHue implements java.io.Serializable {
 		return true;
 	}
 
-	
-
-	
 }

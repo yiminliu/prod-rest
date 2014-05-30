@@ -281,7 +281,7 @@ public class IconCollection implements java.io.Serializable {
 	}
 	
     @Transient
-    public String toLegancyIncons(){
+    public String toLegancyIcons(){
     	char[] legacyIcons = new char[20];
     	
     	/*

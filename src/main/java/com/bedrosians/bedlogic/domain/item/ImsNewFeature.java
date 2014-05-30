@@ -38,11 +38,7 @@ import com.bedrosians.bedlogic.domain.item.enums.SurfaceApplication;
 import com.bedrosians.bedlogic.domain.item.enums.SurfaceFinish;
 import com.bedrosians.bedlogic.domain.item.enums.SurfaceType;
 import com.bedrosians.bedlogic.util.FormatUtil;
-import com.bedrosians.bedlogic.util.ImsResultUtil;
-import com.fasterxml.jackson.annotation.JsonInclude;
 
-
-//@JsonInclude
 @Entity
 @Table(name = "ims_new_feature", schema = "public")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="imsNewFeature")
@@ -157,7 +153,7 @@ public class ImsNewFeature implements java.io.Serializable {
 	@Column(name="mps_code")
 	@Enumerated(EnumType.STRING)
 	public MpsCode getMpsCode() {
-		return (mpsCode != null? mpsCode : item == null? null :ImsResultUtil.convertInactivecdToMpsCode(item.getInactivecode()));
+		return mpsCode;
 	}
 
 	public void setMpsCode(MpsCode mpsCode) {
@@ -302,7 +298,7 @@ public class ImsNewFeature implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "last_modified_date", updatable=false)
+	@Column(name = "last_modified_date")
 	public Date getLastModifiedDate() {
 		return this.lastModifiedDate;
 	}
