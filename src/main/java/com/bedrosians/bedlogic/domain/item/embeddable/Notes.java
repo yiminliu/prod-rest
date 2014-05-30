@@ -18,9 +18,9 @@ public class Notes implements java.io.Serializable {
 	private static final long serialVersionUID = -582221787L;
 	
 	private String ponotes;
-	private String notes1;
-	private String notes2;
-	private String notes3;
+	private String buyernotes;
+	private String internalnotes;
+	private String invoicenotes;
 	
 	public Notes(){}
 	
@@ -34,30 +34,30 @@ public class Notes implements java.io.Serializable {
 	}
 	
 	@Column(name = "notes1", length = 35)
-	public String getNotes1() {
-		return this.notes1;
+	public String getBuyernotes() {
+		return this.buyernotes;
 	}
 
-	public void setNotes1(String notes1) {
-		this.notes1 = notes1;
+	public void setBuyernotes(String notes1) {
+		this.buyernotes = notes1;
 	}
 
 	@Column(name = "notes2", length = 35)
-	public String getNotes2() {
-		return this.notes2;
+	public String getInternalnotes() {
+		return this.internalnotes;
 	}
 
-	public void setNotes2(String notes2) {
-		this.notes2 = notes2;
+	public void setInternalnotes(String notes2) {
+		this.internalnotes = notes2;
 	}
 
 	@Column(name = "notes3", length = 120)
-	public String getNotes3() {
-		return this.notes3;
+	public String getInvoicenotes() {
+		return this.invoicenotes;
 	}
 
-	public void setNotes3(String notes3) {
-		this.notes3 = notes3;
+	public void setInvoicenotes(String notes3) {
+		this.invoicenotes = notes3;
 	}
 	
 }
