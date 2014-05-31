@@ -22,6 +22,7 @@
  
     <properties>
        <basedir>/</basedir> 
+       <baseUri>/home/yiminliu/bedlogic</baseUri>
        <jdkLevel>1.7</jdkLevel>
        <org.springframework-version>4.0.0.M3</org.springframework-version>
        <aspectj.version>1.6.11</aspectj.version>
