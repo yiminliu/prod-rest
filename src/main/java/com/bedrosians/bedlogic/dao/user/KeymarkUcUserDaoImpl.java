@@ -23,6 +23,8 @@ public class KeymarkUcUserDaoImpl extends GenericDaoImpl<KeymarkUcUser, String> 
 	    String queryString = "From KeymarkUcUser u where u.userCode = :userCode";
 	    Criteria criteria = session.createCriteria(KeymarkUcUser.class);
 	    criteria.setReadOnly(true);
+	    criteria.setCacheable(true);
+	    criteria.setCacheMode(CacheMode.NORMAL);
 	    criteria.add(Restrictions.eq("userCode", userCode.trim()).ignoreCase());
 	    user = (KeymarkUcUser)criteria.uniqueResult();
 		  return user;
