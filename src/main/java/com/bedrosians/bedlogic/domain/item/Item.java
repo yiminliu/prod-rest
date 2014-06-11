@@ -2,12 +2,10 @@
 package com.bedrosians.bedlogic.domain.item;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -29,8 +27,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
+import org.hibernate.annotations.SelectBeforeUpdate;
 import org.springframework.stereotype.Component;
 
 import com.bedrosians.bedlogic.domain.item.embeddable.Description;
@@ -50,13 +47,15 @@ import com.bedrosians.bedlogic.domain.item.embeddable.Units;
 import com.bedrosians.bedlogic.domain.item.embeddable.VendorInfo;
 import com.bedrosians.bedlogic.util.ImsDataUtil;
 
+
 @JsonRootName(value = "item")
 @Component
 @Entity
 @Table(name = "ims", schema = "public")
 @DynamicUpdate
 @DynamicInsert
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="item")
+@Cacheable
+@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Item implements java.io.Serializable {
 
 	private static final long serialVersionUID = -3213582221787L;
@@ -93,7 +92,7 @@ public class Item implements java.io.Serializable {
 	private Series series;
 	private Material material;
 	private Dimensions dimensions;
-	//this default is to meet ims_check5
+	//this default aims to meet ims_check5
 	private Price price = new Price();
 	private VendorInfo vendors = new VendorInfo();
 	private List<String> usage;
@@ -105,13 +104,14 @@ public class Item implements java.io.Serializable {
 	private Applications applications;
   	private Units units;
   	private Cost cost;
-  	private PriorVendor priorVendor;
+  	//private PriorVendor priorVendor;
   	
 	//------- Associations --------//
-  	private ImsNewFeature imsNewFeature;
+  	private ItemNewFeature itemNewFeature;
     private IconCollection iconDescription;
-  	private List<ColorHue> colorhues =  new ArrayList<>();
 	private List<ItemVendor> newVendorSystem = new ArrayList<>();
+	private List<String> colorhues =  new ArrayList<>();
+	//private List<ColorHue> colorhues =  new ArrayList<>();
   	//private List<Note> newNoteSystem = new ArrayList<>();
      	
   	public Item() {
@@ -230,14 +230,14 @@ public class Item implements java.io.Serializable {
 		this.vendors = vendors;
 	}
 	
-	@Embedded
-	public PriorVendor getPriorVendor() {
-		return priorVendor;
-	}
+	//@Embedded
+	//public PriorVendor getPriorVendor() {
+	//	return priorVendor;
+	//}
 
-	public void setPriorVendor(PriorVendor priorVendor) {
-		this.priorVendor = priorVendor;
-	}	
+	//public void setPriorVendor(PriorVendor priorVendor) {
+	//	this.priorVendor = priorVendor;
+	//}	
 	
 	@Embedded
 	public Notes getNotes() {
@@ -412,6 +412,7 @@ public class Item implements java.io.Serializable {
 		this.showonwebsite = showonwebsite;
 	}
 
+	//@JsonIgnore
     @Column(name = "colorcategory", length = 30)
 	public String getColorcategory() {
 		return this.colorcategory;
@@ -420,7 +421,19 @@ public class Item implements java.io.Serializable {
 	public void setColorcategory(String colorcategory) {
 		this.colorcategory = colorcategory;
 	}
+	
+	@Transient
+	public List<String> getColorhues() {
+		if(colorhues == null || colorhues.isEmpty())
+		   colorhues = ImsDataUtil.convertColorCategoryToStringList(colorcategory);
+		return colorhues;
+	}
 		
+	public void setColorhues(List<String> colorhues) {
+		this.colorhues = colorhues;
+		//this.colorcategory = ImsDataUtil.convertColorhueStringListToColorCategory(colorhues);
+	}
+	
 	@Column(name = "showonalysedwards", length = 1)
 	public Character getShowonalysedwards() {
 		return this.showonalysedwards;
@@ -479,23 +492,27 @@ public class Item implements java.io.Serializable {
 		this.taxclass = taxclass;
 	}
 	
-	@OneToOne(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL)
-	public ImsNewFeature getImsNewFeature() {	
-	    return this.imsNewFeature;
+	@OneToOne(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+	@Fetch(FetchMode.JOIN)
+	@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+	public ItemNewFeature getImsNewFeature() {	
+	    return this.itemNewFeature;
 	}
 
-	public void setImsNewFeature(ImsNewFeature imsNewFeature) {
-		this.imsNewFeature = imsNewFeature;
+	public void setImsNewFeature(ItemNewFeature itemNewFeature) {
+		this.itemNewFeature = itemNewFeature;
 	}
 	
-	public void addImsNewFeature(ImsNewFeature imsNewFeature ){
+	public void addImsNewFeature(ItemNewFeature itemNewFeature ){
 		if(this.getImsNewFeature() != null)
 			setImsNewFeature(null);
-		imsNewFeature.setItem(this);
-		this.imsNewFeature = imsNewFeature;
+		itemNewFeature.setItem(this);
+		this.itemNewFeature = itemNewFeature;
 	}
 	
 	@OneToOne(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL)
+	@Fetch(FetchMode.JOIN)
+	@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	public IconCollection getIconDescription() {	
 	    return iconDescription;// != null//? iconCollection : ImsDataUtil.parseIcons(getIconsystem());
 	}
@@ -509,9 +526,10 @@ public class Item implements java.io.Serializable {
 		this.iconDescription = iconDescription;
 	}
 
-	//@LazyCollection(LazyCollectionOption.FALSE)
+/*	//@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL)
-	@Fetch(FetchMode.SUBSELECT)
+	//@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+	//@Fetch(FetchMode.SUBSELECT)
 	public List<ColorHue> getColorhues() {
 		return this.colorhues;
 	}
@@ -524,9 +542,11 @@ public class Item implements java.io.Serializable {
 		colorhue.setItem(this);
 		getColorhues().add(colorhue);
 	}
-	
+*/	
+	@JsonIgnore
 	//@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "item", cascade = CascadeType.ALL)
+	@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	@Fetch(FetchMode.SUBSELECT)
 	public List<ItemVendor> getNewVendorSystem() {
 		return this.newVendorSystem;
@@ -624,7 +644,7 @@ public class Item implements java.io.Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((itemcode == null) ? 0 : itemcode.hashCode());
+		result = prime * result + ((itemcode == null) ? 0 : itemcode.trim().hashCode());
 		return result;
 	}
 
@@ -640,7 +660,7 @@ public class Item implements java.io.Serializable {
 		if (itemcode == null) {
 			if (other.itemcode != null)
 				return false;
-		} else if (!itemcode.equals(other.itemcode))
+		} else if (!itemcode.trim().equalsIgnoreCase(other.itemcode.trim()))
 			return false;
 		return true;
 	}
@@ -660,8 +680,9 @@ public class Item implements java.io.Serializable {
 			SimilarItemCode relateditemcodes, Purchasers purchasers,
 			PackagingInfo packaginginfo, Notes notes,
 			Applications applications, Units units, Cost cost,
-			PriorVendor priorVendor, ImsNewFeature imsNewFeature,
-			IconCollection iconDescription, List<ColorHue> colorhues){
+			PriorVendor priorVendor, ItemNewFeature itemNewFeature,
+			IconCollection iconDescription){
+			//, List<ColorHue> colorhues){
 			//Set<ItemVendor> newVendorSystem, List<Note> newNoteSystem) {
 		super();
 		this.itemcode = itemcode;
@@ -704,11 +725,11 @@ public class Item implements java.io.Serializable {
 		this.applications = applications;
 		this.units = units;
 		this.cost = cost;
-		this.priorVendor = priorVendor;
-		this.imsNewFeature = imsNewFeature;
+		//this.priorVendor = priorVendor;
+		this.itemNewFeature = itemNewFeature;
 		this.iconDescription = iconDescription;
-		this.colorhues = colorhues;
 		this.newVendorSystem = newVendorSystem;
+		//this.colorhues = colorhues;
 		//this.newNoteSystem = newNoteSystem;
 	}
 
@@ -721,8 +742,8 @@ public class Item implements java.io.Serializable {
 				//+ ",  mpsCode=" +  mpsCode
 				//+ ",  grade=" +  grade
 				//+ ",  status=" +  status
-				+ ", imsNewFeature=" + imsNewFeature
-			    + ", vendors=" + newVendorSystem 
+				+ ", itemNewFeature=" + itemNewFeature
+			    //+ ", vendors=" + newVendorSystem 
 				//+ ", baseunit=" + baseunit
 				//+ ", baseisstdsell=" + baseisstdsell 
 				//+ ", baseisstdord=" + baseisstdord 

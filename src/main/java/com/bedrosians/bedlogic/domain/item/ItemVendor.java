@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -19,13 +20,18 @@ import javax.persistence.Version;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import com.bedrosians.bedlogic.util.FormatUtil;
 
 
 @Entity
 @Table(name="ims_item_vendor")
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="itemVendor")
+@DynamicUpdate
+@DynamicInsert
+@Cacheable
+@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ItemVendor implements java.io.Serializable {
 
 	private static final long serialVersionUID = -582265865921787L;
@@ -71,7 +77,7 @@ public class ItemVendor implements java.io.Serializable {
 	}
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="item_code", updatable=false, insertable=false)
 	public Item getItem(){
 		return this.item;
@@ -80,18 +86,6 @@ public class ItemVendor implements java.io.Serializable {
 	public void setItem(Item item){
 		this.item = item;
 	}
-	
-	//@JsonIgnore
-	//@ManyToOne(fetch = FetchType.EAGER)
-	//@JoinColumn(name="itemVendorId.vendorId")//, updatable=false, insertable=false)
-	//public Vendor getVendor(){
-	//	return this.vendor;
-	//}
-	
-	//public void setVendor(Vendor vendor){
-	//	this.vendor = vendor;
-	//}
-	
 
 	@Transient
 	public Integer getVendorId(){
@@ -247,6 +241,18 @@ public class ItemVendor implements java.io.Serializable {
 	private void setVersion(Integer version){
 		this.version = version;
 	}
+
+	//@JsonIgnore
+		//@ManyToOne(fetch = FetchType.EAGER)
+		//@JoinColumn(name="itemVendorId.vendorId")//, updatable=false, insertable=false)
+		//public Vendor getVendor(){
+		//	return this.vendor;
+		//}
+		
+		//public void setVendor(Vendor vendor){
+		//	this.vendor = vendor;
+		//}
+		
 	
 	public ItemVendor(ItemVendorId itemVendorId, Integer vendorOrder,
 			String vendorName, String vendorName2, String vendorXrefId,
@@ -313,8 +319,9 @@ public class ItemVendor implements java.io.Serializable {
 	@JsonIgnore
 	@Transient
 	public boolean isEmpty(){
-		return itemVendorId == null && vendorName == null && vendorXrefId == null && vendorListPrice == null && 
-			   vendorNetPrice == null && vendorPriceUnit == null && vendorFob == null;
+		return itemVendorId == null;
+		//&& vendorName == null && vendorXrefId == null && vendorListPrice == null && 
+		//	   vendorNetPrice == null && vendorPriceUnit == null && vendorFob == null;
 	}
 	
 	@Override

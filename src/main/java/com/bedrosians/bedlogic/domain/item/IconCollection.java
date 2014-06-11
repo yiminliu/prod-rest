@@ -3,6 +3,7 @@ package com.bedrosians.bedlogic.domain.item;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -19,6 +20,8 @@ import javax.persistence.Version;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
@@ -26,7 +29,10 @@ import com.bedrosians.bedlogic.domain.item.enums.OriginCountry;
 
 @Entity
 @Table(name = "ims_icon", schema = "public")
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="iconCollection")
+@DynamicUpdate
+@DynamicInsert
+@Cacheable
+@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class IconCollection implements java.io.Serializable {
   
 	private static final long serialVersionUID = -1113582221787L;
@@ -105,7 +111,7 @@ public class IconCollection implements java.io.Serializable {
 	}
 	
 	@JsonIgnore
-	@OneToOne(fetch = FetchType.EAGER)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="item_code")
 	public Item getItem() {
 		return this.item;
@@ -352,7 +358,7 @@ public class IconCollection implements java.io.Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((itemCode == null) ? 0 : itemCode.hashCode());
+				+ ((itemCode == null) ? 0 : itemCode.trim().hashCode());
 		return result;
 	}
 
@@ -368,7 +374,7 @@ public class IconCollection implements java.io.Serializable {
 		if (itemCode == null) {
 			if (other.itemCode != null)
 				return false;
-		} else if (!itemCode.equals(other.itemCode))
+		} else if (!itemCode.trim().equals(other.itemCode.trim()))
 			return false;
 		return true;
 	}
