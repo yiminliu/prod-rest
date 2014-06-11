@@ -5,8 +5,6 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import com.bedrosians.bedlogic.util.FormatUtil;
-
 @Embeddable
 public class PriorVendor  implements java.io.Serializable {
 

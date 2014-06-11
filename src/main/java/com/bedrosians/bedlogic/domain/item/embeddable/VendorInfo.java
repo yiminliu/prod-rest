@@ -13,7 +13,6 @@ public class VendorInfo  implements java.io.Serializable {
 	    private Integer vendornbr;
 	    private Integer vendornbr1;
 	    private Integer vendornbr2;
-	    private Integer vendornbr3;
 		private String vendorxrefcd;
 		private BigDecimal vendorlistprice = BigDecimal.valueOf(0.00);
 		private String vendorpriceunit = "PCS";
@@ -66,15 +65,6 @@ public class VendorInfo  implements java.io.Serializable {
 
 		public void setVendornbr2(Integer vendornbr2) {
 			this.vendornbr2 = vendornbr2;
-		}
-
-		@Column(name = "vendornbr3", precision = 6, scale = 0)
-		public Integer getVendornbr3() {
-			return this.vendornbr3;
-		}
-
-		public void setVendornbr3(Integer vendornbr3) {
-			this.vendornbr3 = vendornbr3;
 		}
 
 		@Column(name = "vendorpriceunit", length = 4)

@@ -4,8 +4,6 @@ package com.bedrosians.bedlogic.domain.item.embeddable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import com.bedrosians.bedlogic.util.FormatUtil;
-
 @Embeddable
 public class Description implements java.io.Serializable {
 
@@ -13,7 +11,6 @@ public class Description implements java.io.Serializable {
 	
 	private String fulldesc;
 	private String itemdesc1;
-	private String itemdesc2;
 	
 	public Description(){}
 	
@@ -35,12 +32,4 @@ public class Description implements java.io.Serializable {
 		this.itemdesc1 = itemdesc1;
 	}
 
-	@Column(name = "itemdesc2", length = 35)
-	public String getItemdesc2() {
-		return this.itemdesc2;
-	}
-
-	public void setItemdesc2(String itemdesc2) {
-		this.itemdesc2 = itemdesc2;
-	}
 }

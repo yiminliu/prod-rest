@@ -5,8 +5,6 @@ import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import com.bedrosians.bedlogic.util.FormatUtil;
-
 @Embeddable
 public class Cost implements java.io.Serializable {
 
@@ -14,12 +12,10 @@ public class Cost implements java.io.Serializable {
 	
 	private BigDecimal cost1;
 	private BigDecimal priorcost;
-    private BigDecimal priorcost1;
     private BigDecimal futurecost;
-    private BigDecimal futurecost1;
     private Character poincludeinvendorcost;
 	private Float nonstockcostpct;
-    private Float costrangepct;
+	private Float costrangepct;
 	
 	public Cost(){}
 	
@@ -51,15 +47,6 @@ public class Cost implements java.io.Serializable {
 		this.priorcost = priorcost;
 	}
 
-	@Column(name = "priorcost1", precision = 9, scale = 4)
-	public BigDecimal getPriorcost1() {
-		return this.priorcost1;
-	}
-
-	public void setPriorcost1(BigDecimal priorcost1) {
-		this.priorcost1 = priorcost1;
-	}
-
 	@Column(name = "futurecost", precision = 9, scale = 4)
 	public BigDecimal getFuturecost() {
 		return this.futurecost;
@@ -67,15 +54,6 @@ public class Cost implements java.io.Serializable {
 
 	public void setFuturecost(BigDecimal futurecost) {
 		this.futurecost = futurecost;
-	}
-
-	@Column(name = "futurecost1", precision = 9, scale = 4)
-	public BigDecimal getFuturecost1() {
-		return this.futurecost1;
-	}
-
-	public void setFuturecost1(BigDecimal futurecost1) {
-		this.futurecost1 = futurecost1;
 	}
 
 	@Column(name = "nonstockcostpct", precision = 4, scale = 1)
@@ -93,6 +71,6 @@ public class Cost implements java.io.Serializable {
 	}
 
 	public void setCostrangepct(Float costrangepct) {
-		this.costrangepct = costrangepct;
+  	    this.costrangepct = costrangepct;
 	}
 }

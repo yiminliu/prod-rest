@@ -1,16 +1,8 @@
 package com.bedrosians.bedlogic.domain.item.embeddable;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-
-import com.bedrosians.bedlogic.util.FormatUtil;
 
 @Embeddable
 public class Notes implements java.io.Serializable {

@@ -3,9 +3,6 @@ package com.bedrosians.bedlogic.domain.item.embeddable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import com.bedrosians.bedlogic.util.FormatUtil;
-
-
 @Embeddable
 public class SimilarItemCode implements java.io.Serializable {
 	
