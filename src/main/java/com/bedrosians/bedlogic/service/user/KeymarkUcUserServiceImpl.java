@@ -31,6 +31,7 @@ public class KeymarkUcUserServiceImpl implements KeymarkUcUserService{
 	}
 	
 	@Override
+	@Transactional(readOnly=true)
 	public KeymarkUcUser getUserByUserCode(String userCode)throws BedDAOException {
 		KeymarkUcUser user = null;
 		Session session = sessionFactory.openSession();
