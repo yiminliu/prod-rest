@@ -2,7 +2,6 @@ package com.bedrosians.bedlogic.domain.user;
 
 import java.io.Serializable;
 
-import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -12,10 +11,10 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Immutable;
 
+
 @Entity
 @Table(name = "uc", schema = "public")
-@Cacheable
-@Cache(usage=CacheConcurrencyStrategy.READ_ONLY)//, region="keymarkUcUser")
+@Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
 @Immutable
 public class KeymarkUcUser implements Serializable {
 
@@ -216,15 +215,6 @@ public class KeymarkUcUser implements Serializable {
 		public void setImallowcreateitem(Character imallowcreateitem) {
 			this.imallowcreateitem = imallowcreateitem;
 		}
-
-		//@Column(name = "note2", length = 20)
-		//public String getNote2() {
-		//	return this.note2;
-		//}
-
-		//public void setNote2(String note2) {
-		//	this.note2 = note2;
-		//}
 
 		@Column(name = "imchgavgcost", length = 1)
 		public Character getImchgavgcost() {
