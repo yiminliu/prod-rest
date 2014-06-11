@@ -94,7 +94,8 @@ public class ImsValidator {
 	       return;
 	    
 		if(item.getUnits().getBaseunit() == null || item.getUnits().getBaseunit().trim().length() < 1)
-		   throw new BedDAOBadParamException("BaseUnit cannot be null.");
+		  // throw new BedDAOBadParamException("BaseUnit cannot be null.");
+			item.getUnits().setBaseunit("PCS");
 	
 		if((item.getUnits().getBaseunit() != null && item.getUnits().getBaseunit().length() > 4) || 
 		   (item.getUnits().getUnit1unit() != null && item.getUnits().getUnit1unit().length() > 4) ||

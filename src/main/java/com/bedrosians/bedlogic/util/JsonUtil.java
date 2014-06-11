@@ -17,9 +17,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.codehaus.jettison.json.JSONObject;
 
-import com.bedrosians.bedlogic.domain.item.ColorHue;
 import com.bedrosians.bedlogic.domain.item.IconCollection;
-import com.bedrosians.bedlogic.domain.item.ImsNewFeature;
+import com.bedrosians.bedlogic.domain.item.ItemNewFeature;
 import com.bedrosians.bedlogic.domain.item.Item;
 import com.bedrosians.bedlogic.domain.item.ItemVendor;
 import com.bedrosians.bedlogic.domain.item.embeddable.Applications;
@@ -325,7 +324,7 @@ public class JsonUtil {
 		}
 		
 		Item item = (Item)jsonStringToPOJO(jString2, new Item());
-		ImsNewFeature newFeature =   item.getImsNewFeature();
+		ItemNewFeature newFeature =   item.getImsNewFeature();
 		System.out.println("units = "+ newFeature.toString());
 		//Item item = (Item)jsonObjectToPOJO(jsonObj, new Item());
 		//Item item = (Item)jsonFileToPOJO(fileName, new Item());

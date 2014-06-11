@@ -1,9 +1,7 @@
 package com.bedrosians.bedlogic.util;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 
 import com.bedrosians.bedlogic.domain.item.Item;
 
@@ -98,7 +96,6 @@ public class FormatUtil {
 		if(item.getItemdesc() != null){
 			item.getItemdesc().setFulldesc(process(item.getItemdesc().getFulldesc()));
 			item.getItemdesc().setItemdesc1(process(item.getItemdesc().getItemdesc1()));
-			item.getItemdesc().setItemdesc2(process(item.getItemdesc().getItemdesc2()));
 		}
 		if(item.getSeries() != null){
 		   item.getSeries().setSeriesname(process(item.getSeries().getSeriesname()));
@@ -174,21 +171,10 @@ public class FormatUtil {
 			item.getRelateditemcodes().setSimilaritemcd5(process(item.getRelateditemcodes().getSimilaritemcd5()));
 			item.getRelateditemcodes().setSimilaritemcd6(process(item.getRelateditemcodes().getSimilaritemcd6()));
 		}
-		if(item.getPriorVendor() != null){
-		   item.getPriorVendor().setPriorvendorfob(process(item.getPriorVendor().getPriorvendorfob()));
-		   item.getPriorVendor().setPriorvendorpriceunit(process(item.getPriorVendor().getPriorvendorpriceunit()));
-		   item.getPriorVendor().setPriorvendorroundaccuracy(process(item.getPriorVendor().getPriorvendorroundaccuracy()));
-		   //item.getPriorVendor().setPriorvendordiscpct1(process(item.getPriorVendor().getPriorvendordiscpct1()));	
-		   //item.getPriorVendor().setPriorvendorfreightratecwt(process(item.getPriorVendor().getPriorvendorfreightratecwt()));
-		   //item.getPriorVendor().setPriorvendorlandedbasecost(process(item.getPriorVendor().getPriorvendorlandedbasecost()));
-		   //item.getPriorVendor().setPriorvendorlistprice(process(item.getPriorVendor().getPriorvendorlistprice()));
-		   //item.getPriorVendor().setPriorvendormarkuppct(process(item.getPriorVendor().getPriorvendormarkuppct()));
-		   //item.getPriorVendor().setPriorvendornetprice(process(item.getPriorVendor().getPriorvendornetprice()));
-		}
 		if(item.getIconDescription() == null)
 		   item.setIconDescription(ImsDataUtil.convertLegacyIconsToIconCollection(item.getIconsystem()));	
-	    if(item.getPriorVendor() != null)
-		   ImsDataUtil.parsePriorVendor(item);	
+	    //if(item.getPriorVendor() != null)
+		//   ImsDataUtil.parsePriorVendor(item);	
 		if(item.getPrice() != null)
 		   item.getPrice().setPriceunit(ImsDataUtil.getStandardSellUnit(item));//item.getStandardSellUnit());	
 		if(item.getUnits() != null)
@@ -197,11 +183,12 @@ public class FormatUtil {
 		   item.setUsage(ImsDataUtil.convertApplicationsToUsage(item));
 		if(item.getImsNewFeature() != null && item.getImsNewFeature().getMpsCode() == null)
 	       item.getImsNewFeature().setMpsCode(ImsDataUtil.convertInactivecdToMpsCode(item.getInactivecode()));	
-		if(item.getColorhues() == null || item.getColorhues().isEmpty())
-		   item.setColorhues(new ArrayList<>(ImsDataUtil.convertColorCategoryToColorHueObjects(item)));
-		if(item.getNewVendorSystem() != null && !item.getNewVendorSystem().isEmpty())
-		   item.setNewVendorSystem(new ArrayList<>(new HashSet<>(item.getNewVendorSystem())));	
+	    //if((item.getColorhues() == null || item.getColorhues().isEmpty()) && item.getColorcategory() != null && !item.getColorcategory().isEmpty())
+	    //item.setColorhues(new ArrayList<>(ImsDataUtil.convertColorCategoryToColorHueObjects(item)));
+		//if(item.getNewVendorSystem() != null && !item.getNewVendorSystem().isEmpty())
+		//   item.setNewVendorSystem(new ArrayList<>(new HashSet<>(item.getNewVendorSystem())));	
 		return item;
+		
 		/*
 		//item.setOffShade(process(item.getOffShade()));
 		//item.setSeriesName((process(item.getSeriesName())));	

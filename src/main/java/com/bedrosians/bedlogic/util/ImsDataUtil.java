@@ -1,15 +1,11 @@
 package com.bedrosians.bedlogic.util;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import com.bedrosians.bedlogic.domain.item.ColorHue;
 import com.bedrosians.bedlogic.domain.item.IconCollection;
-import com.bedrosians.bedlogic.domain.item.ImsNewFeature;
+import com.bedrosians.bedlogic.domain.item.ItemNewFeature;
 import com.bedrosians.bedlogic.domain.item.Item;
 import com.bedrosians.bedlogic.domain.item.ItemVendor;
 import com.bedrosians.bedlogic.domain.item.embeddable.Applications;
@@ -37,10 +33,10 @@ public class ImsDataUtil {
 	        case "N":  
 	    	   mpsCode = MpsCode.Active_Product;
 	    	   break;
-	        case "Y":
+	        case "D":
 	    	   mpsCode = MpsCode.Pre_Drop;
 	    	   break;
-	        case "D":
+	        case "Y":
 	    	   mpsCode = MpsCode.Drop;	
 	    	   break;
 	    }	
@@ -252,7 +248,22 @@ public class ImsDataUtil {
 		return Arrays.asList(colorCategory.trim().split(":"));
 	}
 	
-	public static Set<ColorHue> convertColorCategoryToColorHueString(String colorCategory){
+	public static String convertColorhueStringListToColorCategory(List<String> colorStringList){
+		if(colorStringList == null || colorStringList.isEmpty())
+		   return null;	
+		else{
+			StringBuilder sb = new StringBuilder();
+			for(int i = 0; i < colorStringList.size(); i++){
+				if(i == colorStringList.size() - 1)
+  				   sb.append(colorStringList.get(i));
+				else
+				   sb.append(colorStringList.get(i)).append(":");
+			}	
+			return sb.toString();
+		}
+	}
+	
+	/*public static Set<ColorHue> convertColorCategoryToColorHueString(String colorCategory){
 		if(colorCategory == null || colorCategory.isEmpty())
 		   return null;	
 		else
@@ -260,20 +271,18 @@ public class ImsDataUtil {
 	}
 	
 	public static Set<ColorHue> convertColorCategoryToColorHueObjects(Item item){
-		if(item.getColorcategory() == null || item.getColorcategory().isEmpty())
-		   return null;	
-		else{
-			Set<ColorHue> colorHues = new HashSet<>();
-			ColorHue colorHue = null;
-			for(String color : item.getColorcategory().trim().split(":")){
-				if(color != null && !color.isEmpty()){
-  				   colorHue = new ColorHue(color);
-				   colorHue.setItem(item);
-				   colorHues.add(colorHue);
-				}   
-			}
-	        return colorHues;
+		Set<ColorHue> colorHues = new HashSet<>();
+		ColorHue colorHue = null;
+		if(item.getColorcategory() != null && !item.getColorcategory().isEmpty()) {
+		   for(String color : item.getColorcategory().trim().split(":")){
+			   if(color != null && !color.isEmpty()){
+  			      colorHue = new ColorHue(color);
+			      colorHue.setItem(item);
+			      colorHues.add(colorHue);
+			   }
+		   }	   
 		}
+	    return colorHues;
 	}
 	
 	public static List<ColorHue> convertColorCategoryToColorHueObjects(String colorCategory){
@@ -306,15 +315,15 @@ public class ImsDataUtil {
 		return sBuilder.toString();
 	  }
 	}	
-	
-	public static Item parsePriorVendor(Item item){
-		
-		if(item.getPriorVendor() != null && item.getPriorVendor().getPriorvendorpriceunit() == null 
-				                         && item.getPriorVendor().getPriorvendorfob() == null) 
-				                         //&& item.getPriorVendor().getPriorvendorlistprice() == null)
-			item.setPriorVendor(null);	
-		return item;
-	}
+	*/
+	//public static Item parsePriorVendor(Item item){
+	//	
+	//	if(item.getPriorVendor() != null && item.getPriorVendor().getPriorvendorpriceunit() == null 
+	//			                         && item.getPriorVendor().getPriorvendorfob() == null) 
+	//			                         //&& item.getPriorVendor().getPriorvendorlistprice() == null)
+	//		item.setPriorVendor(null);	
+	//	return item;
+	//}
 	
 	public static List<String> convertApplicationsToUsage(Item item){
 		StringBuilder stringBuilder = new StringBuilder();
@@ -339,6 +348,8 @@ public class ImsDataUtil {
 	}
 	
 	public static String getStandardSellUnit(Item item) {
+		if(item.getUnits() == null)
+		   return null;
 		
 		String standardUnit = item.getUnits().getBaseunit();
 		
@@ -457,8 +468,8 @@ public class ImsDataUtil {
 
 	private static void transferAssociation(Item itemToDB, Item itemFromInput, DBOperation operation) throws BedDAOBadParamException{
 	  try{
-		ImsNewFeature inputNewFeature = itemFromInput.getImsNewFeature();
-		List<ColorHue> inputColorHues = itemFromInput.getColorhues();
+		ItemNewFeature inputNewFeature = itemFromInput.getImsNewFeature();
+	//	List<ColorHue> inputColorHues = itemFromInput.getColorhues();
 	    IconCollection inputIconCollection = itemFromInput.getIconDescription();
 		List<ItemVendor> inputItemVendors = itemFromInput.getNewVendorSystem();
 		VendorInfo vendorInfo = itemFromInput.getVendors();
@@ -547,7 +558,7 @@ public class ImsDataUtil {
 				if(iconCollection.getVersaillesPattern() != null) itemToDB.getIconDescription().setVersaillesPattern(inputIconCollection.getVersaillesPattern());
 			}
 		}
-		//---------------Color Hue data---------------//
+/*		//---------------Color Hue data---------------//
 		if(inputColorHues != null && !inputColorHues.isEmpty()){
 			if(operation.equals(DBOperation.CREATE) || //Brand new Item
 			  (operation.equals(DBOperation.UPDATE) && (itemToDB.getColorhues() == null || itemToDB.getColorhues().isEmpty()))){ //existing Item, but brand new ItemColoeHue
@@ -574,7 +585,7 @@ public class ImsDataUtil {
 				   itemToDB.addColorhue(color);	
 			}
 		}
-	    //---------- vendors data ----------//
+*/	    //---------- vendors data ----------//
 		if(inputItemVendors != null && !inputItemVendors.isEmpty()){
 		   if(operation.equals(DBOperation.CREATE)|| //brand new Item
 		     (operation.equals(DBOperation.UPDATE) && (itemToDB.getNewVendorSystem() == null || itemToDB.getNewVendorSystem().isEmpty()))){ //existing Item, but brand new ItemVendors
@@ -700,7 +711,7 @@ public class ImsDataUtil {
 		if(itemFromInput.getMaterial() != null) itemToDB.setMaterial(itemFromInput.getMaterial());
 		if(itemFromInput.getNotes() != null) itemToDB.setNotes(itemFromInput.getNotes());
 		if(itemFromInput.getPackaginginfo() != null) itemToDB.setPackaginginfo(itemFromInput.getPackaginginfo());
-		if(itemFromInput.getPriorVendor() != null) itemToDB.setPriorVendor(itemFromInput.getPriorVendor());
+		//if(itemFromInput.getPriorVendor() != null) itemToDB.setPriorVendor(itemFromInput.getPriorVendor());
 		if(itemFromInput.getPurchasers() != null) itemToDB.setPurchasers(itemFromInput.getPurchasers());
 		if(itemFromInput.getRelateditemcodes() != null) itemToDB.setRelateditemcodes(itemFromInput.getRelateditemcodes());
 		if(itemFromInput.getSeries() != null) itemToDB.setSeries(itemFromInput.getSeries());
@@ -760,7 +771,14 @@ public class ImsDataUtil {
 		if(itemFromInput.getUpdatecd() != null) itemToDB.setUpdatecd(itemFromInput.getUpdatecd());
 		if(itemFromInput.getProductline() != null) itemToDB.setProductline(itemFromInput.getProductline());
 		
-		if(itemFromInput.getColorcategory() != null){
+		if(itemFromInput.getColorcategory() != null && !itemFromInput.getColorcategory().isEmpty()){
+			itemToDB.setColorcategory(itemFromInput.getColorcategory());
+		}
+		else if(itemFromInput.getColorhues() != null && !itemFromInput.getColorhues().isEmpty()){
+				itemToDB.setColorcategory(ImsDataUtil.convertColorhueStringListToColorCategory(itemFromInput.getColorhues()));	
+		}
+		
+	    /*if(itemFromInput.getColorcategory() != null){
 		   if(itemFromInput.getColorcategory().contains(":")){
 			  String[] colors = itemFromInput.getColorcategory().split(":");
 			  for(String color : colors){
@@ -769,6 +787,7 @@ public class ImsDataUtil {
 		   }
 		   itemToDB.setColorcategory(itemFromInput.getColorcategory());
 		}
+		*/
 	  }
 	  catch(Exception e){
 			  throw new BedDAOBadParamException("Error occured while transferProperty(): " + e.getMessage(), e.getCause());	
