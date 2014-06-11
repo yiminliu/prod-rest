@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -18,9 +19,8 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-
+import org.hibernate.sql.JoinType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Isolation;
@@ -28,7 +28,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bedrosians.bedlogic.dao.GenericDaoImpl;
-import com.bedrosians.bedlogic.domain.item.ImsNewFeature;
+import com.bedrosians.bedlogic.domain.item.ItemNewFeature;
 import com.bedrosians.bedlogic.domain.item.Item;
 import com.bedrosians.bedlogic.domain.item.enums.Grade;
 import com.bedrosians.bedlogic.domain.item.enums.Status;
@@ -53,21 +53,21 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	 
     //private static final int DEFAULT_MAX_RESULTS = 50000;//500; 
     private int maxResults = 0;
-	
-	
-    /*This method returns an Item with associated entities for the given item id.
+		
+	/*
+	 * This method returns an Item with associated entities for the given item id.
      * Note: it's not set "Read Only" because is could be called by update()
      */
 	@Override
-	@Loggable(value = LogLevel.TRACE)
+	@Loggable(value = LogLevel.DEBUG)
 	public Item getItemById(Session session, final String itemId) {
     	Query query = session.createQuery("From Item where itemcode = :itemCode");
 		query.setString("itemCode", itemId);
-		return (Item)query.uniqueResult();
+		return (Item)query.setCacheable(true).setCacheMode(CacheMode.NORMAL).uniqueResult();
 	}
 	
 	@Override
-	@Loggable(value = LogLevel.TRACE)
+	@Loggable(value = LogLevel.DEBUG)
 	public Item loadItemById(Session session, final String itemId) {
        return loadById(session, itemId);
 	}
@@ -78,7 +78,7 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	 *  itemcode and materialcategory depend on the input exactmatch flag. If 'exactmatch' in input, use LIKE, otherwise, use exact match 
 	 */
 	@Override
-	@Loggable(value = LogLevel.TRACE)
+	@Loggable(value = LogLevel.DEBUG)
 	@Transactional(readOnly=true)
 	@SuppressWarnings("unchecked")
 	public List<Item> getItemsByQueryParameters(MultivaluedMap<String, String> queryParams) throws BedDAOException{
@@ -110,7 +110,7 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
     		   if(values.size() > 1)	
     			   itemCriteria = generateLikeDisjunctionCriteria(itemCriteria, key, values);
     		   else
-    			   itemCriteria.add(Restrictions.ilike(key, value, MatchMode.START));
+    			   itemCriteria.add(Restrictions.ilike(key, value.toUpperCase(), MatchMode.START));
 	           continue;
             }
    	        if(!exactMatch && ("materialcategory".equalsIgnoreCase(key))){
@@ -121,14 +121,14 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 			    continue;
 	        }
     		//------ unconditional pattern match -------//
-   	        if("colorHue".equalsIgnoreCase(key)){
-   	        	colorHueCriteria = itemCriteria.createCriteria("colorhues");
-	        	if(values.size() > 1)	
-	        		colorHueCriteria = generateLikeDisjunctionCriteria(colorHueCriteria, key, values);
-	        	else
-	        		colorHueCriteria.add(Restrictions.ilike(key, value, MatchMode.ANYWHERE));
-		        continue;
-		    }  
+   	        //if("colorHue".equalsIgnoreCase(key)){
+   	        //	colorHueCriteria = itemCriteria.createCriteria("colorhues");
+	        //	if(values.size() > 1)	
+	        //		colorHueCriteria = generateLikeDisjunctionCriteria(colorHueCriteria, key, values);
+	        //	else
+	        //		colorHueCriteria.add(Restrictions.ilike(key, value, MatchMode.ANYWHERE));
+		    //    continue;
+		    //}  
 	        if("colorcategory".equalsIgnoreCase(key)){
 	        	if(values.size() > 1)	
 	     		   itemCriteria = generateLikeDisjunctionCriteria(itemCriteria, "colorcategory", values);
@@ -143,7 +143,7 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 			        itemCriteria.add(Restrictions.ilike(key, value, MatchMode.ANYWHERE));
 			     continue;
 		    }  	
-	        //----- take care of all other multiple values case, except for "size" ------//
+	        //----- take care of multiple values case other than "size" ------//
 	 	   	if(!"size".equals(key) && (values.size() > 1 || values.contains(",") || values.indexOf(",") >= 0 || values.toArray().length > 1 || values.toString().contains(","))){
     		    if(key.startsWith("material"))
     		    	itemCriteria.add(Restrictions.in("material." + key, values));
@@ -153,9 +153,9 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
     		   continue;
 	 	   	}  
     		//------- add association criteria --------//
-	 	   	if(ImsNewFeature.allProperties().contains(key)) {	
+	 	   	if(ItemNewFeature.allProperties().contains(key)) {	
 	   		   if(newFeatureCriteria == null)
-	     	      newFeatureCriteria = itemCriteria.createCriteria("imsNewFeature");
+	     	      newFeatureCriteria = itemCriteria.createCriteria("imsNewFeature", JoinType.LEFT_OUTER_JOIN);
 	   	       newFeatureCriteria = addNewFeatureRestrictions(newFeatureCriteria, key, value);
 	       	   continue;
 		    }
@@ -240,13 +240,13 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	 	   	}	      	    	
 	    }
         itemCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-        itemCriteria.addOrder(Order.asc("itemcode"));
+        //itemCriteria.addOrder(Order.asc("itemcode"));
         System.out.println("criteria = " +itemCriteria.toString());
 		try {
 			if(maxResults > 0)
-		       items =  (List<Item>)itemCriteria.getExecutableCriteria(sessionFactory.getCurrentSession()).setMaxResults(maxResults).setCacheable(true).list();//executeCriteria(itemCriteria);//(List<Item>)itemCriteria.list();			
+		       items =  (List<Item>)itemCriteria.getExecutableCriteria(sessionFactory.getCurrentSession()).setMaxResults(maxResults).setCacheable(true).setCacheMode(CacheMode.NORMAL).list();//executeCriteria(itemCriteria);//(List<Item>)itemCriteria.list();			
 			else
-			   items =  (List<Item>)itemCriteria.getExecutableCriteria(sessionFactory.getCurrentSession()).setCacheable(true).list();	
+			   items =  (List<Item>)itemCriteria.getExecutableCriteria(sessionFactory.getCurrentSession()).setCacheable(true).setCacheMode(CacheMode.NORMAL).list();	
 		}
 		catch(HibernateException hbe){
 			if(hbe.getCause() != null)
@@ -254,24 +254,31 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
     		else
 	  		   throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage());
 		}
-	  	return items;	
+		
+		System.out.println(items == null? 0 : items.size() + " items retireved");
+		System.out.println("Statistics().getConnectCount() = "  + sessionFactory.getStatistics().getConnectCount());
+	    System.out.println("Statistics().getTransactionCount() = "  + sessionFactory.getStatistics().getTransactionCount());
+	  	System.out.println("Statistics().getEntityFetchCount() = "  + sessionFactory.getStatistics().getEntityFetchCount()); //Prints 1
+        System.out.println("Statistics().getSecondLevelCacheHitCount() = " + sessionFactory.getStatistics().getSecondLevelCacheHitCount()); //Prints 1
+       
+        return items;	
     }
 	
 	@Override
-	@Loggable(value = LogLevel.TRACE)
+	@Loggable(value = LogLevel.DEBUG)
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 	public String createItem(Item item){
 		return (String)save(sessionFactory.getCurrentSession(), item); 
 	}
 	
 	@Override
-	@Loggable(value = LogLevel.TRACE)
+	@Loggable(value = LogLevel.DEBUG)
 	public void updateItem(Session session, Item item){
 		update(session, item);
 	}
 	
 	@Override
-	@Loggable(value = LogLevel.TRACE)
+	@Loggable(value = LogLevel.DEBUG)
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
 	public void deleteItem(Item item){
 		delete(sessionFactory.getCurrentSession(), item); 
@@ -290,12 +297,9 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 		   	 break;
 		  case "colorCategory": 
 	         key = "colorcategory";
-	   		 break;	
-		  case "inactivecd": case "inactiveCode":
-		     key = "inactivecode";
-    		 break;	 
-		   case "colorhues": case "colorHues": case "colorhue": case "colorHue": 
-   		     key = "colorHue";
+	   	     break;	
+		  case "colorhues": case "colorHues": case "colorhue": case "colorHue": 
+   		     key = "colorcategory"; //"colorHue";
    		     break;
 		  case "seriesname": case "seriesName":
    		     key = "series.seriesname";
@@ -306,6 +310,9 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 		  case "category":
    		     key = "itemcategory";
    		     break;
+		  case "inactivecd": case "inactiveCode":
+			     key = "inactivecode";
+	    		 break;	    
 		  case "length": case "nomlength": case "nomLength": case "nominalLength":
    		     key = "nominallength";
    		     break;
