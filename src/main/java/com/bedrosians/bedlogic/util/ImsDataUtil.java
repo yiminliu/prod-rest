@@ -350,9 +350,7 @@ public class ImsDataUtil {
 	public static String getStandardSellUnit(Item item) {
 		if(item.getUnits() == null)
 		   return null;
-		
-		String standardUnit = item.getUnits().getBaseunit();
-		
+		String standardUnit = item.getUnits().getBaseunit();	
         if (item.getUnits().getUnit1isstdsell() != null && item.getUnits().getUnit1isstdsell() == 'Y')
         	standardUnit = item.getUnits().getUnit1unit();
         else if (item.getUnits().getUnit2isstdsell() != null && item.getUnits().getUnit2isstdsell() == 'Y')
@@ -361,15 +359,12 @@ public class ImsDataUtil {
         	standardUnit = item.getUnits().getUnit3unit();
         else if (item.getUnits().getUnit4isstdsell() != null && item.getUnits().getUnit4isstdsell() == 'Y')
         	standardUnit = item.getUnits().getUnit4unit();
-       
         return standardUnit;
     }
 	
 	public static String getStandardPurchaseUnit(Item item) {
-		
 		String standardUnit = item.getUnits().getBaseunit();
-		
-        if (item.getUnits().getUnit1isstdsell() != null && item.getUnits().getUnit1isstdord() == 'Y')
+		if (item.getUnits().getUnit1isstdsell() != null && item.getUnits().getUnit1isstdord() == 'Y')
         	standardUnit = item.getUnits().getUnit1unit();
         else if (item.getUnits().getUnit2isstdsell() != null && item.getUnits().getUnit2isstdord() == 'Y')
         	standardUnit = item.getUnits().getUnit2unit();
@@ -377,7 +372,6 @@ public class ImsDataUtil {
         	standardUnit = item.getUnits().getUnit3unit();
         else if (item.getUnits().getUnit4isstdsell() != null && item.getUnits().getUnit4isstdord() == 'Y')
         	standardUnit = item.getUnits().getUnit4unit();
-       
         return standardUnit;
     }
 	
@@ -765,12 +759,11 @@ public class ImsDataUtil {
 		if(itemFromInput.getShadevariation() != null) itemToDB.setShadevariation(itemFromInput.getShadevariation());
 		if(itemFromInput.getShowonalysedwards() != null) itemToDB.setShowonalysedwards(itemFromInput.getShowonalysedwards());
 		if(itemFromInput.getShowonwebsite() != null) itemToDB.setShowonwebsite(itemFromInput.getShowonwebsite());
-		if(itemFromInput.getSubtype() != null) itemToDB.setSubtype(itemFromInput.getSubtype());
 		if(itemFromInput.getTaxclass() != null) itemToDB.setTaxclass(itemFromInput.getTaxclass());
-		if(itemFromInput.getType() != null) itemToDB.setType(itemFromInput.getType());
 		if(itemFromInput.getUpdatecd() != null) itemToDB.setUpdatecd(itemFromInput.getUpdatecd());
 		if(itemFromInput.getProductline() != null) itemToDB.setProductline(itemFromInput.getProductline());
-		
+		//if(itemFromInput.getSubtype() != null) itemToDB.setSubtype(itemFromInput.getSubtype());
+		//if(itemFromInput.getType() != null) itemToDB.setType(itemFromInput.getType());
 		if(itemFromInput.getColorcategory() != null && !itemFromInput.getColorcategory().isEmpty()){
 			itemToDB.setColorcategory(itemFromInput.getColorcategory());
 		}
