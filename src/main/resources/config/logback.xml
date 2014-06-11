@@ -22,12 +22,13 @@
     </encoder>
   </appender>
 
-  <logger name="aspect" level="INFO">
-    <appender-ref ref="AOP_ROLLINGFILE" />
-  </logger>
+  <logger name="aspect" level="INFO"> <appender-ref ref="AOP_ROLLINGFILE" /> </logger>
 
+  <logger name="org.hibernate.type" level="INFO" />
+  <logger name="org.hibernate" level="INFO" />
+  
   <root level="INFO">
-   <!--  <appender-ref ref="STDOUT" /> -->
+   <appender-ref ref="STDOUT" />
     <appender-ref ref="AOP_ROLLINGFILE" />    
   </root>
 

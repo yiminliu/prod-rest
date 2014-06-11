@@ -50,16 +50,20 @@
                 <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>  
                 <prop key="hibernate.format_sql">${hibernate.format.sql}</prop>
                 <!--<prop key="hibernate.current_session_context_class">thread</prop>-->
-                <prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</prop>
+                <!--<prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</prop>-->
+                <prop key="hibernate.max.fetch.depth">${hibernate.max.fetch.depth}</prop>          
+                <prop key="hibernate.jdbc.fetch.size">${hibernate.jdbc.fetch.size}</prop>          
+                <prop key="hibernate.jdbc.batch.size">${hibernate.jdbc.batch.size}</prop> 
+                <prop key="hibernate.generate_statistics">${hibernate.generate.statistics}</prop>
                 <!-- <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>--> 
                 <prop key="hibernate.cache.use_second_level_cache">true</prop>
                 <prop key="hibernate.cache.use_query_cache">true</prop>
                 <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>  
-                <prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>       
-                <prop key="hibernate.cache.provider_configuration_file_resource_path">"classpath:config/ehcache.xml"</prop>       
-                <prop key="hibernate.max.fetch.depth">${hibernate.max.fetch.depth}</prop>          
-                <prop key="hibernate.jdbc.fetch.size">${hibernate.jdbc.fetch.size}</prop>          
-                <prop key="hibernate.jdbc.batch.size">${hibernate.jdbc.batch.size}</prop>          
+                <!--<prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>--> 
+                <prop key="hibernate.cache.provider_class">org.hibernate.cache.SingletonEhCacheProvider</prop> 
+                <prop key="hibernate.cache.provider_configuration_file_resource_path">ehcache.xml</prop> 
+                <prop key="hibernate.cache.use_structured_entries">${hibernate.cache.use_structured_entries}</prop>     
+                <prop key="hibernate.cache.generate_statistics">${hibernate.cache.generate_statistics}</prop>          
             </props>  
         </property>  
     </bean>
@@ -77,12 +81,10 @@
     <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">  
         <property name="sessionFactory" ref="sessionFactory" />  
     </bean>
-   
     
     <!-- <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>-->
     
     <!--  JDBC Config file -->
     <context:property-placeholder location="classpath:config/jdbc.properties"/>
-    <!--<context:property-placeholder location="classpath:config/ehcache.xml"/>-->
-
+ 
 </beans>
