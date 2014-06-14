@@ -9,7 +9,6 @@ import java.util.Map.Entry;
 
 import javax.ws.rs.core.MultivaluedMap;
 
-import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -47,13 +46,12 @@ import com.bedrosians.bedlogic.util.logger.aspect.Loggable;
 
 @Repository("itemDao")
 public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao {
-					
+	
+	//private static final int DEFAULT_MAX_RESULTS = 50000;//500; 
+    private int maxResults = 0;
     @Autowired
 	private SessionFactory sessionFactory;
 	 
-    //private static final int DEFAULT_MAX_RESULTS = 50000;//500; 
-    private int maxResults = 0;
-		
 	/*
 	 * This method returns an Item with associated entities for the given item id.
      * Note: it's not set "Read Only" because is could be called by update()
@@ -63,7 +61,7 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	public Item getItemById(Session session, final String itemId) {
     	Query query = session.createQuery("From Item where itemcode = :itemCode");
 		query.setString("itemCode", itemId);
-		return (Item)query.setCacheable(true).setCacheMode(CacheMode.NORMAL).uniqueResult();
+		return (Item)query.setCacheable(true).uniqueResult();
 	}
 	
 	@Override
@@ -244,9 +242,9 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
         System.out.println("criteria = " +itemCriteria.toString());
 		try {
 			if(maxResults > 0)
-		       items =  (List<Item>)itemCriteria.getExecutableCriteria(sessionFactory.getCurrentSession()).setMaxResults(maxResults).setCacheable(true).setCacheMode(CacheMode.NORMAL).list();//executeCriteria(itemCriteria);//(List<Item>)itemCriteria.list();			
+		       items =  (List<Item>)itemCriteria.getExecutableCriteria(sessionFactory.getCurrentSession()).setMaxResults(maxResults).setCacheable(true).list();//executeCriteria(itemCriteria);//(List<Item>)itemCriteria.list();			
 			else
-			   items =  (List<Item>)itemCriteria.getExecutableCriteria(sessionFactory.getCurrentSession()).setCacheable(true).setCacheMode(CacheMode.NORMAL).list();	
+			   items =  (List<Item>)itemCriteria.getExecutableCriteria(sessionFactory.getCurrentSession()).setCacheable(true).list();	
 		}
 		catch(HibernateException hbe){
 			if(hbe.getCause() != null)
@@ -258,8 +256,8 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 		System.out.println(items == null? 0 : items.size() + " items retireved");
 		System.out.println("Statistics().getConnectCount() = "  + sessionFactory.getStatistics().getConnectCount());
 	    System.out.println("Statistics().getTransactionCount() = "  + sessionFactory.getStatistics().getTransactionCount());
-	  	System.out.println("Statistics().getEntityFetchCount() = "  + sessionFactory.getStatistics().getEntityFetchCount()); //Prints 1
-        System.out.println("Statistics().getSecondLevelCacheHitCount() = " + sessionFactory.getStatistics().getSecondLevelCacheHitCount()); //Prints 1
+	  	System.out.println("Statistics().getEntityFetchCount() = "  + sessionFactory.getStatistics().getEntityFetchCount());
+        System.out.println("Statistics().getSecondLevelCacheHitCount() = " + sessionFactory.getStatistics().getSecondLevelCacheHitCount());
        
         return items;	
     }

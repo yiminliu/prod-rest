@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 
 @Embeddable
 public class Units  implements java.io.Serializable {
@@ -503,4 +504,8 @@ public class Units  implements java.io.Serializable {
 		this.unit4wgtperunit = unit4wgtperunit;
 	}
 
+	@Transient
+	public boolean isDefault(){
+		return stdunit == null && stdratio == null && ordunit == null && ordratio == null && unit1unit == null && unit2unit == null && unit3unit == null && unit4unit == null;
+	}
 }

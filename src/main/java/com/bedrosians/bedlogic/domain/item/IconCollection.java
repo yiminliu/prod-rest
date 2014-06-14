@@ -3,7 +3,6 @@ package com.bedrosians.bedlogic.domain.item;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -31,7 +30,6 @@ import com.bedrosians.bedlogic.domain.item.enums.OriginCountry;
 @Table(name = "ims_icon", schema = "public")
 @DynamicUpdate
 @DynamicInsert
-@Cacheable
 @Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class IconCollection implements java.io.Serializable {
   

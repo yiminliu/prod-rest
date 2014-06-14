@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 
 @Embeddable
 public class VendorInfo  implements java.io.Serializable {
@@ -14,18 +15,18 @@ public class VendorInfo  implements java.io.Serializable {
 	    private Integer vendornbr1;
 	    private Integer vendornbr2;
 		private String vendorxrefcd;
-		private BigDecimal vendorlistprice = BigDecimal.valueOf(0.00);
+		private BigDecimal vendorlistprice = BigDecimal.ZERO;
 		private String vendorpriceunit = "PCS";
 		private String vendorfob;
 		private Float vendordiscpct = 0F;
 		private Integer vendorroundaccuracy = 1;
-		private BigDecimal vendornetprice = new BigDecimal(0.00);
+		private BigDecimal vendornetprice = BigDecimal.ZERO;
 		private Float vendormarkuppct = 0F;
 		private Float vendorfreightratecwt = 0F;
 		private Float dutypct;
 		private Integer leadtime;
 		//To meet ims_check5 constraint
-		private BigDecimal vendorlandedbasecost = new BigDecimal(0.00);
+		private BigDecimal vendorlandedbasecost = BigDecimal.ZERO;
 		private Float vendordiscpct2 = 0F;
 		private Float vendordiscpct3 = 0F;
 
@@ -182,5 +183,10 @@ public class VendorInfo  implements java.io.Serializable {
 
 		public void setLeadtime(Integer leadtime) {
 			this.leadtime = leadtime;
+		}
+		
+		@Transient
+		public boolean isDefault(){
+		  return vendornbr1 == null && vendornbr2 == null && vendorlistprice == BigDecimal.ZERO && vendorfob == null && vendornetprice == BigDecimal.ZERO;
 		}
 }

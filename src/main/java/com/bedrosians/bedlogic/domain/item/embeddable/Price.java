@@ -159,4 +159,9 @@ public class Price implements java.io.Serializable {
 	public void setPriceunit(String priceunit) {
 		this.priceunit = priceunit;
 	}
+	
+	@Transient
+	public boolean isDefault(){
+		return listprice == null && sellprice == null && pricegroup == null && priceunit == null && tempprice == null && futuresell == null  &&  priorsellprice == null;
+	}
 }

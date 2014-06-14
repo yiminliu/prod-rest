@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -45,7 +44,6 @@ import com.bedrosians.bedlogic.util.FormatUtil;
 @Table(name = "ims_new_feature", schema = "public")
 @DynamicUpdate
 @DynamicInsert
-@Cacheable
 @Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ItemNewFeature implements java.io.Serializable {
    

@@ -30,7 +30,7 @@ import com.bedrosians.bedlogic.util.FormatUtil;
 @Table(name="ims_item_vendor")
 @DynamicUpdate
 @DynamicInsert
-@Cacheable
+//@Cacheable
 @Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ItemVendor implements java.io.Serializable {
 

@@ -11,9 +11,9 @@ public class Notes implements java.io.Serializable {
 	
 	private String ponotes;
 	private String buyernotes;
-	private String internalnotes;
 	private String invoicenotes;
-	
+	private String internalnotes;
+
 	public Notes(){}
 	
 	@Column(name = "po_notes", length = 120)

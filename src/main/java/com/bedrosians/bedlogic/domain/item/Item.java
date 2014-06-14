@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -27,7 +26,6 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.SelectBeforeUpdate;
 import org.springframework.stereotype.Component;
 
 import com.bedrosians.bedlogic.domain.item.embeddable.Description;
@@ -54,7 +52,6 @@ import com.bedrosians.bedlogic.util.ImsDataUtil;
 @Table(name = "ims", schema = "public")
 @DynamicUpdate
 @DynamicInsert
-@Cacheable
 @Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Item implements java.io.Serializable {
 
@@ -67,9 +64,9 @@ public class Item implements java.io.Serializable {
 	private String inactivecode;
 	private String shadevariation;
 	private String colorcategory;
+	private List<String> colorhues =  new ArrayList<>();
 	private Character showonwebsite;
   	private String iconsystem;
-	private String type;
 	private Character itemtypecd;
 	private String abccd;
 	private String itemcd2;
@@ -80,7 +77,6 @@ public class Item implements java.io.Serializable {
 	private Character taxclass;
 	private String lottype;
 	private String updatecd;
-    private String subtype;
 	private Character directship;
 	private Date dropdate;
 	private String productline;
@@ -95,13 +91,13 @@ public class Item implements java.io.Serializable {
 	//this default aims to meet ims_check5
 	private Price price = new Price();
 	private VendorInfo vendors = new VendorInfo();
-	private List<String> usage;
 	private TestSpecification testSpecification;
  	private SimilarItemCode relateditemcodes;
 	private Purchasers purchasers;
 	private PackagingInfo packaginginfo = new PackagingInfo();
 	private Notes notes;
 	private Applications applications;
+	private List<String> usage;
   	private Units units;
   	private Cost cost;
   	//private PriorVendor priorVendor;
@@ -110,7 +106,6 @@ public class Item implements java.io.Serializable {
   	private ItemNewFeature itemNewFeature;
     private IconCollection iconDescription;
 	private List<ItemVendor> newVendorSystem = new ArrayList<>();
-	private List<String> colorhues =  new ArrayList<>();
 	//private List<ColorHue> colorhues =  new ArrayList<>();
   	//private List<Note> newNoteSystem = new ArrayList<>();
      	
@@ -229,15 +224,6 @@ public class Item implements java.io.Serializable {
 	public void setVendors(VendorInfo vendors) {
 		this.vendors = vendors;
 	}
-	
-	//@Embedded
-	//public PriorVendor getPriorVendor() {
-	//	return priorVendor;
-	//}
-
-	//public void setPriorVendor(PriorVendor priorVendor) {
-	//	this.priorVendor = priorVendor;
-	//}	
 	
 	@Embedded
 	public Notes getNotes() {
@@ -431,7 +417,6 @@ public class Item implements java.io.Serializable {
 		
 	public void setColorhues(List<String> colorhues) {
 		this.colorhues = colorhues;
-		//this.colorcategory = ImsDataUtil.convertColorhueStringListToColorCategory(colorhues);
 	}
 	
 	@Column(name = "showonalysedwards", length = 1)
@@ -461,10 +446,6 @@ public class Item implements java.io.Serializable {
 		this.itemcd2 = itemcd2;
 	}
 
-    public void setSubtype(String subtype) {
-		this.subtype = subtype;
-	}
-
 	@Column(name = "icons", length = 20)
 	public String getIconsystem() {
 		return this.iconsystem;
@@ -492,7 +473,7 @@ public class Item implements java.io.Serializable {
 		this.taxclass = taxclass;
 	}
 	
-	@OneToOne(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Fetch(FetchMode.JOIN)
 	@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	public ItemNewFeature getImsNewFeature() {	
@@ -510,7 +491,7 @@ public class Item implements java.io.Serializable {
 		this.itemNewFeature = itemNewFeature;
 	}
 	
-	@OneToOne(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "item", cascade = CascadeType.ALL)
 	@Fetch(FetchMode.JOIN)
 	@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	public IconCollection getIconDescription() {	
@@ -526,28 +507,10 @@ public class Item implements java.io.Serializable {
 		this.iconDescription = iconDescription;
 	}
 
-/*	//@LazyCollection(LazyCollectionOption.FALSE)
+	//@JsonIgnore
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL)
-	//@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-	//@Fetch(FetchMode.SUBSELECT)
-	public List<ColorHue> getColorhues() {
-		return this.colorhues;
-	}
-
-	public void setColorhues(List<ColorHue> colorhues) {
-		this.colorhues = colorhues;
-	}
-   
-	public void addColorhue(ColorHue colorhue){
-		colorhue.setItem(this);
-		getColorhues().add(colorhue);
-	}
-*/	
-	@JsonIgnore
-	//@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "item", cascade = CascadeType.ALL)
-	@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	@Fetch(FetchMode.SUBSELECT)
+	@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	public List<ItemVendor> getNewVendorSystem() {
 		return this.newVendorSystem;
 	}
@@ -571,8 +534,26 @@ public class Item implements java.io.Serializable {
 		}
 	}
 
+	/*	
 	//@LazyCollection(LazyCollectionOption.FALSE)
-	/*@OneToMany(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL)
+	//@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+	//@Fetch(FetchMode.SUBSELECT)
+	public List<ColorHue> getColorhues() {
+		return this.colorhues;
+	}
+
+	public void setColorhues(List<ColorHue> colorhues) {
+		this.colorhues = colorhues;
+	}
+   
+	public void addColorhue(ColorHue colorhue){
+		colorhue.setItem(this);
+		getColorhues().add(colorhue);
+	}
+
+	//@LazyCollection(LazyCollectionOption.FALSE)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL)
 	public List<Note> getNewNoteSystem() {
 		return this.newNoteSystem;
 	}
@@ -624,20 +605,6 @@ public class Item implements java.io.Serializable {
 	@Transient
 	public String getStandardOrderUnit(){
 		return ImsDataUtil.getStandardPurchaseUnit(this);
-	}
-
-	@Column(name = "type", length = 16)
-	public String getType() {
-		return this.type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	@Column(name = "subtype", length = 32)
-	public String getSubtype() {
-		return this.subtype;
 	}
 
 	@Override
@@ -693,7 +660,7 @@ public class Item implements java.io.Serializable {
 		this.colorcategory = colorcategory;
 		this.showonwebsite = showonwebsite;
 		this.iconsystem = iconsystem;
-		this.type = type;
+		//this.type = type;
 		this.itemtypecd = itemtypecd;
 		this.abccd = abccd;
 		this.itemcd2 = itemcd2;
@@ -704,7 +671,7 @@ public class Item implements java.io.Serializable {
 		this.taxclass = taxclass;
 		this.lottype = lottype;
 		this.updatecd = updatecd;
-		this.subtype = subtype;
+		//this.subtype = subtype;
 		this.directship = directship;
 		this.dropdate = dropdate;
 		this.productline = productline;
@@ -737,151 +704,15 @@ public class Item implements java.io.Serializable {
 	public String toString() {
 		return "Item "
 				+ "[itemcd=" + itemcode 
-				//+ ", description=" + itemdesc1
-				//+ ", itemdesc2=" + itemdesc2 
-				//+ ",  mpsCode=" +  mpsCode
-				//+ ",  grade=" +  grade
-				//+ ",  status=" +  status
-				+ ", itemNewFeature=" + itemNewFeature
-			    //+ ", vendors=" + newVendorSystem 
-				//+ ", baseunit=" + baseunit
-				//+ ", baseisstdsell=" + baseisstdsell 
-				//+ ", baseisstdord=" + baseisstdord 
-				//+ ", baseisfractqty=" + baseisfractqty
-				//+ ", baseispackunit=" + baseispackunit 
-				//+ ", baseupc=" + baseupc 
-				//+ ", baseupcdesc=" + baseupcdesc 
-				//+ ", basevolperunit=" + basevolperunit 
-				//+ ", basewgtperunit=" + basewgtperunit
-				//+ ", unit1unit=" + unit1unit 
-				//+ ", unit1ratio=" + unit1ratio
-				//+ ", unit1isstdsell=" + unit1isstdsell 
-				//+ ", unit1isstdord=" + unit1isstdord 
-				//+ ", unit1isfractqty=" + unit1isfractqty
-				//+ ", unit1ispackunit=" + unit1ispackunit 
-				//+ ", unit1upc=" + unit1upc 
-				//+ ", unit1upcdesc=" + unit1upcdesc 
-				//+ ", unit2unit=" + unit2unit 
-				//+ ", unit2ratio=" + unit2ratio
-				//+ ", unit2isstdsell=" + unit2isstdsell 
-				//+ ", unit2isstdord=" + unit2isstdord 
-				//+ ", unit2isfractqty=" + unit2isfractqty
-				//+ ", unit2ispackunit=" + unit2ispackunit 
-				//+ ", unit2upc=" + unit2upc 
-				//+ ", unit2upcdesc=" + unit2upcdesc 
-				//+ ", unit3unit=" + unit3unit 
-				//+ ", unit3ratio=" + unit3ratio
-				//+ ", unit3isstdsell=" + unit3isstdsell 
-				//+ ", unit3isstdord=" + unit3isstdord 
-				//+ ", unit3isfractqty=" + unit3isfractqty
-				//+ ", unit3ispackunit=" + unit3ispackunit
-				//+ ", unit3upc=" + unit3upc 
-				//+ ", unit3upcdesc=" + unit3upcdesc 
-				//+ ", unit4unit=" + unit4unit 
-				//+ ", unit4ratio=" + unit4ratio
-				//+ ", unit4isstdsell=" + unit4isstdsell 
-				//+ ", unit4isstdord=" + unit4isstdord 
-				//+ ", unit4isfractqty=" + unit4isfractqty
-				//+ ", unit4ispackunit=" + unit4ispackunit 
-				//+ ", unit4upc=" + unit4upc 
-				//+ ", unit4upcdesc=" + unit4upcdesc 
-				//	+ ", unit1wgtperunit=" + unit1wgtperunit 
-				//+ ", unit2wgtperunit=" + unit2wgtperunit
-				//+ ", unit3wgtperunit=" + unit3wgtperunit 
-				//+ ", unit4wgtperunit=" + unit4wgtperunit 
-				//+ ", listprice=" + listprice 
-				//+ ", price=" + price
-				//+ ", priorlastupdated=" + priorlastupdated
-				//+ ", priorlistprice=" + priorlistprice 
-				//+ ", priorPrice=" + priorPrice 
-				//+ ", abccd=" + abccd 
+				+ ", itemNewFeature=" + itemNewFeature 
+				+ ", abccd=" + abccd 
 				+ ", category=" + itemcategory 
-				//+ ", color=" + color 
-				//+ ", directship=" + directship
-				//+ ", dropdate=" + dropdate 
 				+ ", inactivecd=" + inactivecode
 				+ ", itemgroupnbr=" + itemgroupnbr 
-				//+ ", itemtaxclass=" + itemtaxclass 
 				+ ", itemtypecd=" + itemtypecd 
-				//+ ", leadtime=" + leadtime 
-				//+ ", lottype=" + lottype 
-				//+ ", minmarginpct=" + minmarginpct 
-				//+ ", nonstockcostpct=" + nonstockcostpct
-				//+ ", notes1=" + notes1 
-				//+ ", notes2=" + notes2 
-				//+ ", notes3=" + notes3 
 				+ ", printlabel=" + printlabel 
 				+ ", productline=" + productline 
-				//+ ", seriesname=" + seriesname
-				//+ ", specialhandlecd1=" + specialhandlecd1
-				//+ ", specialhandlecd2=" + specialhandlecd2
-				//+ ", specialhandlecd3=" + specialhandlecd3 
-				//+ ", tempdatefrom="	+ tempdatefrom 
-				//+ ", tempdatethru=" + tempdatethru
-				//+ ", tempPrice=" + tempPrice 
-				//+ ", typealf=" + typealf
 				+ ", updatecd=" + updatecd 
-				//+ ", vendorxrefcd=" + vendorxrefcd
-				//+ ", vendornbr=" + vendornbr 
-				//+ ", listpricemarginpct=" + listpricemarginpct 
-				//+ ", sellpricemarginpct=" + sellpricemarginpct 
-				//+ ", sellpriceroundaccuracy=" + priceRoundAccuracy 
-				//+ ", vendorpriceunit=" + vendorpriceunit 
-				//+ ", vendorfob=" + vendorfob
-				//+ ", vendorlistprice=" + vendorlistprice 
-				//+ ", vendordiscpct1=" + vendordiscpct1 + 
-				//+ ", vendordiscpct2=" + vendordiscpct2
-				//+ ", vendordiscpct3=" + vendordiscpct3
-				//+ ", vendorroundaccuracy=" + vendorroundaccuracy
-				//+ ", vendornetprice=" + vendornetprice 
-				//+ ", vendormarkuppct=" + vendormarkuppct 
-				//+ ", vendorfreightratecwt=" + vendorfreightratecwt 
-				//+ ", vendorlandedbasecost=" + vendorLandedBaseCost 
-				//+ ", priorvendorpriceunit=" + priorvendorpriceunit 
-				//+ ", priorvendorfob=" + priorvendorfob
-				//+ ", priorvendorlistprice=" + priorvendorlistprice
-				//+ ", priorvendordiscpct1=" + priorvendordiscpct1
-				//+ ", priorvendordiscpct2=" + priorvendordiscpct2
-				//+ ", priorvendordiscpct3=" + priorvendordiscpct3
-				//+ ", priorvendorroundaccuracy=" + priorvendorroundaccuracy
-				//+ ", priorvendornetprice=" + priorvendornetprice
-				//+ ", priorvendormarkuppct=" + priorvendormarkuppct
-				//+ ", priorvendorfreightratecwt=" + priorvendorfreightratecwt
-				//+ ", priorvendorlandedbasecost=" + priorvendorlandedbasecost
-				//+ ", calcsellprice=" + calcsellprice 
-				//+ ", calclistprice=" + calclistprice 
-				//+ ", costrangepct=" + costrangepct
-				//+ ", poincludeinvendorcost=" + poincludeinvendorcost
-				//+ ", listprice1=" + listprice1 + ", listprice2=" + listprice2
-			    //	+ ", listprice3=" + listprice3 + ", listprice4=" + listprice4
-				//+ ", listprice5=" + listprice5 + ", sellprice1=" + sellprice1
-				//+ ", sellprice2=" + sellprice2 + ", sellprice3=" + sellprice3
-				//+ ", sellprice4=" + sellprice4 + ", sellprice5=" + sellprice5
-				//+ ", priorlistprice1=" + priorlistprice1 + ", priorlistprice2="
-				//+ priorlistprice2 + ", priorlistprice3=" + priorlistprice3
-				//+ ", priorlistprice4=" + priorlistprice4 + ", priorlistprice5="
-				//+ priorlistprice5 + ", priorsellprice1=" + priorsellprice1
-				//+ ", priorsellprice2=" + priorsellprice2 + ", priorsellprice3="
-				//+ priorsellprice3 + ", priorsellprice4=" + priorsellprice4
-				//+ ", priorsellprice5=" + priorsellprice5 
-				//+ ", futurelist=" + futurelist 
-				//+ ", futurePrice=" + futurePrice
-				//+ ", futurelist1=" + futurelist1 
-				//+ ", futuresell1=" + futuresell1 
-				//+ ", cost1=" + cost
-				//+ ", priorcost=" + priorcost 
-				//+ ", priorcost1=" + priorcost1 
-				//+ ", futurecost=" + futurecost 
-				//+ ", futurecost1=" + futurecost1 
-				//+ ", vendornbr1=" + vendornbr1 
-				//+ ", vendornbr2=" + vendornbr2 
-				//+ ", vendornbr3=" + vendornbr3 
-				//+ ", length=" + length 
-				//+ ", width=" + width 
-				//+ ", mattype=" + materialtype
-				//+ ", thickness=" + thickness 
-				//+ ", sizeunits=" + sizeunits
-				//+ ", fulldesc=" + fulldesc 
 				+ ", origin=" + countryorigin
 				+ ", shadevariation=" + shadevariation 
 				+ ", showonwebsite=" + showonwebsite
@@ -889,77 +720,15 @@ public class Item implements java.io.Serializable {
 				+ ", showonalysedwards=" + showonalysedwards 
 				+ ", offshade=" + offshade 
 				+ ", itemcd2=" + itemcd2 
-				//+ ", waterAbsorption=" + waterAbsorption
-				//+ ", scratchResistance=" + scratchResistance
-				//+ ", frostResistance=" + frostResistance
-				//+ ", chemicalResistance=" + chemicalResistance
-				//+ ", peiAbrasion=" + peiAbrasion 
-				//+ ", scofWet=" + scofWet
-				//+ ", scofDry=" + scofDry 
-				//+ ", breakingStrength=" + breakingStrength 
-				//+ ", samplenbr=" + samplenbr
-				//+ ", waterAbsorptionSign=" + waterAbsorptionSign
-				//+ ", scofWetSign=" + scofWetSign 
-				//+ ", scofDrySign=" + scofDrySign 
-				//+ ", materialclass=" + materialclass
-				//+ ", stdunit=" + stdunit + 
-				//", stdratio=" + stdratio
-				//+ ", ordunit=" + ordunit
-				//+ ", ordratio=" + ordratio
-				//+ ", matcategory=" + materialcategory 
-				//+ ", matstyle=" + materialstyle
-				//+ ", moh=" + moh + 
-				//", mfeature=" + mfeature 
-				//+ ", price=" + price 
-				//+ ", qualitychoice=" + qualitychoice
-				//+ ", greenfriendly=" + greenfriendly 
-				+ ", type=" + type
-				+ ", subtype=" + subtype 
 				+ ", icons=" + iconsystem 
-				//+ ", poNotes=" + ponotes
-				//+ ", pricegroup=" + pricegroup 
-				//+ ", srStandard=" + srStandard
-				//+ ", thicknessunit=" + thicknessunit
-				//+ ", bkStandard=" + bkStandard 
 				+ ", inventoryItemcd=" + inventoryitemcd 
-				//+ ", nmLength=" + nmLength 
-				//+ ", nmWidth=" + nmWidth 
-				//+ ", nmThickness=" + nmThickness 
-				//+ ", residential=" + residential 
-				//+ ", lightcommercial=" + lightcommercial
-				//+ ", commercial=" + commercial 
-				//+ ", preConsummer=" + preConsummer 
-				//+ ", posConsummer=" + posConsummer
-				//+ ", leadPoint=" + leadPoint 
-				//+ ", purchaser=" + purchaser
-				//+ ", purchaser2=" + purchaser2 
-				//+ ", dutypct=" + dutypct
-				//+ ", knownAliases1=" + knownAliases1 
-				//+ ", knownAliases2=" + knownAliases2 
-				//+ ", knownAliases3=" + knownAliases3
-				//+ ", knownAliases4=" + knownAliases4 
-				//+ ", knownAliases5=" + knownAliases5 
-				//+ ", knownAliases6=" + knownAliases6
-				//+ ", knownAliases7=" + knownAliases7 
-				//+ ", similarItemcd1=" + similarItemcd1 
-				//+ ", similarItemcd2=" + similarItemcd2
-				//+ ", similarItemcd3=" + similarItemcd3 
-				//+ ", similarItemcd4=" + similarItemcd4 
-				//+ ", similarItemcd5=" + similarItemcd5
-				//+ ", similarItemcd6=" + similarItemcd6 
-				//+ ", similarItemcd7=" + similarItemcd7 
-				//+ ", restricted=" + restricted 
-				//+ ", warpage=" + warpage 
-				//+ ", wedging=" + wedging 
-				//+ ", dcof=" + dcof
-				//+ ", thermalShock=" + thermalShock 
-				//+ ", bondStrength=" + bondStrength 
 				+ "]";
 	}
 
 	//----- not used fields -----//
 		/*
-
+        //private String type;
+        //private String subtype;
 	    //private String application;
 		//private String specialhandlecd1;
 		//private String specialhandlecd2;
@@ -1022,6 +791,24 @@ public class Item implements java.io.Serializable {
     //public String getApplication() {
 	//	return this.application);
 	//}
+
+	//@Column(name = "type", length = 16)
+	//public String getType() {
+	//	return this.type;
+	//}
+
+	//public void setType(String type) {
+	//	this.type = type;
+	//}
+
+	//@Column(name = "subtype", length = 32)
+	//public String getSubtype() {
+	//	return this.subtype;
+	//}
+	
+	 //public void setSubtype(String subtype) {
+		//	this.subtype = subtype;
+		//}
 
 	//public void setApplication(String application) {
 	//	this.application = application;
