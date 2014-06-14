@@ -27,7 +27,6 @@ import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.exception.BedResException;
 import com.bedrosians.bedlogic.util.FormatUtil;
 import com.bedrosians.bedlogic.util.ImsDataUtil;
-import com.bedrosians.bedlogic.util.ImsQueryUtil;
 import com.bedrosians.bedlogic.util.ImsValidator;
 import com.bedrosians.bedlogic.util.JsonUtil;
 import com.bedrosians.bedlogic.util.logger.aspect.LogLevel;
@@ -50,9 +49,7 @@ public class ProductServiceImpl implements ProductService {
     	if(id == null || id.length() < 1)
     	   throw new BedDAOBadParamException("Please enter valid item code !");	
 		try{
-			System.out.println("Cache Contains? = "+sessionFactory.getCache().containsEntity(Item.class,"AECBUB218NR"));
-
-    	    item = itemDao.getItemById(sessionFactory.getCurrentSession(), id);
+	  	    item = itemDao.getItemById(sessionFactory.getCurrentSession(), id);
 		}
 		catch(HibernateException hbe){
 			hbe.printStackTrace();

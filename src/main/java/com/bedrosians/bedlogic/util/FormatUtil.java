@@ -90,8 +90,8 @@ public class FormatUtil {
 		item.setPriorlastupdated(process(item.getPriorlastupdated()));
 		item.setProductline(process(item.getProductline()));	
 		item.setShadevariation(process(item.getShadevariation()));
-		item.setSubtype(process(item.getSubtype()));
-		item.setType(process(item.getType()));
+		//item.setSubtype(process(item.getSubtype()));
+		//item.setType(process(item.getType()));
 		item.setUpdatecd(process(item.getUpdatecd()));
 		if(item.getItemdesc() != null){
 			item.getItemdesc().setFulldesc(process(item.getItemdesc().getFulldesc()));
@@ -173,9 +173,7 @@ public class FormatUtil {
 		}
 		if(item.getIconDescription() == null)
 		   item.setIconDescription(ImsDataUtil.convertLegacyIconsToIconCollection(item.getIconsystem()));	
-	    //if(item.getPriorVendor() != null)
-		//   ImsDataUtil.parsePriorVendor(item);	
-		if(item.getPrice() != null)
+	  	if(item.getPrice() != null)
 		   item.getPrice().setPriceunit(ImsDataUtil.getStandardSellUnit(item));//item.getStandardSellUnit());	
 		if(item.getUnits() != null)
 		   item.setPackaginginfo(ImsDataUtil.getPackagingInfo(item));
@@ -188,106 +186,6 @@ public class FormatUtil {
 		//if(item.getNewVendorSystem() != null && !item.getNewVendorSystem().isEmpty())
 		//   item.setNewVendorSystem(new ArrayList<>(new HashSet<>(item.getNewVendorSystem())));	
 		return item;
-		
-		/*
-		//item.setOffShade(process(item.getOffShade()));
-		//item.setSeriesName((process(item.getSeriesName())));	
-        //item.setShowonalysedwards(process(item.getShowonalysedwards()));
-        //item.setShowonwebsite(process(item.getShowonwebsite()));
-        //item.setSizeUnits(process(item.getSizeUnits()));
-		//item.setThickness(process(item.getThickness()));
-		//item.setThicknessUnit(process(item.getThicknessUnit()));
-		//item.setColor(process(item.getColor()));
-		//item.setVendordiscpct(process(item.getVendordiscpct()));
-		//item.setVendordiscpct2(process(item.getVendordiscpct2()));
-		//item.setVendordiscpct3(process(item.getVendordiscpct3()));	
-		//item.setVendorfob(process(item.getVendorfob()));
-		//item.setVendorfreightratecwt(process(item.getVendorfreightratecwt()));
-		//item.setVendorLandedBaseCost(process(item.getVendorLandedBaseCost()));
-		//item.setVendorlistprice(process(item.getVendorlistprice()));
-		//item.setVendormarkuppct(process(item.getVendormarkuppct()));
-		//item.setVendornbr(process(item.getVendornbr()));
-		//item.setVendornbr1(process(item.getVendornbr1()));
-		//item.setVendornbr2(process(item.getVendornbr2()));
-		//item.setVendornbr3(process(item.getVendornbr3()));
-		//item.setVendornetprice(process(item.getVendornetprice()));
-		//item.setVendorpriceunit(process(item.getVendorpriceunit()));
-		//item.setVendorroundaccuracy(process(item.getVendorroundaccuracy()));
-		//item.setVendorxrefcd(process(item.getVendorxrefcd()));
-		//item.setDescription(process(item.getDescription()));
-		//item.setDirectship(process(item.getDirectship()));
-		//item.setDropdate(process(item.getDropdate()));
-		//item.setDutypct(process(item.getDutypct()));
-		//item.setFulldesc(process(item.getFulldesc()));
-		//item.setLeadtime(process(item.getLeadtime()));
-		//item.setLength(process(item.getLength()));
-		//item.setListpricemarginpct(process(item.getListpricemarginpct()));
-		item.setAbccd(process(item.getAbccd()));
-		newItem.setCategory(process(item.getCategory()));
-		newItem.setColorCategory(process(item.getColorCategory()));
-		newItem.setColor(process(item.getColor()));
-		newItem.setDescription(process(item.getDescription()));
-		newItem.setDirectship(process(item.getDirectship()));
-		newItem.setDropdate(process(item.getDropdate()));
-		newItem.setDutypct(process(item.getDutypct()));
-		newItem.setFulldesc(process(item.getFulldesc()));
-		newItem.setIcons(process(item.getIcons()));
-		newItem.setInactivecd(process(item.getInactivecd()));
-		newItem.setInventoryItemCode(process(item.getInventoryItemCode()));
-		newItem.setItemcd2(process(item.getItemcd2()));
-		newItem.setItemCode(process(item.getItemCode()));
-		newItem.setItemdesc2(process(item.getItemdesc2()));
-		newItem.setItemgroupnbr(process(item.getItemgroupnbr()));
-		newItem.setItemtypecd(process(item.getItemtypecd()));
-		newItem.setLeadtime(process(item.getLeadtime()));
-		newItem.setLength(process(item.getLength()));
-		newItem.setListpricemarginpct(process(item.getListpricemarginpct()));
-		newItem.setLottype(process(item.getLottype()));
-		//newItem.setMaterialCategory(process(item.getMaterialCategory()));
-        //newItem.setMaterialClassCode(process(item.getMaterialClassCode()));
-		//newItem.setMaterialStyle(process(item.getMaterialStyle()));
-		//newItem.setMaterialType(process(item.getMaterialType()));
-		newItem.setMaterialFeature(process(item.getMaterialFeature()));
-		newItem.setNominalLength(process(item.getNominalLength()));
-		newItem.setNominalThickness(process(item.getNominalThickness()));
-		newItem.setNominalWidth(process(item.getNominalWidth()));		
-		newItem.setNotes1(process(item.getNotes1()));
-		newItem.setNotes2(process(item.getNotes2()));
-		newItem.setNotes3(process(item.getNotes3()));
-		newItem.setOffShade(process(item.getOffShade()));
-		newItem.setOrigin(process(item.getOrigin()));
-		newItem.setPoNotes(process(item.getPoNotes()));
-		newItem.setPrintlabel(process(item.getPrintlabel()));
-		newItem.setPriorlastupdated(process(item.getPriorlastupdated()));
-		newItem.setProductline(process(item.getProductline()));
-		newItem.setSeriesName((process(item.getSeriesName())));		
-		newItem.setShadeVariation(process(item.getShadeVariation()));
-		newItem.setShowOnAlysedwards(process(item.getShowOnAlysedwards()));
-		newItem.setShowOnWebsite(process(item.getShowOnWebsite()));
-		newItem.setSizeUnits(process(item.getSizeUnits()));
-		newItem.setSubtype(process(item.getSubtype()));
-		newItem.setThickness(process(item.getThickness()));
-		newItem.setThicknessUnit(process(item.getThicknessUnit()));
-		newItem.setType(process(item.getType()));
-		newItem.setUpdatecd(process(item.getUpdatecd()));
-		newItem.setVendordiscpct(process(item.getVendordiscpct()));
-		newItem.setVendordiscpct2(process(item.getVendordiscpct2()));
-		newItem.setVendordiscpct3(process(item.getVendordiscpct3()));	
-		newItem.setVendorfob(process(item.getVendorfob()));
-		newItem.setVendorfreightratecwt(process(item.getVendorfreightratecwt()));
-		newItem.setVendorLandedBaseCost(process(item.getVendorLandedBaseCost()));
-		newItem.setVendorlistprice(process(item.getVendorlistprice()));
-		newItem.setVendormarkuppct(process(item.getVendormarkuppct()));
-		newItem.setVendornbr(process(item.getVendornbr()));
-		newItem.setVendornbr1(process(item.getVendornbr1()));
-		newItem.setVendornbr2(process(item.getVendornbr2()));
-		newItem.setVendornbr3(process(item.getVendornbr3()));
-		newItem.setVendornetprice(process(item.getVendornetprice()));
-		newItem.setVendorpriceunit(process(item.getVendorpriceunit()));
-		newItem.setVendorroundaccuracy(process(item.getVendorroundaccuracy()));
-		newItem.setVendorxrefcd(process(item.getVendorxrefcd()));	
-		newItem.setWidth(process(item.getWidth()));
-		*/
 	}	
 	
 }
