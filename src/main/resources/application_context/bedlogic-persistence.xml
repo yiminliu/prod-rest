@@ -55,12 +55,9 @@
                 <prop key="hibernate.jdbc.fetch.size">${hibernate.jdbc.fetch.size}</prop>          
                 <prop key="hibernate.jdbc.batch.size">${hibernate.jdbc.batch.size}</prop> 
                 <prop key="hibernate.generate_statistics">${hibernate.generate.statistics}</prop>
-                <!-- <prop key="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</prop>--> 
-                <prop key="hibernate.cache.use_second_level_cache">true</prop>
-                <prop key="hibernate.cache.use_query_cache">true</prop>
+                <prop key="hibernate.cache.use_second_level_cache">false</prop>
+                <prop key="hibernate.cache.use_query_cache">false</prop>
                 <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>  
-                <!--<prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>--> 
-                <prop key="hibernate.cache.provider_class">org.hibernate.cache.SingletonEhCacheProvider</prop> 
                 <prop key="hibernate.cache.provider_configuration_file_resource_path">ehcache.xml</prop> 
                 <prop key="hibernate.cache.use_structured_entries">${hibernate.cache.use_structured_entries}</prop>     
                 <prop key="hibernate.cache.generate_statistics">${hibernate.cache.generate_statistics}</prop>          
