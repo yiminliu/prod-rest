@@ -90,7 +90,7 @@ public class ImsValidator {
 	
 	//Validate new item against the ims table CHECK constraints
 	public static void validateNewItemUnit(Item item) throws BedDAOBadParamException{
-	    if(item.getUnits() == null) 
+	    if(item.getUnits() == null || item.getUnits().isDefault()) 
 	       return;
 	    
 		if(item.getUnits().getBaseunit() == null || item.getUnits().getBaseunit().trim().length() < 1)
@@ -152,56 +152,6 @@ public class ImsValidator {
 		        	(listpricemarginpct IS NOT NULL)) AND 
 		        	(listpricemarginpct <> (100)::numeric))
 		  */
-		/*
-		if(!item.getNewNoteSystem()
-				.getVendorpriceunit().equalsIgnoreCase(item.getUnits().getBaseunit()) && 
-	        	!item.getVendors().getVendorpriceunit().equalsIgnoreCase(item.getUnits().getUnit1unit()) &&
-	        	!item.getVendors().getVendorpriceunit().equalsIgnoreCase(item.getUnits().getUnit2unit()) &&
-	        	!item.getVendors().getVendorpriceunit().equalsIgnoreCase(item.getUnits().getUnit3unit()) &&
-	        	!item.getVendors().getVendorpriceunit().equalsIgnoreCase(item.getUnits().getUnit4unit())) {
-	        	 System.out.println("Vendorpriceunit = " + item.getVendors().getVendorpriceunit());
-	        	 System.out.println("Base unit = " + item.getUnits().getBaseunit());
-	        	 System.out.println("Unit 1 unit = " + item.getUnits().getUnit1unit());
-	        	 System.out.println("Unit 2 unit = " + item.getUnits().getUnit2unit());
-	        	 System.out.println("Unit 3 unit = " + item.getUnits().getUnit3unit());
-	        	 System.out.println("Unit 4 unit = " + item.getUnits().getUnit4unit());
-	           throw new BedDAOBadParamException("According to ims table requirments, vendor price unit should match one of the unit's packaging unit."); 	 
-	         }
-	         if(item.getVendors().getVendorlistprice() == null){
-	           	throw new BedDAOBadParamException("According to ims table requirments, Vendor list price should not be null.");  
-	         }
-	         if(item.getVendors().getVendordiscpct() == null || item.getVendors().getVendordiscpct2() == null || item.getVendors().getVendordiscpct3() == null){
-	        	 throw new BedDAOBadParamException("According to ims table requirments, Vendor discount percent (1--3) should not be null.");  
-	         }
-	         if(item.getVendors().getVendorroundaccuracy() == null || item.getVendors().getVendorroundaccuracy() < 0 || item.getVendors().getVendorroundaccuracy() > 100){
-	        	 throw new BedDAOBadParamException("According to ims table requirments, Vendor round accuracy should be 0 to 100.");   
-	         }
-	         if(item.getVendors().getVendornetprice() == null){
-	        	 throw new BedDAOBadParamException("According to ims table requirments, Vendor net price should not be null.");  
-	         }
-	         if(item.getVendors().getVendormarkuppct() == null){
-	        	 throw new BedDAOBadParamException("According to ims table requirments, Vendor markup percent should not be null.");  
-	         }
-	         if(item.getVendors().getVendorfreightratecwt() == null){
-	        	 throw new BedDAOBadParamException("According to ims table requirments, Vendor freight rate cwt should not be null.");   
-	         }
-	         if(item.getVendors().getVendorlandedbasecost() == null){
-	        	 throw new BedDAOBadParamException("According to ims table requirments, Vendor landed base cost should not be null.");
-	         }
-	         if(item.getPrice().getSellpricemarginpct() == null || item.getPrice().getSellpricemarginpct().longValue() < 0 || item.getPrice().getSellpricemarginpct().longValue() > 100){
-	        	throw new BedDAOBadParamException("According to ims table requirments, Sell price margine percent should not be null and shoud be 0 to 100..");
-	         }
-	         if(item.getPrice().getListpricemarginpct() == null || item.getPrice().getListpricemarginpct().longValue() < 0 || item.getPrice().getListpricemarginpct().longValue() > 100){
-	        	 throw new BedDAOBadParamException("According to ims table requirments, List price margine percent should not be null and shoud be 0 to 100.");
-	         }
-	         if(item.getPrice().getListpricemarginpct().longValue() >= 100) {
-	        	 throw new BedDAOBadParamException("According to ims table requirments, List price margine percent should be 0 to 100.");
-	         }		
-	         if((item.getPrice().getSellpriceroundaccuracy() == null) || item.getPrice().getSellpriceroundaccuracy() < 0 || item.getPrice().getSellpriceroundaccuracy() > 100){
-	        	throw new BedDAOBadParamException("According to ims table requirments, List price round accuracy should be 0 to 100.");
-	         }
-	      */
-		/*
          if(item.getVendors().getVendorpriceunit() == null || item.getVendors().getVendorpriceunit().length() == 0 || item.getVendors().getVendorpriceunit().length() > 4){
         	 throw new BedDAOBadParamException("According to ims table requirments, Vendor price unit shoud not be null and its length shoud be 4 or less characters.");
          }
@@ -251,7 +201,7 @@ public class ImsValidator {
          if((item.getPrice().getSellpriceroundaccuracy() == null) || item.getPrice().getSellpriceroundaccuracy() < 0 || item.getPrice().getSellpriceroundaccuracy() > 100){
         	throw new BedDAOBadParamException("According to ims table requirments, List price round accuracy should be 0 to 100.");
          }
-          */
+          
 		//ims check 6
 		if (item.getUnits().getBaseunit() != null && validateUnitName(item.getUnits().getBaseunit()) ||
 	       (item.getUnits().getUnit1unit() != null && validateUnitName(item.getUnits().getUnit1unit())) ||
