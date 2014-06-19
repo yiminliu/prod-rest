@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import com.bedrosians.bedlogic.domain.item.Item;
+import com.bedrosians.bedlogic.domain.item.ItemVendor;
 
 
 public class FormatUtil {
@@ -131,12 +132,6 @@ public class FormatUtil {
 			item.getPrice().setPriceunit(process(item.getPrice().getPriceunit()));
 			item.getPrice().setPricegroup(process(item.getPrice().getPricegroup()));
 		}
-		if(item.getVendors() != null){
-			item.getVendors().setVendorfob(process(item.getVendors().getVendorfob()));
-			item.getVendors().setVendorxrefcd(process(item.getVendors().getVendorxrefcd()));
-			item.getVendors().setVendorpriceunit(process(item.getVendors().getVendorpriceunit()));
-			//item.getVendors().setDutypct(process(item.getVendors().getDutypct()));
-		}
 		if(item.getUnits() != null){
 			item.getUnits().setOrdunit(process(item.getUnits().getOrdunit()));
 			item.getUnits().setStdunit(process(item.getUnits().getStdunit()));
@@ -170,6 +165,17 @@ public class FormatUtil {
 			item.getRelateditemcodes().setSimilaritemcd4(process(item.getRelateditemcodes().getSimilaritemcd4()));
 			item.getRelateditemcodes().setSimilaritemcd5(process(item.getRelateditemcodes().getSimilaritemcd5()));
 			item.getRelateditemcodes().setSimilaritemcd6(process(item.getRelateditemcodes().getSimilaritemcd6()));
+		}
+		if(item.getVendors() != null){
+			item.getVendors().setVendorfob(process(item.getVendors().getVendorfob()));
+			item.getVendors().setVendorxrefcd(process(item.getVendors().getVendorxrefcd()));
+			item.getVendors().setVendorpriceunit(process(item.getVendors().getVendorpriceunit()));
+			//item.getVendors().setDutypct(process(item.getVendors().getDutypct()));
+		}//populate ItemVendor with lagec Vendor info when ItemVendor is empty, this maybe removed after Item_Vedor table is populated with the ims data
+		if(item.getVendors() != null && (item.getNewVendorSystem() == null || item.getNewVendorSystem().isEmpty())){
+			ItemVendor itemVendor = ImsDataUtil.convertImsVendorInfoToItemVendor(item.getVendors());
+			itemVendor.setVendorOrder(1);
+			item.addNewVendorSystem(itemVendor);
 		}
 		if(item.getIconDescription() == null)
 		   item.setIconDescription(ImsDataUtil.convertLegacyIconsToIconCollection(item.getIconsystem()));	

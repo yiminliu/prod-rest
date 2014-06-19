@@ -107,7 +107,7 @@ public class ImsDataUtil {
         return icon;
 	}
 	
-	public String convertIconCollectionToLegancyIcons(IconCollection iconCollection){
+	public static String convertIconCollectionToLegancyIcons(IconCollection iconCollection){
     	char[] legacyIcons = new char[20];
     	
     	legacyIcons[0] = OriginCountry.Italy.equals(iconCollection.getMadeInCountry()) ? 'Y' : 'N'; 
@@ -154,14 +154,15 @@ public class ImsDataUtil {
 		return itemVendor;
 	}
 
+	//convert new vendor system data to legacy vendor data
 	protected static VendorInfo convertItemVendorToImsVendorInfo(ItemVendor itemVendor){
 		VendorInfo vendorInfo = new VendorInfo();
 		if(itemVendor != null){
-			vendorInfo.setVendornbr1(itemVendor.getVendorId());
-			vendorInfo.setVendorxrefcd(itemVendor.getVendorXrefId());
-			vendorInfo.setVendorfob(itemVendor.getVendorFob());
-			vendorInfo.setDutypct(itemVendor.getDutyPct());
-		    vendorInfo.setLeadtime(itemVendor.getLeadTime());
+			if(itemVendor.getItemVendorId() != null) vendorInfo.setVendornbr1(itemVendor.getVendorId());
+			if(itemVendor.getVendorXrefId() != null) vendorInfo.setVendorxrefcd(itemVendor.getVendorXrefId());
+			if(itemVendor.getVendorFob() != null) vendorInfo.setVendorfob(itemVendor.getVendorFob());
+			if(itemVendor.getDutyPct() != null) vendorInfo.setDutypct(itemVendor.getDutyPct());
+			if(itemVendor.getLeadTime() != null) vendorInfo.setLeadtime(itemVendor.getLeadTime());
 			if(itemVendor.getVendorListPrice() != null) vendorInfo.setVendorlistprice(itemVendor.getVendorListPrice());
 			if(itemVendor.getVendorPriceUnit() != null) vendorInfo.setVendorpriceunit(itemVendor.getVendorPriceUnit());
 			if(itemVendor.getVendorDiscountPct() != null) vendorInfo.setVendordiscpct(itemVendor.getVendorDiscountPct());
@@ -464,10 +465,24 @@ public class ImsDataUtil {
         return packUnit;
     }
 
+	public static Item transformItem(Item itemToDB, Item itemFromInput, DBOperation operation) throws BedDAOBadParamException{
+		if(itemFromInput == null)
+	       throw new BedDAOBadParamException("In transformItem(), the input is empty");	
+		if(itemToDB == null) 
+		   itemToDB = new Item(itemFromInput.getItemcode().toUpperCase());		
+		transferProperty(itemToDB, itemFromInput);
+		if(operation != null && operation.equals(DBOperation.CREATE))
+	  	   transferComponent(itemToDB, itemFromInput);
+		else if(operation != null && operation.equals(DBOperation.UPDATE))		
+		   transferComponentForUpdate(itemToDB, itemFromInput);
+		transferAssociation(itemToDB, itemFromInput, operation);	
+		return itemToDB;
+	}
+	
 	private static void transferAssociation(Item itemToDB, Item itemFromInput, DBOperation operation) throws BedDAOBadParamException{
 	  try{
 		ItemNewFeature inputNewFeature = itemFromInput.getImsNewFeature();
-	//	List<ColorHue> inputColorHues = itemFromInput.getColorhues();
+	    //List<ColorHue> inputColorHues = itemFromInput.getColorhues();
 	    IconCollection inputIconCollection = itemFromInput.getIconDescription();
 		List<ItemVendor> inputItemVendors = itemFromInput.getNewVendorSystem();
 		VendorInfo vendorInfo = itemFromInput.getVendors();
@@ -597,7 +612,7 @@ public class ImsDataUtil {
 				   }   
 			   }    
 		   }
-    	   else if(operation.equals(DBOperation.UPDATE)){
+    	   else if(operation.equals(DBOperation.UPDATE)){ //update Item_Vendor table for existing Item
 			   for(int i = 0; i < inputItemVendors.size(); i++){
 				   ItemVendor vendor = inputItemVendors.get(i);
 				   if(vendor.getDutyPct() != null) itemToDB.getNewVendorSystem().get(i).setDutyPct(vendor.getDutyPct());
@@ -615,17 +630,33 @@ public class ImsDataUtil {
 				   if(vendor.getVendorPriceRoundAccuracy() != null) itemToDB.getNewVendorSystem().get(i).setVendorPriceRoundAccuracy(vendor.getVendorPriceRoundAccuracy());
 				   if(vendor.getVendorPriceUnit() != null) itemToDB.getNewVendorSystem().get(i).setVendorPriceUnit(vendor.getVendorPriceUnit());
 				   if(vendor.getVendorXrefId() != null) itemToDB.getNewVendorSystem().get(i).setVendorXrefId(vendor.getVendorXrefId());
-		           //Populate vendor info in ims
+		           //Populate vendor info in ims table
 				   if((vendorInfo == null || vendorInfo.getVendornbr1() == null || vendorInfo.getVendornbr1() == 0) && vendor.getVendorOrder() == 1)
 				       itemToDB.setVendors(convertItemVendorToImsVendorInfo(vendor));				    
 			   }
 			   
     	   }	   
 		}//Populate Ims_Item_Vendor table with the ims vendors info when ItemVendor is not available 
-		else if(vendorInfo != null && vendorInfo.getVendornbr1() != null){
-			ItemVendor vendor = convertImsVendorInfoToItemVendor(vendorInfo);
-			vendor.setVendorOrder(1);
-			itemToDB.addNewVendorSystem(vendor);
+		else if((vendorInfo != null && vendorInfo.getVendornbr1() != null) && (inputItemVendors == null || inputItemVendors.isEmpty())){
+			//ItemVendor vendor = convertImsVendorInfoToItemVendor(vendorInfo);
+			if(itemToDB.getNewVendorSystem() == null || itemToDB.getNewVendorSystem().isEmpty())
+			   itemToDB.addNewVendorSystem(new ItemVendor());
+			if(vendorInfo.getVendornbr1() != null) itemToDB.getNewVendorSystem().get(0).setVendorId(vendorInfo.getVendornbr1());
+			if(vendorInfo.getVendorxrefcd() != null) itemToDB.getNewVendorSystem().get(0).setVendorXrefId(vendorInfo.getVendorxrefcd());
+			if(vendorInfo.getVendorfob() != null) itemToDB.getNewVendorSystem().get(0).setVendorFob(vendorInfo.getVendorfob());
+			if(vendorInfo.getDutypct() != null) itemToDB.getNewVendorSystem().get(0).setDutyPct(vendorInfo.getDutypct());
+			if(vendorInfo.getVendorlistprice() != null) itemToDB.getNewVendorSystem().get(0).setLeadTime(vendorInfo.getLeadtime());
+			if(vendorInfo.getVendorlistprice() != null) itemToDB.getNewVendorSystem().get(0).setVendorListPrice(vendorInfo.getVendorlistprice());
+			if(vendorInfo.getVendorpriceunit() != null) itemToDB.getNewVendorSystem().get(0).setVendorPriceUnit(vendorInfo.getVendorpriceunit());
+			if(vendorInfo.getVendordiscpct() != null) itemToDB.getNewVendorSystem().get(0).setVendorDiscountPct(vendorInfo.getVendordiscpct());
+		    if(vendorInfo.getVendorroundaccuracy() != null) itemToDB.getNewVendorSystem().get(0).setVendorPriceRoundAccuracy(vendorInfo.getVendorroundaccuracy());
+		    if(vendorInfo.getVendornetprice() != null) itemToDB.getNewVendorSystem().get(0).setVendorNetPrice(vendorInfo.getVendornetprice());
+	        if(vendorInfo.getVendormarkuppct() != null) itemToDB.getNewVendorSystem().get(0).setVendorMarkupPct(vendorInfo.getVendormarkuppct());
+		    if(vendorInfo.getVendorfreightratecwt() != null) itemToDB.getNewVendorSystem().get(0).setVendorFreightRateCwt(vendorInfo.getVendorfreightratecwt());
+		    if(vendorInfo.getVendorlandedbasecost() != null) itemToDB.getNewVendorSystem().get(0).setVendorLandedBaseCost(vendorInfo.getVendorlandedbasecost());
+		    itemToDB.getNewVendorSystem().get(0).setVendorOrder(1);
+			//vendor.setVendorOrder(1);
+			//itemToDB.addNewVendorSystem(vendor);
 		}
 	
 		/*if(noteList != null && !noteList.isEmpty()){
@@ -752,17 +783,23 @@ public class ImsDataUtil {
 			   }
 			   //material
 			   if(itemFromInput.getMaterial() != null){
-				  if(itemFromInput.getMaterial().getMaterialcategory() != null) itemToDB.getMaterial().setMaterialcategory(itemFromInput.getMaterial().getMaterialcategory());
-				  if(itemFromInput.getMaterial().getMaterialcategory() != null) itemToDB.getMaterial().setMaterialcategory(itemFromInput.getMaterial().getMaterialcategory());
-				  if(itemFromInput.getMaterial().getMaterialclass() != null) itemToDB.getMaterial().setMaterialclass(itemFromInput.getMaterial().getMaterialclass());
-				  if(itemFromInput.getMaterial().getMaterialfeature() != null) itemToDB.getMaterial().setMaterialfeature(itemFromInput.getMaterial().getMaterialfeature());
-			      if(itemFromInput.getMaterial().getMaterialstyle() != null) itemToDB.getMaterial().setMaterialstyle(itemFromInput.getMaterial().getMaterialstyle());
-				  if(itemFromInput.getMaterial().getMaterialtype() != null) itemToDB.getMaterial().setMaterialtype(itemFromInput.getMaterial().getMaterialtype());
+				  if(itemFromInput.getMaterial().getMaterialcategory() != null) 
+					 itemToDB.getMaterial().setMaterialcategory(itemFromInput.getMaterial().getMaterialcategory());
+				  if(itemFromInput.getMaterial().getMaterialclass() != null) 
+					 itemToDB.getMaterial().setMaterialclass(itemFromInput.getMaterial().getMaterialclass());
+				  if(itemFromInput.getMaterial().getMaterialfeature() != null) 
+					 itemToDB.getMaterial().setMaterialfeature(itemFromInput.getMaterial().getMaterialfeature());
+			      if(itemFromInput.getMaterial().getMaterialstyle() != null) 
+			    	 itemToDB.getMaterial().setMaterialstyle(itemFromInput.getMaterial().getMaterialstyle());
+				  if(itemFromInput.getMaterial().getMaterialtype() != null) 
+					 itemToDB.getMaterial().setMaterialtype(itemFromInput.getMaterial().getMaterialtype());
 			   }
 			   //series
 			   if(itemFromInput.getSeries() != null){
-				  if(itemFromInput.getSeries().getSeriesname() != null) itemToDB.getSeries().setSeriesname(itemFromInput.getSeries().getSeriesname());
-				  if(itemFromInput.getSeries().getSeriescolor() != null) itemToDB.getSeries().setSeriescolor(itemFromInput.getSeries().getSeriescolor());
+				  if(itemFromInput.getSeries().getSeriesname() != null) 
+					 itemToDB.getSeries().setSeriesname(itemFromInput.getSeries().getSeriesname());
+				  if(itemFromInput.getSeries().getSeriescolor() != null) 
+					 itemToDB.getSeries().setSeriescolor(itemFromInput.getSeries().getSeriescolor());
 			   }
 			   //dimension
 			   if(itemFromInput.getDimensions() != null){
@@ -772,8 +809,8 @@ public class ImsDataUtil {
 			  		 itemToDB.getDimensions().setWidth(itemFromInput.getDimensions().getWidth());
 			  	  if(itemFromInput.getDimensions().getThickness() != null) 
 			  		 itemToDB.getDimensions().setThickness(itemFromInput.getDimensions().getThickness());
-			  	  if(itemFromInput.getDimensions().getNominallength() != null) itemToDB.getDimensions().setNominallength(
-			  	   	 itemFromInput.getDimensions().getNominallength());
+			  	  if(itemFromInput.getDimensions().getNominallength() != null) 
+			  		 itemToDB.getDimensions().setNominallength(itemFromInput.getDimensions().getNominallength());
 			  	  if(itemFromInput.getDimensions().getNominalthickness() != null) 
 			  		 itemToDB.getDimensions().setNominalthickness(itemFromInput.getDimensions().getNominalthickness());
 			  	  if(itemFromInput.getDimensions().getNominalwidth() != null) 
@@ -782,60 +819,39 @@ public class ImsDataUtil {
 			  		 itemToDB.getDimensions().setSizeunits(itemFromInput.getDimensions().getSizeunits());
 			   	  if(itemFromInput.getDimensions().getThicknessunit() != null) 
 			  		 itemToDB.getDimensions().setThicknessunit(itemFromInput.getDimensions().getThicknessunit());
-			  }
-			  //price 
-			  if(itemFromInput.getPrice() != null && !itemFromInput.getPrice().isDefault()){
-					Price newPrice = itemFromInput.getPrice();
-					Price currentPrice = itemToDB.getPrice();
-					if(newPrice.getFuturesell() != null) 
-						currentPrice.setFuturesell(newPrice.getFuturesell());
-					if(newPrice.getListprice() != null) 
-						currentPrice.setListprice(newPrice.getListprice());
-					if(newPrice.getListpricemarginpct() != null && newPrice.getListpricemarginpct() != 0F) 
-						currentPrice.setListpricemarginpct(newPrice.getListpricemarginpct());
-					if(newPrice.getSellprice() != null) 
-						currentPrice.setSellprice(newPrice.getSellprice());
-					if(newPrice.getSellpricemarginpct() != null && newPrice.getSellpricemarginpct() != 0F) 
-						currentPrice.setSellpricemarginpct(newPrice.getSellpricemarginpct());
-					if(newPrice.getSellpriceroundaccuracy() != null && newPrice.getSellpriceroundaccuracy() != 0) 
-						currentPrice.setSellpriceroundaccuracy(newPrice.getSellpriceroundaccuracy());
-					if(newPrice.getMinmarginpct() != null) 
-						currentPrice.setMinmarginpct(newPrice.getMinmarginpct());
-					if(newPrice.getPricegroup() != null) 
-						currentPrice.setPricegroup(newPrice.getPricegroup());
-					if(newPrice.getPriceunit() != null) 
-						currentPrice.setPriceunit(newPrice.getPriceunit());
-					if(newPrice.getPriorlistprice() != null) 
-						currentPrice.setPriorlistprice(newPrice.getPriorlistprice());
-					if(newPrice.getPriorsellprice() != null) 
-						currentPrice.setPriorsellprice(newPrice.getPriorsellprice());
-					if(newPrice.getTempprice() != null) 
-						currentPrice.setTempprice(newPrice.getTempprice());
-					if(newPrice.getTempdatefrom() != null) 
-						currentPrice.setTempdatefrom(newPrice.getTempdatefrom());
-					if(newPrice.getTempdatethru() != null) 
-						currentPrice.setTempdatethru(newPrice.getTempdatethru());	
-					//itemToDB.setPrice(price);
-				} 
-			  //applications
-			  if(itemFromInput.getApplications() != null){
-				  if(itemFromInput.getApplications().getCommercial() != null)
-					  itemToDB.getApplications().setCommercial(itemFromInput.getApplications().getCommercial()); 
-				  if(itemFromInput.getApplications().getLightcommercial() != null)
-					  itemToDB.getApplications().setLightcommercial(itemFromInput.getApplications().getLightcommercial());
-				  if(itemFromInput.getApplications().getResidential() != null)	
-					  itemToDB.getApplications().setResidential(itemFromInput.getApplications().getResidential());	  
-			  }//update applications fields with usage inut data
-			  else if(itemFromInput.getUsage() != null){ 
-				  Applications applications = convertUsageToApplications(itemFromInput.getUsage());
-				  itemToDB.setApplications(new Applications());
-				  if(applications != null && applications.getCommercial() != null && !applications.getCommercial().isEmpty())
-					  itemToDB.getApplications().setCommercial(applications.getCommercial()); 
-				  if(applications != null && applications.getLightcommercial() != null && !applications.getLightcommercial().isEmpty())
-					  itemToDB.getApplications().setLightcommercial(applications.getLightcommercial());
-				  if(applications != null && applications.getResidential() != null && !applications.getResidential().isEmpty())
-					  itemToDB.getApplications().setResidential(applications.getResidential());
-			  }	  
+			   }
+			   //price 
+			   if(itemFromInput.getPrice() != null && !itemFromInput.getPrice().isDefault()){
+				  Price newPrice = itemFromInput.getPrice();
+				  if(newPrice.getFuturesell() != null) 
+					 itemToDB.getPrice().setFuturesell(newPrice.getFuturesell());
+				  if(newPrice.getListprice() != null) 
+				 	 itemToDB.getPrice().setListprice(newPrice.getListprice());
+				  if(newPrice.getListpricemarginpct() != null && newPrice.getListpricemarginpct() != 0F) 
+				 	 itemToDB.getPrice().setListpricemarginpct(newPrice.getListpricemarginpct());
+				  if(newPrice.getSellprice() != null) 
+					 itemToDB.getPrice().setSellprice(newPrice.getSellprice());
+				  if(newPrice.getSellpricemarginpct() != null && newPrice.getSellpricemarginpct() != 0F) 
+					 itemToDB.getPrice().setSellpricemarginpct(newPrice.getSellpricemarginpct());
+				  if(newPrice.getSellpriceroundaccuracy() != null && newPrice.getSellpriceroundaccuracy() != 0) 
+					 itemToDB.getPrice().setSellpriceroundaccuracy(newPrice.getSellpriceroundaccuracy());
+				  if(newPrice.getMinmarginpct() != null) 
+					 itemToDB.getPrice().setMinmarginpct(newPrice.getMinmarginpct());
+				  if(newPrice.getPricegroup() != null) 
+					 itemToDB.getPrice().setPricegroup(newPrice.getPricegroup());
+				  if(newPrice.getPriceunit() != null) 
+					 itemToDB.getPrice().setPriceunit(newPrice.getPriceunit());
+				  if(newPrice.getPriorlistprice() != null) 
+					 itemToDB.getPrice().setPriorlistprice(newPrice.getPriorlistprice());
+				  if(newPrice.getPriorsellprice() != null) 
+					 itemToDB.getPrice().setPriorsellprice(newPrice.getPriorsellprice());
+				  if(newPrice.getTempprice() != null) 
+					 itemToDB.getPrice().setTempprice(newPrice.getTempprice());
+				  if(newPrice.getTempdatefrom() != null) 
+					 itemToDB.getPrice().setTempdatefrom(newPrice.getTempdatefrom());
+				  if(newPrice.getTempdatethru() != null) 
+					 itemToDB.getPrice().setTempdatethru(newPrice.getTempdatethru());	
+			  } 
 			  //cost
 			  if(itemFromInput.getCost() != null){
 				  if(itemFromInput.getCost().getCost1() != null)
@@ -846,11 +862,31 @@ public class ImsDataUtil {
 					 itemToDB.getCost().setFuturecost(itemFromInput.getCost().getFuturecost());
 				  if(itemFromInput.getCost().getNonstockcostpct() != null)
 					 itemToDB.getCost().setNonstockcostpct(itemFromInput.getCost().getNonstockcostpct()); 
-				  if(itemFromInput.getCost().getCost1() != null)
+				  if(itemFromInput.getCost().getPoincludeinvendorcost() != null)
 					 itemToDB.getCost().setPoincludeinvendorcost(itemFromInput.getCost().getPoincludeinvendorcost()); 
 				  if(itemFromInput.getCost().getPriorcost() != null)
 					 itemToDB.getCost().setPriorcost(itemFromInput.getCost().getPriorcost()); 
 			  }
+			  //applications
+			  if(itemFromInput.getApplications() != null){
+				  if(itemFromInput.getApplications().getCommercial() != null)
+					  itemToDB.getApplications().setCommercial(itemFromInput.getApplications().getCommercial()); 
+				  if(itemFromInput.getApplications().getLightcommercial() != null)
+					  itemToDB.getApplications().setLightcommercial(itemFromInput.getApplications().getLightcommercial());
+				  if(itemFromInput.getApplications().getResidential() != null)	
+					  itemToDB.getApplications().setResidential(itemFromInput.getApplications().getResidential());	  
+			  }
+			  //update applications fields with usage input data when applications data is not available
+			  else if(itemFromInput.getUsage() != null){ 
+				  Applications applications = convertUsageToApplications(itemFromInput.getUsage());
+				  itemToDB.setApplications(new Applications());
+				  if(applications != null && applications.getCommercial() != null && !applications.getCommercial().isEmpty())
+					  itemToDB.getApplications().setCommercial(applications.getCommercial()); 
+				  if(applications != null && applications.getLightcommercial() != null && !applications.getLightcommercial().isEmpty())
+					  itemToDB.getApplications().setLightcommercial(applications.getLightcommercial());
+				  if(applications != null && applications.getResidential() != null && !applications.getResidential().isEmpty())
+					  itemToDB.getApplications().setResidential(applications.getResidential());
+			  }	  
 			  //notes
 	 		  if(itemFromInput.getNotes() != null){
 				if(itemToDB.getNotes() == null)
@@ -861,12 +897,15 @@ public class ImsDataUtil {
 					itemToDB.getNotes().setInternalnotes(itemFromInput.getNotes().getInternalnotes());
 				if(itemFromInput.getNotes().getInvoicenotes() != null) 
 					itemToDB.getNotes().setInvoicenotes(itemFromInput.getNotes().getInvoicenotes());
-				if(itemFromInput.getNotes().getPonotes() != null) itemToDB.getNotes().setPonotes(itemFromInput.getNotes().getPonotes());
+				if(itemFromInput.getNotes().getPonotes() != null) 
+					itemToDB.getNotes().setPonotes(itemFromInput.getNotes().getPonotes());
 			}
 			//purchaser
 			if(itemFromInput.getPurchasers() != null){
-				if(itemFromInput.getPurchasers().getPurchaser() != null) itemToDB.getPurchasers().setPurchaser(itemFromInput.getPurchasers().getPurchaser()); 
-				if(itemFromInput.getPurchasers().getPurchaser2() != null) itemToDB.getPurchasers().setPurchaser2(itemFromInput.getPurchasers().getPurchaser2()); 
+				if(itemFromInput.getPurchasers().getPurchaser() != null) 
+					itemToDB.getPurchasers().setPurchaser(itemFromInput.getPurchasers().getPurchaser()); 
+				if(itemFromInput.getPurchasers().getPurchaser2() != null) 
+					itemToDB.getPurchasers().setPurchaser2(itemFromInput.getPurchasers().getPurchaser2()); 
 			}
 			//related items
 			if(itemFromInput.getRelateditemcodes() != null){
@@ -920,7 +959,7 @@ public class ImsDataUtil {
  			   if(itemFromInput.getTestSpecification().getScratchresistance() != null)
 			  	  itemToDB.getTestSpecification().setScratchresistance(itemFromInput.getTestSpecification().getScratchresistance());
 			   if(itemFromInput.getTestSpecification().getScratchstandard() != null)
-			  	  itemToDB.getTestSpecification().setScratchstandard(itemFromInput.getTestSpecification().getBreakingstandard());
+			  	  itemToDB.getTestSpecification().setScratchstandard(itemFromInput.getTestSpecification().getScratchstandard());
 			   if(itemFromInput.getTestSpecification().getThermalshock() != null)
 			  	  itemToDB.getTestSpecification().setThermalshock(itemFromInput.getTestSpecification().getThermalshock()); 
 			   if(itemFromInput.getTestSpecification().getWarpage() != null)
@@ -1126,20 +1165,6 @@ public class ImsDataUtil {
 	  catch(Exception e){
 			  throw new BedDAOBadParamException("Error occured while transferProperty(): " + e.getMessage(), e.getCause());	
 	  }	
-	}
-
-	public static Item transformItem(Item itemToDB, Item itemFromInput, DBOperation operation) throws BedDAOBadParamException{
-		if(itemFromInput == null)
-	       throw new BedDAOBadParamException("In transformItem(), the input is empty");	
-		if(itemToDB == null) 
-		   itemToDB = new Item(itemFromInput.getItemcode().toUpperCase());		
-		transferProperty(itemToDB, itemFromInput);
-		if(operation != null && operation.equals(DBOperation.CREATE))
-	  	   transferComponent(itemToDB, itemFromInput);
-		else if(operation != null && operation.equals(DBOperation.UPDATE))		
-		   transferComponentForUpdate(itemToDB, itemFromInput);
-		transferAssociation(itemToDB, itemFromInput, operation);	
-		return itemToDB;
 	}
 	
 	
