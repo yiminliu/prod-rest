@@ -6,6 +6,11 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.NumericField;
+import org.hibernate.search.annotations.Store;
 
 @Embeddable
 public class ItemVendorId implements Serializable{
@@ -33,6 +38,8 @@ public class ItemVendorId implements Serializable{
 		this.itemCode = itemCode;
 	}
 
+	@Field(index=Index.YES, analyze=Analyze.NO, store=Store.YES)
+	@NumericField
 	@Column(name = "vendor_id", nullable = false, precision = 10, scale = 0)
 	public Integer getVendorId() {
 		return this.vendorId;

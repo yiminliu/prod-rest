@@ -22,6 +22,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.search.annotations.ContainedIn;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import com.bedrosians.bedlogic.util.FormatUtil;
 
@@ -30,7 +32,6 @@ import com.bedrosians.bedlogic.util.FormatUtil;
 @Table(name="ims_item_vendor")
 @DynamicUpdate
 @DynamicInsert
-//@Cacheable
 @Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ItemVendor implements java.io.Serializable {
 
@@ -54,7 +55,6 @@ public class ItemVendor implements java.io.Serializable {
 	private Float dutyPct;
 	private Integer version;
 	private Item item;
-	//private Vendor vendor;
 		
 	public ItemVendor() {
 	}
@@ -64,6 +64,7 @@ public class ItemVendor implements java.io.Serializable {
 	}
 	
 	@JsonIgnore
+	@IndexedEmbedded
 	@EmbeddedId
 	@AttributeOverrides({
 		@AttributeOverride(name = "itemCode", column = @Column(name = "item_code", nullable = false, length = 20)),
@@ -79,6 +80,7 @@ public class ItemVendor implements java.io.Serializable {
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="item_code", updatable=false, insertable=false)
+	@ContainedIn
 	public Item getItem(){
 		return this.item;
 	}
@@ -177,7 +179,7 @@ public class ItemVendor implements java.io.Serializable {
 		this.vendorPriceRoundAccuracy = vendorPriceRoundAccuracy;
 	}
 
-	@Column(name = "vendor_net_price", precision = 9, scale = 4)
+	@Column(name = "vendor_net_price", precision = 9, scale = 4, updatable=false)
 	public BigDecimal getVendorNetPrice() {
 		return this.vendorNetPrice;
 	}
@@ -204,7 +206,7 @@ public class ItemVendor implements java.io.Serializable {
 		this.leadTime = leadTime;
 	}
 
-	@Column(name = "vendor_landed_base_cost", precision = 13, scale = 6)
+	@Column(name = "vendor_landed_base_cost", precision = 13, scale = 6, updatable=false)
 	public BigDecimal getVendorLandedBaseCost() {
 		return this.vendorLandedBaseCost;
 	}

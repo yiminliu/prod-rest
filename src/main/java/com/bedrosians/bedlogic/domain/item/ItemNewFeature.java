@@ -27,6 +27,12 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.ContainedIn;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.Store;
 
 import com.bedrosians.bedlogic.domain.item.enums.Body;
 import com.bedrosians.bedlogic.domain.item.enums.DesignLook;
@@ -124,6 +130,7 @@ public class ItemNewFeature implements java.io.Serializable {
 	@JsonIgnore
 	@OneToOne(fetch = FetchType.LAZY)
 	@PrimaryKeyJoinColumn
+	@ContainedIn
 	public Item getItem() {
 		return this.item;
 	}
@@ -155,6 +162,7 @@ public class ItemNewFeature implements java.io.Serializable {
 
 	@Column(name="mps_code")
 	@Enumerated(EnumType.STRING)
+	@Field(index=Index.YES, analyze=Analyze.NO, store=Store.YES)
 	public MpsCode getMpsCode() {
 		return mpsCode;
 	}
@@ -175,6 +183,7 @@ public class ItemNewFeature implements java.io.Serializable {
 	
 	@Column(name = "grade")
 	@Enumerated(EnumType.STRING)
+	@Field(index=Index.YES, analyze=Analyze.NO, store=Store.YES)
 	public Grade getGrade() {
 		return this.grade;
 	}
@@ -185,6 +194,7 @@ public class ItemNewFeature implements java.io.Serializable {
 
 	@Column(name="status")
 	@Enumerated(EnumType.STRING)
+	@Field(index=Index.YES, analyze=Analyze.NO, store=Store.YES)
 	public Status getStatus() {
 		return this.status;
 	}

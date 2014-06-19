@@ -506,6 +506,6 @@ public class Units  implements java.io.Serializable {
 
 	@Transient
 	public boolean isDefault(){
-		return stdunit == null && stdratio == null && ordunit == null && ordratio == null && unit1unit == null && unit2unit == null && unit3unit == null && unit4unit == null;
+		return stdunit == null && ordunit == null && unit1unit == null && unit2unit == null && unit3unit == null && unit4unit == null;
 	}
 }

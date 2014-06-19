@@ -6,6 +6,12 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
 
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.NumericField;
+import org.hibernate.search.annotations.Store;
+
 @Embeddable
 public class VendorInfo  implements java.io.Serializable {
 
@@ -50,7 +56,9 @@ public class VendorInfo  implements java.io.Serializable {
 			this.vendornbr = vendornbr;
 		}
 
-		@Column(name = "vendornbr1", precision = 6, scale = 0)
+		@Field(index=Index.YES, analyze=Analyze.NO, store=Store.YES)
+		@NumericField
+		@Column(name = "vendornbr1", precision = 6, updatable=false)
 		public Integer getVendornbr1() {
 			return this.vendornbr1;
 		}
@@ -131,7 +139,7 @@ public class VendorInfo  implements java.io.Serializable {
 			this.vendorroundaccuracy = vendorroundaccuracy;
 		}
 
-		@Column(name = "vendornetprice", precision = 9, scale = 4)
+		@Column(name = "vendornetprice", precision = 9, scale = 4, updatable=false)
 		public BigDecimal getVendornetprice() {
 			return this.vendornetprice;
 		}
@@ -158,7 +166,7 @@ public class VendorInfo  implements java.io.Serializable {
 			this.vendorfreightratecwt = vendorfreightratecwt;
 		}
 
-		@Column(name = "vendorlandedbasecost", precision = 13, scale = 6)
+		@Column(name = "vendorlandedbasecost", precision = 13, scale = 6, updatable=false)
 		public BigDecimal getVendorlandedbasecost() {
 			return this.vendorlandedbasecost;
 		}

@@ -26,6 +26,15 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Analyzer;
+import org.hibernate.search.annotations.Boost;
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.Store;
 import org.springframework.stereotype.Component;
 
 import com.bedrosians.bedlogic.domain.item.embeddable.Description;
@@ -52,6 +61,8 @@ import com.bedrosians.bedlogic.util.ImsDataUtil;
 @Table(name = "ims", schema = "public")
 @DynamicUpdate
 @DynamicInsert
+@Indexed
+@Analyzer(impl = org.apache.lucene.analysis.standard.StandardAnalyzer.class)
 @Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Item implements java.io.Serializable {
 
@@ -90,7 +101,6 @@ public class Item implements java.io.Serializable {
 	private Dimensions dimensions;
 	//this default aims to meet ims_check5
 	private Price price = new Price();
-	private VendorInfo vendors = new VendorInfo();
 	private TestSpecification testSpecification;
  	private SimilarItemCode relateditemcodes;
 	private Purchasers purchasers;
@@ -100,12 +110,13 @@ public class Item implements java.io.Serializable {
 	private List<String> usage;
   	private Units units;
   	private Cost cost;
+  	private VendorInfo vendors = new VendorInfo();
   	//private PriorVendor priorVendor;
   	
 	//------- Associations --------//
+  	private List<ItemVendor> newVendorSystem = new ArrayList<>();
   	private ItemNewFeature itemNewFeature;
     private IconCollection iconDescription;
-	private List<ItemVendor> newVendorSystem = new ArrayList<>();
 	//private List<ColorHue> colorhues =  new ArrayList<>();
   	//private List<Note> newNoteSystem = new ArrayList<>();
      	
@@ -117,6 +128,7 @@ public class Item implements java.io.Serializable {
 	}
 	
 	@Id
+	@DocumentId
 	@Column(name = "itemcd", unique = true, nullable = false, length = 18)
 	public String getItemcode() {
 		return itemcode;
@@ -127,6 +139,7 @@ public class Item implements java.io.Serializable {
 	}
 
 	@Embedded
+	@IndexedEmbedded
 	public Description getItemdesc() {
 		return itemdesc;
 	}
@@ -136,6 +149,7 @@ public class Item implements java.io.Serializable {
 	}
 
 	@Embedded
+    @IndexedEmbedded
 	public Series getSeries() {
 		return series;
 	}
@@ -145,6 +159,7 @@ public class Item implements java.io.Serializable {
 	}
 	
 	@Embedded
+	@IndexedEmbedded
 	public Dimensions getDimensions() {
 		return dimensions;
 	}
@@ -154,6 +169,7 @@ public class Item implements java.io.Serializable {
 	}
 	
 	@Embedded
+	@IndexedEmbedded
 	public Material getMaterial() {
 		return material;
 	}
@@ -217,6 +233,7 @@ public class Item implements java.io.Serializable {
 	}
 	
 	@Embedded
+	@IndexedEmbedded
 	public VendorInfo getVendors() {
 		return vendors;
 	}
@@ -280,7 +297,9 @@ public class Item implements java.io.Serializable {
 		this.abccd = abccd;
 	}
 
+	@Field(index=Index.YES, analyze=Analyze.NO, store=Store.YES)
 	@Column(name = "category", length = 8)
+	@Boost(1.5f)
 	public String getItemcategory() {
 		return this.itemcategory;
 	}
@@ -308,6 +327,8 @@ public class Item implements java.io.Serializable {
 		this.dropdate = dropdate;
 	}
 
+	@Field(index=Index.YES, analyze=Analyze.NO, store=Store.YES)
+	@Boost(2.0f)
 	@Column(name = "inactivecd", length = 3)
 	public String getInactivecode() {
 		return this.inactivecode;
@@ -371,6 +392,8 @@ public class Item implements java.io.Serializable {
 		this.updatecd = updatecd;
 	}
 
+	@Field(index=Index.YES, analyze=Analyze.NO, store=Store.YES)
+	@Boost(1.8f)
 	@Column(name = "origin", length = 18)
 	public String getCountryorigin() {
 		return this.countryorigin;
@@ -389,6 +412,8 @@ public class Item implements java.io.Serializable {
 		this.shadevariation = shadevariation;
 	}
 
+	@Field(index=Index.YES, analyze=Analyze.NO, store=Store.YES)
+	@Boost(2.0f)
 	@Column(name = "showonwebsite", length = 1)
 	public Character getShowonwebsite() {
 		return this.showonwebsite;
@@ -399,6 +424,8 @@ public class Item implements java.io.Serializable {
 	}
 
 	//@JsonIgnore
+	@Field(index=Index.YES, analyze=Analyze.YES, store=Store.YES)
+	@Boost(2.0f)
     @Column(name = "colorcategory", length = 30)
 	public String getColorcategory() {
 		return this.colorcategory;
@@ -476,6 +503,7 @@ public class Item implements java.io.Serializable {
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Fetch(FetchMode.JOIN)
 	@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+	@IndexedEmbedded
 	public ItemNewFeature getImsNewFeature() {	
 	    return this.itemNewFeature;
 	}
@@ -508,9 +536,10 @@ public class Item implements java.io.Serializable {
 	}
 
 	//@JsonIgnore
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Fetch(FetchMode.SUBSELECT)
 	@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+	@IndexedEmbedded
 	public List<ItemVendor> getNewVendorSystem() {
 		return this.newVendorSystem;
 	}
@@ -735,7 +764,7 @@ public class Item implements java.io.Serializable {
 		//private String specialhandlecd3;
 		//private String typealf;
 		
-		//private Integer samplenbr;
+		//private Integer samplenbr; = select max(samplrnbr) from ims
 		//private String waterAbsorptionSign;
 		//private String scofWetSign;
 		//private String scofDrySign;

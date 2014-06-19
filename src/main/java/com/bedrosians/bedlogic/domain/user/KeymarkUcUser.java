@@ -10,12 +10,15 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Immutable;
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Indexed;
 
 
 @Entity
 @Table(name = "uc", schema = "public")
 @Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
 @Immutable
+@Indexed
 public class KeymarkUcUser implements Serializable {
 
 	    private static final long serialVersionUID = -3213582221787L;
@@ -43,89 +46,6 @@ public class KeymarkUcUser implements Serializable {
 		private Character viewSlabCosts;
 		private Character permInventory;
 		
-		//private Character permApv;
-		//private Character permUc;
-		//private Character permOffshade;
-		//private Character displayMenuIcons;
-		//private Short brStore1;
-		//private String notes;
-		//private String database;
-		//private String onlyipaddress;
-		//private Character arapprovecheck;
-		//private Character areditcheck;
-		//private Character oballowauthprelien;
-		//private Character oballowchgatc;
-		//private Character oballowchgati;
-		//private Character oballowchgbacktoc;
-		//private Character oballowchgbacktoo;
-		//private Character oballowchgcost;
-		//private Character oballowchgcustcd;
-		//private Character oballowchgpmtterms;
-		//private Character obcheckcrholdatst;
-		//private String obdefsourcecd;
-		//private Character obdisplaycost;
-		//private Character obdisplayonly;
-		//private BigDecimal obmaxcramtperinv;
-		//private BigDecimal obmaxinvamt;
-		//private BigDecimal obmaxinvamtwoprel;
-		//private String obonlycustcd;
-		//private String obonlybranchcd;
-		//private Short obonlystorenbr;
-		//private Character oboverridecrlimit;
-		//private Character oboverridecrhold;
-		//private Short obsalesnbr;
-		//private Short obminmarginpct;
-		//private Character oballowchgatu;
-		//private Character arenterbankdep;
-		//private Character oballowsamples;
-		//private Character oballowtransfers;
-		//private Character oballowwriteoffs;
-		//private Character oboverridemargin;
-		//private String note2;
-		//private Character arviewreports;
-		//private Character crupdatebranchdep;
-		//private Character arallowglentry;
-		//private Character prallowbankrec;
-		//private Character rptcreatecsv;
-		//private Character poallowcreatepo;
-		//private Character poallowreceive;
-		//private Character poallowinvoice;
-		//private Character podisplayprice;
-		//private Character podisplayonly;
-		//private Character posuperuser;
-		//private String email;
-		//private Date inactivedate;
-		//private Character poallowconfirm;
-		//private Character poallowapprove;
-		//private Character permGlm;
-		//private Character permGlrec;
-		//private Date setupdate;
-		//private Character permApi;
-		//private Character permTask;
-		//private Character permBatchinv;
-		//private Character permEom;
-		//private Short obonlystorenbr2;
-		//private Short obonlystorenbr3;
-		//private Short obonlystorenbr4;
-		//private Short obonlystorenbr5;
-		//private Character regioncd;
-		//private Short obmaxdiscpct;
-		//private Character permDmsrpt;
-		//private Character permAdjslabsize;
-		//private Character oboverridecustpricing;
-		//private Short obdefaultstorenbr;
-		//private Short brStore2;
-		//private Short brStore3;
-		//private Short brStore4;
-		//private Short brStore5;
-		//private Character uploadPic;
-		//private Character permSlabMaint;
-		//private Character permPromoMaint;
-		//private Character permBulletin;
-		//private String accesstoken;
-		//private Date tokents;
-		//private Integer retries;
-
 		public KeymarkUcUser() {
 		}
 
@@ -134,6 +54,7 @@ public class KeymarkUcUser implements Serializable {
 		}
 
 		@Id
+		@DocumentId
 		@Column(name = "usercd", unique = true, nullable = false, length = 10)
 		public String getUserCode() {
 			return this.userCode;
@@ -308,8 +229,7 @@ public class KeymarkUcUser implements Serializable {
 		public void setGroupcode(String groupcode) {
 			this.groupcode = groupcode;
 		}
-
-
+		
 		@Column(name = "storenbr", precision = 3, scale = 0)
 		public Short getStorenbr() {
 			return this.storenbr;
@@ -319,8 +239,6 @@ public class KeymarkUcUser implements Serializable {
 			this.storenbr = storenbr;
 		}
 
-		
-	
 		@Column(name = "view_slab_costs", length = 1)
 		public Character getViewSlabCosts() {
 			return this.viewSlabCosts;
@@ -338,5 +256,116 @@ public class KeymarkUcUser implements Serializable {
 		public void setPermInventory(Character permInventory) {
 			this.permInventory = permInventory;
 		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result
+					+ ((userCode == null) ? 0 : userCode.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (!(obj instanceof KeymarkUcUser))
+				return false;
+			KeymarkUcUser other = (KeymarkUcUser) obj;
+			if (userCode == null) {
+				if (other.userCode != null)
+					return false;
+			} else if (!userCode.equals(other.userCode))
+				return false;
+			return true;
+		}
+
+		
+
+		//private Character permApv;
+		//private Character permUc;
+		//private Character permOffshade;
+		//private Character displayMenuIcons;
+		//private Short brStore1;
+		//private String notes;
+		//private String database;
+		//private String onlyipaddress;
+		//private Character arapprovecheck;
+		//private Character areditcheck;
+		//private Character oballowauthprelien;
+		//private Character oballowchgatc;
+		//private Character oballowchgati;
+		//private Character oballowchgbacktoc;
+		//private Character oballowchgbacktoo;
+		//private Character oballowchgcost;
+		//private Character oballowchgcustcd;
+		//private Character oballowchgpmtterms;
+		//private Character obcheckcrholdatst;
+		//private String obdefsourcecd;
+		//private Character obdisplaycost;
+		//private Character obdisplayonly;
+		//private BigDecimal obmaxcramtperinv;
+		//private BigDecimal obmaxinvamt;
+		//private BigDecimal obmaxinvamtwoprel;
+		//private String obonlycustcd;
+		//private String obonlybranchcd;
+		//private Short obonlystorenbr;
+		//private Character oboverridecrlimit;
+		//private Character oboverridecrhold;
+		//private Short obsalesnbr;
+		//private Short obminmarginpct;
+		//private Character oballowchgatu;
+		//private Character arenterbankdep;
+		//private Character oballowsamples;
+		//private Character oballowtransfers;
+		//private Character oballowwriteoffs;
+		//private Character oboverridemargin;
+		//private String note2;
+		//private Character arviewreports;
+		//private Character crupdatebranchdep;
+		//private Character arallowglentry;
+		//private Character prallowbankrec;
+		//private Character rptcreatecsv;
+		//private Character poallowcreatepo;
+		//private Character poallowreceive;
+		//private Character poallowinvoice;
+		//private Character podisplayprice;
+		//private Character podisplayonly;
+		//private Character posuperuser;
+		//private String email;
+		//private Date inactivedate;
+		//private Character poallowconfirm;
+		//private Character poallowapprove;
+		//private Character permGlm;
+		//private Character permGlrec;
+		//private Date setupdate;
+		//private Character permApi;
+		//private Character permTask;
+		//private Character permBatchinv;
+		//private Character permEom;
+		//private Short obonlystorenbr2;
+		//private Short obonlystorenbr3;
+		//private Short obonlystorenbr4;
+		//private Short obonlystorenbr5;
+		//private Character regioncd;
+		//private Short obmaxdiscpct;
+		//private Character permDmsrpt;
+		//private Character permAdjslabsize;
+		//private Character oboverridecustpricing;
+		//private Short obdefaultstorenbr;
+		//private Short brStore2;
+		//private Short brStore3;
+		//private Short brStore4;
+		//private Short brStore5;
+		//private Character uploadPic;
+		//private Character permSlabMaint;
+		//private Character permPromoMaint;
+		//private Character permBulletin;
+		//private String accesstoken;
+		//private Date tokents;
+		//private Integer retries;
 
 }

@@ -3,6 +3,13 @@ package com.bedrosians.bedlogic.domain.item.embeddable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Boost;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.NumericField;
+import org.hibernate.search.annotations.Store;
+
 @Embeddable
 public class Dimensions implements java.io.Serializable {
 
@@ -17,6 +24,9 @@ public class Dimensions implements java.io.Serializable {
 	private String width;
 	private Float nominalthickness;
 	
+	@Field(index=Index.YES, analyze=Analyze.NO, store=Store.YES)
+	@NumericField
+	//@Boost(1.5f)
 	@Column(name = "nm_length", precision = 5)
 	public Float getNominallength() {
 		return this.nominallength;
@@ -26,6 +36,9 @@ public class Dimensions implements java.io.Serializable {
 		this.nominallength = nominallength;
 	}
 
+	@Field(index=Index.YES, analyze=Analyze.NO, store=Store.YES)
+	@NumericField
+	//@Boost(1.5f)
 	@Column(name = "nm_width", precision = 5)
 	public Float getNominalwidth() {
 		return this.nominalwidth;
