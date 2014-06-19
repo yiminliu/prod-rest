@@ -6,6 +6,7 @@ import java.util.Date;
 import javax.ws.rs.core.MultivaluedMap;
 
 import com.bedrosians.bedlogic.domain.item.Item;
+import com.bedrosians.bedlogic.domain.item.ItemVendor;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 
 
@@ -23,6 +24,7 @@ public class ImsValidator {
 		if(item == null)
 		   throw new BedDAOBadParamException("Item should not be null.");
 		validateItemCode(item);
+		validateRequiredProperties(item);
 		validateFieldLength(item);
 		validateNewItemUnit(item);
 		if(item.getPrice() != null){
@@ -33,8 +35,17 @@ public class ImsValidator {
 	public static void validateItemCode(Item item) throws BedDAOBadParamException{
 		if(item.getItemcode() == null || item.getItemcode().length() < 1 || item.getItemcode().length() > 18)
 		   throw new BedDAOBadParamException("Item code cannot be empty and should be less than 18 characters");
+		//if(!item.getItemcode().matches("^[a-zA-Z0-9-]*$"))
+		//   throw new BedDAOBadParamException("Item code cannot contain any special characters, other than letters, numbers and dashes");
 	}
 	
+	public static void validateRequiredProperties(Item item) throws BedDAOBadParamException{
+		if(item.getItemdesc() == null || item.getItemdesc().getItemdesc1() == null || item.getItemdesc().getItemdesc1().length() < 1)
+		   throw new BedDAOBadParamException("Missing Item Description!");
+		if(item.getItemcategory() == null || item.getItemcategory().length() < 1)
+		   throw new BedDAOBadParamException("Missing Item Category!");
+	}
+		 
 	private static void validateForNullParams(MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException{
 		if(queryParams == null || queryParams.isEmpty())
 		   throw new BedDAOBadParamException("Please enter valid query parameters!");	
@@ -53,6 +64,14 @@ public class ImsValidator {
 		   throw new BedDAOBadParamException("Pricegroup length should be two charactors or less.");
 		if(item.getItemgroupnbr() != null && item.getItemgroupnbr() > 99)
 		   throw new BedDAOBadParamException("Itemgroupnbr length should be two digits or less.");
+		//if(item.getVendors().getVendornbr1() != null && (item.getVendors().getVendornbr1() < 1 || String.valueOf(item.getVendors().getVendornbr1()).length() > 6))
+		//   throw new BedDAOBadParamException("Vendor number should not be empty and not longer than 6.");
+		//if(item.getNewVendorSystem() != null && !item.getNewVendorSystem().isEmpty()){
+		//	for(ItemVendor vendor : item.getNewVendorSystem()){
+		//		if((vendor.getItemVendorId() != null) && (vendor.getItemVendorId().getVendorId() < 1 || String.valueOf(vendor.getItemVendorId().getVendorId()).length() > 6))
+		//				throw new BedDAOBadParamException("Vendor number should not be empty and not longer than 6.");
+		//	}
+		//}			   
 		validateCharacter("lottype", item.getLottype()); 
 		validateCharacter("printlabel", item.getPrintlabel()); 
 		validateCharacter("showonwebsite", item.getShowonwebsite()); 
@@ -92,11 +111,14 @@ public class ImsValidator {
 	public static void validateNewItemUnit(Item item) throws BedDAOBadParamException{
 	    if(item.getUnits() == null || item.getUnits().isDefault()) 
 	       return;
-	    
+	
+	    validateStandardOrderUnit(item);
+	    validateStandardOrderUnit(item);
+	        
 		if(item.getUnits().getBaseunit() == null || item.getUnits().getBaseunit().trim().length() < 1)
 		  // throw new BedDAOBadParamException("BaseUnit cannot be null.");
 			item.getUnits().setBaseunit("PCS");
-	
+		
 		if((item.getUnits().getBaseunit() != null && item.getUnits().getBaseunit().length() > 4) || 
 		   (item.getUnits().getUnit1unit() != null && item.getUnits().getUnit1unit().length() > 4) ||
 		   (item.getUnits().getUnit2unit() != null && item.getUnits().getUnit2unit().length() > 4) ||
@@ -208,9 +230,35 @@ public class ImsValidator {
 	       (item.getUnits().getUnit2unit() != null && validateUnitName(item.getUnits().getUnit2unit())) ||
 	       (item.getUnits().getUnit3unit() != null && validateUnitName(item.getUnits().getUnit3unit())) ||
 	       (item.getUnits().getUnit4unit() != null && validateUnitName(item.getUnits().getUnit4unit())))
-	    	 throw new IllegalArgumentException("Unit or unit ratio is wrong.");
+	    	 throw new BedDAOBadParamException("Unit or unit ratio is wrong.");
 	}
 	
+	public static void validateStandardOrderUnit(Item item) throws BedDAOBadParamException{
+	    int count = 0;
+		if(item.getUnits().getBaseisstdord() == 'Y' || item.getUnits().getBaseisstdord() == 'y') count++;
+		if(item.getUnits().getUnit1isstdord() == 'Y' || item.getUnits().getUnit1isstdord() == 'y') count++;
+		if(item.getUnits().getUnit2isstdord() == 'Y' || item.getUnits().getUnit2isstdord() == 'y') count++;
+		if(item.getUnits().getUnit3isstdord() == 'Y' || item.getUnits().getUnit3isstdord() == 'y') count++;
+		if(item.getUnits().getUnit4isstdord() == 'Y' || item.getUnits().getUnit4isstdord() == 'y') count++;
+		if(count < 1)
+			throw new BedDAOBadParamException("ERROR: Missing Std Order Unit!.");	
+		if(count > 1)
+			throw new BedDAOBadParamException("ERROR: Multiple Std Sell Unit!!.");	
+	}    	
+	
+	public static void validateStandardSellUnit(Item item) throws BedDAOBadParamException{
+	    int count = 0;
+		if(item.getUnits().getBaseisstdsell() == 'Y' || item.getUnits().getBaseisstdsell() == 'y') count++;
+		if(item.getUnits().getUnit1isstdsell() == 'Y' || item.getUnits().getUnit1isstdsell() == 'y') count++;
+		if(item.getUnits().getUnit2isstdsell() == 'Y' || item.getUnits().getUnit2isstdsell() == 'y') count++;
+		if(item.getUnits().getUnit3isstdsell() == 'Y' || item.getUnits().getUnit3isstdsell() == 'y') count++;
+		if(item.getUnits().getUnit4isstdsell() == 'Y' || item.getUnits().getUnit4isstdsell() == 'y') count++;
+		if(count < 1)
+			throw new BedDAOBadParamException("ERROR: Missing Std Order Unit!.");	
+		if(count > 1)
+			throw new BedDAOBadParamException("ERROR: Multiple Std Sell Unit!!.");		
+	}    	
+		
 	private static boolean validateUnitName(String originalString){
 		String[] illegalValues = new String[]{"EA", "EACH", "PC", "LF", "SF", "CT", "CTM", "CTNH", "PK"};
 		for(String s : illegalValues){
