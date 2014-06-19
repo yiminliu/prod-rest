@@ -19,6 +19,9 @@ import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.search.FullTextSession;
+import org.hibernate.search.Search;
+import org.hibernate.search.query.dsl.QueryBuilder;
 import org.hibernate.sql.JoinType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -70,6 +73,27 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
        return loadById(session, itemId);
 	}
  
+	@Override
+	@Loggable(value = LogLevel.DEBUG)
+	@Transactional(readOnly=true)
+	@SuppressWarnings("unchecked")
+	 public List<Item> getActiveAndShownOnWebItems() throws BedDAOException{
+	 
+	   List<Item> items = null;
+	   
+	   FullTextSession fullTextSession = Search.getFullTextSession(sessionFactory.getCurrentSession());
+	   QueryBuilder queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(Item.class).get();
+       // create native Lucene query
+       org.apache.lucene.search.Query luceneQuery = queryBuilder.keyword()
+    		                                                    .onField("inactivecode").boostedTo(2)
+    		                                                    .matching("N")
+    		                                                    .createQuery();
+       // wrap Lucene query in a javax.persistence.Query
+       org.hibernate.Query fullTextQuery = fullTextSession.createFullTextQuery(luceneQuery, Item.class);     
+       items = fullTextQuery.setCacheable(true).list();  
+   	   return items;
+	}
+	
 	/*  Rules for Pattern/Exact matches:
 	 *  colorcategory: always use LIKE on both sides: like '%data%'
 	 *  fulldesc and itemdesc1 always use LIKE on right side: like 'data%'
@@ -240,6 +264,7 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
         itemCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         //itemCriteria.addOrder(Order.asc("itemcode"));
         System.out.println("criteria = " +itemCriteria.toString());
+  
 		try {
 			if(maxResults > 0)
 		       items =  (List<Item>)itemCriteria.getExecutableCriteria(sessionFactory.getCurrentSession()).setMaxResults(maxResults).setCacheable(true).list();//executeCriteria(itemCriteria);//(List<Item>)itemCriteria.list();			
