@@ -44,8 +44,7 @@ import com.bedrosians.bedlogic.domain.item.enums.DesignStyle;
 import com.bedrosians.bedlogic.domain.item.enums.MpsCode;
 import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.util.ImsQueryUtil;
-import com.bedrosians.bedlogic.util.logger.aspect.LogLevel;
-import com.bedrosians.bedlogic.util.logger.aspect.Loggable;
+
 
 @Repository("itemDao")
 public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao {
@@ -54,13 +53,14 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
     private int maxResults = 0;
     @Autowired
 	private SessionFactory sessionFactory;
-	 
+	
+    //--------------------------- retrieval DB operation -----------------------//
+    
 	/*
 	 * This method returns an Item with associated entities for the given item id.
      * Note: it's not set "Read Only" because is could be called by update()
      */
 	@Override
-	@Loggable(value = LogLevel.DEBUG)
 	public Item getItemById(Session session, final String itemId) {
     	Query query = session.createQuery("From Item where itemcode = :itemCode");
 		query.setString("itemCode", itemId);
@@ -68,29 +68,27 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	}
 	
 	@Override
-	@Loggable(value = LogLevel.DEBUG)
 	public Item loadItemById(Session session, final String itemId) {
        return loadById(session, itemId);
 	}
  
 	@Override
-	@Loggable(value = LogLevel.DEBUG)
 	@Transactional(readOnly=true)
 	@SuppressWarnings("unchecked")
-	 public List<Item> getActiveAndShownOnWebItems() throws BedDAOException{
-	 
+	 public List<Item> getActiveAndShownOnWebsiteItems(){
 	   List<Item> items = null;
-	   
 	   FullTextSession fullTextSession = Search.getFullTextSession(sessionFactory.getCurrentSession());
 	   QueryBuilder queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(Item.class).get();
        // create native Lucene query
        org.apache.lucene.search.Query luceneQuery = queryBuilder.keyword()
-    		                                                    .onField("inactivecode").boostedTo(2)
-    		                                                    .matching("N")
-    		                                                    .createQuery();
-       // wrap Lucene query in a javax.persistence.Query
-       org.hibernate.Query fullTextQuery = fullTextSession.createFullTextQuery(luceneQuery, Item.class);     
-       items = fullTextQuery.setCacheable(true).list();  
+    		                                                     .onField("inactivecode")
+    		                                                     .matching("N")    		                                                  
+    	                                                         .createQuery();
+	       
+	   // wrap Lucene query in a javax.persistence.Query
+       org.hibernate.Query fullTextQuery = fullTextSession.createFullTextQuery(luceneQuery, Item.class).setCacheable(true);
+ 	   items = fullTextQuery.setCacheable(true).list();     
+      
    	   return items;
 	}
 	
@@ -100,7 +98,6 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	 *  itemcode and materialcategory depend on the input exactmatch flag. If 'exactmatch' in input, use LIKE, otherwise, use exact match 
 	 */
 	@Override
-	@Loggable(value = LogLevel.DEBUG)
 	@Transactional(readOnly=true)
 	@SuppressWarnings("unchecked")
 	public List<Item> getItemsByQueryParameters(MultivaluedMap<String, String> queryParams) throws BedDAOException{
@@ -287,26 +284,31 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
         return items;	
     }
 	
+    //------------------------------- creation DB operation -------------------------//
+	
 	@Override
-	@Loggable(value = LogLevel.DEBUG)
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 	public String createItem(Item item){
 		return (String)save(sessionFactory.getCurrentSession(), item); 
 	}
 	
+	//------------------------------- update DB operation -------------------------//
+	
 	@Override
-	@Loggable(value = LogLevel.DEBUG)
 	public void updateItem(Session session, Item item){
 		update(session, item);
 	}
 	
+	//------------------------------- deletion DB operation -------------------------//
+	
 	@Override
-	@Loggable(value = LogLevel.DEBUG)
-	@Transactional(readOnly=false, propagation=Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
+	@Transactional(readOnly=false, propagation=Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
 	public void deleteItem(Item item){
 		delete(sessionFactory.getCurrentSession(), item); 
 	}
 
+	//------------------- internal helper methods ------------------//
+	
 	private String normalizeKey(String key){
        switch(key) {
 		  case "itemcd": case "itemCode": case "itemId": case "itemid": 

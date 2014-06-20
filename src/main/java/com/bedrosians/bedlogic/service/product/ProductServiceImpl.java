@@ -9,14 +9,15 @@ import javax.ws.rs.core.MultivaluedMap;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 import org.codehaus.jettison.json.JSONObject;
-
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-
+import org.hibernate.search.FullTextSession;
+import org.hibernate.search.Search;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bedrosians.bedlogic.dao.item.ItemDao;
@@ -36,12 +37,14 @@ import com.bedrosians.bedlogic.util.logger.aspect.Loggable;
 public class ProductServiceImpl implements ProductService {
 
     @Autowired
-	ItemDao itemDao;  
+	private ItemDao itemDao;  
     
     @Autowired
 	private SessionFactory sessionFactory;
-      	    	
-    @Loggable(value = LogLevel.DEBUG)
+      	    	  
+    //--------------------------------Retrieval DB Operation --------------------------//
+    
+    @Loggable(value = LogLevel.INFO)
     @Override
     @Transactional(readOnly = true)
 	public Item getProductById(String id) throws BedDAOBadParamException, BedDAOException{
@@ -61,7 +64,14 @@ public class ProductServiceImpl implements ProductService {
 		return FormatUtil.process(item);
 	}
 
-	@Loggable(value = LogLevel.DEBUG)
+    @Loggable(value = LogLevel.INFO)
+    @Override
+    @Transactional(readOnly = true)
+	public List<Item> getActiveAndShownOnWebsiteProducts() throws BedDAOBadParamException, BedDAOException{
+    	return itemDao.getActiveAndShownOnWebsiteItems();
+	}
+    
+	@Loggable(value = LogLevel.INFO)
 	@Override
 	public List<Item> getProducts(MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException, BedDAOException{
 		if(queryParams == null || queryParams.isEmpty()){
@@ -87,7 +97,9 @@ public class ProductServiceImpl implements ProductService {
 		return processedItems;
 	}
 	
-	@Loggable(value = LogLevel.DEBUG)
+	//--------------------------------Creation DB Operation --------------------------//
+	
+	@Loggable(value = LogLevel.INFO)
 	@Override
 	public String createProduct(JSONObject jsonObj) throws BedDAOBadParamException, BedDAOException, BedResException{  	
 		String itemCode = JsonUtil.validateItemCode(jsonObj);
@@ -108,7 +120,11 @@ public class ProductServiceImpl implements ProductService {
 	    }	
    	    catch(Exception e){
 		  e.printStackTrace();
-		  if(e.getCause() != null)
+		  if(e != null && e.getMessage().contains("constraint [ims_id]"))
+			  throw new BedDAOBadParamException("Invalid Item code, since it is already existing in the database");
+		  else if(e.getMessage().contains("constraint [vendor_apv_fkey]"))
+			  throw new BedDAOBadParamException("Invalid vendor number (ID), since it cannot be found in the vendor table");
+		  else if(e.getCause() != null)
 	  	     throw new BedDAOException("Error occured during createProduct(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
 	  	  else
 	  	     throw new BedDAOException("Error occured during createProduct(), due to: " +  e.getMessage());	
@@ -116,9 +132,11 @@ public class ProductServiceImpl implements ProductService {
 	  return id;		 	
     }
 	
-	@Loggable(value = LogLevel.DEBUG)
+	//--------------------------------Update DB Operation --------------------------//
+	
+	@Loggable(value = LogLevel.INFO)
 	@Override
-	@Transactional(isolation = Isolation.REPEATABLE_READ)
+	@Transactional(propagation=Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ) 
 	public void updateProduct(JSONObject jsonObj) throws BedDAOBadParamException, BedDAOException, BedResException{
 		String itemCode = JsonUtil.validateItemCode(jsonObj);
 		Item itemFromInput = (Item)JsonUtil.jsonObjectToPOJO(jsonObj, new Item());
@@ -138,17 +156,25 @@ public class ProductServiceImpl implements ProductService {
     	try{
 		   itemDao.updateItem(session,itemToUpdate);
 		}
-		catch(HibernateException hbe){
-			hbe.printStackTrace();
-			if(hbe.getCause() != null)
-		       throw new BedDAOException("Error occured during updateProduct(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+    	catch(HibernateException hbe){
+     	   if(hbe.getCause() != null)
+ 		      throw new BedDAOException("Error occured during createProduct(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+ 		   else
+ 		  	  throw new BedDAOException("Error occured during createProduct(), due to: " +  hbe.getMessage());	
+ 	    }	
+    	catch(Exception e){
+			if(e.getMessage().contains("constraint [vendor_apv_fkey]"))
+				  throw new BedDAOBadParamException("Invalid vendor number (ID), since it cannot be found in the vendor table");
+			if(e.getCause() != null)
+		       throw new BedDAOException("Error occured during updateProduct(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
 		  	else
-			   throw new BedDAOException("Error occured during updateProduct(), due to: " +  hbe.getMessage());	
+			   throw new BedDAOException("Error occured during updateProduct(), due to: " +  e.getMessage());	
 		}  
 	}
 	
-
-	@Loggable(value = LogLevel.DEBUG)
+	//--------------------------------Deletion DB Operation --------------------------//
+	
+	@Loggable(value = LogLevel.INFO)
 	@Override
     public void deleteProductById(String id) throws BedDAOBadParamException, BedDAOException{
 	    if(id == null || id.length() == 0)
@@ -167,4 +193,24 @@ public class ProductServiceImpl implements ProductService {
 		}  
 	}
 	
+	@Loggable(value = LogLevel.INFO)
+	@Override
+    public void deleteProduct(JSONObject jsonObj) throws BedDAOBadParamException, BedDAOException{
+		String itemCode = JsonUtil.validateItemCode(jsonObj);
+		deleteProductById(itemCode);
+	}
+
+	 /* This method is used to create Lucene indexes for the existing data in database */
+    @Override
+    public boolean initializeIndex(){
+    	FullTextSession fullTextSession = Search.getFullTextSession(sessionFactory.openSession());
+    	try{
+    		fullTextSession.createIndexer().startAndWait();
+    		return true;
+    	}
+    	catch(InterruptedException e){
+    		e.printStackTrace();
+    		return false;
+    	}
+    }
 }
