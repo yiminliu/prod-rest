@@ -25,11 +25,13 @@
        <baseUri>/home/yiminliu/</baseUri>
        <jdkLevel>1.7</jdkLevel>
        <org.springframework-version>4.0.5.RELEASE</org.springframework-version>
+       <spring-security.version>3.2.4.RELEASE</spring-security.version>
        <aspectj.version>1.6.11</aspectj.version>
        <hibernate.version>4.3.5.Final</hibernate.version>
+       <hibernate-search.version>4.5.1.Final</hibernate-search.version>
        <ehcache.version>2.8.0</ehcache.version>
        <jersey.version>1.13</jersey.version>
-       <jackson-mapper-asl.version>1.9.13</jackson-mapper-asl.version>
+       <jackson.version>1.9.13</jackson.version>
        <jaxb-api.version>2.2.4</jaxb-api.version>
        <junit.version>4.11</junit.version>
        <apache-commons-logging.version>1.1.1</apache-commons-logging.version>
@@ -37,7 +39,8 @@
        <slf4j.version>1.7.5</slf4j.version>
        <logback.version>1.1.2</logback.version>
        <logback-ext-spring.version>0.1.2</logback-ext-spring.version>
-       <jetty.version>6.1.10</jetty.version>   
+       <!-- <jetty.version>6.1.10</jetty.version>-->   
+       <jetty.version>8.1.7.v20120910</jetty.version>
     </properties>
     
     <build>
@@ -67,8 +70,7 @@
 		           <server>TomcatServer</server>
 		           <path>C:/Program Files/Java/Apache/apache-tomcat-7.0.47/webapps</path>
 	            </configuration>
-           </plugin>-->
-           
+           </plugin>-->          
            <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>maven-jetty-plugin</artifactId>
@@ -76,6 +78,10 @@
                 <configuration>
                   <scanIntervalSeconds>10</scanIntervalSeconds>
                   <war>${basedir}/target/bedlogic.war</war>
+                  <!-- new -->
+                  <webAppConfig>
+                       <defaultsDescriptor>${basedir}/src/main/webapp/WEB-INF/web.xml</defaultsDescriptor>
+                  </webAppConfig>
                   <webApp> 
                      <contextPath>/bedlogic</contextPath>
                   </webApp>
@@ -118,7 +124,7 @@
     </build>
         
 	<dependencies>        	
-	  <!-- Spring  -->
+	  <!-- Spring Framework -->
  		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
@@ -188,21 +194,33 @@
 		<dependency>
 		    <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
-            <version>3.2.3.RELEASE</version>
+            <version>${spring-security.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
-            <version>3.2.3.RELEASE</version>
+            <version>${spring-security.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
-            <version>3.2.3.RELEASE</version>
+            <version>${spring-security.version}</version>
         </dependency>	
-		
+	
+	    <dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>${aspectj.version}</version>
+		</dependency>
+ 
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>${aspectj.version}</version>
+		</dependency>
+			
 		<!--Jersey -->
 		
         <!--  includes jersey-server jersey-json jersey-client
@@ -261,15 +279,8 @@
 				</exclusion>
 			</exclusions>
         </dependency>
-              		
-        <!-- jackson -->      		
-        <dependency>
-	      <groupId>com.fasterxml.jackson.core</groupId>
-          <artifactId>jackson-databind</artifactId>
-       	  <version>2.0.2</version>
-         </dependency>
          
-		 <!-- hibernate -->
+		 <!-- Hibernate -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>	
@@ -281,8 +292,40 @@
 	      <artifactId>hibernate-commons-annotations</artifactId>
 	      <version>4.0.4.Final</version>
         </dependency>
+        
+        <!-- Hibernate Search -->         
+        <dependency>
+           <groupId>org.hibernate</groupId>
+           <artifactId>hibernate-search</artifactId>
+           <version>${hibernate-search.version}</version>
+        </dependency>
+
+        <dependency>
+           <groupId>org.hibernate</groupId>
+           <artifactId>hibernate-search-analyzers</artifactId>
+           <version>${hibernate-search.version}</version>
+        </dependency>
+
+        <dependency>
+           <groupId>org.hibernate</groupId>
+           <artifactId>hibernate-search-infinispan</artifactId>
+           <version>${hibernate-search.version}</version>
+        </dependency>
             	
-       	<!-- postgresql -->	
+        <!-- Hibernate EhCache -->
+        <dependency>
+           <groupId>org.hibernate</groupId>
+           <artifactId>hibernate-ehcache</artifactId>
+           <version>${hibernate.version}</version>
+        </dependency>
+            	
+        <dependency>
+	        <groupId>joda-time</groupId>
+	        <artifactId>joda-time-hibernate</artifactId>
+	        <version>1.3</version>
+        </dependency>
+            	
+       	<!-- Postgresql -->	
 		<dependency>
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>
@@ -334,25 +377,7 @@
 	        <artifactId>logback-ext-spring</artifactId>
 	        <version>${logback-ext-spring.version}</version>
          </dependency>
-    
-        <dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjrt</artifactId>
-			<version>${aspectj.version}</version>
-		</dependency>
- 
-		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjweaver</artifactId>
-			<version>${aspectj.version}</version>
-		</dependency>
-		
-        <dependency>
-           <groupId>org.hibernate</groupId>
-           <artifactId>hibernate-ehcache</artifactId>
-           <version>${hibernate.version}</version>
-        </dependency>
-                 
+        
 	     <!-- JUnit -->					
 		<dependency>
 			<groupId>junit</groupId>
@@ -360,18 +385,26 @@
 			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>	
+		
+		<!-- Jackson Json -->
 		<dependency>
 		   <groupId>org.codehaus.jackson</groupId>
 		   <artifactId>jackson-mapper-asl</artifactId>
-		   <version>1.9.13</version>
+		   <version>${jackson.version}</version>
 	    </dependency>
 	    
 	    <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-core-asl</artifactId>
-            <version>1.9.13</version>
+            <version>${jackson.version}</version>
         </dependency>
-        
+           		
+        <dependency>
+	      <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-databind</artifactId>
+       	  <version>2.0.2</version>
+         </dependency>
+         
 		<dependency>
             <groupId>net.minidev</groupId>
             <artifactId>json-smart</artifactId>
@@ -383,11 +416,6 @@
 	        <artifactId>commons-codec</artifactId>
 	        <version>1.2</version>
         </dependency>	
- 
-        <dependency>
-	        <groupId>joda-time</groupId>
-	        <artifactId>joda-time-hibernate</artifactId>
-	        <version>1.3</version>
-        </dependency>
+
 	</dependencies>		
  </project>
