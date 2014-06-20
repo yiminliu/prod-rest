@@ -60,7 +60,10 @@
                 <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>  
                 <prop key="hibernate.cache.provider_configuration_file_resource_path">ehcache.xml</prop> 
                 <prop key="hibernate.cache.use_structured_entries">${hibernate.cache.use_structured_entries}</prop>     
-                <prop key="hibernate.cache.generate_statistics">${hibernate.cache.generate_statistics}</prop>          
+                <prop key="hibernate.cache.generate_statistics">${hibernate.cache.generate_statistics}</prop> 
+                <prop key="hibernate.search.default.directory_provider">filesystem</prop>
+                <prop key="hibernate.search.default.indexBase">target/lucenceIndex</prop>  
+                <!-- <prop key="hibernate.search.indexing_strategy">manual</prop>-->
             </props>  
         </property>  
     </bean>
