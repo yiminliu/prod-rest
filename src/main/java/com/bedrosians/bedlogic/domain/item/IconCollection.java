@@ -23,6 +23,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import org.hibernate.search.annotations.ContainedIn;
 
 import com.bedrosians.bedlogic.domain.item.enums.OriginCountry;
 
@@ -47,53 +48,15 @@ public class IconCollection implements java.io.Serializable {
 	private Boolean unglazed;
 	private Boolean rectifiedEdge;
 	private Boolean chiseledEdge;
-	private Boolean versaillesPattern;// = false;
+	private Boolean versaillesPattern;
 	private Boolean recycled;
 	private Boolean postRecycled;
 	private Boolean preRecycled;
-	private Boolean leadPointIcon;// = false;
-	private Boolean greenFriendlyIcon;// = false;
+	private Boolean leadPointIcon;
+	private Boolean greenFriendlyIcon;
 	private Boolean coefficientOfFriction;
 	private Integer version;
 	private Item item;
-	
-	public IconCollection() {
-	}
-	
-	public IconCollection(String itemCode) {
-		this.itemCode = itemCode;
-	}
-
-	public IconCollection(String itemCode, OriginCountry madeInCountry,
-			Boolean exteriorProduct, Boolean adaAccessibility,
-			Boolean throughColor, Boolean colorBody, Boolean inkJet,
-			Boolean glazed, Boolean unglazed, Boolean rectifiedEdge,
-			Boolean chiseledEdge, Boolean versaillesPattern, Boolean recycled,
-			Boolean postRecycled, Boolean preRecycled, Boolean leadPointIcon,
-			Boolean greenFriendlyIcon, Boolean coefficientOfFriction,
-			Integer version, Item item) {
-		super();
-		this.itemCode = itemCode;
-		this.madeInCountry = madeInCountry;
-		this.exteriorProduct = exteriorProduct;
-		this.adaAccessibility = adaAccessibility;
-		this.throughColor = throughColor;
-		this.colorBody = colorBody;
-		this.inkJet = inkJet;
-		this.glazed = glazed;
-		this.unglazed = unglazed;
-		this.rectifiedEdge = rectifiedEdge;
-		this.chiseledEdge = chiseledEdge;
-		this.versaillesPattern = versaillesPattern;
-		this.recycled = recycled;
-		this.postRecycled = postRecycled;
-		this.preRecycled = preRecycled;
-		this.leadPointIcon = leadPointIcon;
-		this.greenFriendlyIcon = greenFriendlyIcon;
-		this.coefficientOfFriction = coefficientOfFriction;
-		this.version = version;
-		this.item = item;
-	}
 
 	@JsonIgnore
 	@GenericGenerator(name = "generator", strategy = "foreign", parameters = @Parameter(name = "property", value = "item"))
@@ -111,6 +74,7 @@ public class IconCollection implements java.io.Serializable {
 	@JsonIgnore
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="item_code")
+	@ContainedIn
 	public Item getItem() {
 		return this.item;
 	}
@@ -282,6 +246,44 @@ public class IconCollection implements java.io.Serializable {
 	
     private void setVersion(Integer version){
 		this.version = version;
+	}
+	
+    public IconCollection() {
+	}
+	
+	public IconCollection(String itemCode) {
+		this.itemCode = itemCode;
+	}
+
+	public IconCollection(String itemCode, OriginCountry madeInCountry,
+			Boolean exteriorProduct, Boolean adaAccessibility,
+			Boolean throughColor, Boolean colorBody, Boolean inkJet,
+			Boolean glazed, Boolean unglazed, Boolean rectifiedEdge,
+			Boolean chiseledEdge, Boolean versaillesPattern, Boolean recycled,
+			Boolean postRecycled, Boolean preRecycled, Boolean leadPointIcon,
+			Boolean greenFriendlyIcon, Boolean coefficientOfFriction,
+			Integer version, Item item) {
+		super();
+		this.itemCode = itemCode;
+		this.madeInCountry = madeInCountry;
+		this.exteriorProduct = exteriorProduct;
+		this.adaAccessibility = adaAccessibility;
+		this.throughColor = throughColor;
+		this.colorBody = colorBody;
+		this.inkJet = inkJet;
+		this.glazed = glazed;
+		this.unglazed = unglazed;
+		this.rectifiedEdge = rectifiedEdge;
+		this.chiseledEdge = chiseledEdge;
+		this.versaillesPattern = versaillesPattern;
+		this.recycled = recycled;
+		this.postRecycled = postRecycled;
+		this.preRecycled = preRecycled;
+		this.leadPointIcon = leadPointIcon;
+		this.greenFriendlyIcon = greenFriendlyIcon;
+		this.coefficientOfFriction = coefficientOfFriction;
+		this.version = version;
+		this.item = item;
 	}
 	
     @Transient
