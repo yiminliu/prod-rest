@@ -50,9 +50,9 @@ public class ProductsResource
      */
 
 	@Autowired
-	ProductService productService;
+	private ProductService productService;
 	@Autowired
-	KeymarkUcUserSecurityService keymarkUcUserSecurityService;
+	private KeymarkUcUserSecurityService keymarkUcUserSecurityService;
 	
 	 /**
 	* This method retrieves a list of products for the given query condition, or a list of all active products if no query condition is specified .
@@ -143,7 +143,7 @@ public class ProductsResource
 	
    /**
 	* This method creates a product based on the given information.
-	* @param Json object containing the information for new product to create.
+	* @param Json object containing the information to create a new product.
 	* @return Json object representing the status and created product id.
 	* @exception BedDAOBadParamException, BedDAOBadException and BedResException on input error and server side condition errors as well.
 	*/
@@ -188,7 +188,7 @@ public class ProductsResource
 	
 	/**
 	* This method updates a product based on the given product info.
-	* @param A Json object containing information to upate.
+	* @param A Json object containing product information to upate.
 	* @return Response object to include the status.
 	* @exception BedDAOBadParamException, BedDAOBadException and BedResException on input error and server side condition errors as well.
 	*/
@@ -223,6 +223,45 @@ public class ProductsResource
             response = BedResExceptionMapper.MapToResponse(e);
         }
         
+        return response;
+    }
+	
+	/**
+	* This method deletes a product based on the given item code.
+	* @param A Json object containing product information to upate.
+	* @return Json object representing the status.
+	* @exception BedDAOBadParamException, BedDAOBadException and BedResException on input error and server side condition errors as well.
+    */
+	@DELETE
+    @Produces({MediaType.APPLICATION_JSON})
+	@Consumes(MediaType.APPLICATION_JSON)
+    public Response deleteProduct(@Context HttpHeaders requestHeaders, JSONObject inputJsonObj)
+    {
+        Response    response;
+
+        try
+        {
+        	//Check user security
+        	doUserSecurityCheck(requestHeaders, DBOperation.DELETE);
+                 
+            //delete product from database with the given product info
+            productService.deleteProduct(inputJsonObj);
+                
+            //Return json reponse
+            response = Response.ok(MediaType.APPLICATION_JSON).build();
+        }
+        catch (BedDAOBadParamException e)
+        {
+        	response = BedDAOExceptionMapper.MapToResponse(e);
+        }
+        catch (BedDAOException e)
+        {
+            response = BedDAOExceptionMapper.MapToResponse(e);
+        }
+        catch (BedResException e)
+        {
+            response = BedResExceptionMapper.MapToResponse(e);
+        }
         return response;
     }
 	
@@ -277,5 +316,16 @@ public class ProductsResource
         
         //Authenticate the user
         keymarkUcUserSecurityService.doSecurityCheck(userType, userCode, operation);
+	}
+	
+	/* This method is used to create Lucene indexes for the existing data in database */
+	@GET
+	@Path("/index")
+	public Response createInitialLuceneIndex(){
+		 boolean initialzed =  productService.initializeIndex();
+		 if(initialzed)
+		    return Response.status(200).entity("Index is created").build();
+		else
+			return Response.status(500).entity("Failed creating index").build();
 	}
 }
