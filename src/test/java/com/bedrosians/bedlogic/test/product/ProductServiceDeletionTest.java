@@ -19,7 +19,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bedrosians.bedlogic.domain.item.ColorHue;
 import com.bedrosians.bedlogic.domain.item.Item;
 import com.bedrosians.bedlogic.domain.item.enums.DesignLook;
 import com.bedrosians.bedlogic.domain.item.enums.DesignStyle;
@@ -55,44 +54,10 @@ public class ProductServiceDeletionTest {
 	ProductService productService;
 	@Autowired
 	KeymarkUcUserSecurityService keymarkUcUserSecurityService;
-	
-	
-	private static String testItemId = null;
-	private static String testItemId2 = null;
-	private static String testNewItemId = null;
-	private static String testDescription = null;
-	private static String testFullDescription = null;
-	private static String testColor = null;
-	private static String testColorCategory = null;
-    private static String testSeriesName = null;
-    private static String testItemTypeCode = null;
-    private static String testCategory = null;
-    private static String testMaterialCategory = null;
-    private static String testMaterialStyle = null;
-    private static String testMaterialClass = null;
-    private static String testMaterialFeature = null;
-    private static String testOrigin = null;
-    static private String itemcode = "AECBUB217NR";
-    static private String testSeriesname = "builder";
  	
 	@Before
 	public void setup(){
-		testItemId = "Test"; 
-		testItemId2 = "AECBUB217NR"; 
-		testDescription = "13X13 Breccia Beige";
-	    testFullDescription = "Field Tile 13x13 Breccia Beige";
-	    //testColor = "Beige";
-	    testColor = "White";
-	    testColorCategory = "CLEAR";
-	    testSeriesName = "Sky";
-	    testItemTypeCode = "#";
-	    testCategory = "BRECCIA";
-	    testMaterialCategory = "Tool";
-	    testMaterialFeature = "LE";
-	    testMaterialStyle = "FL";
-	    testMaterialClass ="DECOR";
-	    testOrigin = "China";
-	    testNewItemId = "TEST1";
+	
 	}
 	   
 	//@Test
@@ -106,19 +71,21 @@ public class ProductServiceDeletionTest {
 			e.printStackTrace();
 		}
 	}
-	// @Test
-	 public void testDeleteItemById()throws Exception {
-	    productService.deleteProductById("NEWITEMCODE");
-	     System.out.println("testUpdateItem Done");
+	
+	@Test
+	public void testDeleteItemById()throws Exception {
+	    productService.deleteProductById("NEWITEMCODE3");
+	     System.out.println("testDeleteItem Done");
 	        
 	 }
-	 
-	 //@Test
-	 public void testDeleteItem()throws Exception {
-		 MultivaluedMap<String,String> params = new MultivaluedMapImpl();
-	     params.put("itemcd", Arrays.asList(new String[]{"TEST9"})); 
-	     productService.deleteProduct(params);
-	     System.out.println("testUpdateItem Done");
+	
+	@Test
+	public void testDeleteItem()throws Exception {
+		Item item = new Item("NEWITEMCODE3");
+		String jStringItemInfo = "{\"itemcode\":\"newItemcode3\"}";
+		JSONObject params = new JSONObject(jStringItemInfo);
+	    productService.deleteProduct(params);
+	     System.out.println("testDeleteItem Done");
 	        
 	 }
 	

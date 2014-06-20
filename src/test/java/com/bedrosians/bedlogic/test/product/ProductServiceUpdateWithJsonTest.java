@@ -1,16 +1,8 @@
 package com.bedrosians.bedlogic.test.product;
 
-import java.io.StringWriter;
-import java.io.Writer;
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
-import java.util.Random;
 
-import javax.ws.rs.core.MultivaluedMap;
-
-import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,24 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.bedrosians.bedlogic.domain.item.ColorHue;
 import com.bedrosians.bedlogic.domain.item.IconCollection;
 import com.bedrosians.bedlogic.domain.item.Item;
-import com.bedrosians.bedlogic.domain.item.enums.DesignLook;
-import com.bedrosians.bedlogic.domain.item.enums.DesignStyle;
-import com.bedrosians.bedlogic.domain.item.enums.Edge;
-import com.bedrosians.bedlogic.domain.item.enums.Grade;
-import com.bedrosians.bedlogic.domain.item.enums.Status;
-import com.bedrosians.bedlogic.domain.item.enums.SurfaceApplication;
-import com.bedrosians.bedlogic.domain.item.enums.SurfaceFinish;
-import com.bedrosians.bedlogic.domain.item.enums.SurfaceType;
-import com.bedrosians.bedlogic.exception.BedDAOException;
-import com.bedrosians.bedlogic.models.Products;
 import com.bedrosians.bedlogic.service.product.ProductService;
-import com.bedrosians.bedlogic.util.JsonWrapper.ListWrapper;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
+import com.bedrosians.bedlogic.util.ImsDataUtil;
 
 import static org.junit.Assert.*;
 
@@ -55,7 +34,7 @@ public class ProductServiceUpdateWithJsonTest {
 	@Autowired
 	ProductService productService;
 	
-	private String id = "NEWITEMCODE";
+	private String id = "NEWITEMCODE3";
 	
  	
 	@Before
@@ -63,7 +42,172 @@ public class ProductServiceUpdateWithJsonTest {
 	
 	}
 	
-	 //@Test
+	@Test
+	 public void testUpdateItemWithColorCategoryJsonObject() throws Exception {
+	        System.out.println("testUpdateItemWithJsonObject: ");
+	        JSONObject params = new JSONObject(jStringColorCategory);
+	        productService.updateProduct(params);
+	        
+	        Item item = productService.getProductById(id);
+	        assertEquals("RED:BLACK", item.getColorcategory());
+	        assertEquals("[RED, BLACK]", item.getColorhues().toString());
+	}  
+	
+	@Test
+	 public void testUpdateItemColorhuesWithJsonObject() throws Exception {
+	        System.out.println("testUpdateItemWithJsonObject: ");
+	        JSONObject params = new JSONObject(jStringWithColorHues);
+	        productService.updateProduct(params);
+	        
+	        Item item = productService.getProductById(id);
+	        assertEquals("GREEN", item.getColorcategory());
+	        assertEquals("[GREEN]", item.getColorhues().toString());
+	}  
+	
+	@Test
+	 public void testUpdateItemDesccriptionWithJsonObject() throws Exception {
+	        System.out.println("testUpdateItemWithJsonObject: ");
+	        JSONObject params = new JSONObject(jStringDescription);
+	        productService.updateProduct(params);
+	}
+	
+	@Test
+	 public void testUpdateItemMaterialWithJsonObject() throws Exception {
+	        System.out.println("testUpdateItemWithJsonObject: ");
+	        JSONObject params = new JSONObject(jStringMaterialInfo);
+	        productService.updateProduct(params);
+	        	        
+	        Item item = productService.getProductById(id);
+	        
+	      
+	        //material
+	        assertEquals("Porcelain", item.getMaterial().getMaterialtype());
+	        assertEquals("CTSRC", item.getMaterial().getMaterialclass());
+	        assertEquals("FW", item.getMaterial().getMaterialstyle());
+	        assertEquals("Trim", item.getMaterial().getMaterialcategory());
+	      
+	 }      
+	   
+	 @Test
+	 public void testUpdateItemDimensionWithJsonObject() throws Exception {
+	        System.out.println("testUpdateItemWithJsonObject: ");
+	        JSONObject params = new JSONObject(jStringWithDimensions);
+	        productService.updateProduct(params);
+	        	        
+	        Item item = productService.getProductById(id);
+	        
+	        //series
+	        assertEquals("Athena", item.getSeries().getSeriesname());
+	        assertEquals("Ash", item.getSeries().getSeriescolor());
+	   
+	        //material
+	        assertEquals("Porcelain", item.getMaterial().getMaterialtype());
+	        assertEquals("CTSRC", item.getMaterial().getMaterialclass());
+	        assertEquals("FW", item.getMaterial().getMaterialstyle());
+	        assertEquals("Trim", item.getMaterial().getMaterialcategory());
+	        
+	        //dimensions
+	        assertEquals("11-13/16", item.getDimensions().getLength());
+	        assertEquals("11-13/16", item.getDimensions().getWidth());
+	        assertEquals("3/8", item.getDimensions().getThickness());
+	        assertEquals(Float.valueOf("12.0"), item.getDimensions().getNominallength());
+	        assertEquals(Float.valueOf("12.0"), item.getDimensions().getNominalwidth());
+	        assertEquals("E", item.getDimensions().getSizeunits());
+	        assertEquals("E", item.getDimensions().getThicknessunit());
+	 }      
+	        
+	@Test
+	 public void testUpdateItemPurchaserWithJsonObject() throws Exception {
+	        System.out.println("testUpdateItemWithJsonObject: ");
+	        JSONObject params = new JSONObject(jStringDescription);
+	        productService.updateProduct(params);
+	}
+	
+	@Test
+	 public void testUpdateItemPriceWithJsonObject() throws Exception {
+	        System.out.println("testUpdateItemWithJsonObject: ");
+	        JSONObject params = new JSONObject(jStringWithPriceAndCost);
+	        productService.updateProduct(params);
+	        
+	        Item item = productService.getProductById(id);
+	              
+	        //price
+            assertEquals("18.3800", item.getPrice().getListprice().toString());
+	        assertEquals("18.3800", item.getPrice().getSellprice().toString());
+	        assertEquals("SHT", item.getPrice().getPriceunit());
+	        assertEquals(new Float(12.0), item.getPrice().getSellpricemarginpct());
+	}
+	
+	@Test
+	 public void testUpdateItemApplicationsWithJsonObject() throws Exception {
+	        System.out.println("testUpdateItemApplicationWithJsonObject: ");
+	        JSONObject params = new JSONObject(jStringWithApplicationsInfo);
+	        productService.updateProduct(params);
+	        	        
+	        Item item = productService.getProductById(id);
+   
+	        assertEquals("FR:WR:CR:SR:PR", item.getApplications().getResidential());
+            assertEquals("FL:WL:CL:SL:PL", item.getApplications().getLightcommercial());
+            assertEquals("FC:WC:CC:SC:PC", item.getApplications().getCommercial());
+            
+            assertEquals("[FR,WR,CR,SR,PR,FL,WL,CL,SL,PL,FC,WC,CC,SC,PC]", item.getUsage().toString());
+	}
+	
+	@Test
+	 public void testUpdateItemWithUsage() throws Exception {
+	        System.out.println("testUpdateItemApplicationWithJsonObject: ");
+	        JSONObject params = new JSONObject(jStringWithUsageInfo);
+	        productService.updateProduct(params);
+	        	        
+	        Item item = productService.getProductById(id);
+  
+	        assertEquals("FR:WR:CR:SR:PR", item.getApplications().getResidential());
+            assertEquals("FL:WL:CL:SL:PL", item.getApplications().getLightcommercial());
+            assertEquals("FC:WC:CC:SC:PC", item.getApplications().getCommercial());
+            
+            assertEquals("[FR,WR,CR,SR,PR,FL,WL,CL,SL,PL,FC,WC,CC,SC,PC]", item.getUsage().toString());
+	        
+               
+	}
+	
+	@Test
+	 public void testUpdateItemWithNotes() throws Exception {
+	        System.out.println("testUpdateItemApplicationWithJsonObject: ");
+	        JSONObject params = new JSONObject(jStringWithNotesInfo);
+	        productService.updateProduct(params);
+	        	        
+	        Item item = productService.getProductById(id);
+ 
+	        assertEquals("test po note", item.getNotes().getPonotes());
+	        assertEquals("test note1", item.getNotes().getBuyernotes());
+	        assertEquals("test note2", item.getNotes().getInternalnotes());
+	        assertEquals("test note3", item.getNotes().getInvoicenotes());
+              
+	}
+	
+	@Test
+	 public void testUpdateItemTestSpecs() throws Exception {
+	        System.out.println("testUpdateItemApplicationWithJsonObject: ");
+	        JSONObject params = new JSONObject(jStringWithTestSpecs);
+	        productService.updateProduct(params);
+	        	        
+	        Item item = productService.getProductById(id);
+
+	      //test spec
+		    assertEquals(Float.valueOf("0.5"), item.getTestSpecification().getWaterabsorption());
+	        assertEquals(Float.valueOf("0.6"), item.getTestSpecification().getScratchresistance());
+	        assertEquals(Float.valueOf("0.7"), item.getTestSpecification().getPeiabrasion());
+	        assertEquals(Float.valueOf("0.8"), item.getTestSpecification().getScofwet());
+	        assertEquals(Float.valueOf("0.0"), item.getTestSpecification().getScofdry());
+	        //assertEquals(Float.valueOf("0.6"), item.getTestSpecification().getBreakingstrength());
+	        assertEquals(Float.valueOf("0.0"), item.getTestSpecification().getDcof());
+	        assertEquals(Float.valueOf("0.0"), item.getTestSpecification().getMoh());
+	        assertEquals(Float.valueOf("0.0"), item.getTestSpecification().getPreconsummer());
+	        assertEquals(Float.valueOf("0.0"), item.getTestSpecification().getPosconsummer());
+             
+	}
+	
+	 @Test
 	 public void testUpdateItemWithBasicImsInfoJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringFullItemInfo);
@@ -158,7 +302,7 @@ public class ProductServiceUpdateWithJsonTest {
 	        assertEquals("Italy", item.getCountryorigin());
 	        assertEquals("N", item.getInactivecode());
 	        assertEquals("update 2x2 Athena Mosaic on 12x12 Sheet", item.getItemdesc().getFulldesc());    
-		    assertEquals("BEIGE", item.getColorcategory());
+		    assertEquals("BEIGE", item.getColorhues());
 		    //assertTrue(item.getColorhues().contains("BEIGE"));
 		    assertEquals("F", Character.toString(item.getItemtypecd()));
 		    //assertEquals("test", item.getType());
@@ -179,7 +323,7 @@ public class ProductServiceUpdateWithJsonTest {
 	        System.out.println("newly Updated Item id  = " + id);
 	 }
 	 
-	 //@Test
+	 @Test
 	 public void testUpdateItemWithAllImsInfoNoUnitAndPriceJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringFullItemInfoWithouUnitAndPrice);
@@ -225,8 +369,9 @@ public class ProductServiceUpdateWithJsonTest {
 	        assertEquals("ATHENA", item.getItemcategory());
 	        assertEquals("Italy", item.getCountryorigin());
 	        assertEquals("N", item.getInactivecode());
-	        assertEquals("2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)", item.getItemdesc().getFulldesc());    
-		    assertEquals("RED", item.getColorcategory());
+	        assertEquals("updated 2x2 Athena Mosaic on 12x12 Sheet", item.getItemdesc().getFulldesc()); 
+	        assertEquals("RED", item.getColorcategory());
+		    assertEquals("[RED]", item.getColorhues().toString());
 		    //assertTrue(item.getColorhues().contains("BEIGE"));
 		    assertEquals("F", Character.toString(item.getItemtypecd()));
 		    //assertEquals("test", item.getType());
@@ -248,7 +393,7 @@ public class ProductServiceUpdateWithJsonTest {
 	 }
 	 //-------------- Test Associations -------------//
 	 
-	 //@Test
+/*	 //@Test
 	 public void testUpdateItemWithColorHuesJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithColorHues: ");
 	        JSONObject params = new JSONObject(jStringWithColorHues);
@@ -275,8 +420,8 @@ public class ProductServiceUpdateWithJsonTest {
 	        } 
 	        assertTrue("BEIGE".equals(item.getColorcategory()) || "RED".equals(item.getColorcategory()));
 	 }
-	 
-	 //@Test
+*/	 
+	 @Test
 	 public void testUpdateItemWithNewFeatureByJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithNewFeature);            
@@ -298,13 +443,14 @@ public class ProductServiceUpdateWithJsonTest {
 	        assertEquals(new Integer("4"), item.getImsNewFeature().getWarranty());
 	        assertEquals("2", item.getImsNewFeature().getRecommendedGroutJointMin());
 	        assertEquals("3", item.getImsNewFeature().getRecommendedGroutJointMax());
-	        assertEquals(new Date(), item.getImsNewFeature().getLastModifiedDate());
+	        //assertEquals(new Date(), item.getImsNewFeature().getLastModifiedDate());
 	 }
 	 
-	 //@Test
+	 @Test
 	 public void testUpdateItemWithUnitAndVendorJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithUnitAndVendor: ");
-	        JSONObject params = new JSONObject(jStringWithUnitAndVendor);
+	        //JSONObject params = new JSONObject(jStringWithUnitAndVendor);
+	        JSONObject params = new JSONObject(jStringWithNewVendorSystem);
 	        productService.updateProduct(params);
 	        
 	        Item item = productService.getProductById(id);
@@ -356,7 +502,7 @@ public class ProductServiceUpdateWithJsonTest {
 	        System.out.println("newly Updated Item id  = " + id);
 	 }
 	 
-	 /*//@Test
+	 @Test
 	 public void testUpdateItemWithNewNotesJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithNewNotes: ");
 	        JSONObject params = new JSONObject(jStringWithNewNotes);
@@ -364,13 +510,13 @@ public class ProductServiceUpdateWithJsonTest {
 	        
 	        System.out.println("newly Updated Item id  = " + id);
 	        Item item = productService.getProductById(id);
-	        for(Note note : item.getNewNoteSystem()){
+	        //for(Note note : item.getNewNoteSystem()){
 	            //assertTrue(note.g"First", item.getNewNoteSystem());
-	        }    
+	        //}    
 	 }
-	 */
-	 //@Test
-	 public void testUpdateItemWithNewIconJsonObject() throws Exception {
+	 
+	 @Test
+	 public void testUpdateItemWithNewIconSystemJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithNewIcon: ");
 	        JSONObject params = new JSONObject(jStringWithNewIcons);
 	        productService.updateProduct(params);
@@ -381,8 +527,8 @@ public class ProductServiceUpdateWithJsonTest {
 	        assertEquals("China", icon.getMadeInCountry().getDescription());
 	        assertEquals(false, icon.getExteriorProduct());
 	        assertEquals(false, icon.getAdaAccessibility());
-	        assertEquals(true, icon.getThroughColor());
-	        assertEquals(false, icon.getColorBody());
+	        assertEquals(false, icon.getThroughColor());
+	        assertEquals(true, icon.getColorBody());
 	        assertEquals(false, icon.getInkJet());
 	        assertEquals(true, icon.getGlazed());
 	        assertEquals(false, icon.getUnglazed());
@@ -393,11 +539,82 @@ public class ProductServiceUpdateWithJsonTest {
 	        assertEquals(false, icon.getPreRecycled());
 	        assertEquals(true, icon.getLeadPointIcon());
 	        assertEquals(false, icon.getGreenFriendlyIcon());
-	        assertEquals(true, icon.getCoefficientOfFriction());	   
+	        assertEquals(true, icon.getCoefficientOfFriction());
+	      
+	        /* 0 - Made in Italy
+			* 1 - Outdoor
+			* 2 - Made in USA
+			* 3 - ADA
+			* 4 - Thru Color
+			* 5 - Inkjet
+			* 6 - Recycled
+			* 7 - Color Body
+			* 8 - Glazed
+			* 9 - Rectified
+			* 10 - Unglazed
+			* 11 - Post Recycled
+			* 12 - Pre Recycled
+			* 13 - Made in China
+			* 14 - Made in Turkey
+			* 15 - Made in Mexico
+			* 16 - Coefficient of Friction
+			* 17 - Chiseled Edge
+			* 18 - Unused
+			* 19 - Unused*/
+	        assertEquals("NNNNNNNYYYNYNYNNYNNN", ImsDataUtil.convertIconCollectionToLegancyIcons(icon));
+	 }
+	 
+	 @Test
+	 public void testUpdateItemWithLagecyIconJsonObject() throws Exception {
+	        System.out.println("testUpdateItemWithNewIcon: ");
+	        JSONObject params = new JSONObject(jStringWithLagecyIcon);
+	        productService.updateProduct(params);
+	        
+	        System.out.println("newly Updated Item id  = " + id);
+	        Item item = productService.getProductById(id);
+	        IconCollection icon = item.getIconDescription();
+	        assertEquals("China", icon.getMadeInCountry().getDescription());
+	        assertEquals(false, icon.getExteriorProduct());
+	        assertEquals(false, icon.getAdaAccessibility());
+	        assertEquals(false, icon.getThroughColor());
+	        assertEquals(true, icon.getColorBody());
+	        assertEquals(false, icon.getInkJet());
+	        assertEquals(true, icon.getGlazed());
+	        assertEquals(false, icon.getUnglazed());
+	        assertEquals(true, icon.getRectifiedEdge());
+	        assertEquals(false, icon.getChiseledEdge());
+	        assertEquals(false, icon.getRecycled());
+	        assertEquals(true, icon.getPostRecycled());
+	        assertEquals(false, icon.getPreRecycled());
+	        assertEquals(true, icon.getLeadPointIcon());
+	        assertEquals(false, icon.getGreenFriendlyIcon());
+	        assertEquals(true, icon.getCoefficientOfFriction());
+	      
+	        /* 0 - Made in Italy
+			* 1 - Outdoor
+			* 2 - Made in USA
+			* 3 - ADA
+			* 4 - Thru Color
+			* 5 - Inkjet
+			* 6 - Recycled
+			* 7 - Color Body
+			* 8 - Glazed
+			* 9 - Rectified
+			* 10 - Unglazed
+			* 11 - Post Recycled
+			* 12 - Pre Recycled
+			* 13 - Made in China
+			* 14 - Made in Turkey
+			* 15 - Made in Mexico
+			* 16 - Coefficient of Friction
+			* 17 - Chiseled Edge
+			* 18 - Unused
+			* 19 - Unused*/
+	        assertEquals("NNNNNNNYYYNYNYNNYNNN", ImsDataUtil.convertIconCollectionToLegancyIcons(icon));
 	 }
 
 	 //---------- Item and associations ----------------//
-	 //@Test
+	 @Test
 	 public void testUpdateItemWithAllImsAndAssociationsByJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringFullItemAndAssociationInfo);
@@ -492,6 +709,7 @@ public class ProductServiceUpdateWithJsonTest {
 	        assertEquals("Italy", item.getCountryorigin());
 	        assertEquals("N", item.getInactivecode());
 	        assertEquals("2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)", item.getItemdesc().getFulldesc());    
+		    assertEquals("[BEIGE, YELLOW]", item.getColorhues().toString());
 		    assertEquals("BEIGE:YELLOW", item.getColorcategory());
 		    //assertTrue(item.getColorhues().contains("BEIGE"));
 		    assertEquals("F", Character.toString(item.getItemtypecd()));
@@ -569,7 +787,7 @@ public class ProductServiceUpdateWithJsonTest {
 	 			+ "\"lottype\":\"\","
 	 			+ "\"updatecd\":\"CERA-CRD\",\"directship\":\" \",\"dropdate\":null,\"itemgroupnbr\":0,"
 	 			+ "\"priorlastupdated\":\"2014-03-31\","
-	 	      	+ "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\",\"itemdesc2\":\"2x2 Mosaic\"},"
+	 	      	+ "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\"},"
 	    		+ "\"series\":{\"seriesname\":\"Athena\",\"seriescolor\":\"Ash\"},"
 	    		+ "\"material\":{\"materialtype\":\"Porcelain\",\"materialcategory\":\"Trim\",\"materialclass\":\"CTSRC\",\"materialstyle\":\"FW\",\"materialfeature\":\"\"},"
 	    		+ "\"shadevariation\":\"V2\","
@@ -586,16 +804,9 @@ public class ProductServiceUpdateWithJsonTest {
 	    		+ "\"priorVendor\":null}";
 	 
 	 String jStringWithColorHues = 
-		     "{\"itemcode\":\"newItemcode\","
-		    + "\"itemcategory\":\"ATHENA\","
- 		    + "\"countryorigin\":\"Italy\","
- 		    + "\"inactivecode\":\"N\","
- 			+ "\"showonwebsite\":\"Y\","
- 			+ "\"itemtypecd\":\"#\","
- 			+ "\"abccd\":\"C\","
- 			+ "\"itemcd2\":\"\","
+		     "{\"itemcode\":\"newItemcode3\","
  			+ "\"colorhues\":[\"GREEN\"],"
-    		+ "\"priorVendor\":null}";
+    		+ "}";
  
 	 String jStringWithMultipleColorHues = 
 		     "{\"itemcode\":\"newItemcode10\","
@@ -624,70 +835,203 @@ public class ProductServiceUpdateWithJsonTest {
  
 	 
 	 String jStringWithDimensions = 
-			    "{\"itemcode\":\"newItemcode7\","
+			    "{\"itemcode\":\"newItemcode3\","
+	 			+ "\"dimensions\":{\"nominallength\":12.0,\"nominalwidth\":12.0,"
+	 			+ "\"sizeunits\":\"E\","
+	 			+ "\"thickness\":\"3/8\","
+	 			+ "\"thicknessunit\":\"E\","
+	 			+ "\"length\":\"11-13/16\","
+	 			+ "\"width\":\"11-13/16\","
+	 			+ "\"nominalthickness\":1.0},"
+	       		+ "}";
+      
+	 String jStringMaterialInfo = 
+			   "{\"itemcode\":\"NEWITEMCODE3\","
 			    + "\"itemcategory\":\"ATHENA\","
-	 		    + "\"countryorigin\":\"Italy\","
-	 		    + "\"inactivecode\":\"N\","
-	 			+ "\"showonalysedwards\":\"N\","
-	 			+ "\"dimensions\":{\"nominallength\":12.0,\"nominalwidth\":12.0,\"sizeunits\":\"E\",\"thickness\":\"3/8\",\"thicknessunit\":\"E\",\"length\":\"11-13/16\",\"width\":\"11-13/16\",\"nominalthickness\":0.0},"
-	       		+ "\"priorVendor\":null}";
-       
-	 String jStringWithUnitAndVendor = "{\"itemcode\":\"newItemcode10\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
-	    		+ "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\",\"itemdesc2\":\"2x2 Mosaic\"},"
-	    		+ "\"units\":{\"stdunit\":\"SHT\",\"stdratio\":1.0,\"ordunit\":\"SHT\",\"ordratio\":1.0,"
+			    + "\"countryorigin\":\"Italy\","
+			    + "\"inactivecode\":\"N\","
+	    		+ "\"material\":"
+	    		+ "{\"materialtype\":\"Porcelain\","
+	    		+ "\"materialcategory\":\"Trim\","
+	    		+ "\"materialclass\":\"CTSRC\","
+	    		+ "\"materialstyle\":\"FW\","
+	    		+ "\"materialfeature\":\"test\"},"
+	    		+ "}";
+	 
+	 String jStringWithApplicationsInfo = 
+		     "{\"itemcode\":\"newItemcode3\","
+			+ "\"applications\":{"
+			+ "\"residential\":\"FR:WR:CR:SR:PR\","
+			+ "\"lightcommercial\":\"FL:WL:CL:SL:PL\","
+			+ "\"commercial\":\"FC:WC:CC:SC:PC\"},"
+       		+ "}";
+ 
+	 String jStringWithUsageInfo = 
+		     "{\"itemcode\":\"newItemcode3\","
+			+ "\"usage\":[\"FR\",\"WR\",\"CR\",\"SR\",\"PR\",\"FL\",\"WL\",\"CL\",\"SL\",\"PL\",\"FC\",\"WC\",\"CC\",\"SC\",\"PC\"],"
+    		+ "}";
+
+	 String jStringWithNotesInfo = 
+		     "{\"itemcode\":\"newItemcode3\","
+		     + "\"notes\":{\"ponotes\":\"test po note\",\"buyernotes\":\"test note1\",\"internalnotes\":\"test note2\",\"invoicenotes\":\"test note3\"},"
+		     + "}";
+	
+	 String jStringWithUnitAndVendor = ""
+	 		    + "{\"itemcode\":\"newItemcode3\","
+	     		+ "\"units\":{\"stdunit\":\"SHT\",\"stdratio\":1.0,\"ordunit\":\"SHT\",\"ordratio\":1.0,"
 	    		+ "\"baseunit\":\"SHT\",\"baseisstdsell\":\"Y\",\"baseisstdord\":\"Y\",\"baseisfractqty\":\"N\",\"baseispackunit\":\"Y\",\"baseupc\":0,\"baseupcdesc\":\"\",\"basevolperunit\":0.0000,\"basewgtperunit\":4.2000,"
 	    		+ "\"unit1unit\":\"CTN\",\"unit1ratio\":4.0,\"unit1isstdsell\":\"N\",\"unit1isstdord\":\"N\",\"unit1isfractqty\":\"N\",\"unit1ispackunit\":\"Y\",\"unit1upc\":0,\"unit1upcdesc\":\"\",\"unit1wgtperunit\":17.4000,"
 	    		+ "\"unit2unit\":\"PLT\",\"unit2ratio\":240.0,\"unit2isstdsell\":\"N\",\"unit2isstdord\":\"N\",\"unit2isfractqty\":\"N\",\"unit2ispackunit\":\"N\",\"unit2upc\":0,\"unit2upcdesc\":\"\",\"unit2wgtperunit\":1070.0000,"
 	    		+ "\"unit3unit\":\"\",\"unit3ratio\":0.0,\"unit3isstdsell\":\"N\",\"unit3isstdord\":\"N\",\"unit3isfractqty\":\"N\",\"unit3ispackunit\":\"N\",\"unit3upc\":0,\"unit3upcdesc\":\"\",\"unit3wgtperunit\":0.0000,"
 	    		+ "\"unit4unit\":\"\",\"unit4ratio\":0.0,\"unit4isstdsell\":\"N\",\"unit4isstdord\":\"N\",\"unit4isfractqty\":\"N\",\"unit4ispackunit\":\"N\",\"unit4upc\":0,\"unit4upcdesc\":\"\",\"unit4wgtperunit\":0.0000},"
-	     		//"\"vendors\":{\"vendornbr\":0,\"vendornbr1\":134585,\"vendornbr2\":0,\"vendornbr3\":0,\"vendorxrefcd\":\"ATM40\",\"vendorlistprice\":4.1500,\"vendorpriceunit\":\"SHT\",\"vendorfob\":\"\",\"vendordiscpct\":0.0,\"vendorroundaccuracy\":2,\"vendornetprice\":4.1500,\"vendormarkuppct\":0.0,\"vendorfreightratecwt\":0.0,\"dutypct\":0.0,\"leadtime\":60,\"vendorLandedBaseCost\":4.1500,\"vendordiscpct2\":0.0,\"vendordiscpct3\":0.0},
-	    		+ "\"newVendorSystem\":[{\"vendorOrder\":1,\"vendorName\":update test1,\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorNetPrice\":4.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"test1\",\"vendorDiscountPct\":10.0,\"vendorPriceRoundAccuracy\":1,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"vendorId\":134585},"
-	    		+ "                     {\"vendorOrder\":2,\"vendorName\":update test2,\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorNetPrice\":4.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"test2\",\"vendorDiscountPct\":20.0,\"vendorPriceRoundAccuracy\":1,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"vendorId\":134586},"
-	    		+ "                     {\"vendorOrder\":3,\"vendorName\":update test3,\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorNetPrice\":4.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"test3\",\"vendorDiscountPct\":30.0,\"vendorPriceRoundAccuracy\":1,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"vendorId\":134587},"
-    		    + "                     ],"
+	     		+ "\"vendors\":{\"vendornbr\":0,"
+	     		+ "\"vendornbr1\":134585,\"vendornbr2\":0,"
+	     		+ "\"vendorxrefcd\":\"ATM45\","
+	     		+ "\"vendorlistprice\":7.1500,"
+	     		+ "\"vendorpriceunit\":\"SHT\","
+	     		+ "\"vendorfob\":\"test\","
+	     		+ "\"vendordiscpct\":10.0,"
+	     		+ "\"vendorroundaccuracy\":1,"
+	     		+ "\"vendornetprice\":43.1500,"
+	     		+ "\"vendormarkuppct\":7.0,"
+	     		+ "\"vendorfreightratecwt\":10.10,"
+	     		+ "\"dutypct\":23.0,"
+	     		+ "\"leadtime\":60,"
+	     		+ "\"vendorlandedbasecost\":43.1500,"
+	     		+ "\"vendordiscpct2\":0.0,"
+	     		+ "\"vendordiscpct3\":0.0},"
+	    		//+ "\"newVendorSystem\":[{\"vendorOrder\":1,\"vendorName\":update test1,\"vendorName2\":null,\"vendorXrefId\":\"ATM41\",\"vendorListPrice\":9.1500,\"vendorNetPrice\":6.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"test19\",\"vendorDiscountPct\":16.0,\"vendorPriceRoundAccuracy\":3,\"vendorMarkupPct\":12.0,\"vendorFreightRateCwt\":43.0,\"vendorLandedBaseCost\":9.1500,\"leadTime\":70,\"dutyPct\":2.0,\"version\":null,\"vendorId\":134589},"
+	    		//+ "                     {\"vendorOrder\":2,\"vendorName\":update test2,\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorNetPrice\":4.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"test2\",\"vendorDiscountPct\":20.0,\"vendorPriceRoundAccuracy\":1,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"vendorId\":134586},"
+	    		//+ "                     {\"vendorOrder\":3,\"vendorName\":update test3,\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorNetPrice\":4.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"test3\",\"vendorDiscountPct\":30.0,\"vendorPriceRoundAccuracy\":1,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"vendorId\":134587},"
+    		    //+ "                     ],"
 	     	    + "}";
 
+	 String jStringWithNewVendorSystem = 
+			    "{"
+			    + "\"itemcode\":\"newItemcode3\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
+	    		+ "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\"},"
+	      	  	+ "\"newVendorSystem\":[{\"vendorOrder\":1,\"vendorName\":test,\"vendorName2\":null,\"vendorXrefId\":\"ATM41\",\"vendorListPrice\":5.1500,\"vendorNetPrice\":7.1500,\"vendorPriceUnit\":\"PCS\",\"vendorFob\":\"test\",\"vendorDiscountPct\":10.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":11.0,\"vendorFreightRateCwt\":110.0,\"vendorLandedBaseCost\":3.1500,\"leadTime\":60,\"dutyPct\":30.0,\"vendorId\":374906},"
+	    		+ "                     {\"vendorOrder\":2,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":6.1500,\"vendorNetPrice\":7.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"vendorId\":302871},"
+	    		+ "                     {\"vendorOrder\":3,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorNetPrice\":7.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"vendorId\":529554}],"
+	    		+ "}";
+
 	 
-	 String jStringWithNewFeature = "{\"itemcode\":\"newItemcode11\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
-	    		+ "\"itemdesc\":{\"fulldesc\":\"update 2x2 Athena Mosaic on 12x12 Sheet \",\"itemdesc1\":\" update 2x2 Athena Mosaic on 12x12\",\"itemdesc2\":\"update 2x2 Mosaic\"},"
-	     		+ "\"imsNewFeature\":{\"grade\":\"First\",\"status\":\"Best\",\"body\":\"Red_Body\",\"edge\":\"Tumbled\",\"mpsCode\":\"Drop\",\"designLook\":\"Wood\",\"designStyle\":\"Modern\",\"surfaceApplication\":\"Silk\",\"surfaceType\":\"Cross_Cut\",\"surfaceFinish\":\"Antiquated\",\"warranty\":4,\"recommendedGroutJointMin\":\"2\",\"recommendedGroutJointMax\":\"3\",\"launchedDate\":null,\"droppedDate\":null},"
-	    		+ "\"priorVendor\":null}";
+	 String jStringWithNewFeature = 
+			     "{\"itemcode\":\"newItemcode3\","
+			    + "\"itemcategory\":\"ATHENA\","
+			    + "\"countryorigin\":\"Italy\","
+			    + "\"inactivecode\":\"N\","
+	    		+ "\"itemdesc\":{\"fulldesc\":\"update 2x2 Athena Mosaic on 12x12 Sheet \",\"itemdesc1\":\" update 2x2 Athena Mosaic on 12x12\"},"
+	     		+ "\"imsNewFeature\":{"
+	     		   + "\"grade\":\"Second\","
+	     		   + "\"status\":\"Better\","
+	     		   + "\"body\":\"Red_Body\","
+	     		   + "\"edge\":\"Tumbled\","
+	     		   + "\"mpsCode\":\"Drop\","
+	     		   + "\"designLook\":\"Wood\","
+	     		   + "\"designStyle\":\"Modern\","
+	     		   + "\"surfaceApplication\":\"Silk\","
+	     		   + "\"surfaceType\":\"Cross_Cut\","
+	     		   + "\"surfaceFinish\":\"Antiquated\","
+	     		   + "\"warranty\":4,"
+	     		   + "\"recommendedGroutJointMin\":\"2\","
+	     		   + "\"recommendedGroutJointMax\":\"3\","
+	     		   + "\"launchedDate\":null,"
+	     		   + "\"droppedDate\":null"
+	     		   + "},"
+	    		+ "}";
 	 
-	 String jStringWithNewNotes = "{\"itemcode\":\"newItemcode10\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
-	      		//+ "\"notes\":{\"ponotes\":\"test po note\",\"notes1\":\"test notes1\",\"notes2\":\"test note2\",\"notes3\":\"test notes3\"},"
-	    		+ "\"newNoteSystem\":[{\"noteType\":\"po\",\"text\":\"update test Po note\",\"lastModifiedDate\":null},{\"noteType\":\"buyer\",\"text\":\"update test buyer note\",\"lastModifiedDate\":null},{\"noteType\":\"invoice\",\"text\":\"update test invoice note\",\"lastModifiedDate\":null},{\"noteType\":\"additional\",\"text\":\"update test additional note\",\"lastModifiedDate\":null},{\"noteType\":\"internal\",\"text\":\" update test internal note\",\"lastModifiedDate\":null}],"
-	       		+ "\"priorVendor\":null}";
+	 //String jStringWithNewNotes = "{\"itemcode\":\"newItemcode3\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
+	 //     		//+ "\"notes\":{\"ponotes\":\"test po note\",\"notes1\":\"test notes1\",\"notes2\":\"test note2\",\"notes3\":\"test notes3\"},"
+	 //   		+ "\"newNoteSystem\":[{\"noteType\":\"po\",\"text\":\"update test Po note\",\"lastModifiedDate\":null},{\"noteType\":\"buyer\",\"text\":\"update test buyer note\",\"lastModifiedDate\":null},{\"noteType\":\"invoice\",\"text\":\"update test invoice note\",\"lastModifiedDate\":null},{\"noteType\":\"additional\",\"text\":\"update test additional note\",\"lastModifiedDate\":null},{\"noteType\":\"internal\",\"text\":\" update test internal note\",\"lastModifiedDate\":null}],"
+	 //      		+ "\"priorVendor\":null}";
 	
-	 String jStringWithNewIcons = "{\"itemcode\":\"newItemcode12\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
-	    		+ "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\",\"itemdesc2\":\"2x2 Mosaic\"},"
-	      		//+ "\"iconsystem\":\"NNNNNNNNNNNNNNNNNNNN\","
+	 String jStringWithIcons = "{\"itemcode\":\"newItemcode3\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
+	    		+ "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\"},"
+	      		//+ "\"iconsystem\":\"NYNYNNNNYNNYNYNNYNYN\","
 	       		+ "\"iconDescription\":{\"madeInCountry\":\"China\",\"exteriorProduct\":false,\"adaAccessibility\":false,\"throughColor\":true,\"colorBody\":false,\"inkJet\":false,\"glazed\":true,\"unglazed\":false,\"rectifiedEdge\":true,\"chiseledEdge\":false,\"versaillesPattern\":true,\"recycled\":false,\"postRecycled\":true,\"preRecycled\":false,\"leadPointIcon\":true,\"greenFriendlyIcon\":false,\"coefficientOfFriction\":true},"
-	       		+ "\"priorVendor\":null}";
+	       		+ "}";
+	 
+	 String jStringWithNewIcons = "{\"itemcode\":\"newItemcode3\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
+	    		+ "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\"},"
+	      	   	+ "\"iconDescription\":"
+	       		+ "{"
+	       		+ "\"madeInCountry\":\"China\","
+	       		+ "\"exteriorProduct\":false,"
+	       		+ "\"adaAccessibility\":false,"
+	       		+ "\"throughColor\":false,"
+	       		+ "\"colorBody\":true,"
+	       		+ "\"inkJet\":false,"
+	       		+ "\"glazed\":true,"
+	       		+ "\"unglazed\":false,"
+	       		+ "\"rectifiedEdge\":true,"
+	       		+ "\"chiseledEdge\":false,"
+	       		+ "\"versaillesPattern\":true,"
+	       		+ "\"recycled\":false,"
+	       		+ "\"postRecycled\":true,"
+	       		+ "\"preRecycled\":false,"
+	       		+ "\"leadPointIcon\":true,"
+	       		+ "\"greenFriendlyIcon\":false,"
+	       		+ "\"coefficientOfFriction\":true},"
+	       		+ "}";
 	
-	 String jStringWithIcon = "{\"itemcode\":\"newItemcode\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
-	    		+ "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\",\"itemdesc2\":\"2x2 Mosaic\"},"
-	    		+ "\"series\":{\"seriesname\":\"Athena\",\"seriescolor\":\"Ash\"},"
-	    		+ "\"material\":{\"materialtype\":\"Porcelain\",\"materialcategory\":\"Trim\",\"materialclass\":\"CTSRC\",\"materialstyle\":\"FW\",\"materialfeature\":\"\"},"
-	    		+ "\"shadevariation\":\"V2\",\"colorhues\":[\"BEIGE\"],"
-	    		+ "\"dimensions\":{\"nominallength\":12.0,\"nominalwidth\":12.0,\"sizeunits\":\"E\",\"thickness\":\"3/8\",\"thicknessunit\":\"E\",\"length\":\"11-13/16\",\"width\":\"11-13/16\",\"nominalthickness\":0.0},"
-	    		+ "\"price\":{\"listprice\":18.3800,\"sellprice\":18.3800,\"pricegroup\":\"\",\"priceunit\":\"SHT\",\"sellpricemarginpct\":2.0,\"sellpriceroundaccuracy\":2,\"listpricemarginpct\":0.0,\"minmarginpct\":15.0,\"futuresell\":0.0000,\"priorsellprice\":14.7000,\"tempprice\":0.0000,\"tempdatefrom\":null,\"tempdatethru\":null,\"priorlistprice\":0.0000},"
-	    		+ "\"usage\":[\"FR\",\"WR\",\"CR\",\"SR\",\"PR\",\"FL\",\"WL\",\"CL\",\"SL\",\"PL\",\"FC\",\"WC\",\"CC\",\"SC\",\"PC\"],"
-	    		+ "\"testSpecification\":{\"waterabsorption\":0.0,\"scratchresistance\":0.0,\"frostresistance\":\"\",\"chemicalresistance\":\"\",\"peiabrasion\":0.0,\"scofwet\":0.0,\"scofdry\":0.0,\"breakingstrength\":0,\"scratchstandard\":\"\",\"breakingstandard\":\"\",\"restricted\":\"N\",\"warpage\":\" \",\"wedging\":\" \",\"dcof\":0.0,\"thermalshock\":\" \",\"bondstrength\":\"\",\"greenfriendly\":\"N\",\"moh\":0.0,\"leadpoint\":\"N\",\"preconsummer\":0.0,\"posconsummer\":0.0},"
-	    		+ "\"relateditemcodes\":null,\"purchasers\":{\"purchaser\":\"ALICIAB\",\"purchaser2\":\"GFIL\"},"
-	    		+ "\"packaginginfo\":{\"boxPieces\":4.0,\"boxSF\":0.0,\"boxWeight\":16.8,\"palletBox\":60.0,\"palletSF\":0.0,\"palletWeight\":1007.99994},"
-	    		+ "\"notes\":null,\"newNoteSystem\":[],"
-	    		+ "\"productline\":\"\",\"iconsystem\":\"NNNNNNNNNNNNNNNNNNNN\",\"iconDescription\":null,"
-	    		+ "\"applications\":{\"residential\":\"FR:WR:CR:SR:PR\",\"lightcommercial\":\"FL:WL:CL:SL:PL\",\"commercial\":\"FC:WC:CC:SC:PC\"},"
-	      		+ "\"showonwebsite\":\"Y\",\"itemtypecd\":\"F\",\"abccd\":\"C\",\"itemcd2\":\"\",\"inventoryitemcd\":\"\",\"showonalysedwards\":\"N\",\"offshade\":\"N\",\"printlabel\":\" \",\"taxclass\":\"T\",\"lottype\":\"\",\"updatecd\":\"CERA-CRD\",\"directship\":\" \",\"dropdate\":null,\"itemgroupnbr\":0,\"priorlastupdated\":\"2014-03-31\",\"imsNewFeature\":null,"
-	       		+ "\"cost\":{\"cost1\":0.0000,\"priorcost\":0.0000},"
-	      		+ "\"priorVendor\":null}";
+	 String jStringWithLagecyIcon = "{\"itemcode\":\"newItemcode3\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
+	    		+ "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\"},"
+	    		+ "\"iconsystem\":\"NNNNNNNYYYNYNYNNYNNN\","
+	      		+ "}";
+	 
+	 String jStringWithPriceAndCost = 
+			   "{\"itemcode\":\"newItemcode3\","
+	    		+ "\"price\":"
+	    		+ "{\"sellprice\":20.3900,"
+	    		+ "\"pricegroup\":\"3\","
+	    		//+ "{\"tespdatefrom\":\"2014-03-31\","
+	    		+ "\"tempprice\":2.1000,"
+	    		+ "\"tempdatefrom\":2014-03-31,"
+	    		+ "\"tempdatethru\":null,\"priorlistprice\":0.0000,"
+	    		
+	    		+ "\"listpricemarginpct\":0.0,"
+	    		+ "},"
+	    		+ "}";
 	 	 
-	 String jStringFullItemInfo = 
-			   "{\"itemcode\":\"NEWITEMCODE\","
+	 String jStringColorCategory = 
+			   "{\"itemcode\":\"NEWITEMCODE3\","
+			   	+ "\"itemdesc\":{\"fulldesc\":\"update 2x2 Athena Mosaic on 12x12 Sheet\",\"itemdesc1\":\"update 2x2 Athena Mosaic on 12x12 \"},"
+	    		+ "\"colorcategory\":\"RED:BLACK\","
+	    		+ "}";
+	 
+	 String jStringDescription = 
+			   "{\"itemcode\":\"NEWITEMCODE19\","
+			   + "\"itemdesc\":{\"itemdesc1\":\"update 2x2 Athena Mosaic on 12x12 \"},"		   
+	    		+ "}";
+	
+	 
+	 String jStringColorHues = 
+			   "{\"itemcode\":\"NEWITEMCODE4\","
 			    + "\"itemcategory\":\"ATHENA\","
 			    + "\"countryorigin\":\"Italy\","
 			    + "\"inactivecode\":\"N\","
 	    		+ "\"itemdesc\":{\"fulldesc\":\"update 2x2 Athena Mosaic on 12x12 Sheet\",\"itemdesc1\":\"update 2x2 Athena Mosaic on 12x12 \",\"itemdesc2\":\"update 2x2 Mosaic\"},"
+	    		+ "\"series\":{\"seriesname\":\"update Athena\",\"seriescolor\":\"update Ash\"},"
+	    		+ "\"colorhues\":[\"RED\"],"
+	    		+ "}";
+	 
+	 String jStringWithNewNotes = "{\"itemcode\":\"newItemcode41\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
+	      		//+ "\"notes\":{\"ponotes\":\"test po note\",\"notes1\":\"test notes1\",\"notes2\":\"test note2\",\"notes3\":\"test notes3\"},"
+	    		+ "\"newNoteSystem\":[{\"noteType\":\"po\",\"note\":\"test Po note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"buyer\",\"note\":\"test buyer note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"invoice\",\"note\":\"test invoice note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"additional\",\"note\":\"test additional note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"internal\",\"note\":\"test internal note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null}],"
+	       		+ "}";
+	 
+	 String jStringWithTestSpecs = 
+			   "{\"itemcode\":\"NEWITEMCODE3\","
+			    + "\"testSpecification\":{\"waterabsorption\":0.5,\"scratchresistance\":0.6,\"frostresistance\":\"\",\"chemicalresistance\":\"\",\"peiabrasion\":0.7,\"scofwet\":0.8,\"scofdry\":0.0,\"breakingstrength\":0,\"scratchstandard\":\"\",\"breakingstandard\":\"\",\"restricted\":\"N\",\"warpage\":\" \",\"wedging\":\" \",\"dcof\":0.0,\"thermalshock\":\" \",\"bondstrength\":\"\",\"greenfriendly\":\"N\",\"moh\":0.0,\"leadpoint\":\"N\",\"preconsummer\":0.0,\"posconsummer\":0.0},"
+				+ "}";
+	
+	 String jStringFullItemInfo = 
+			   "{\"itemcode\":\"NEWITEMCODE1\","
+			    + "\"itemcategory\":\"ATHENA\","
+			    + "\"countryorigin\":\"Italy\","
+			    + "\"inactivecode\":\"N\","
+	    		+ "\"itemdesc\":{\"fulldesc\":\"update 2x2 Athena Mosaic on 12x12 Sheet\",\"itemdesc1\":\"update 2x2 Athena Mosaic on 12x12 \"},"
 	    		+ "\"series\":{\"seriesname\":\"update Athena\",\"seriescolor\":\"update Ash\"},"
 	    		+ "\"material\":{\"materialtype\":\"update Porcelain\",\"materialcategory\":\"Trim\",\"materialclass\":\"CTSRC\",\"materialstyle\":\"FW\",\"materialfeature\":\"\"},"
 	    		+ "\"showonwebsite\":\"Y\","
@@ -734,16 +1078,16 @@ public class ProductServiceUpdateWithJsonTest {
 	    		//+ "\"vendors\":{\"vendornbr\":0,\"vendornbr1\":134585,\"vendornbr2\":0,\"vendornbr3\":0,\"vendorxrefcd\":\"ATM40\",\"vendorlistprice\":4.1500,\"vendorpriceunit\":\"SHT\",\"vendorfob\":\"\",\"vendordiscpct\":0.0,\"vendorroundaccuracy\":2,\"vendornetprice\":4.1500,\"vendormarkuppct\":0.0,\"vendorfreightratecwt\":0.0,\"dutypct\":0.0,\"leadtime\":60,\"vendorlandedbasecost\":4.1500,\"vendordiscpct2\":0.0,\"vendordiscpct3\":0.0},"
 	    		+ "\"cost\":{\"cost1\":0.0000,\"priorcost\":0.0000},"
 	    		//+ "\"imsNewFeature\":{\"grade\":\"First\",\"status\":\"Good\",\"body\":\"Red_Body\",\"edge\":\"Tumbled\",\"mpsCode\":\"Drop\",\"designLook\":\"Wood\",\"designStyle\":\"Modern\",\"surfaceApplication\":\"Silk\",\"surfaceType\":\"Cross_Cut\",\"surfaceFinish\":\"Antiquated\",\"warranty\":3,\"recommendedGroutJointMin\":\"1\",\"recommendedGroutJointMax\":\"2\",\"UpdatedDate\":\"2014-05-14\",\"launchedDate\":null,\"droppedDate\":null,\"lastModifiedDate\":null},"
-	    		+ "\"notes\":{\"ponotes\":\"test po note\",\"notes1\":\"test notes1\",\"notes2\":\"test note2\",\"notes3\":\"test notes3\"},"
+	    		//+ "\"notes\":{\"ponotes\":\"test po note\",\"notes1\":\"test notes1\",\"notes2\":\"test note2\",\"notes3\":\"test notes3\"},"
 	    		//+ "\"newNoteSystem\":[{\"noteType\":\"po\",\"note\":\"test Po note\",\"UpdatedDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"buyer\",\"note\":\"test buyer note\",\"UpdatedDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"invoice\",\"note\":\"test invoice note\",\"UpdatedDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"additional\",\"note\":\"test additional note\",\"UpdatedDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"internal\",\"note\":\"test internal note\",\"UpdatedDate\":\"2014-05-14\",\"lastModifiedDate\":null}],"
-	    		+ "\"priorVendor\":null}";
+	    		+ "}";
 	 
 	 String jStringFullItemInfoWithouUnitAndPrice = 
-			   "{\"itemcode\":\"TCRCRE60B\","
+			   "{\"itemcode\":\"NEWITEMCODE1\","
 			    + "\"itemcategory\":\"ATHENA\","
 			    + "\"countryorigin\":\"Italy\","
 			    + "\"inactivecode\":\"N\","
-	    		+ "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\",\"itemdesc2\":\"2x2 Mosaic\"},"
+	    		+ "\"itemdesc\":{\"fulldesc\":\"updated 2x2 Athena Mosaic on 12x12 Sheet \",\"itemdesc1\":\"updated 2x2 Athena Mosaic on 12x12\"},"
 	    		+ "\"series\":{\"seriesname\":\"Athena\",\"seriescolor\":\"Ash\"},"
 	    		+ "\"material\":{\"materialtype\":\"Porcelain\",\"materialcategory\":\"Trim\",\"materialclass\":\"CTSRC\",\"materialstyle\":\"FW\",\"materialfeature\":\"\"},"
 	    		+ "\"showonwebsite\":\"Y\","
@@ -783,14 +1127,14 @@ public class ProductServiceUpdateWithJsonTest {
 	    		//+ "\"vendors\":{\"vendornbr\":0,\"vendornbr1\":134585,\"vendornbr2\":0,\"vendornbr3\":0,\"vendorxrefcd\":\"ATM40\",\"vendorlistprice\":4.1500,\"vendorpriceunit\":\"SHT\",\"vendorfob\":\"\",\"vendordiscpct\":0.0,\"vendorroundaccuracy\":2,\"vendornetprice\":4.1500,\"vendormarkuppct\":0.0,\"vendorfreightratecwt\":0.0,\"dutypct\":0.0,\"leadtime\":60,\"vendorlandedbasecost\":4.1500,\"vendordiscpct2\":0.0,\"vendordiscpct3\":0.0},"
 	    		+ "\"cost\":{\"cost1\":0.0000,\"priorcost\":0.0000},"
 	    		//+ "\"imsNewFeature\":{\"grade\":\"First\",\"status\":\"Good\",\"body\":\"Red_Body\",\"edge\":\"Tumbled\",\"mpsCode\":\"Drop\",\"designLook\":\"Wood\",\"designStyle\":\"Modern\",\"surfaceApplication\":\"Silk\",\"surfaceType\":\"Cross_Cut\",\"surfaceFinish\":\"Antiquated\",\"warranty\":3,\"recommendedGroutJointMin\":\"1\",\"recommendedGroutJointMax\":\"2\",\"UpdatedDate\":\"2014-05-14\",\"launchedDate\":null,\"droppedDate\":null,\"lastModifiedDate\":null},"
-	    		+ "\"notes\":{\"ponotes\":\"test po note\",\"notes1\":\"test notes1\",\"notes2\":\"test note2\",\"notes3\":\"test notes3\"},"
+	    		//+ "\"notes\":{\"ponotes\":\"test po note\",\"notes1\":\"test notes1\",\"notes2\":\"test note2\",\"notes3\":\"test notes3\"},"
 	    		//+ "\"newNoteSystem\":[{\"noteType\":\"po\",\"note\":\"test Po note\",\"UpdatedDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"buyer\",\"note\":\"test buyer note\",\"UpdatedDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"invoice\",\"note\":\"test invoice note\",\"UpdatedDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"additional\",\"note\":\"test additional note\",\"UpdatedDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"internal\",\"note\":\"test internal note\",\"UpdatedDate\":\"2014-05-14\",\"lastModifiedDate\":null}],"
 	    		+ "}";
 	 
 	 
 	 String jStringFullItemAndAssociationInfo = 
 			    //basic info
-			     "{\"itemcode\":\"NEWITEMCODE\","
+			     "{\"itemcode\":\"NEWITEMCODE6\","
 			    + "\"itemcategory\":\"ATHENA\","
 			    + "\"countryorigin\":\"Italy\","
 			    + "\"inactivecode\":\"N\","
@@ -811,7 +1155,7 @@ public class ProductServiceUpdateWithJsonTest {
 		    	+ "\"shadevariation\":\"V2\","
 		    	+ "\"productline\":\"\","
 		    	//components
-		    	+ "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT\",\"itemdesc2\":\"2x2 Mosaic\"},"
+		    	+ "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT\"},"
 	    		+ "\"series\":{\"seriesname\":\"Athena\",\"seriescolor\":\"Ash\"},"
 	    		+ "\"material\":{\"materialtype\":\"Porcelain\",\"materialcategory\":\"Trim\",\"materialclass\":\"CTSRC\",\"materialstyle\":\"FW\",\"materialfeature\":\"\"},"
 	    		+ "\"dimensions\":{\"nominallength\":12.0,\"nominalwidth\":12.0,\"sizeunits\":\"E\",\"thickness\":\"3/8\",\"thicknessunit\":\"E\",\"length\":\"11-13/16\",\"width\":\"11-13/16\",\"nominalthickness\":0.0},"
@@ -835,8 +1179,8 @@ public class ProductServiceUpdateWithJsonTest {
 	    		+ "\"colorhues\":[\"BEIGE\",\"YELLOW\"],"
 		    	//"\"vendors\":{\"vendornbr\":0,\"vendornbr1\":134585,\"vendornbr2\":0,\"vendornbr3\":0,\"vendorxrefcd\":\"ATM40\",\"vendorlistprice\":4.1500,\"vendorpriceunit\":\"SHT\",\"vendorfob\":\"\",\"vendordiscpct\":0.0,\"vendorroundaccuracy\":2,\"vendornetprice\":4.1500,\"vendormarkuppct\":0.0,\"vendorfreightratecwt\":0.0,\"dutypct\":0.0,\"leadtime\":60,\"vendorLandedBaseCost\":4.1500,\"vendordiscpct2\":0.0,\"vendordiscpct3\":0.0},
 	    		+ "\"newVendorSystem\":[{\"vendorOrder\":1,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorNetPrice\":4.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"vendorId\":134585},"
-	    		+ "                     {\"vendorOrder\":2,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorNetPrice\":4.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"vendorId\":134586},"
-	    		+ "                     {\"vendorOrder\":3,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorNetPrice\":4.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"vendorId\":134587},"
+	    		+ "                     {\"vendorOrder\":2,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorNetPrice\":4.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"vendorId\":302871},"
+	    		+ "                     {\"vendorOrder\":3,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorNetPrice\":4.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"vendorId\":529554},"
  		        + "                     ],"
 	    		+ "\"imsNewFeature\":{\"grade\":\"Third\",\"status\":\"Best\",\"body\":\"Red_Body\",\"edge\":\"Tumbled\",\"mpsCode\":\"Drop\",\"designLook\":\"Wood\",\"designStyle\":\"Modern\",\"surfaceApplication\":\"Silk\",\"surfaceType\":\"Cross_Cut\",\"surfaceFinish\":\"Antiquated\",\"warranty\":3,\"recommendedGroutJointMin\":\"1\",\"recommendedGroutJointMax\":\"2\",\"launchedDate\":null,\"droppedDate\":null,\"lastModifiedDate\":null},"
 	    		//+ "\"newNoteSystem\":[{\"noteType\":\"po\",\"note\":\"test Po note new \",\"lastModifiedDate\":null},{\"noteType\":\"buyer\",\"note\":\"test buyer note\",\"lastModifiedDate\":null},{\"noteType\":\"invoice\",\"note\":\"test invoice note\",\"lastModifiedDate\":null},{\"noteType\":\"additional\",\"note\":\"test additional note\",\"lastModifiedDate\":null},{\"noteType\":\"internal\",\"note\":\"test internal note\",\"lastModifiedDate\":null}],"
