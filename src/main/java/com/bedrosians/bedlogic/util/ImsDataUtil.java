@@ -442,9 +442,9 @@ public class ImsDataUtil {
         else if(item.getUnits().getUnit4isstdsell() != null && "Y".equalsIgnoreCase(item.getUnits().getUnit4isstdsell().toString().trim()));
             baseToSellRatio = item.getUnits().getUnit4ratio();
        
-         if(baseToSellRatio == 0)
+        if(baseToSellRatio == 0)
         	baseToSellRatio = 1;
-       
+     
         return baseToSellRatio;
     }
 	
@@ -467,10 +467,10 @@ public class ImsDataUtil {
 
 	public static Item transformItem(Item itemToDB, Item itemFromInput, DBOperation operation) throws BedDAOBadParamException{
 		if(itemFromInput == null)
-	       throw new BedDAOBadParamException("In transformItem(), the input is empty");	
+	       throw new BedDAOBadParamException("The input is empty, nothing to update");	
 		if(itemToDB == null) 
 		   itemToDB = new Item(itemFromInput.getItemcode().toUpperCase());		
-		transferProperty(itemToDB, itemFromInput);
+		transferProperty(itemToDB, itemFromInput, operation);
 		if(operation != null && operation.equals(DBOperation.CREATE))
 	  	   transferComponent(itemToDB, itemFromInput);
 		else if(operation != null && operation.equals(DBOperation.UPDATE))		
@@ -482,21 +482,21 @@ public class ImsDataUtil {
 	private static void transferAssociation(Item itemToDB, Item itemFromInput, DBOperation operation) throws BedDAOBadParamException{
 	  try{
 		ItemNewFeature inputNewFeature = itemFromInput.getImsNewFeature();
-	    //List<ColorHue> inputColorHues = itemFromInput.getColorhues();
 	    IconCollection inputIconCollection = itemFromInput.getIconDescription();
 		List<ItemVendor> inputItemVendors = itemFromInput.getNewVendorSystem();
 		VendorInfo vendorInfo = itemFromInput.getVendors();
 		String legacyIcon = itemFromInput.getIconsystem();
+		//List<ColorHue> inputColorHues = itemFromInput.getColorhues();
 		//List<Note> noteList = itemFromInput.getNewNoteSystem();
 		//Notes legacyNotes = (itemFromInput.getNotes() != null)? itemFromInput.getNotes() : new Notes();
 		if(inputNewFeature != null && !inputNewFeature.isEmpty()){
 		    if(operation.equals(DBOperation.CREATE) || //brand new Item
-		      (operation.equals(DBOperation.UPDATE) && itemToDB.getImsNewFeature() == null)){ //existing Item, but brand new NewImsFeature
+		      (operation.equals(DBOperation.UPDATE) && itemToDB.getImsNewFeature() == null)){ //create a brand new NewImsFeature for an existing Item 
 		       if(inputNewFeature.getCreatedDate() == null)	
 			      inputNewFeature.setCreatedDate(new Date());
 		       itemToDB.addImsNewFeature(inputNewFeature);
 		    }
-		    else if(operation.equals(DBOperation.UPDATE)){
+		    else if(operation.equals(DBOperation.UPDATE)){ //update existing NewImsFeature
 		    	if(inputNewFeature.getBody() != null) itemToDB.getImsNewFeature().setBody(inputNewFeature.getBody());
 		    	if(inputNewFeature.getDesignLook() != null) itemToDB.getImsNewFeature().setDesignLook(inputNewFeature.getDesignLook());
 		    	if(inputNewFeature.getDesignStyle() != null) itemToDB.getImsNewFeature().setDesignStyle(inputNewFeature.getDesignStyle());
@@ -521,7 +521,7 @@ public class ImsDataUtil {
 			  (operation.equals(DBOperation.UPDATE) && (itemToDB.getIconDescription() == null || itemToDB.getIconDescription().isEmpty()))){ //existing Item, but brand new inputIconCollection
 			   itemToDB.addIconDescription(inputIconCollection);
 			}
-			else if(operation.equals(DBOperation.UPDATE)){
+			else if(operation.equals(DBOperation.UPDATE)){ //update an existing IconCollection
 				if(itemToDB.getIconDescription() == null)
 					itemToDB.setIconDescription(new IconCollection());
 				if(inputIconCollection.getAdaAccessibility() != null) itemToDB.getIconDescription().setAdaAccessibility(inputIconCollection.getAdaAccessibility());
@@ -612,9 +612,16 @@ public class ImsDataUtil {
 				   }   
 			   }    
 		   }
-    	   else if(operation.equals(DBOperation.UPDATE)){ //update Item_Vendor table for existing Item
+    	   else if(operation.equals(DBOperation.UPDATE)){ //update Ims_Item_Vendor table for existing Item
+    		   int sizeOfItemVendors = itemToDB.getNewVendorSystem().size();
 			   for(int i = 0; i < inputItemVendors.size(); i++){
 				   ItemVendor vendor = inputItemVendors.get(i);
+				   if(vendor.getItemVendorId() == null || vendor.getItemVendorId().getVendorId() == null || vendor.getItemVendorId().getVendorId() == 0)
+					  throw new BedDAOBadParamException("Error: No vendor ID is provided.");
+				   if(sizeOfItemVendors <= i)
+					  itemToDB.addNewVendorSystem(new ItemVendor()); //there more itemvendor in new item than the current one
+				  // if(itemToDB.getNewVendorSystem().get(i).getVendorId() == null || itemToDB.getNewVendorSystem().get(i).getVendorId() == null)
+					   itemToDB.getNewVendorSystem().get(i).setVendorId(vendor.getVendorId());
 				   if(vendor.getDutyPct() != null) itemToDB.getNewVendorSystem().get(i).setDutyPct(vendor.getDutyPct());
 				   if(vendor.getLeadTime() != null) itemToDB.getNewVendorSystem().get(i).setLeadTime(vendor.getLeadTime());
 				   if(vendor.getVendorDiscountPct() != null) itemToDB.getNewVendorSystem().get(i).setVendorDiscountPct(vendor.getVendorDiscountPct());
@@ -1119,7 +1126,7 @@ public class ImsDataUtil {
 		  }		
 	}
 	
-	private static void transferProperty(Item itemToDB, Item itemFromInput) throws BedDAOBadParamException{
+	private static void transferProperty(Item itemToDB, Item itemFromInput, DBOperation operation) throws BedDAOBadParamException{
 	  try{	
 		if(itemFromInput.getAbccd() != null) itemToDB.setAbccd(itemFromInput.getAbccd());
 		if(itemFromInput.getCountryorigin() != null) itemToDB.setCountryorigin(itemFromInput.getCountryorigin());
@@ -1134,7 +1141,6 @@ public class ImsDataUtil {
 		if(itemFromInput.getItemcategory() != null) itemToDB.setItemcategory(itemFromInput.getItemcategory());
 		if(itemFromInput.getLottype() != null) itemToDB.setLottype(itemFromInput.getLottype());
 		if(itemFromInput.getOffshade() != null) itemToDB.setOffshade(itemFromInput.getOffshade());
-		if(itemFromInput.getPriorlastupdated() != null) itemToDB.setPriorlastupdated(itemFromInput.getPriorlastupdated());
 		if(itemFromInput.getPrintlabel() != null) itemToDB.setPrintlabel(itemFromInput.getPrintlabel());
 		if(itemFromInput.getShadevariation() != null) itemToDB.setShadevariation(itemFromInput.getShadevariation());
 		if(itemFromInput.getShowonalysedwards() != null) itemToDB.setShowonalysedwards(itemFromInput.getShowonalysedwards());
@@ -1142,6 +1148,9 @@ public class ImsDataUtil {
 		if(itemFromInput.getTaxclass() != null) itemToDB.setTaxclass(itemFromInput.getTaxclass());
 		if(itemFromInput.getUpdatecd() != null) itemToDB.setUpdatecd(itemFromInput.getUpdatecd());
 		if(itemFromInput.getProductline() != null) itemToDB.setProductline(itemFromInput.getProductline());
+		//if(itemFromInput.getPriorlastupdated() != null) itemToDB.setPriorlastupdated(itemFromInput.getPriorlastupdated());
+		if(operation.equals(DBOperation.UPDATE))
+		   itemToDB.setPriorlastupdated(new Date());
 		//if(itemFromInput.getSubtype() != null) itemToDB.setSubtype(itemFromInput.getSubtype());
 		//if(itemFromInput.getType() != null) itemToDB.setType(itemFromInput.getType());
 		if(itemFromInput.getColorcategory() != null && !itemFromInput.getColorcategory().isEmpty()){
