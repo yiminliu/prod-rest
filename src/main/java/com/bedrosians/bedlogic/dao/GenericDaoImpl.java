@@ -44,9 +44,7 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
 	@Override
 	public synchronized void update(Session session, final T transientObject) {
 		try{
-        	//session.update(transientObject);
             session.saveOrUpdate(transientObject); 
-        	//session.merge(transientObject);
 		}
 		catch(HibernateException e){
 			throw e;
