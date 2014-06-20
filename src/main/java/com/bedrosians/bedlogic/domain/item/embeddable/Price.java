@@ -9,6 +9,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 
 @Embeddable
 public class Price implements java.io.Serializable {
@@ -24,11 +26,11 @@ public class Price implements java.io.Serializable {
 	private Float listpricemarginpct = 0F;
 	private Float minmarginpct;
 	private BigDecimal futuresell; 
-	private BigDecimal priorsellprice;
 	private BigDecimal tempprice;
 	private Date tempdatefrom = null;
 	private Date tempdatethru = null;
 	private BigDecimal priorlistprice;
+	private BigDecimal priorsellprice;
 	
 	public Price(){}
 	
@@ -133,7 +135,7 @@ public class Price implements java.io.Serializable {
 		this.minmarginpct = minmarginpct;
 	}
 	
-	@Column(name = "priorlistprice", precision = 9, scale = 4)
+	@Column(name = "priorlistprice", precision = 9, scale = 4, updatable=false)
 	public BigDecimal getPriorlistprice() {
 		return this.priorlistprice;
 	}
@@ -142,7 +144,7 @@ public class Price implements java.io.Serializable {
 		this.priorlistprice = priorlistprice;
 	}
 
-	@Column(name = "priorsellprice", precision = 9, scale = 4)
+	@Column(name = "priorsellprice", precision = 9, scale = 4, updatable=false)
 	public BigDecimal getPriorsellprice() {
 		return this.priorsellprice;
 	}
@@ -160,6 +162,7 @@ public class Price implements java.io.Serializable {
 		this.priceunit = priceunit;
 	}
 	
+	@JsonIgnore
 	@Transient
 	public boolean isDefault(){
 		return listprice == null && sellprice == null && pricegroup == null && priceunit == null && tempprice == null && futuresell == null  &&  priorsellprice == null;
