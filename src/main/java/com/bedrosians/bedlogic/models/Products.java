@@ -20,14 +20,14 @@ public class Products
         this.data = inData;
     }
     
-    public Products(Object obj)
-    {
-        this.obj = obj;
-    }
-    
     public String toJSONString()
     {
         return this.data.toString();
+    }
+    
+    public Products(Object obj)
+    {
+        this.obj = obj;
     }
     
     public String toJSONStringWithJackson() throws BedResException

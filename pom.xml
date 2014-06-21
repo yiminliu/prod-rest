@@ -394,22 +394,16 @@
 	    </dependency>
 	    
 	    <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-asl</artifactId>
-            <version>${jackson.version}</version>
+           <groupId>org.codehaus.jackson</groupId>
+           <artifactId>jackson-core-asl</artifactId>
+           <version>${jackson.version}</version>
         </dependency>
            		
         <dependency>
-	      <groupId>com.fasterxml.jackson.core</groupId>
-          <artifactId>jackson-databind</artifactId>
-       	  <version>2.0.2</version>
-         </dependency>
-         
-		<dependency>
-            <groupId>net.minidev</groupId>
-            <artifactId>json-smart</artifactId>
-            <version>1.2</version>
-        </dependency>		
+	       <groupId>com.fasterxml.jackson.core</groupId>
+           <artifactId>jackson-databind</artifactId>
+       	   <version>2.0.2</version>
+        </dependency>	
 
         <dependency>
          	<groupId>commons-codec</groupId>
@@ -417,5 +411,16 @@
 	        <version>1.2</version>
         </dependency>	
 
+        <dependency>
+           <groupId>com.thetransactioncompany</groupId>
+           <artifactId>jsonrpc2-client</artifactId>
+           <version>1.14.4</version>
+        </dependency>
+		<dependency>
+            <groupId>net.minidev</groupId>
+            <artifactId>json-smart</artifactId>
+            <version>1.2</version>
+        </dependency>	
+        
 	</dependencies>		
  </project>
