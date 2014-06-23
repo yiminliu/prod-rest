@@ -55,6 +55,7 @@
                     <target>${jdkLevel}</target>
                     <compilerArgument>-proc:none</compilerArgument>
                     <encoding>UTF-8</encoding>
+                    <skipTests>true</skipTests>
                 </configuration>
             </plugin>
             <plugin>
