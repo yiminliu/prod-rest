@@ -24,6 +24,7 @@
        <basedir>/</basedir> 
        <baseUri>/home/yiminliu/</baseUri>
        <jdkLevel>1.7</jdkLevel>
+       <maven-plugin.version>3.1</maven-plugin.version>
        <org.springframework-version>4.0.5.RELEASE</org.springframework-version>
        <spring-security.version>3.2.4.RELEASE</spring-security.version>
        <aspectj.version>1.6.11</aspectj.version>
@@ -39,8 +40,8 @@
        <slf4j.version>1.7.5</slf4j.version>
        <logback.version>1.1.2</logback.version>
        <logback-ext-spring.version>0.1.2</logback-ext-spring.version>
-       <!-- <jetty.version>6.1.10</jetty.version>-->   
-       <jetty.version>8.1.7.v20120910</jetty.version>
+       <jetty.version>6.1.10</jetty.version>  
+       <skipTests>true</skipTests>
     </properties>
     
     <build>
@@ -49,13 +50,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>${maven-plugin.version}</version>
                 <configuration>
                     <source>${jdkLevel}</source>
                     <target>${jdkLevel}</target>
                     <compilerArgument>-proc:none</compilerArgument>
                     <encoding>UTF-8</encoding>
-                    <skipTests>true</skipTests>
                 </configuration>
             </plugin>
             <plugin>
@@ -63,16 +63,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.12.4</version>
             </plugin>
-            <!-- <plugin>
-	            <groupId>org.codehaus.mojo</groupId>
-            	<artifactId>tomcat-maven-plugin</artifactId>
-	            <configuration>
-		           <url>http://127.0.0.1:8080/manager</url>
-		           <server>TomcatServer</server>
-		           <path>C:/Program Files/Java/Apache/apache-tomcat-7.0.47/webapps</path>
-	            </configuration>
-           </plugin>-->          
-           <plugin>
+            <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>maven-jetty-plugin</artifactId>
                 <version>${jetty.version}</version>
@@ -80,7 +71,7 @@
                   <scanIntervalSeconds>10</scanIntervalSeconds>
                   <war>${basedir}/target/bedlogic.war</war>
                   <!-- new -->
-                  <webAppConfig>
+                  <!--<webAppConfig>
                        <defaultsDescriptor>${basedir}/src/main/webapp/WEB-INF/web.xml</defaultsDescriptor>
                   </webAppConfig>
                   <webApp> 
@@ -92,7 +83,7 @@
                       <name>logback.configurationFile</name>
                       <value>${baseUri}/resources/logback.xml</value>
                    </property>
-                  </properties>
+                  </properties>-->
                   <reload>manual</reload>
                     <connectors>
                         <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">

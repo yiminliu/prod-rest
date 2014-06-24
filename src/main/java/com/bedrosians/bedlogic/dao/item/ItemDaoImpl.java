@@ -276,10 +276,10 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 		}
 		
 		System.out.println(items == null? 0 : items.size() + " items retireved");
-		System.out.println("Statistics().getConnectCount() = "  + sessionFactory.getStatistics().getConnectCount());
-	    System.out.println("Statistics().getTransactionCount() = "  + sessionFactory.getStatistics().getTransactionCount());
-	  	System.out.println("Statistics().getEntityFetchCount() = "  + sessionFactory.getStatistics().getEntityFetchCount());
-        System.out.println("Statistics().getSecondLevelCacheHitCount() = " + sessionFactory.getStatistics().getSecondLevelCacheHitCount());
+		//System.out.printf("Statistics().getConnectCount() = "  + sessionFactory.getStatistics().getConnectCount());
+	    //System.out.println("Statistics().getTransactionCount() = "  + sessionFactory.getStatistics().getTransactionCount());
+	  	//System.out.println("Statistics().getEntityFetchCount() = "  + sessionFactory.getStatistics().getEntityFetchCount());
+        //System.out.println("Statistics().getSecondLevelCacheHitCount() = " + sessionFactory.getStatistics().getSecondLevelCacheHitCount());
        
         return items;	
     }
