@@ -1,6 +1,8 @@
 package com.bedrosians.bedlogic.dao.item;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -111,19 +113,26 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	   DetachedCriteria newFeatureCriteria = null;
 	   DetachedCriteria vendorCriteria = null;
 	   DetachedCriteria noteCriteria = null;
-	   DetachedCriteria colorHueCriteria = null;
+	   //DetachedCriteria colorHueCriteria = null;
        //Criteria itemCriteria = sessionFactory.getCurrentSession().createCriteria(Item.class);
        DetachedCriteria itemCriteria = DetachedCriteria.forClass(Item.class);
 	   String key, value = null;
 	   List<String> values = null;
+	   String stringValue = null;
+    		
 	   while(it.hasNext()) {
 	     	Entry<String, List<String>> entry = (Entry<String, List<String>>)it.next();
 	 	    key = normalizeKey((String)entry.getKey());
 	 	   	values = entry.getValue();	
 	 	   	if(values == null || values.isEmpty())
 	 	   	   continue;
-	 	   	else
-	 	   	   value = values.get(0);
+	 	   	else if(values.size() == 1 && values.toString().contains(",")) { //the input contains multiple values for a key, but in String format
+	 	   		stringValue = values.toString();
+	 	   		stringValue =stringValue.substring(stringValue.indexOf("[")+1);
+	 	     	stringValue =stringValue.substring(0, stringValue.lastIndexOf("]"));
+	 	   		values = Arrays.asList(stringValue.split(","));  
+	 	   	}
+	 	   	value = values.get(0);
     		//------ conditional pattern match -------//
     		if(!exactMatch && "itemcode".equalsIgnoreCase(key)){
     		   if(values.size() > 1)	
@@ -156,20 +165,23 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 		        continue;
 		    }  
 		    if("itemdesc.fulldesc".equalsIgnoreCase(key) || "itemdesc.itemdesc1".equalsIgnoreCase(key)){
-		      	 if(values.size() > 1)	
-	     		    itemCriteria = generateLikeDisjunctionCriteria(itemCriteria, key, values);
-	     		 else
-			        itemCriteria.add(Restrictions.ilike(key, value, MatchMode.ANYWHERE));
-			     continue;
+		      	if(values.size() > 1)	
+	     		   itemCriteria = generateLikeDisjunctionCriteria(itemCriteria, key, values);
+	     		else
+			       itemCriteria.add(Restrictions.ilike(key, value, MatchMode.ANYWHERE));
+			    continue;
 		    }  	
 	        //----- take care of multiple values case other than "size" ------//
 	 	   	if(!"size".equals(key) && (values.size() > 1 || values.contains(",") || values.indexOf(",") >= 0 || values.toArray().length > 1 || values.toString().contains(","))){
-    		    if(key.startsWith("material"))
-    		    	itemCriteria.add(Restrictions.in("material." + key, values));
-    		    else
-    		    	itemCriteria.add(Restrictions.in(key, values));
-	 	       //criteria.add(Restrictions.in(key, (String[])values.toArray()));
-    		   continue;
+    		    if(key.startsWith("material")){
+    		    	//itemCriteria.add(Restrictions.in("material." + key, values)); //Case sensitive
+    		    	itemCriteria =  generateEqualsDisjunctionCriteria(itemCriteria, "material." + key, values);//Case insensitive
+    		    }
+    		    else{
+    		    	//itemCriteria.add(Restrictions.in(key, values));
+    		        itemCriteria =  generateEqualsDisjunctionCriteria(itemCriteria, key, values);
+	 		    }    
+    		    continue;
 	 	   	}  
     		//------- add association criteria --------//
 	 	   	if(ItemNewFeature.allProperties().contains(key)) {	
@@ -194,10 +206,10 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	 	   		   if(values.size() > 1)	
 	     			  itemCriteria = generateLikeDisjunctionCriteria(itemCriteria, key, values);
 	     		   else
-	 		          itemCriteria.add(Restrictions.eq(key, value));
+	 		          itemCriteria.add(Restrictions.eq(key, value).ignoreCase());
 	 		       break;  
 	 	   	   case "series.seriescolor":	
-	 		       itemCriteria.add(Restrictions.eq(key, value));
+	 		       itemCriteria.add(Restrictions.eq(key, value).ignoreCase());
 	 		       break;     
 	 	       case "materialtype":	case "materialType": 
 	 	       case "materialcategory": case "materialCategory": 
@@ -232,12 +244,12 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	 	   	   case "nominallength": case "nominalLength": case "nominalwidth": case "nominalWidth":	
 	 	   		   itemCriteria.add(Restrictions.eq("dimensions" + "." +key, Float.parseFloat(value)));
 	 	   		   break;
-	 	   	   case "showonwebsite": case "showOnWebSite": 
-	 	   	   case "showonalysedwards": case "showOnAlysedwards":
-	 	   	   case "itemtypecd": case "itemtypecode":
-	 	   	   case "taxclass": case "taxClass": case "itemtaxclass": case "itemTaxClass":	
-	  	   		   itemCriteria.add(Restrictions.eq(key, value.charAt(0)));
-	 	   		   break;	   
+	 	   	   //case "showonwebsite": case "showOnWebSite": 
+	 	   	   //case "showonalysedwards": case "showOnAlysedwards":
+	 	   	   //case "itemtypecd": case "itemtypecode":
+	 	   	   //case "taxclass": case "taxClass": case "itemtaxclass": case "itemTaxClass":	
+	  	   	   //   itemCriteria.add(Restrictions.eq(key, value.charAt(0)).ignoreCase());
+	 	   	   //   break;	   
 	 	   	   case "pricemax": case "priceMax":
 	 	   		   itemCriteria.add(Restrictions.le("price.sellprice", new BigDecimal(value))); 
 	 	   		   itemCriteria.add(Restrictions.gt("price.sellprice", new BigDecimal(0))); 
@@ -260,7 +272,7 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	    }
         itemCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         //itemCriteria.addOrder(Order.asc("itemcode"));
-        System.out.println("criteria = " +itemCriteria.toString());
+        System.out.println("getItemsByQueryParameters() using criteria = " +itemCriteria.toString());
   
 		try {
 			if(maxResults > 0)
@@ -455,7 +467,7 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
    private DetachedCriteria generateEqualsDisjunctionCriteria(DetachedCriteria criteria, String name, List<String> values){
 	    Disjunction or = Restrictions.disjunction();
 		for(String value : values) {
-			or.add(Restrictions.eq(name, value));
+			or.add(Restrictions.eq(name, value).ignoreCase());
 	    }  
 	   	criteria.add(or);
 		return criteria;
