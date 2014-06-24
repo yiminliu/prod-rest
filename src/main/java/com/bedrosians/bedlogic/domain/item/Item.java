@@ -80,19 +80,19 @@ public class Item implements java.io.Serializable {
 	private String shadevariation;
 	private String colorcategory;
 	private List<String> colorhues =  new ArrayList<>();
-	private Character showonwebsite;
+	private String showonwebsite;
   	private String iconsystem;
-	private Character itemtypecd;
+	private String itemtypecd;
 	private String abccd;
 	private String itemcd2;
 	private String inventoryitemcd;
-	private Character showonalysedwards;
-	private Character offshade;
-	private Character printlabel;
-	private Character taxclass;
+	private String showonalysedwards;
+	private String offshade;
+	private String printlabel;
+	private String taxclass;
 	private String lottype;
 	private String updatecd;
-	private Character directship;
+	private String directship;
 	private Date dropdate;
 	private String productline;
 	private Integer itemgroupnbr;
@@ -313,11 +313,11 @@ public class Item implements java.io.Serializable {
 	}
 
 	@Column(name = "directship", length = 1)
-	public Character getDirectship() {
+	public String getDirectship() {
 		return this.directship;
 	}
 
-	public void setDirectship(Character directship) {
+	public void setDirectship(String directship) {
 		this.directship = directship;
 	}
 
@@ -352,11 +352,11 @@ public class Item implements java.io.Serializable {
 	}
 
 	@Column(name = "itemtypecd", length = 1)
-	public Character getItemtypecd() {
+	public String getItemtypecd() {
 		return this.itemtypecd;
 	}
 	
-	public void setItemtypecd(Character itemtypecd) {
+	public void setItemtypecd(String itemtypecd) {
 		this.itemtypecd = itemtypecd;
 	}
 
@@ -370,11 +370,11 @@ public class Item implements java.io.Serializable {
 	}
 
 	@Column(name = "printlabel", length = 1)
-	public Character getPrintlabel() {
+	public String getPrintlabel() {
 		return this.printlabel;
 	}
 
-	public void setPrintlabel(Character printlabel) {
+	public void setPrintlabel(String printlabel) {
 		this.printlabel = printlabel;
 	}
 
@@ -419,11 +419,11 @@ public class Item implements java.io.Serializable {
 	@Field(index=Index.YES, analyze=Analyze.NO, store=Store.YES)
 	@Boost(2.0f)
 	@Column(name = "showonwebsite", length = 1)
-	public Character getShowonwebsite() {
+	public String getShowonwebsite() {
 		return this.showonwebsite;
 	}
 
-	public void setShowonwebsite(Character showonwebsite) {
+	public void setShowonwebsite(String showonwebsite) {
 		this.showonwebsite = showonwebsite;
 	}
 
@@ -452,20 +452,20 @@ public class Item implements java.io.Serializable {
 	}
 	
 	@Column(name = "showonalysedwards", length = 1)
-	public Character getShowonalysedwards() {
+	public String getShowonalysedwards() {
 		return this.showonalysedwards;
 	}
 
-	public void setShowonalysedwards(Character showonalysedwards) {
+	public void setShowonalysedwards(String showonalysedwards) {
 		this.showonalysedwards = showonalysedwards;
 	}
 
 	@Column(name = "offshade", length = 1)
-	public Character getOffshade() {
+	public String getOffshade() {
 		return this.offshade;
 	}
 
-	public void setOffshade(Character offshade) {
+	public void setOffshade(String offshade) {
 		this.offshade = offshade;
 	}
 
@@ -497,11 +497,11 @@ public class Item implements java.io.Serializable {
 	}
 
 	@Column(name = "itemtaxclass")
-	public Character getTaxclass() {
+	public String getTaxclass() {
 		return this.taxclass;
 	}
 
-	public void setTaxclass(Character taxclass) {
+	public void setTaxclass(String taxclass) {
 		this.taxclass = taxclass;
 	}
 	
@@ -669,12 +669,12 @@ public class Item implements java.io.Serializable {
 
 	public Item(String itemcode, String itemcategory, String countryorigin,
 			String inactivecode, String shadevariation, String colorcategory,
-			Character showonwebsite, String iconsystem, String type,
-			Character itemtypecd, String abccd, String itemcd2,
-			String inventoryitemcd, Character showonalysedwards,
-			Character offshade, Character printlabel, Character taxclass,
+			String showonwebsite, String iconsystem, String type,
+			String itemtypecd, String abccd, String itemcd2,
+			String inventoryitemcd, String showonalysedwards,
+			String offshade, String printlabel, String taxclass,
 			String lottype, String updatecd, String subtype,
-			Character directship, Date dropdate, String productline,
+			String directship, Date dropdate, String productline,
 			Integer itemgroupnbr, Date priorlastupdated, Description itemdesc,
 			Series series, Material material, Dimensions dimensions,
 			Price price, VendorInfo vendors, List<String> usage,
