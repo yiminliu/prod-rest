@@ -25,14 +25,14 @@ import com.bedrosians.bedlogic.domain.item.Item;
 import com.bedrosians.bedlogic.domain.item.enums.DBOperation;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
+import com.bedrosians.bedlogic.exception.BedDAOExceptionMapper;
 import com.bedrosians.bedlogic.exception.BedResException;
+import com.bedrosians.bedlogic.exception.BedResExceptionMapper;
 import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
 import com.bedrosians.bedlogic.models.Products;
-import com.bedrosians.bedlogic.resources.BedDAOExceptionMapper;
-import com.bedrosians.bedlogic.resources.BedResExceptionMapper;
-import com.bedrosians.bedlogic.resources.UserCodeParser;
 import com.bedrosians.bedlogic.service.product.ProductService;
 import com.bedrosians.bedlogic.service.security.KeymarkUcUserSecurityService;
+import com.bedrosians.bedlogic.usercode.UserCodeParser;
 import com.bedrosians.bedlogic.util.JsonWrapper.ItemWrapper;
 import com.bedrosians.bedlogic.util.JsonWrapper.ListWrapper;
 
@@ -40,12 +40,12 @@ import com.bedrosians.bedlogic.util.JsonWrapper.ListWrapper;
 /**
 * This is a restful web service resource class. It acts as the logical resource of Product Service to provide CRUD operations on products.
 * This web service resource is used via HTTP request method (GET, POST, PUT, DELETE). JSON is the only format supported for message exchange by this resource.
-* This class uses "/products" as its endpoint.
+* This class uses "/product" as its endpoint.
 *
 */
 
 @Controller
-@Path("/products")
+@Path("/product")
 public class ProductsResource
 {
     /**
@@ -60,6 +60,7 @@ public class ProductsResource
 	 /**
 	* This method retrieves a list of products for the given query condition, or a list of all active products if no query condition is specified .
 	* @param UriInfo represents query condition in the form of name/value pairs. If no query is specified, all active products will be returned.
+	* Number of resulting records can be specified by setting a value for "maxResults" and if "exactmatch" is set to true, no pattern matching will be performed for all queries.
 	* @return Response object contains the status and a json object.
 	* @exception BedDAOBadParamException, BedDAOBadException and BedResException on input error and server side condition errors as well.
 	*/
