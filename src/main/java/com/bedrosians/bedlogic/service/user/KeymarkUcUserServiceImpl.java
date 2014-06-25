@@ -40,7 +40,7 @@ public class KeymarkUcUserServiceImpl implements KeymarkUcUserService{
 	    }
 	    catch(HibernateException hbe){
 			hbe.printStackTrace();
-			throw new BedDAOException("Error occured during getProductById() due to: " + hbe.getMessage(), hbe);
+			throw new BedDAOException("Error occured during getUserByUserCode due to: " + hbe.getMessage(), hbe);
 		}
 	    return user;
 	}
