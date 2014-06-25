@@ -39,15 +39,18 @@ public class KeymarkUcUserSecurityServiceImpl implements KeymarkUcUserSecuritySe
 	}
 	
 	@Override
-	public void doSecurityCheck(String userType, String userCode, DBOperation permission) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{
+	public void doSecurityCheck(String userType, String userCode, DBOperation operation) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{
 		switch(userType) {
 		   case "guest": case "Guest":
-			   break;
+			   if(DBOperation.SEARCH.equals(operation))
+			      break;
+			   else
+				   throw new BedResUnAuthorizedException("Guest user is not permitted for " + operation);	
 		   case "keymark":	
-			   validateUserInfo(userCode, "", false, permission);
+			   validateUserInfo(userCode, "", false, operation);
 			   break;
 		   default:
-			   throw new BedDAOBadParamException ("Unsupported user type");	   
+			   throw new BedDAOBadParamException ("Unsupported user type");				      
 		}
 	}
 	
