@@ -173,7 +173,7 @@ public class LoggingAspect {
 			Item item = (Item) arg;
 			clazz = item.getClass().getSimpleName();
 			id = item.getItemcode();
-			descriptor = item.getItemdesc() == null? "" : item.getItemdesc().getItemdesc1();
+			descriptor = "";//item.getItemdesc() == null? "" : item.getItemdesc().getItemdesc1();
 		} else if (arg instanceof HttpServletRequest || arg instanceof HttpServletResponse) {
 			return buffer.toString();
 		} else {
