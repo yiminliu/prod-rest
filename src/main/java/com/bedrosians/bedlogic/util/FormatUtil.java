@@ -72,7 +72,7 @@ public class FormatUtil {
 			return date;
 	}
 	
-	public static Item process(Item item){
+	public static synchronized Item process(Item item){
 		if(item == null)
 		   return null;	
 		item.setItemcode(process(item.getItemcode()));	

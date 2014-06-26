@@ -107,7 +107,7 @@ public class ImsDataUtil {
         return icon;
 	}
 	
-	public static String convertIconCollectionToLegancyIcons(IconCollection iconCollection){
+	public static String convertIconCollectionToLegancyIcons(final IconCollection iconCollection){
     	char[] legacyIcons = new char[20];
     	
     	legacyIcons[0] = OriginCountry.Italy.equals(iconCollection.getMadeInCountry()) ? 'Y' : 'N'; 
@@ -134,7 +134,7 @@ public class ImsDataUtil {
     	return new String(legacyIcons);
     }
 	
-	protected static ItemVendor convertImsVendorInfoToItemVendor(VendorInfo vendorInfo){
+	protected static ItemVendor convertImsVendorInfoToItemVendor(final  VendorInfo vendorInfo){
 		ItemVendor itemVendor = new ItemVendor();
 		if(vendorInfo != null){
 			itemVendor.setVendorId(vendorInfo.getVendornbr1());
@@ -155,7 +155,7 @@ public class ImsDataUtil {
 	}
 
 	//convert new vendor system data to legacy vendor data
-	protected static VendorInfo convertItemVendorToImsVendorInfo(ItemVendor itemVendor){
+	protected static VendorInfo convertItemVendorToImsVendorInfo(final ItemVendor itemVendor){
 		VendorInfo vendorInfo = new VendorInfo();
 		if(itemVendor != null){
 			if(itemVendor.getItemVendorId() != null) vendorInfo.setVendornbr1(itemVendor.getVendorId());
@@ -202,7 +202,7 @@ public class ImsDataUtil {
 	    return builder.toString();
 	}
 
-	public static Applications convertUsageToApplications(List<String> usage){
+	public static Applications convertUsageToApplications(final List<String> usage){
 		if(usage == null || usage.isEmpty())
 		   return null;
 		Applications applocation = new Applications();
@@ -251,7 +251,7 @@ public class ImsDataUtil {
 		return Arrays.asList(colorCategory.trim().split(":"));
 	}
 	
-	public static String convertColorhueStringListToColorCategory(List<String> colorStringList){
+	public static String convertColorhueStringListToColorCategory(final  List<String> colorStringList){
 		if(colorStringList == null || colorStringList.isEmpty())
 		   return null;	
 		else{
@@ -479,7 +479,7 @@ public class ImsDataUtil {
 		return itemToDB;
 	}
 	
-	private static void transferAssociation(Item itemToDB, Item itemFromInput, DBOperation operation) throws BedDAOBadParamException{
+	private static synchronized void transferAssociation(Item itemToDB, Item itemFromInput, DBOperation operation) throws BedDAOBadParamException{
 	  try{
 		ItemNewFeature inputNewFeature = itemFromInput.getImsNewFeature();
 	    IconCollection inputIconCollection = itemFromInput.getIconDescription();
@@ -521,7 +521,7 @@ public class ImsDataUtil {
 			  (operation.equals(DBOperation.UPDATE) && (itemToDB.getIconDescription() == null || itemToDB.getIconDescription().isEmpty()))){ //existing Item, but brand new inputIconCollection
 			   itemToDB.addIconDescription(inputIconCollection);
 			}
-			else if(operation.equals(DBOperation.UPDATE)){ //update an existing IconCollection
+			else if(operation.equals(DBOperation.UPDATE)){
 				if(itemToDB.getIconDescription() == null)
 					itemToDB.setIconDescription(new IconCollection());
 				if(inputIconCollection.getAdaAccessibility() != null) itemToDB.getIconDescription().setAdaAccessibility(inputIconCollection.getAdaAccessibility());
@@ -738,7 +738,7 @@ public class ImsDataUtil {
 		
 	}
 
-	private static void transferComponent(Item itemToDB, Item itemFromInput) throws BedDAOBadParamException{
+	private static synchronized void transferComponent(Item itemToDB, Item itemFromInput) throws BedDAOBadParamException{
 	  try{
 		if(itemFromInput.getApplications() != null) 
 		   itemToDB.setApplications(itemFromInput.getApplications());
@@ -779,7 +779,7 @@ public class ImsDataUtil {
 	  }		
 	}
 
-	private static void transferComponentForUpdate(Item itemToDB, Item itemFromInput) throws BedDAOBadParamException{
+	private static synchronized void transferComponentForUpdate(Item itemToDB, Item itemFromInput) throws BedDAOBadParamException{
 		  try{
 			   //description
 			   if(itemFromInput.getItemdesc() != null){
@@ -1126,7 +1126,7 @@ public class ImsDataUtil {
 		  }		
 	}
 	
-	private static void transferProperty(Item itemToDB, Item itemFromInput, DBOperation operation) throws BedDAOBadParamException{
+	private static synchronized void transferProperty(Item itemToDB, Item itemFromInput, DBOperation operation) throws BedDAOBadParamException{
 	  try{	
 		if(itemFromInput.getAbccd() != null) itemToDB.setAbccd(itemFromInput.getAbccd());
 		if(itemFromInput.getCountryorigin() != null) itemToDB.setCountryorigin(itemFromInput.getCountryorigin());
