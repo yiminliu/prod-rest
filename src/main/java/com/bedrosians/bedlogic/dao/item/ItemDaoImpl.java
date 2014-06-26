@@ -2,7 +2,6 @@ package com.bedrosians.bedlogic.dao.item;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +10,9 @@ import java.util.Map.Entry;
 
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.TermQuery;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -79,18 +81,28 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	@SuppressWarnings("unchecked")
 	 public List<Item> getActiveAndShownOnWebsiteItems(){
 	   List<Item> items = null;
-	   FullTextSession fullTextSession = Search.getFullTextSession(sessionFactory.getCurrentSession());
+	   FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 	   QueryBuilder queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(Item.class).get();
+	   
+	   //BooleanQuery bq = new BooleanQuery();
+	   // TermQuery gt350TermQuery = new TermQuery(new Term("model", "GT 350"));
+	   // TermQuery belAirTermQuery = new TermQuery(new Term("model", "Bel Air"));
+	   // bq.add(gt350TermQuery, BooleanClause.Occur.SHOULD);
+	   // bq.add(belAirTermQuery, BooleanClause.Occur.SHOULD);
+	   // Query q = new QueryParser(Version.LUCENE_36, "cs-method", new StandardAnalyzer(Version.LUCENE_36)).parse(bq
+	   //    .toString());
+	   //org.hibernate.Query hibernateQuery = fullTextSession.createFullTextQuery(q, Car.class);
+	  
        // create native Lucene query
-       org.apache.lucene.search.Query luceneQuery = queryBuilder.keyword()
-    		                                                     .onField("inactivecode")
-    		                                                     .matching("N")    		                                                  
-    	                                                         .createQuery();
-	       
+       org.apache.lucene.search.Query luceneQuery = queryBuilder.keyword().onField("inactivecode").ignoreAnalyzer().matching("N").createQuery();
+	   //org.apache.lucene.search.Query luceneQuery = queryBuilder.bool().should(queryBuilder.keyword().onField("inactivecode").ignoreAnalyzer().matching("N").createQuery())
+       
 	   // wrap Lucene query in a javax.persistence.Query
        org.hibernate.Query fullTextQuery = fullTextSession.createFullTextQuery(luceneQuery, Item.class).setCacheable(true);
- 	   items = fullTextQuery.setCacheable(true).list();     
-      
+       //fullTextQuery.initializeObjectWith(ObjectLookupMethod.SECOND_LEVEL_CACHE, DatabaseRetrievalMethod.QUERY);
+       System.out.println("Query = " + fullTextQuery.getQueryString());
+ 	   items = fullTextQuery.list();     
+ 	   System.out.println("# of items retrieved = " + items.size());
    	   return items;
 	}
 	
@@ -178,8 +190,8 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
     		    	itemCriteria =  generateEqualsDisjunctionCriteria(itemCriteria, "material." + key, values);//Case insensitive
     		    }
     		    else{
-    		    	//itemCriteria.add(Restrictions.in(key, values));
-    		        itemCriteria =  generateEqualsDisjunctionCriteria(itemCriteria, key, values);
+    		    	//itemCriteria.add(Restrictions.in(key, values)); //Case sensitive
+    		        itemCriteria =  generateEqualsDisjunctionCriteria(itemCriteria, key, values); //Case insensitive
 	 		    }    
     		    continue;
 	 	   	}  
@@ -244,13 +256,7 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	 	   	   case "nominallength": case "nominalLength": case "nominalwidth": case "nominalWidth":	
 	 	   		   itemCriteria.add(Restrictions.eq("dimensions" + "." +key, Float.parseFloat(value)));
 	 	   		   break;
-	 	   	   //case "showonwebsite": case "showOnWebSite": 
-	 	   	   //case "showonalysedwards": case "showOnAlysedwards":
-	 	   	   //case "itemtypecd": case "itemtypecode":
-	 	   	   //case "taxclass": case "taxClass": case "itemtaxclass": case "itemTaxClass":	
-	  	   	   //   itemCriteria.add(Restrictions.eq(key, value.charAt(0)).ignoreCase());
-	 	   	   //   break;	   
-	 	   	   case "pricemax": case "priceMax":
+	  	   	   case "pricemax": case "priceMax":
 	 	   		   itemCriteria.add(Restrictions.le("price.sellprice", new BigDecimal(value))); 
 	 	   		   itemCriteria.add(Restrictions.gt("price.sellprice", new BigDecimal(0))); 
 	 	           break;
@@ -276,9 +282,9 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
   
 		try {
 			if(maxResults > 0)
-		       items =  (List<Item>)itemCriteria.getExecutableCriteria(sessionFactory.getCurrentSession()).setMaxResults(maxResults).setCacheable(true).list();//executeCriteria(itemCriteria);//(List<Item>)itemCriteria.list();			
+		       items =  (List<Item>)itemCriteria.getExecutableCriteria(getSession()).setMaxResults(maxResults).setCacheable(true).list();//executeCriteria(itemCriteria);//(List<Item>)itemCriteria.list();			
 			else
-			   items =  (List<Item>)itemCriteria.getExecutableCriteria(sessionFactory.getCurrentSession()).setCacheable(true).list();	
+			   items =  (List<Item>)itemCriteria.getExecutableCriteria(getSession()).setCacheable(true).list();	
 		}
 		catch(HibernateException hbe){
 			if(hbe.getCause() != null)
@@ -314,7 +320,7 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	//------------------------------- deletion DB operation -------------------------//
 	
 	@Override
-	@Transactional(readOnly=false, propagation=Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
+	@Transactional(readOnly=false, propagation=Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
 	public void deleteItem(Item item){
 		delete(sessionFactory.getCurrentSession(), item); 
 	}
@@ -472,5 +478,8 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	   	criteria.add(or);
 		return criteria;
    }	
-		
+
+   private synchronized Session getSession(){
+   	return sessionFactory.getCurrentSession();
+}
 }
