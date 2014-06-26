@@ -35,6 +35,7 @@ import com.bedrosians.bedlogic.service.security.KeymarkUcUserSecurityService;
 import com.bedrosians.bedlogic.usercode.UserCodeParser;
 import com.bedrosians.bedlogic.util.JsonWrapper.ItemWrapper;
 import com.bedrosians.bedlogic.util.JsonWrapper.ListWrapper;
+import com.bedrosians.bedlogic.util.index.IndexUtil;
 
 
 /**
@@ -56,6 +57,8 @@ public class ProductsResource
 	private ProductService productService;
 	@Autowired
 	private KeymarkUcUserSecurityService keymarkUcUserSecurityService;
+	@Autowired
+	private IndexUtil indexUtil;
 	
 	 /**
 	* This method retrieves a list of products for the given query condition, or a list of all active products if no query condition is specified .
@@ -326,7 +329,7 @@ public class ProductsResource
 	@GET
 	@Path("/index")
 	public Response createInitialLuceneIndex(){
-		 boolean initialzed =  productService.initializeIndex();
+		 boolean initialzed =  indexUtil.initializeIndex();
 		 if(initialzed)
 		    return Response.status(200).entity("Index is created").build();
 		else
