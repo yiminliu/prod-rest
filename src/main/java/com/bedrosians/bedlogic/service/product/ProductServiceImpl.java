@@ -12,8 +12,6 @@ import org.codehaus.jettison.json.JSONObject;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.search.FullTextSession;
-import org.hibernate.search.Search;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -52,7 +50,7 @@ public class ProductServiceImpl implements ProductService {
     	if(id == null || id.length() < 1)
     	   throw new BedDAOBadParamException("Please enter valid item code !");	
 		try{
-	  	    item = itemDao.getItemById(sessionFactory.getCurrentSession(), id);
+	  	    item = itemDao.getItemById(getSession(), id);
 		}
 		catch(HibernateException hbe){
 			hbe.printStackTrace();
@@ -141,7 +139,7 @@ public class ProductServiceImpl implements ProductService {
 		String itemCode = JsonUtil.validateItemCode(jsonObj);
 		Item itemFromInput = (Item)JsonUtil.jsonObjectToPOJO(jsonObj, new Item());
 		Item itemToUpdate = null;
-		Session session = sessionFactory.getCurrentSession();
+		Session session = getSession();
 		try{
 			itemToUpdate = itemDao.getItemById(session, itemCode.trim());
 		}
@@ -151,25 +149,28 @@ public class ProductServiceImpl implements ProductService {
 	    }
 		if(itemToUpdate == null)
 	       throw new BedResException("No data found for the given item code");	
-	 	itemToUpdate = ImsDataUtil.transformItem(itemToUpdate, itemFromInput, DBOperation.UPDATE);
-     	ImsValidator.validateNewItem(itemToUpdate);
-    	try{
-		   itemDao.updateItem(session,itemToUpdate);
-		}
-    	catch(HibernateException hbe){
-     	   if(hbe.getCause() != null)
- 		      throw new BedDAOException("Error occured during createProduct(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
- 		   else
- 		  	  throw new BedDAOException("Error occured during createProduct(), due to: " +  hbe.getMessage());	
- 	    }	
-    	catch(Exception e){
-			if(e.getMessage().contains("constraint [vendor_apv_fkey]"))
-				  throw new BedDAOBadParamException("Invalid vendor number (ID), since it cannot be found in the vendor table");
-			if(e.getCause() != null)
-		       throw new BedDAOException("Error occured during updateProduct(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
-		  	else
-			   throw new BedDAOException("Error occured during updateProduct(), due to: " +  e.getMessage());	
-		}  
+	 	
+		synchronized(itemToUpdate){
+	  	   itemToUpdate = ImsDataUtil.transformItem(itemToUpdate, itemFromInput, DBOperation.UPDATE);
+		   ImsValidator.validateNewItem(itemToUpdate);
+    	   try{
+		      itemDao.updateItem(session,itemToUpdate);
+	 	   }
+    	   catch(HibernateException hbe){
+     	      if(hbe.getCause() != null)
+ 		         throw new BedDAOException("Error occured during createProduct(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+ 		      else
+ 		  	     throw new BedDAOException("Error occured during createProduct(), due to: " +  hbe.getMessage());	
+ 	       }	
+    	   catch(Exception e){
+			  if(e.getMessage().contains("constraint [vendor_apv_fkey]"))
+			     throw new BedDAOBadParamException("Invalid vendor number (ID), since it cannot be found in the vendor table");
+			  if(e.getCause() != null)
+		         throw new BedDAOException("Error occured during updateProduct(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+		  	  else
+			     throw new BedDAOException("Error occured during updateProduct(), due to: " +  e.getMessage());	
+		   }
+		}	   
 	}
 	
 	//--------------------------------Deletion DB Operation --------------------------//
@@ -200,17 +201,7 @@ public class ProductServiceImpl implements ProductService {
 		deleteProductById(itemCode);
 	}
 
-	 /* This method is used to create Lucene indexes for the existing data in database */
-    @Override
-    public boolean initializeIndex(){
-    	FullTextSession fullTextSession = Search.getFullTextSession(sessionFactory.openSession());
-    	try{
-    		fullTextSession.createIndexer().startAndWait();
-    		return true;
-    	}
-    	catch(InterruptedException e){
-    		e.printStackTrace();
-    		return false;
-    	}
-    }
+	private synchronized Session getSession(){
+	    	return sessionFactory.getCurrentSession();
+	}
 }

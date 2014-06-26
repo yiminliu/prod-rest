@@ -12,7 +12,6 @@ import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.exception.BedResException;
 
 public interface ProductService {	
-	public boolean initializeIndex();
 	public Item getProductById(String id) throws BedDAOBadParamException, BedDAOException;	
 	public List<Item> getActiveAndShownOnWebsiteProducts() throws BedDAOBadParamException, BedDAOException;
 	public List<Item> getProducts(MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException, BedDAOException, BedResException;		   	
