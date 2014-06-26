@@ -23,8 +23,8 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
 public class JerseyWSTestClient {
 
 	private static final String mediaTypeJson = MediaType.APPLICATION_JSON;
-	private static final String rootPath = "bedlogic/rest";
-	private static final String appPath = "products";
+	private static final String rootPath = "bedlogic/v2";
+	private static final String appPath = "product";
 	private static final String testItemCode = "AECBUB218NR".toUpperCase();
 	private static final String colorHue = "RED";
 	private static final String originCountry = "USA";
@@ -36,13 +36,14 @@ public class JerseyWSTestClient {
 		init();
 	   
 	   //testGetProductById(testItemCode);
-	   //testGetProductByColorHues(colorHue);
+		//testGetProductByMultipleIds();
+	  //testGetProductByColorHues(colorHue);
 		//testGetProductByMultipleColorHues(new String[]{colorHue, "GREEN", "YELLOW"});
 	
-	   //testGetProductByOriginCountry(originCountry);
+	   testGetProductByOriginCountry(originCountry);
 	   //testGetProductsWIthMultipleMaterialStyles();
 	   //testGetAllProducts();
-		testGetAllActiveProducts();
+		//testGetAllActiveProducts();
 	   //testCreate();
 	   //testUpdateWithJsonString();
 	   long totalTime = (System.currentTimeMillis() - startTime);
@@ -74,6 +75,25 @@ public class JerseyWSTestClient {
 	   System.out.println("Output = " + s);
 	}
 	
+	private static void testGetProductByMultipleIds(){
+		   System.out.println("testGetProductById");
+		   service = client.resource(getTestBaseURI());
+		   //service.path(rootPath).path(appPath).accept(mediaTypeJson);
+		   service.queryParam("itemcode", "{AECBUB217NR,CRDBARBRU440}");
+		   service.type(mediaTypeJson);
+		   service.accept(mediaTypeJson);
+		   System.out.println("Resource URL = " + service.getURI().toASCIIString());
+		   //service.method("GET");
+		   //ClientResponse response = service.accept("application/json").get(ClientResponse.class);
+		   ClientResponse response = service.get(ClientResponse.class);
+			  
+		   System.out.printf("Response status %s, type %s ", response.getStatus(),response.getType());
+		   System.out.println("Response data : "+ response.toString());
+		   
+		   String s = response.getEntity(String.class);
+		   System.out.println("Output = " + s);
+		}
+	
 	private static void testGetProductByOriginCountry(String country){
 	  	   System.out.println("testGetProductByOriginCountry");
 	  	   MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -100,16 +120,12 @@ public class JerseyWSTestClient {
 	       params.put("colorhues", Arrays.asList(new String[]{colorHue}));
 	    
 		   service = client.resource(getTestBaseURI());
+		   client.addFilter(new HTTPBasicAuthFilter("guest", ""));
 		   service.type(mediaTypeJson);
 		   service.accept(mediaTypeJson);
 		   System.out.println("Resource URL = " + service.getURI().toASCIIString());
 		   ClientResponse response = service.queryParams(params).get(ClientResponse.class);
-			  
-		 //   ClientResponse clientResponse = webResource .path("/listar")
-         //          .queryParams(params)
-         //          .header(HttpHeaders.AUTHORIZATION, AuthenticationHelper.getBasicAuthHeader())
-         //          .get(ClientResponse.class);
-
+		
 		   System.out.println("Response header : "+ response.getHeaders());
 		   System.out.println("Response data : "+ response.toString());
 		   
@@ -213,7 +229,9 @@ public class JerseyWSTestClient {
 	    client.addFilter(new LoggingFilter());
 	    
 	    service = client.resource(getTestBaseURI());
-	    service.header("Authorization", "Basic " + "base64encoded_SCOT:SCOTT10");
+	    //client.addFilter(new HTTPBasicAuthFilter("guest", ""));
+	    client.addFilter(new HTTPBasicAuthFilter("keymark", "JBED"));
+	    //service.header("Authorization", "Basic " + "base64encoded_SCOT:SCOTT10");
 		service.type(mediaTypeJson);
 		service.accept(mediaTypeJson);
 		System.out.println("Resource URL = " + service.getURI().toASCIIString());

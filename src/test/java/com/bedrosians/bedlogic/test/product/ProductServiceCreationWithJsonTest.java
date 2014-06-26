@@ -1,14 +1,8 @@
 package com.bedrosians.bedlogic.test.product;
 
-import java.io.StringWriter;
-import java.io.Writer;
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
 
-import javax.ws.rs.core.MultivaluedMap;
+import java.math.BigDecimal;
+import java.util.Random;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jettison.json.JSONObject;
@@ -32,12 +26,7 @@ import static org.junit.Assert.*;
 @ContextConfiguration(locations = {"/application_context/bedlogic-context.xml", "/application_context/bedlogic-persistence.xml"})
 @TransactionConfiguration(defaultRollback = false)
 public class ProductServiceCreationWithJsonTest {
-		
-	//@Mock
-	//ItemDao ItemDaoMock;
 	
-	//@InjectMocks
-	//productServiceImpl productService;
 	
 	@Autowired
 	ProductService productService;
@@ -228,10 +217,10 @@ public class ProductServiceCreationWithJsonTest {
 		    assertTrue(item.getColorhues().contains("BEIGE"));
 		    assertEquals("BEIGE", item.getColorcategory());
 		    assertEquals(item.getColorcategory(), item.getColorhues().get(0));
-		    assertEquals("F", Character.toString(item.getItemtypecd()));
+		    assertEquals("F", item.getItemtypecd());
 		    //assertEquals("test", item.getType());
 		    assertEquals("C", item.getAbccd());
-		    assertEquals(new Character('T'), item.getTaxclass());
+		    assertEquals("T", item.getTaxclass());
 		    assertEquals("ALICIAB", item.getPurchasers().getPurchaser());
 		    assertEquals("GFIL", item.getPurchasers().getPurchaser2());
 		    assertEquals("V2", item.getShadevariation());
@@ -341,10 +330,10 @@ public class ProductServiceCreationWithJsonTest {
 	        assertEquals("2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)", item.getItemdesc().getFulldesc());    
 		    assertEquals("[BEIGE]", item.getColorhues().toString());
 		    //assertTrue(item.getColorhues().contains("BEIGE"));
-		    assertEquals("F", Character.toString(item.getItemtypecd()));
+		    assertEquals("F", item.getItemtypecd());
 		    //assertEquals("test", item.getType());
 		    assertEquals("C", item.getAbccd());
-		    assertEquals(Character.valueOf('T'), item.getTaxclass());
+		    assertEquals("T", item.getTaxclass());
 		    assertEquals("ALICIAB", item.getPurchasers().getPurchaser());
 		    assertEquals("GFIL", item.getPurchasers().getPurchaser2());
 		    assertEquals("V2", item.getShadevariation());
@@ -427,8 +416,8 @@ public class ProductServiceCreationWithJsonTest {
 	 @Test
 	 public void testCreateItemWithUnitAndVendorJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithUnitAndVendor: ");
-	        //JSONObject params = new JSONObject(jStringWithUnitAndVendor);
-	        JSONObject params = new JSONObject(jStringWithNewVendorSystem);
+	        JSONObject params = new JSONObject(jStringWithUnitAndVendor);
+	        //JSONObject params = new JSONObject(jStringWithNewVendorSystem);
 	        String id = productService.createProduct(params);
 	        assertNotNull(id);
 	        Item item = productService.getProductById(id);
@@ -694,10 +683,10 @@ public class ProductServiceCreationWithJsonTest {
 		    assertEquals("[BEIGE, YELLOW]", item.getColorhues().toString());
 		    assertEquals("BEIGE:YELLOW", item.getColorcategory());
 		    //assertTrue(item.getColorhues().contains("BEIGE"));
-		    assertEquals("F", Character.toString(item.getItemtypecd()));
+		    assertEquals("F", item.getItemtypecd());
 		    //assertEquals("test", item.getType());
 		    assertEquals("C", item.getAbccd());
-		    assertEquals(Character.valueOf('T'), item.getTaxclass());
+		    assertEquals("T", item.getTaxclass());
 		    assertEquals("ALICIAB", item.getPurchasers().getPurchaser());
 		    assertEquals("GFIL", item.getPurchasers().getPurchaser2());
 		    assertEquals("V2", item.getShadevariation());
@@ -755,7 +744,7 @@ public class ProductServiceCreationWithJsonTest {
 	 
 	 
 	 String jStringWithBasicInfo = 
-			     "{\"itemcode\":\"newItemcode6\","
+			     "{\"itemcode\":\"newItemcode8\","
 			    + "\"itemcategory\":\"ATHENA\","
 	 		    + "\"countryorigin\":\"Italy\","
 	 		    + "\"inactivecode\":\"N\","
@@ -824,7 +813,8 @@ public class ProductServiceCreationWithJsonTest {
  
 	 
 	 String jStringWithColorHues = 
-		     "{\"itemcode\":\"newItemcode7\","
+		     "{\"itemcode\":\"newItemcode10\","
+		    + "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\"},"
 		    + "\"itemcategory\":\"ATHENA\","
  		    + "\"countryorigin\":\"Italy\","
  		    + "\"inactivecode\":\"N\","
@@ -836,7 +826,8 @@ public class ProductServiceCreationWithJsonTest {
     		+ "}";
  
 	 String jStringWithMultipleColorHues = 
-		     "{\"itemcode\":\"newItemcode2\","
+		     "{\"itemcode\":\"newItemcode11\","
+		    + "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\"},"
 		    + "\"itemcategory\":\"ATHENA\","
  		    + "\"countryorigin\":\"Italy\","
  		    + "\"inactivecode\":\"N\","
@@ -849,7 +840,7 @@ public class ProductServiceCreationWithJsonTest {
  
 	 
 	 String jStringWithColorCategory = 
-		     "{\"itemcode\":\"newItemcode14\","
+		     "{\"itemcode\":\"newItemcode4\","
 		    + "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\"},"
 		    + "\"itemcategory\":\"ATHENA\","
  		    + "\"countryorigin\":\"Italy\","
@@ -863,7 +854,7 @@ public class ProductServiceCreationWithJsonTest {
  
 	 
 	 String jStringWithDimensions = 
-			    "{\"itemcode\":\"newItemcode10\","
+			    "{\"itemcode\":\"newItemcode3\","
 			    + "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\"},"
 			    + "\"itemcategory\":\"ATHENA\","
 	 		    + "\"countryorigin\":\"Italy\","
@@ -874,7 +865,7 @@ public class ProductServiceCreationWithJsonTest {
        
 	 String jStringWithUnitAndVendor = 
 			    "{"
-			    + "\"itemcode\":\"newItemcode3\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
+			    + "\"itemcode\":\"newItemcode14\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
 	    		+ "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\"},"
 	    		+ "\"units\":"
 	    		+ "{\"stdunit\":\"SHT\",\"stdratio\":1.0,\"ordunit\":\"SHT\",\"ordratio\":1.0,"
@@ -909,7 +900,7 @@ public class ProductServiceCreationWithJsonTest {
 
 	 String jStringWithNewVendorSystem = 
 			    "{"
-			    + "\"itemcode\":\"newItemcode3\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
+			    + "\"itemcode\":\"newItemcode13\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
 	    		+ "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\"},"
 	      	  	+ "\"newVendorSystem\":[{\"vendorOrder\":1,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorNetPrice\":4.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"vendorId\":374906},"
 	    		+ "                     {\"vendorOrder\":2,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorNetPrice\":4.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"vendorId\":302871},"
@@ -962,7 +953,7 @@ public class ProductServiceCreationWithJsonTest {
 	       		+ "}";
 	 	 
 	 String jStringFullItemInfo = 
-			   "{\"itemcode\":\"newItemcode6\","
+			   "{\"itemcode\":\"newItemcode25\","
 			    + "\"itemcategory\":\"ATHENA\","
 			    + "\"countryorigin\":\"Italy\","
 			    + "\"inactivecode\":\"N\","
@@ -1030,7 +1021,7 @@ public class ProductServiceCreationWithJsonTest {
 	 
 	 String jStringFullItemAndAssociationInfo = 
 			    //basic info
-			     "{\"itemcode\":\"newItemcode5\","
+			     "{\"itemcode\":\"newItemcode20\","
 			    + "\"itemcategory\":\"ATHENA\","
 			    + "\"countryorigin\":\"Italy\","
 			    + "\"inactivecode\":\"N\","

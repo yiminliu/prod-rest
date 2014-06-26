@@ -3,14 +3,11 @@ package com.bedrosians.bedlogic.test.product;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jettison.json.JSONObject;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,7 +30,6 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(locations = "/Bedlogic-test-context.xml")
 @ContextConfiguration(locations = {"/application_context/bedlogic-context.xml", "/application_context/bedlogic-persistence.xml"})
 @TransactionConfiguration(defaultRollback = false)
 public class ProductServiceLookupByMultiValuedMapTest {
@@ -80,7 +76,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
     private static String testOrigin = null;
     private static String testOrigin2 = null;
     static private String testItem3 = "AECBUB217NR";
-    static private String testSeriesname = "builder";
+    static private String testSeriesname = null;
     static private String testVendorId = "285500";
     static private String testPurchaser = "LANA";
 
@@ -102,7 +98,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	    testColorHue3 = "GREEN";
 	    testColorHue4 = "YELLOW";
 	    testColorHue5 = "BEIGE";
-	    testSeriesName = "Sky";
+	    testSeriesName = "builder";
 	    testSeriesName2 = "Copper Silk";
 	    testSeriesName3 = "Samoa";
 	    testItemTypeCode = "#";
@@ -131,8 +127,8 @@ public class ProductServiceLookupByMultiValuedMapTest {
 		//System.out.println("Total execution time = " + totalTime + " sec");
 	}
 	
-	@Test
-	public void testGetAactiveAndShownOnWebProducts(){
+@Test
+	public void testGetAactiveAndShownOnWebProductsByLucene(){
 		List<Item> items = null;
 		try{
 		  // productService.initializeIndex();
@@ -315,7 +311,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
         for(Item item : items){
 	    	//System.out.println("item code   = " + item.getItemcode());
         	assertEquals("N", item.getInactivecode());
-        	assertEquals("Y", Character.toString(item.getShowonwebsite()));
+        	assertEquals("Y", item.getShowonwebsite());
 	    }
 	    
 		String jsonStr = null;
@@ -831,8 +827,8 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        String jsonStr = null;
 	        System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
 	        for(Item prod : items){
-	       	    //System.out.printf("item code = %s, and matStyle = %s. ", prod.getItemcode(), prod.getMaterial().getMaterialstyle());
-	       	    //System.out.println();
+	       	    System.out.printf("item code = %s, and matStyle = %s. ", prod.getItemcode(), prod.getMaterial().getMaterialstyle());
+	       	    System.out.println();
 	           	assertTrue(prod.getMaterial().getMaterialstyle().trim().contains(testMaterialStyle) || prod.getMaterial().getMaterialstyle().trim().contains(testMaterialStyle2));
 	        }
 	        Products result = new Products(items);
@@ -1078,7 +1074,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
 	        for(Item prod : items){
 	       	    //System.out.printf("item code = %s and SeriesName = %s. ", prod.getItemcd(), prod.getSeriesname());
-	           	assertEquals(testSeriesName, prod.getSeries().getSeriesname().trim());
+	           	assertEquals(testSeriesName.toUpperCase(), prod.getSeries().getSeriesname().trim().toUpperCase());
 	        }
 	        Products result = new Products(items);
 	        try{
@@ -1101,8 +1097,8 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        String jsonStr = null;
 	        System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
 	        for(Item prod : items){
-	       	    //System.out.printf("item code = %s and SeriesName = %s. ", prod.getItemcd(), prod.getSeriesname());
-	           	assertTrue(testSeriesName.equals(prod.getSeries().getSeriesname().trim()) || testSeriesName2.equals(prod.getSeries().getSeriesname().trim()) || testSeriesName3.equals(prod.getSeries().getSeriesname().trim()));
+	       	    //System.out.printf("item code = %s and SeriesName = %s. ", prod.getItemcode(), prod.getSeries().getSeriesname());
+	           	assertTrue(testSeriesName.equalsIgnoreCase(prod.getSeries().getSeriesname().trim()) || testSeriesName2.equalsIgnoreCase(prod.getSeries().getSeriesname().trim()) || testSeriesName3.equalsIgnoreCase(prod.getSeries().getSeriesname().trim()));
 	        }
 	        Products result = new Products(items);
 	        try{

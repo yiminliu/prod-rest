@@ -304,7 +304,7 @@ public class ProductServiceUpdateWithJsonTest {
 	        assertEquals("update 2x2 Athena Mosaic on 12x12 Sheet", item.getItemdesc().getFulldesc());    
 		    assertEquals("BEIGE", item.getColorhues());
 		    //assertTrue(item.getColorhues().contains("BEIGE"));
-		    assertEquals("F", Character.toString(item.getItemtypecd()));
+		    assertEquals("F", item.getItemtypecd());
 		    //assertEquals("test", item.getType());
 		    assertEquals("C", item.getAbccd());
 		    assertEquals(Character.valueOf('T'), item.getTaxclass());
@@ -373,7 +373,7 @@ public class ProductServiceUpdateWithJsonTest {
 	        assertEquals("RED", item.getColorcategory());
 		    assertEquals("[RED]", item.getColorhues().toString());
 		    //assertTrue(item.getColorhues().contains("BEIGE"));
-		    assertEquals("F", Character.toString(item.getItemtypecd()));
+		    assertEquals("F", (item.getItemtypecd()));
 		    //assertEquals("test", item.getType());
 		    assertEquals("C", item.getAbccd());
 		    assertEquals(Character.valueOf('T'), item.getTaxclass());
@@ -712,7 +712,7 @@ public class ProductServiceUpdateWithJsonTest {
 		    assertEquals("[BEIGE, YELLOW]", item.getColorhues().toString());
 		    assertEquals("BEIGE:YELLOW", item.getColorcategory());
 		    //assertTrue(item.getColorhues().contains("BEIGE"));
-		    assertEquals("F", Character.toString(item.getItemtypecd()));
+		    assertEquals("F", (item.getItemtypecd()));
 		    //assertEquals("test", item.getType());
 		    assertEquals("C", item.getAbccd());
 		    assertEquals(Character.valueOf('T'), item.getTaxclass());
