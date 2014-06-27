@@ -102,12 +102,12 @@ public class ProductServiceImpl implements ProductService {
 	public String createProduct(JSONObject jsonObj) throws BedDAOBadParamException, BedDAOException, BedResException{  	
 		String itemCode = JsonUtil.validateItemCode(jsonObj);
 		String id;
-		Item newItem = new Item(itemCode);
-     	Item item = (Item)JsonUtil.jsonObjectToPOJO(jsonObj, new Item());
-     	newItem = ImsDataUtil.transformItem(newItem, item, DBOperation.CREATE);
-     	ImsValidator.validateNewItem(newItem);
+		Item itemToCreate = new Item(itemCode);
+     	Item itemFromInput = (Item)JsonUtil.jsonObjectToPOJO(jsonObj, new Item());
+     	itemToCreate = ImsDataUtil.transformItem(itemToCreate, itemFromInput, DBOperation.CREATE);
+     	ImsValidator.validateNewItem(itemToCreate);
    	    try{
-		   id = itemDao.createItem(newItem);
+		   id = itemDao.createItem(itemToCreate);
 		}
 		catch(HibernateException hbe){
 		   hbe.printStackTrace();
@@ -135,7 +135,7 @@ public class ProductServiceImpl implements ProductService {
 	@Loggable(value = LogLevel.INFO)
 	@Override
 	@Transactional(propagation=Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ) 
-	public void updateProduct(JSONObject jsonObj) throws BedDAOBadParamException, BedDAOException, BedResException{
+	public synchronized void updateProduct(JSONObject jsonObj) throws BedDAOBadParamException, BedDAOException, BedResException{
 		String itemCode = JsonUtil.validateItemCode(jsonObj);
 		Item itemFromInput = (Item)JsonUtil.jsonObjectToPOJO(jsonObj, new Item());
 		Item itemToUpdate = null;
@@ -148,36 +148,33 @@ public class ProductServiceImpl implements ProductService {
 		    throw new BedDAOException("Error occured during updateProduct() due to: " + hbe.getMessage(), hbe);
 	    }
 		if(itemToUpdate == null)
-	       throw new BedResException("No data found for the given item code");	
-	 	
-		synchronized(itemToUpdate){
-	  	   itemToUpdate = ImsDataUtil.transformItem(itemToUpdate, itemFromInput, DBOperation.UPDATE);
-		   ImsValidator.validateNewItem(itemToUpdate);
-    	   try{
+	       throw new BedResException("No data found for the given item code");	 
+		itemToUpdate = ImsDataUtil.transformItem(itemToUpdate, itemFromInput, DBOperation.UPDATE);
+  	    ImsValidator.validateNewItem(itemToUpdate);
+    	try{
 		      itemDao.updateItem(session,itemToUpdate);
-	 	   }
-    	   catch(HibernateException hbe){
+	 	}
+    	catch(HibernateException hbe){
      	      if(hbe.getCause() != null)
  		         throw new BedDAOException("Error occured during createProduct(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
  		      else
  		  	     throw new BedDAOException("Error occured during createProduct(), due to: " +  hbe.getMessage());	
- 	       }	
-    	   catch(Exception e){
+ 	    }	
+    	catch(Exception e){
 			  if(e.getMessage().contains("constraint [vendor_apv_fkey]"))
 			     throw new BedDAOBadParamException("Invalid vendor number (ID), since it cannot be found in the vendor table");
 			  if(e.getCause() != null)
 		         throw new BedDAOException("Error occured during updateProduct(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
 		  	  else
 			     throw new BedDAOException("Error occured during updateProduct(), due to: " +  e.getMessage());	
-		   }
-		}	   
+		   }	   
 	}
 	
 	//--------------------------------Deletion DB Operation --------------------------//
 	
 	@Loggable(value = LogLevel.INFO)
 	@Override
-    public void deleteProductById(String id) throws BedDAOBadParamException, BedDAOException{
+	synchronized public void deleteProductById(String id) throws BedDAOBadParamException, BedDAOException{
 	    if(id == null || id.length() == 0)
 	    	 throw new BedDAOBadParamException("Item code should not be empty");		
 		Item item = new Item(id);
@@ -196,7 +193,7 @@ public class ProductServiceImpl implements ProductService {
 	
 	@Loggable(value = LogLevel.INFO)
 	@Override
-    public void deleteProduct(JSONObject jsonObj) throws BedDAOBadParamException, BedDAOException{
+	synchronized public void deleteProduct(JSONObject jsonObj) throws BedDAOBadParamException, BedDAOException{
 		String itemCode = JsonUtil.validateItemCode(jsonObj);
 		deleteProductById(itemCode);
 	}
