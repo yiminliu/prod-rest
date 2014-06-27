@@ -49,21 +49,21 @@
                 <prop key="hibernate.dialect">${hibernate.dialect}</prop>  
                 <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>  
                 <prop key="hibernate.format_sql">${hibernate.format.sql}</prop>
-                <!--<prop key="hibernate.current_session_context_class">thread</prop>-->
-                <!--<prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</prop>-->
                 <prop key="hibernate.max.fetch.depth">${hibernate.max.fetch.depth}</prop>          
                 <prop key="hibernate.jdbc.fetch.size">${hibernate.jdbc.fetch.size}</prop>          
                 <prop key="hibernate.jdbc.batch.size">${hibernate.jdbc.batch.size}</prop> 
                 <prop key="hibernate.generate_statistics">${hibernate.generate.statistics}</prop>
-                <prop key="hibernate.cache.use_second_level_cache">false</prop>
-                <prop key="hibernate.cache.use_query_cache">false</prop>
+                <prop key="hibernate.cache.use_second_level_cache">${hibernate.cache.use_second_level_cache}</prop>
+                <prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop>
                 <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>  
                 <prop key="hibernate.cache.provider_configuration_file_resource_path">ehcache.xml</prop> 
                 <prop key="hibernate.cache.use_structured_entries">${hibernate.cache.use_structured_entries}</prop>     
                 <prop key="hibernate.cache.generate_statistics">${hibernate.cache.generate_statistics}</prop> 
                 <prop key="hibernate.search.default.directory_provider">filesystem</prop>
-                <prop key="hibernate.search.default.indexBase">target/lucenceIndex</prop>  
-                <!-- <prop key="hibernate.search.indexing_strategy">manual</prop>-->
+                <prop key="hibernate.search.default.indexBase">${hibernate.search.default.indexBase}</prop>  
+                <prop key="hibernate.search.lucene_version">${hibernate.search.lucene_version}</prop>
+                <!--<prop key="hibernate.search.default.refresh">${hibernate.search.default.refresh}</prop>-->
+                <!--<prop key="hibernate.search.indexing_strategy">manual</prop>-->
             </props>  
         </property>  
     </bean>
