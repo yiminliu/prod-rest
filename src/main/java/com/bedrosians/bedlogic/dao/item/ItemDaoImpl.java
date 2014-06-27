@@ -10,9 +10,6 @@ import java.util.Map.Entry;
 
 import javax.ws.rs.core.MultivaluedMap;
 
-import org.apache.lucene.index.Term;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.TermQuery;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
@@ -76,33 +73,24 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
        return loadById(session, itemId);
 	}
  
+	//The purpose of this method is to compare the performance of Hibernate Search and regular Hibernate query 
 	@Override
 	@Transactional(readOnly=true)
 	@SuppressWarnings("unchecked")
 	 public List<Item> getActiveAndShownOnWebsiteItems(){
 	   List<Item> items = null;
 	   FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+	
 	   QueryBuilder queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(Item.class).get();
-	   
-	   //BooleanQuery bq = new BooleanQuery();
-	   // TermQuery gt350TermQuery = new TermQuery(new Term("model", "GT 350"));
-	   // TermQuery belAirTermQuery = new TermQuery(new Term("model", "Bel Air"));
-	   // bq.add(gt350TermQuery, BooleanClause.Occur.SHOULD);
-	   // bq.add(belAirTermQuery, BooleanClause.Occur.SHOULD);
-	   // Query q = new QueryParser(Version.LUCENE_36, "cs-method", new StandardAnalyzer(Version.LUCENE_36)).parse(bq
-	   //    .toString());
-	   //org.hibernate.Query hibernateQuery = fullTextSession.createFullTextQuery(q, Car.class);
-	  
-       // create native Lucene query
-       org.apache.lucene.search.Query luceneQuery = queryBuilder.keyword().onField("inactivecode").ignoreAnalyzer().matching("N").createQuery();
-	   //org.apache.lucene.search.Query luceneQuery = queryBuilder.bool().should(queryBuilder.keyword().onField("inactivecode").ignoreAnalyzer().matching("N").createQuery())
+	   // create native Lucene query
+       //org.apache.lucene.search.Query luceneQuery = queryBuilder.keyword().onField("colorcategory").matching("CLEAR").createQuery();
+       org.apache.lucene.search.Query luceneQuery = queryBuilder.bool()
+	   	                                       .must(queryBuilder.keyword().onField("inactivecode").matching("N  ").createQuery())//ims table uses char type witch may need some padding to match index id 
+   	                                           .must(queryBuilder.keyword().onField("showonwebsite").matching("Y").createQuery()).createQuery();
        
 	   // wrap Lucene query in a javax.persistence.Query
        org.hibernate.Query fullTextQuery = fullTextSession.createFullTextQuery(luceneQuery, Item.class).setCacheable(true);
-       //fullTextQuery.initializeObjectWith(ObjectLookupMethod.SECOND_LEVEL_CACHE, DatabaseRetrievalMethod.QUERY);
-       System.out.println("Query = " + fullTextQuery.getQueryString());
- 	   items = fullTextQuery.list();     
- 	   System.out.println("# of items retrieved = " + items.size());
+ 	   items = (List<Item>)fullTextQuery.list();     
    	   return items;
 	}
 	
@@ -293,12 +281,7 @@ public class ItemDaoImpl extends GenericDaoImpl<Item, String> implements ItemDao
 	  		   throw new BedDAOException("Error occured during getItemByQueryParameters(), due to: " +  hbe.getMessage());
 		}
 		
-		System.out.println(items == null? 0 : items.size() + " items retireved");
-		//System.out.printf("Statistics().getConnectCount() = "  + sessionFactory.getStatistics().getConnectCount());
-	    //System.out.println("Statistics().getTransactionCount() = "  + sessionFactory.getStatistics().getTransactionCount());
-	  	//System.out.println("Statistics().getEntityFetchCount() = "  + sessionFactory.getStatistics().getEntityFetchCount());
-        //System.out.println("Statistics().getSecondLevelCacheHitCount() = " + sessionFactory.getStatistics().getSecondLevelCacheHitCount());
-       
+		System.out.println(items == null? 0 : items.size() + " items returned");       
         return items;	
     }
 	
