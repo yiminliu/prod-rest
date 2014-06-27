@@ -18,11 +18,10 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.solr.analysis.LetterTokenizerFactory;
-
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonRootName;
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
@@ -66,6 +65,7 @@ import com.bedrosians.bedlogic.util.ImsDataUtil;
 @DynamicUpdate
 @DynamicInsert
 @Indexed
+@Analyzer(impl = StandardAnalyzer.class)
 @AnalyzerDef(name ="colorCategoryAnalyzer", tokenizer = @org.hibernate.search.annotations.TokenizerDef(factory=LetterTokenizerFactory.class))
 @Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Item implements java.io.Serializable {
