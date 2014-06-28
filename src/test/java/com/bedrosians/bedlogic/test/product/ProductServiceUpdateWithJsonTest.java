@@ -1,7 +1,6 @@
 package com.bedrosians.bedlogic.test.product;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.Before;
@@ -34,7 +33,7 @@ public class ProductServiceUpdateWithJsonTest {
 	@Autowired
 	ProductService productService;
 	
-	private String id = "NEWITEMCODE3";
+	private String id = "NEWITEMCODE1";
 	
  	
 	@Before
@@ -302,12 +301,12 @@ public class ProductServiceUpdateWithJsonTest {
 	        assertEquals("Italy", item.getCountryorigin());
 	        assertEquals("N", item.getInactivecode());
 	        assertEquals("update 2x2 Athena Mosaic on 12x12 Sheet", item.getItemdesc().getFulldesc());    
-		    assertEquals("BEIGE", item.getColorhues());
+		    assertEquals("[BEIGE]", item.getColorhues().toString());
 		    //assertTrue(item.getColorhues().contains("BEIGE"));
 		    assertEquals("F", item.getItemtypecd());
 		    //assertEquals("test", item.getType());
 		    assertEquals("C", item.getAbccd());
-		    assertEquals(Character.valueOf('T'), item.getTaxclass());
+		    assertEquals("T", item.getTaxclass());
 		    assertEquals("ALICIAB", item.getPurchasers().getPurchaser());
 		    assertEquals("GFIL", item.getPurchasers().getPurchaser2());
 		    assertEquals("V2", item.getShadevariation());
@@ -715,7 +714,7 @@ public class ProductServiceUpdateWithJsonTest {
 		    assertEquals("F", (item.getItemtypecd()));
 		    //assertEquals("test", item.getType());
 		    assertEquals("C", item.getAbccd());
-		    assertEquals(Character.valueOf('T'), item.getTaxclass());
+		    assertEquals("T", item.getTaxclass());
 		    assertEquals("ALICIAB", item.getPurchasers().getPurchaser());
 		    assertEquals("GFIL", item.getPurchasers().getPurchaser2());
 		    assertEquals("V2", item.getShadevariation());
@@ -908,7 +907,7 @@ public class ProductServiceUpdateWithJsonTest {
 
 	 String jStringWithNewVendorSystem = 
 			    "{"
-			    + "\"itemcode\":\"newItemcode3\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
+			    + "\"itemcode\":\"newItemcode10\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
 	    		+ "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\"},"
 	      	  	+ "\"newVendorSystem\":[{\"vendorOrder\":1,\"vendorName\":test,\"vendorName2\":null,\"vendorXrefId\":\"ATM41\",\"vendorListPrice\":5.1500,\"vendorNetPrice\":7.1500,\"vendorPriceUnit\":\"PCS\",\"vendorFob\":\"test\",\"vendorDiscountPct\":10.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":11.0,\"vendorFreightRateCwt\":110.0,\"vendorLandedBaseCost\":3.1500,\"leadTime\":60,\"dutyPct\":30.0,\"vendorId\":374906},"
 	    		+ "                     {\"vendorOrder\":2,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":6.1500,\"vendorNetPrice\":7.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"vendorId\":302871},"
@@ -995,7 +994,7 @@ public class ProductServiceUpdateWithJsonTest {
 	    		+ "}";
 	 	 
 	 String jStringColorCategory = 
-			   "{\"itemcode\":\"NEWITEMCODE3\","
+			   "{\"itemcode\":\"NEWITEMCODE\","
 			   	+ "\"itemdesc\":{\"fulldesc\":\"update 2x2 Athena Mosaic on 12x12 Sheet\",\"itemdesc1\":\"update 2x2 Athena Mosaic on 12x12 \"},"
 	    		+ "\"colorcategory\":\"RED:BLACK\","
 	    		+ "}";
@@ -1027,7 +1026,7 @@ public class ProductServiceUpdateWithJsonTest {
 				+ "}";
 	
 	 String jStringFullItemInfo = 
-			   "{\"itemcode\":\"NEWITEMCODE1\","
+			   "{\"itemcode\":\"NEWITEMCODE10\","
 			    + "\"itemcategory\":\"ATHENA\","
 			    + "\"countryorigin\":\"Italy\","
 			    + "\"inactivecode\":\"N\","
@@ -1065,7 +1064,7 @@ public class ProductServiceUpdateWithJsonTest {
 	    		+ "\"unit2unit\":\"PLT\",\"unit2ratio\":240.0,\"unit2isstdsell\":\"N\",\"unit2isstdord\":\"N\",\"unit2isfractqty\":\"N\",\"unit2ispackunit\":\"N\",\"unit2upc\":0,\"unit2upcdesc\":\"\",\"unit2wgtperunit\":1070.0000,"
 	    		+ "\"unit3unit\":\"\",\"unit3ratio\":0.0,\"unit3isstdsell\":\"N\",\"unit3isstdord\":\"N\",\"unit3isfractqty\":\"N\",\"unit3ispackunit\":\"N\",\"unit3upc\":0,\"unit3upcdesc\":\"\",\"unit3wgtperunit\":0.0000,"
 	    		+ "\"unit4unit\":\"\",\"unit4ratio\":0.0,\"unit4isstdsell\":\"N\",\"unit4isstdord\":\"N\",\"unit4isfractqty\":\"N\",\"unit4ispackunit\":\"N\",\"unit4upc\":0,\"unit4upcdesc\":\"\",\"unit4wgtperunit\":0.0000},"
-	     		//"\"vendors\":{\"vendornbr\":0,\"vendornbr1\":134585,\"vendornbr2\":0,\"vendornbr3\":0,\"vendorxrefcd\":\"ATM40\",\"vendorlistprice\":4.1500,\"vendorpriceunit\":\"SHT\",\"vendorfob\":\"\",\"vendordiscpct\":0.0,\"vendorroundaccuracy\":2,\"vendornetprice\":4.1500,\"vendormarkuppct\":0.0,\"vendorfreightratecwt\":0.0,\"dutypct\":0.0,\"leadtime\":60,\"vendorLandedBaseCost\":4.1500,\"vendordiscpct2\":0.0,\"vendordiscpct3\":0.0},
+	     		+ "\"vendors\":{\"vendornbr\":0,\"vendornbr1\":134585,\"vendornbr2\":0,\"vendorxrefcd\":\"ATM40\",\"vendorlistprice\":4.1500,\"vendorpriceunit\":\"SHT\",\"vendorfob\":\"\",\"vendordiscpct\":0.0,\"vendorroundaccuracy\":2,\"vendornetprice\":4.1500,\"vendormarkuppct\":0.0,\"vendorfreightratecwt\":0.0,\"dutypct\":0.0,\"leadtime\":60,\"vendorlandedbasecost\":4.1500,\"vendordiscpct2\":0.0,\"vendordiscpct3\":0.0},"
 	    		//+ "\"newVendorSystem\":[{\"vendorOrder\":1,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorNetPrice\":4.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"vendorId\":134585},"
 	    		//+ "                     {\"vendorOrder\":2,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorNetPrice\":4.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"vendorId\":134586},"
 	    		//+ "                     {\"vendorOrder\":3,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorNetPrice\":4.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"vendorId\":134587},"
@@ -1134,7 +1133,7 @@ public class ProductServiceUpdateWithJsonTest {
 	 
 	 String jStringFullItemAndAssociationInfo = 
 			    //basic info
-			     "{\"itemcode\":\"NEWITEMCODE6\","
+			     "{\"itemcode\":\"NEWITEMCODE1\","
 			    + "\"itemcategory\":\"ATHENA\","
 			    + "\"countryorigin\":\"Italy\","
 			    + "\"inactivecode\":\"N\","

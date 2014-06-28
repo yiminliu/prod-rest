@@ -10,12 +10,14 @@ import javax.ws.rs.core.MultivaluedMap;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
+
 import com.bedrosians.bedlogic.domain.item.Item;
 import com.bedrosians.bedlogic.domain.item.ItemVendor;
 import com.bedrosians.bedlogic.domain.item.enums.Grade;
@@ -25,6 +27,7 @@ import com.bedrosians.bedlogic.models.Products;
 import com.bedrosians.bedlogic.service.product.ProductService;
 import com.bedrosians.bedlogic.util.JsonWrapper.ItemWrapper;
 import com.bedrosians.bedlogic.util.JsonWrapper.ListWrapper;
+import com.bedrosians.bedlogic.util.index.IndexUtil;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 import static org.junit.Assert.*;
@@ -42,6 +45,8 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	
 	@Autowired
 	private ProductService productService;
+	@Autowired
+	private IndexUtil indexUtil;
 	
 	
 	private static String testItemId = null;
@@ -128,10 +133,11 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	}
 	
 @Test
-	public void testGetAactiveAndShownOnWebProductsByLucene(){
+//@Ignore
+	public void testGetAllactiveAndShownOnWebProductsByLucene(){
 		List<Item> items = null;
 		try{
-		  // productService.initializeIndex();
+		   //indexUtil.initializeIndex();
 		   items = productService.getActiveAndShownOnWebsiteProducts();
 		}
 		catch(Exception e){
@@ -332,7 +338,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 		System.out.println("test if the Item is returned by ActiveItemsWithMaxResultSetting...");
 		MultivaluedMap<String,String> params = new MultivaluedMapImpl();
 		params.put("inactivecode", Arrays.asList(new String[]{"N"}));
-		params.put("maxResults", Arrays.asList(new String[]{"500"}));
+		params.put("maxResults", Arrays.asList(new String[]{"5"}));
 		List<Item> items = null;
         try{
            items = productService.getProducts(params);

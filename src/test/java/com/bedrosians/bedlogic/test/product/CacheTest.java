@@ -3,6 +3,7 @@ package com.bedrosians.bedlogic.test.product;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.transaction.Transactional;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.hibernate.Session;
@@ -15,7 +16,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import com.bedrosians.bedlogic.dao.item.ItemDao;
+import com.bedrosians.bedlogic.domain.item.IconCollection;
 import com.bedrosians.bedlogic.domain.item.Item;
+import com.bedrosians.bedlogic.domain.item.ItemNewFeature;
 import com.bedrosians.bedlogic.domain.user.KeymarkUcUser;
 import com.bedrosians.bedlogic.service.product.ProductService;
 import com.bedrosians.bedlogic.service.user.KeymarkUcUserService;
@@ -31,137 +34,199 @@ public class CacheTest {
 	SessionFactory sessionFactory;
 	@Autowired
 	ItemDao itemDao;
-
+	//@Autowired
+	//ColorHueDao colorHueDao;
 	@Autowired
 	ProductService productService;
 	@Autowired
 	KeymarkUcUserService keymarkUcUserService;
 	
 	@Test
-	public void testBatchSize(){
-		
+	//@Transactional
+	public void testCacheWithProductId(){
+    	long startTime = System.currentTimeMillis();
+    	long totalTime = 0l;
+		MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+		//params.put("inactivecode", Arrays.asList(new String[]{"N"}));
+		//params.put("itemcode", Arrays.asList(new String[]{"AECBUB218NR"}));
+		params.put("maxResults", Arrays.asList(new String[]{"500"}));
+		Session session = sessionFactory.openSession();
+		Item item = null;
+	    try{
+	      session.getTransaction().begin();
+	      System.out.println("Before 1st round Statistics().getEntityFetchCount() = "  + session.getStatistics().getEntityKeys());
+         // item = itemDao.getItemById(session, "AECBUB218NR");
+	      item = productService.getProductById("AECBUB218NR");
+          session.getTransaction().commit();
+          session.close();
+	    }
+	    catch(Exception e){
+    	   e.printStackTrace();
+        }
+	    totalTime = System.currentTimeMillis() - startTime;
+        System.out.println("Finished 1st query, total time: " + totalTime);
+	    System.out.println("1st round retrieved item = " + item);
+	    System.out.println("1st round Statistics().getConnectCount() = "  + sessionFactory.getStatistics().getConnectCount());
+	    System.out.println("1st round Statistics().getEntityFetchCount() = "  + sessionFactory.getStatistics().getEntityFetchCount()); //Prints 1
+        System.out.println("1st round Statistics().getSecondLevelCacheHitCount() = " + sessionFactory.getStatistics().getSecondLevelCacheHitCount()); //Prints 1
+        System.out.println("Item retrieved: " + item);
+	    System.out.println("Start 2nd round requery....");
+	    session = sessionFactory.openSession(); 
+	    System.out.println("Cache Contains Item \"AECBUB218NR\" ?"+sessionFactory.getCache().containsEntity(Item.class, "AECBUB218NR"));
+	    System.out.println("Cache Contains Item\"AECBUB218NR       \" ?"+sessionFactory.getCache().containsEntity(Item.class, "AECBUB218NR       "));
+	
+	    //System.out.println("Cache Contains ItemNewFeature \"AECBUB218NR\" ?"+sessionFactory.getCache().containsEntity("itemNewFeature", "AECBUB218NR"));
+	    //System.out.println("Cache Contains ItemNewFeature \"AECBUB218NR       \" ?"+sessionFactory.getCache().containsEntity("Item.itemNewFeature", "AECBUB218NR       "));
+	  
+	    //System.out.println("Cache Contains IconCollection \"AECBUB218NR\" ?"+sessionFactory.getCache().containsEntity("item.iconDescription", "AECBUB218NR"));
+	    //System.out.println("Cache Contains IconCollection \"AECBUB218NR       \" ?"+sessionFactory.getCache().containsEntity("Item.iconDescription", "AECBUB218NR       "));
+	
+	    System.out.println("Cache Contains ItemNewFeature \"AECBUB218NR\" ?"+sessionFactory.getCache().containsEntity(ItemNewFeature.class, "AECBUB218NR"));
+	    System.out.println("Cache Contains ItemNewFeature \"AECBUB218NR       \" ?"+sessionFactory.getCache().containsEntity(ItemNewFeature.class, "AECBUB218NR       "));
+	  
+	    System.out.println("Cache Contains IconCollection \"AECBUB218NR\" ?"+sessionFactory.getCache().containsEntity(IconCollection.class, "AECBUB218NR"));
+	    System.out.println("Cache Contains IconCollection \"AECBUB218NR       \" ?"+sessionFactory.getCache().containsEntity(IconCollection.class, "AECBUB218NR       "));
+	
+	    try{
+	    	startTime = System.currentTimeMillis();
+	    	session.getTransaction().begin();
+	         // item = itemDao.getItemById(session, "AECBUB218NR       ");
+	     	item = productService.getProductById("AECBUB218NR");
+	        System.out.println("2 round retrieved item = " + item);
+	        session.getTransaction().commit();
+	
+		}
+		catch(Exception e){
+	       e.printStackTrace();
+	    }
+		finally
+        {
+	      System.out.println("Statistics().getConnectCount() = "  + sessionFactory.getStatistics().getConnectCount());
+	      System.out.println("Statistics().getTransactionCount() = "  + sessionFactory.getStatistics().getTransactionCount());
+	  	  System.out.println("Statistics().getEntityFetchCount() = "  + sessionFactory.getStatistics().getEntityFetchCount()); //Prints 1
+          System.out.println("Statistics().getSecondLevelCacheHitCount() = " + sessionFactory.getStatistics().getSecondLevelCacheHitCount()); //Prints 1
+          System.out.println("In session, Statistics().getEntityCount() = "  + session.getStatistics().getEntityCount());
+          System.out.println("In session, Statistics().getEntityKeys() = "  + session.getStatistics().getEntityKeys()); 
+          System.out.println("In session, Statistics().getCollectionCount() = "  + session.getStatistics().getCollectionCount());
+          System.out.println("In session, Statistics().getCollectionKeys() = "  + session.getStatistics().getCollectionKeys()); 
+          sessionFactory.getStatistics().logSummary();
+          session.close();
+        }
+	    System.out.println("Item retrieved: " + item);    
+	    totalTime = System.currentTimeMillis() - startTime;
+        System.out.println("Finished. 2nd query total time: " + totalTime);
 	}
 	
 	@Test
-	public void testCacheWithProductOriginByMultiSessions(){
+	@Transactional
+	public void testCacheWithProductIdMatch(){
+    	long startTime = System.currentTimeMillis();
+    	long totalTime = 0l;
+		MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+		//params.put("inactivecode", Arrays.asList(new String[]{"N"}));
+		params.put("itemcode", Arrays.asList(new String[]{"TCRD"}));
+		params.put("maxResults", Arrays.asList(new String[]{"500"}));
+		Session session = sessionFactory.openSession();
+		List<Item> items = null;
+	    try{
+	      session.getTransaction().begin();
+	      System.out.println("Before 1st round Statistics().getEntityFetchCount() = "  + session.getStatistics().getEntityKeys());
+	      items = itemDao.getItemsByQueryParameters(params);
+          session.getTransaction().commit();
+          session.close();
+	    }
+	    catch(Exception e){
+    	   e.printStackTrace();
+        }
+	    totalTime = System.currentTimeMillis() - startTime;
+        System.out.println("1st query, total time: " + totalTime);
+	    System.out.println("1st round Statistics().getConnectCount() = "  + sessionFactory.getStatistics().getConnectCount());
+	    System.out.println("1st round Statistics().getEntityFetchCount() = "  + sessionFactory.getStatistics().getEntityFetchCount()); //Prints 1
+        System.out.println("1st round Statistics().getSecondLevelCacheHitCount() = " + sessionFactory.getStatistics().getSecondLevelCacheHitCount()); //Prints 0
+     
+	    System.out.println("Start 2nd round requery....");
+	  
+	    try{
+	    	startTime = System.currentTimeMillis();
+	   	    session = sessionFactory.openSession(); 
+
+	    	session.getTransaction().begin();
+	    	items = itemDao.getItemsByQueryParameters(params);
+	        session.getTransaction().commit();
+		}
+		catch(Exception e){
+	       e.printStackTrace();
+	    }
+		finally
+        {
+	      System.out.println("Statistics().getConnectCount() = "  + sessionFactory.getStatistics().getConnectCount());
+	      System.out.println("Statistics().getTransactionCount() = "  + sessionFactory.getStatistics().getTransactionCount());
+	  	  System.out.println("Statistics().getEntityFetchCount() = "  + sessionFactory.getStatistics().getEntityFetchCount()); //Prints 1
+          System.out.println("Statistics().getSecondLevelCacheHitCount() = " + sessionFactory.getStatistics().getSecondLevelCacheHitCount()); //Prints 1
+          //sessionFactory.getStatistics().logSummary();
+          session.close();
+        }  
+	    totalTime = System.currentTimeMillis() - startTime;
+        System.out.println("Finished. 2nd query total time: " + totalTime);
+	}
+	
+	@Test
+	//@Transactional
+	public void testCacheWithProductOrigin(){
     	long startTime = System.currentTimeMillis();
     	long totalTime = 0l;
 		MultivaluedMap<String,String> params = new MultivaluedMapImpl();
 		//params.put("inactivecode", Arrays.asList(new String[]{"N"}));
 		params.put("origin", Arrays.asList(new String[]{"USA"}));
 		params.put("maxResults", Arrays.asList(new String[]{"500"}));
-		
+		Session session = sessionFactory.openSession();
 		List<Item> items = null;
-	    for(int i = 0; i< 100; i++){
-	    	try{
-	           Session session = sessionFactory.openSession();
-	           session.getTransaction().begin();
-	           items = productService.getProducts(params);
-               session.getTransaction().commit();
-               session.close();
-	        }
-	        catch(Exception e){
-    	      e.printStackTrace();
-            }
-	    } 	
+	    try{
+	      session.getTransaction().begin();
+	      System.out.println("Before 1st round Statistics().getEntityFetchCount() = "  + session.getStatistics().getEntityKeys());
+         // item = itemDao.getItemById(session, "AECBUB218NR");
+	      items = productService.getProducts(params);
+          session.getTransaction().commit();
+          System.out.println("1st round Statistics().getEntityFetchCount() = "  + session.getStatistics().getEntityKeys());
+          session.close();
+	    }
+	    catch(Exception e){
+    	   e.printStackTrace();
+        }
 	    totalTime = System.currentTimeMillis() - startTime;
-        System.out.println("Finished. total time: " + totalTime);
-	}
-	
-	@Test
-	public void testUserCache(){
-    	long startTime = System.currentTimeMillis();
-		
-		Session session = sessionFactory.openSession();
-	    try{
-	      session.getTransaction().begin();
-	      System.out.println("Start 1st round test");
-	      KeymarkUcUser user = keymarkUcUserService.getUserByUserCode("STEVEF");
-	      session.getTransaction().commit();
-          session.close();
-	    }
-	    catch(Exception e){
-    	   e.printStackTrace();
-        }
-	   
-	 /* System.out.println("1st round Statistics().getConnectCount() = "  + sessionFactory.getStatistics().getConnectCount());
+        System.out.println("Finished 1st query, total time: " + totalTime);
+	    System.out.println("1st round retrieved # of item = " + items.size());
+	    System.out.println("1st round Statistics().getConnectCount() = "  + sessionFactory.getStatistics().getConnectCount());
 	    System.out.println("1st round Statistics().getEntityFetchCount() = "  + sessionFactory.getStatistics().getEntityFetchCount()); //Prints 1
         System.out.println("1st round Statistics().getSecondLevelCacheHitCount() = " + sessionFactory.getStatistics().getSecondLevelCacheHitCount()); //Prints 1
-       */
+        
 	    System.out.println("Start 2nd round requery....");
 	    session = sessionFactory.openSession();
+	    //System.out.println("Cache Contains \"AECBUB218NR\" ?"+sessionFactory.getCache().containsEntity(Item.class, "AECBUB218NR"));
+	    //System.out.println("Cache Contains \"AECBUB218NR       \" ?"+sessionFactory.getCache().containsEntity(Item.class, "AECBUB218NR       "));
+	  
 	    try{
+	    	startTime = System.currentTimeMillis();
 	    	session.getTransaction().begin();
-	    	KeymarkUcUser user = keymarkUcUserService.getUserByUserCode("STEVEF    ");
-		     session.getTransaction().commit();
-		     System.out.println("Statistics().getConnectCount() = "  + sessionFactory.getStatistics().getConnectCount());
-		      System.out.println("Statistics().getTransactionCount() = "  + sessionFactory.getStatistics().getTransactionCount());
-		  	  System.out.println("Statistics().getEntityFetchCount() = "  + sessionFactory.getStatistics().getEntityFetchCount()); //Prints 1
-	          System.out.println("Statistics().getSecondLevelCacheHitCount() = " + sessionFactory.getStatistics().getSecondLevelCacheHitCount()); //Prints 1
-	          System.out.println("Statistics().getEntityCount() = "  + session.getStatistics().getEntityCount());
-	          System.out.println("Statistics().getEntityKeys() = "  + session.getStatistics().getEntityKeys()); 
-	          System.out.println("Statistics().getCollectionCount() = "  + session.getStatistics().getCollectionCount());
-	         System.out.println("Statistics().getCollectionKeys() = "  + session.getStatistics().getCollectionKeys()); 
-	         sessionFactory.getStatistics().logSummary();
-	          session.close();
-		    }
-		    catch(Exception e){
-	    	   e.printStackTrace();
-	     }  
-	     long totalTime = System.currentTimeMillis() - startTime;
-        System.out.println("Finished. And total time: " + totalTime);
-	}
+	    	items = productService.getProducts(params);
+	        session.getTransaction().commit();
 	
-	@Test
-	public void testAllUserCache(){
-    	long startTime = System.currentTimeMillis();
-		
-		Session session = sessionFactory.openSession();
-	    try{
-	      session.getTransaction().begin();
-	      System.out.println("Start 1st round requery...."); 
-	      List<KeymarkUcUser> users = keymarkUcUserService.getAllUsers(session);
-	      session.getTransaction().commit();
-	      System.out.println( users.size() + " users retrieved");
-          //System.out.println("1st round Statistics().getEntityFetchCount() = "  + session.getStatistics().getEntityKeys());
-          session.close();
+		}
+		catch(Exception e){
+	       e.printStackTrace();
 	    }
-	    catch(Exception e){
-    	   e.printStackTrace();
-        }
-	    long totalTime = System.currentTimeMillis() - startTime;
-        System.out.println("Finished. 1st round total time: " + totalTime);
-	   
-	 /* System.out.println("1st round Statistics().getConnectCount() = "  + sessionFactory.getStatistics().getConnectCount());
-	    System.out.println("1st round Statistics().getEntityFetchCount() = "  + sessionFactory.getStatistics().getEntityFetchCount()); //Prints 1
-        System.out.println("1st round Statistics().getSecondLevelCacheHitCount() = " + sessionFactory.getStatistics().getSecondLevelCacheHitCount()); //Prints 1
-        */
-	    System.out.println("Start 2nd round requery....");
-	    startTime = System.currentTimeMillis();
-	    session = sessionFactory.openSession();
-	    System.out.println("Cache Contains \"STEVEF\" ?"+sessionFactory.getCache().containsEntity(KeymarkUcUser .class, "STEVEF"));
-	    System.out.println("Cache Contains \"STEVEF    \" ?"+sessionFactory.getCache().containsEntity(KeymarkUcUser .class, "STEVEF    "));
-	    try{
-	    	session.getTransaction().begin();
-	    	
-	    	KeymarkUcUser user = keymarkUcUserService.getUserByUserCode("STEVEF    ");
-	    	//KeymarkUcUser user = keymarkUcUserService.getUserByUserCode("STEVEF");
-		    session.getTransaction().commit();
-		    System.out.println("Statistics().getConnectCount() = "  + sessionFactory.getStatistics().getConnectCount());
-		    System.out.println("Statistics().getTransactionCount() = "  + sessionFactory.getStatistics().getTransactionCount());
-		  	System.out.println("Statistics().getEntityFetchCount() = "  + sessionFactory.getStatistics().getEntityFetchCount()); //Prints 1
-	        System.out.println("Statistics().getSecondLevelCacheHitCount() = " + sessionFactory.getStatistics().getSecondLevelCacheHitCount()); //Prints 1
-	        System.out.println("Statistics().getEntityCount() = "  + session.getStatistics().getEntityCount());
-	        System.out.println("Statistics().getEntityKeys() = "  + session.getStatistics().getEntityKeys()); 
-	         // System.out.println("Statistics().getCollectionCount() = "  + session.getStatistics().getCollectionCount());
-	        // sessionFactory.getStatistics().logSummary();
-	          session.close();
-		    }
-		    catch(Exception e){
-	    	   e.printStackTrace();
-	     }  
-	     totalTime = System.currentTimeMillis() - startTime;
-        System.out.println("Finished. 2nd round total time: " + totalTime);
+		finally
+        {
+		  System.out.println("1st round retrieved # of item = " + items.size());
+	      System.out.println("Statistics().getConnectCount() = "  + sessionFactory.getStatistics().getConnectCount());
+	      System.out.println("Statistics().getTransactionCount() = "  + sessionFactory.getStatistics().getTransactionCount());
+	  	  System.out.println("Statistics().getEntityFetchCount() = "  + sessionFactory.getStatistics().getEntityFetchCount()); //Prints 1
+          System.out.println("Statistics().getSecondLevelCacheHitCount() = " + sessionFactory.getStatistics().getSecondLevelCacheHitCount()); //Prints 1
+          sessionFactory.getStatistics().logSummary();
+          session.close();
+        } 
+	    totalTime = System.currentTimeMillis() - startTime;
+        System.out.println("Finished. 2nd query total time: " + totalTime);
 	}
 	
 	@Test

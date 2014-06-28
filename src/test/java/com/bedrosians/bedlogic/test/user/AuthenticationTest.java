@@ -8,6 +8,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
+import com.bedrosians.bedlogic.dao.user.KeymarkUcUserDao;
 import com.bedrosians.bedlogic.domain.item.enums.DBOperation;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
@@ -26,6 +27,9 @@ public class AuthenticationTest {
 	ProductService productService;
 	@Autowired
 	KeymarkUcUserSecurityService keymarkUcUserSecurityService;
+	
+	@Autowired
+	KeymarkUcUserDao keymarkUcUserSecurityDao;
  	
 	@Before
 	public void setup(){
@@ -95,8 +99,4 @@ public class AuthenticationTest {
 		
 	}
 	
-	
-	 @Test
-		public void testNothing(){
-	}
 }

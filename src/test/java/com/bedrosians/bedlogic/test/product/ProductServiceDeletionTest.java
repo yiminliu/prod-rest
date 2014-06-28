@@ -29,7 +29,7 @@ public class ProductServiceDeletionTest {
 	
 	@Test
 	public void testDeleteItemById()throws Exception {
-	    productService.deleteProductById("NEWITEMCODE3");
+	    productService.deleteProductById("NEWITEMCODE");
 	     System.out.println("testDeleteItem Done");
 	        
 	 }
