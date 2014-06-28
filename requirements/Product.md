@@ -587,7 +587,7 @@ The product service provides product search, creation, update and deletion servi
 }
 
 * ** Create a new product **  
-   curl -H "Accept: application/json" -H "Content-type: application/json" -i --user keymark:JBED -X POST http://st:8080/bedlogic/v2/product -d '{"itemcode":"CRDBARBTEST12","itemcategory2":"ATHENA","itemdesc":{"itemdesc1":"2x2 Athena Mosaic on 12x12 SHT Ash"}}' 
+   curl -H "Accept: application/json" -H "Content-type: application/json" -i --user keymark:JBED -X POST http://localhost:8080/bedlogic/v2/product -d '{"itemcode":"CRDBARBTEST12","itemcategory2":"ATHENA","itemdesc":{"itemdesc1":"2x2 Athena Mosaic on 12x12 SHT Ash"}}' 
    
 * ** Update a product **  	
    curl -H "Accept: application/json" -H "Content-type: application/json" -i --user keymark:JBED -X PUT http://localhost:8080/bedlogic/v2/product -d '{"itemcode":"CRDBARBTEST","itemcategory":"AT","itemdesc":{"itemdesc1":"update"}}' 
