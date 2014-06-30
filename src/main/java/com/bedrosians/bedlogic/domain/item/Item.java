@@ -237,7 +237,7 @@ public class Item implements java.io.Serializable {
 	}
 	
 	@Embedded
-	@IndexedEmbedded
+	@IndexedEmbedded(depth=1, includePaths = { "vendornbr1" })
 	public VendorInfo getVendors() {
 		return vendors;
 	}
