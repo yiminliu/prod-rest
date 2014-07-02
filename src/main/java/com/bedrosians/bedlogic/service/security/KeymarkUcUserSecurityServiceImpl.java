@@ -27,37 +27,37 @@ public class KeymarkUcUserSecurityServiceImpl implements KeymarkUcUserSecuritySe
 	KeymarkUcUser keymarkUcUser = null;
 	
 	@Override
-	public void doSecurityCheck(String userType, String userCode, String password, boolean isPasswordBasedAuth, DBOperation permission) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{
+	public void doSecurityCheck(String userType, String userCode, String password, boolean isPasswordBasedAuth, String domain, DBOperation permission) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{
 		switch(userType) {
 		   case "guest": case "Guest":
 			   return;
 		   case "keymark":	
-			   validateUserInfo(userCode, password, isPasswordBasedAuth, permission);
+			   validateUserInfo(userCode, password, isPasswordBasedAuth, domain, permission);
 		   default:
 			   throw new BedDAOBadParamException ("Unsupported user type");	   
 		}
 	}
 	
 	@Override
-	public void doSecurityCheck(String userType, String userCode, DBOperation operation) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{
+	public void doSecurityCheck(String userType, String userCode, String domain, DBOperation operation) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{
 		switch(userType) {
 		   case "guest": case "Guest":
 			   if(DBOperation.SEARCH.equals(operation))
 			      break;
 			   else
-				   throw new BedResUnAuthorizedException("Guest user is not permitted for " + operation);	
+				   throw new BedResUnAuthorizedException("Guest user is not allowed for " + operation);	
 		   case "keymark":	
-			   validateUserInfo(userCode, "", false, operation);
+			   validateUserInfo(userCode, "", false, domain, operation);
 			   break;
 		   default:
 			   throw new BedDAOBadParamException ("Unsupported user type");				      
 		}
 	}
 	
-	private void validateUserInfo(String userCode, String password, boolean isPasswordBased, DBOperation permission) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{
+	private void validateUserInfo(String userCode, String password, boolean isPasswordBased, String domain, DBOperation permission) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{
 		keymarkUcUser = getUser(userCode);        
 		keymarkUcUserAuthentication.authenticate(keymarkUcUser, password, isPasswordBased);
-		keymarkUcUserAuthorization.authorize(keymarkUcUser, permission);
+		keymarkUcUserAuthorization.authorize(keymarkUcUser, domain, permission);
 	}
 	
 	private KeymarkUcUser getUser(String userCode) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{

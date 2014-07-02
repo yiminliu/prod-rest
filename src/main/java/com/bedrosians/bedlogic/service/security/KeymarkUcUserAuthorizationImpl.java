@@ -11,14 +11,20 @@ import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
 @Service("keymarkUcUserAuthorization")
 public class KeymarkUcUserAuthorizationImpl implements KeymarkUcUserAuthorization{
 
-	public boolean authorize(KeymarkUcUser user, DBOperation dBOperation) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{
+	public boolean authorize(KeymarkUcUser user, String domain, DBOperation dBOperation) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{
 		switch(dBOperation) {
 		   case SEARCH:
 			   return true;
 		   case CREATE:
-			   return user.getImallowcreateitem() == 'Y';
+			   if("Product".equalsIgnoreCase(domain))
+			       return user.getImallowcreateitem() == 'Y';
+			   else if("Account".equalsIgnoreCase(domain))
+			       return user.getArcreatecustcd() == 'Y';
 		   case UPDATE:	
-			   return user.getImallowchgims() == 'Y';
+			   if("Product".equalsIgnoreCase(domain))
+			      return user.getImallowchgims() == 'Y';
+			   else if("Account".equalsIgnoreCase(domain))
+			       return user.getArcreatecustcd() == 'Y';
 		   case DELETE:	
 			   return user.getImallowchgims() == 'Y';	   
 		   default:

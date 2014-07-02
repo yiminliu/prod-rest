@@ -8,6 +8,6 @@ import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
 
 public interface KeymarkUcUserAuthorization {
 
-	public boolean authorize(KeymarkUcUser user, DBOperation dBOperation) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException;
+	public boolean authorize(KeymarkUcUser user, String domain, DBOperation dBOperation) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException;
 	
 }
