@@ -58,7 +58,7 @@ import com.bedrosians.bedlogic.domain.item.embeddable.VendorInfo;
 import com.bedrosians.bedlogic.util.ImsDataUtil;
 
 
-@JsonRootName(value = "item")
+@JsonRootName(value = "product")
 @Component
 @Entity
 @Table(name = "ims", schema = "public")
