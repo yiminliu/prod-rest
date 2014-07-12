@@ -7,6 +7,7 @@ import java.util.List;
 import org.hibernate.HibernateException;
 import org.hibernate.LockOptions;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
 
 public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T, PK> {
@@ -25,14 +26,14 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
 	@Override
 	@SuppressWarnings("unchecked")
 	public T findById(Session session, final PK id) {
-	   return (T)session.get(type, id, LockOptions.READ);
+	   return (T)session.get(type, id, LockOptions.NONE);
 	}
 	
 	//This method only gets a proxy of the persistent entity, without hitting the database
 	@Override
 	@SuppressWarnings("unchecked")
 	public T loadById(Session session, final PK id) {
-	   return (T)session.load(type, id, LockOptions.UPGRADE);
+	   return (T)session.load(type, id, LockOptions.NONE);
 	}
 		
 	@Override
@@ -70,4 +71,8 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
 		session.delete(persistentObject);
 	}
 	
+
+	protected synchronized Session getSession(SessionFactory sessionFactory){
+		 return sessionFactory.getCurrentSession();
+	 }
 }
