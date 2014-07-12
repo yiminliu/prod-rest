@@ -184,9 +184,9 @@ public class JsonUtil {
 	public static String validateItemCode(JSONObject jsonObj) throws BedDAOBadParamException{
 		String itemCode = getItemCode(jsonObj);
 		if(itemCode == null || itemCode.trim().length() < 1)
-		   throw new BedDAOBadParamException("Item code cannot be empty.");
+		   throw new BedDAOBadParamException("Product code cannot be empty.");
 		if(itemCode.length() > 18)
-		   throw new BedDAOBadParamException("Item code cannot be longer that 18 characters.");
+		   throw new BedDAOBadParamException("Product code cannot be longer that 18 characters.");
 		return itemCode.toUpperCase();
 	}
 	
