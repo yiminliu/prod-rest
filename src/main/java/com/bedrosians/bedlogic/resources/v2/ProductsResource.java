@@ -21,8 +21,8 @@ import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import com.bedrosians.bedlogic.domain.item.Item;
-import com.bedrosians.bedlogic.domain.item.enums.DBOperation;
+import com.bedrosians.bedlogic.domain.product.Product;
+import com.bedrosians.bedlogic.domain.product.enums.DBOperation;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.exception.BedDAOExceptionMapper;
@@ -32,10 +32,7 @@ import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
 import com.bedrosians.bedlogic.models.Products;
 import com.bedrosians.bedlogic.service.product.ProductService;
 import com.bedrosians.bedlogic.service.security.KeymarkUcUserSecurityService;
-import com.bedrosians.bedlogic.usercode.UserCodeParser;
-import com.bedrosians.bedlogic.util.JsonWrapper.ItemWrapper;
-import com.bedrosians.bedlogic.util.JsonWrapper.ListWrapper;
-import com.bedrosians.bedlogic.util.index.IndexUtil;
+import com.bedrosians.bedlogic.util.JsonWrapper.ProductWrapper;
 
 
 /**
@@ -53,19 +50,18 @@ public class ProductsResource
      * Products resource
      */
 
+	private static final String domain = "PRODUCT";
 	@Autowired
 	private ProductService productService;
 	@Autowired
 	private KeymarkUcUserSecurityService keymarkUcUserSecurityService;
-	@Autowired
-	private IndexUtil indexUtil;
 	
 	 /**
 	* This method retrieves a list of products for the given query condition, or a list of all active products if no query condition is specified .
 	* @param UriInfo represents query condition in the form of name/value pairs. If no query is specified, all active products will be returned.
 	* Number of resulting records can be specified by setting a value for "maxResults" and if "exactmatch" is set to true, no pattern matching will be performed for all queries.
 	* @return Response object contains the status and a json object.
-	* @exception BedDAOBadParamException, BedDAOBadException and BedResException on input error and server side condition errors as well.
+	* @exception BedResUnAuthorizedException, BedDAOBadParamException, BedDAOBadException and BedResException on input error and server side condition errors as well.
 	*/
 	@GET
     @Produces({MediaType.APPLICATION_JSON})
@@ -76,13 +72,14 @@ public class ProductsResource
         try
         {
         	//Check user security
-        	doUserSecurityCheck(requestHeaders, DBOperation.SEARCH);
+        	keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, domain, DBOperation.SEARCH);
             
             //Retrieve data from database based on the given query parameters
-            List<Item> items = productService.getProducts(uriInfo.getQueryParameters());       
-            
+            List<ProductWrapper> wrappedProductList = productService.getWrappedProducts(uriInfo.getQueryParameters());//new ArrayList<ProductWrapper>();
+       
             //Convert the data to Json string
-            Products result = new Products(new ListWrapper(items));
+            Products result = new Products(wrappedProductList);
+            
             String jsonStr = result.toJSONStringWithJackson();
        
             //Return json reponse
@@ -107,7 +104,7 @@ public class ProductsResource
         return response;
     }
 	
-	/** This method retrieves an product for the given item code.
+	/** This method retrieves an product for the given product code.
      * @param itemcode string.
      * @return Response object to include the status and a json object.
      * @exception BedDAOBadParamException, BedDAOBadException and BedResException on input error and server side condition errors as well.
@@ -122,13 +119,14 @@ public class ProductsResource
         try
         {
         	//Check user security
-        	doUserSecurityCheck(requestHeaders, DBOperation.SEARCH);
+        	keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, domain, DBOperation.SEARCH);
                  
             //Retrieve data from database based on the give id
-            Item item = productService.getProductById(itemCode);
+            Product product = productService.getProductById(itemCode);
                 
-            Products result = new Products(new ItemWrapper(item));
-            String jsonStr = result.toJSONStringWithJackson();
+            Products result = new Products(product);
+             
+            String jsonStr = result.toJSONStringWithJacksonWithRootName();
        
             //Return json reponse
              response = Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();
@@ -164,13 +162,14 @@ public class ProductsResource
         try
         {    
         	//Check user security
-        	doUserSecurityCheck(requestHeaders, DBOperation.CREATE);
+        	keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, domain, DBOperation.CREATE);
         	
         	//Create a new product using the given data in json input, and save it into database  
             String itemCode = productService.createProduct(inputJsonObj);
             
             //Wrape the newly created product id into json
             Products result = new Products(itemCode);
+            
             String jsonStr = result.toJSONStringWithJackson();         
             
             //Return json reponse
@@ -209,7 +208,7 @@ public class ProductsResource
         try
         {
         	//Check user security
-        	doUserSecurityCheck(requestHeaders, DBOperation.UPDATE);
+        	keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, domain, DBOperation.UPDATE);
             
         	//Update a product based on the input json data
             productService.updateProduct(inputJsonObj);    
@@ -234,7 +233,7 @@ public class ProductsResource
     }
 	
 	/**
-	* This method deletes a product based on the given item code.
+	* This method deletes a product based on the given product code.
 	* @param A Json object containing product information to upate.
 	* @return Json object representing the status.
 	* @exception BedDAOBadParamException, BedDAOBadException and BedResException on input error and server side condition errors as well.
@@ -249,7 +248,7 @@ public class ProductsResource
         try
         {
         	//Check user security
-        	doUserSecurityCheck(requestHeaders, DBOperation.DELETE);
+        	keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, domain, DBOperation.DELETE);
                  
             //delete product from database with the given product info
             productService.deleteProduct(inputJsonObj);
@@ -273,8 +272,8 @@ public class ProductsResource
     }
 	
 	/**
-	* This method deletes a product based on the given item code.
-	* @param Item code string.
+	* This method deletes a product based on the given product code.
+	* @param Product code string.
 	* @return Json object representing the status.
 	* @exception BedDAOBadParamException, BedDAOBadException and BedResException on input error and server side condition errors as well.
     */
@@ -288,7 +287,7 @@ public class ProductsResource
         try
         {
         	//Check user security
-        	doUserSecurityCheck(requestHeaders, DBOperation.DELETE);
+        	keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, domain, DBOperation.DELETE);
                  
             //delete data from database with the given id
             productService.deleteProductById(itemCode);
@@ -310,29 +309,5 @@ public class ProductsResource
         }
         return response;
     }
-	
-	private void doUserSecurityCheck(HttpHeaders requestHeaders, DBOperation operation) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException {
-		 //Check usercode
-        UserCodeParser  userCodeParser = new UserCodeParser(requestHeaders);
-        if (!userCodeParser.isValidFormat())
-        {
-            throw new BedResUnAuthorizedException();
-        }
-        String userType = userCodeParser.getUserType();
-        String userCode = userCodeParser.getUserCode();
-        
-        //Authenticate the user
-        keymarkUcUserSecurityService.doSecurityCheck(userType, userCode, operation);
-	}
-	
-	/* This method is used to create Lucene indexes for the existing data in database */
-	@GET
-	@Path("/index")
-	public Response createInitialLuceneIndex(){
-		 boolean initialzed =  indexUtil.initializeIndex();
-		 if(initialzed)
-		    return Response.status(200).entity("Index is created").build();
-		else
-			return Response.status(500).entity("Failed creating index").build();
-	}
+
 }
