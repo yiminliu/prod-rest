@@ -1,15 +1,18 @@
 package com.bedrosians.bedlogic.service.security;
 
+import javax.ws.rs.core.HttpHeaders;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import com.bedrosians.bedlogic.domain.item.enums.DBOperation;
+import com.bedrosians.bedlogic.domain.product.enums.DBOperation;
 import com.bedrosians.bedlogic.domain.user.KeymarkUcUser;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
 import com.bedrosians.bedlogic.service.user.KeymarkUcUserService;
+import com.bedrosians.bedlogic.usercode.UserCodeParser;
 
 @Service("keymarkUcUserSecurityService")
 @Scope(value = "singleton")
@@ -37,7 +40,22 @@ public class KeymarkUcUserSecurityServiceImpl implements KeymarkUcUserSecuritySe
 			   throw new BedDAOBadParamException ("Unsupported user type");	   
 		}
 	}
-	
+	 
+	@Override
+    public void doUserSecurityCheck(HttpHeaders requestHeaders, String domain, DBOperation operation) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException {
+		 //Check usercode
+       UserCodeParser  userCodeParser = new UserCodeParser(requestHeaders);
+       if (!userCodeParser.isValidFormat())
+       {
+           throw new BedResUnAuthorizedException();
+       }
+       String userType = userCodeParser.getUserType();
+       String userCode = userCodeParser.getUserCode();
+       
+       //Authenticate the user
+       doSecurityCheck(userType, userCode, domain, operation);
+	 }
+	 
 	@Override
 	public void doSecurityCheck(String userType, String userCode, String domain, DBOperation operation) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{
 		switch(userType) {

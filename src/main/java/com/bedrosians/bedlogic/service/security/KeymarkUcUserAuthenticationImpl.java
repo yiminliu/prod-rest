@@ -1,6 +1,7 @@
 package com.bedrosians.bedlogic.service.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import com.bedrosians.bedlogic.domain.user.KeymarkUcUser;
@@ -11,6 +12,7 @@ import com.bedrosians.bedlogic.service.user.KeymarkUcUserService;
 
 
 @Service("keymarkUcUserAuthentication")
+@Scope("singleton")
 public class KeymarkUcUserAuthenticationImpl implements KeymarkUcUserAuthentication{
 
 	@Autowired 
