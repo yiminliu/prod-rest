@@ -6,6 +6,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,7 @@ import com.bedrosians.bedlogic.exception.BedDAOException;
 
 
 @Service("keymarkUcUserService")
+@Scope("singleton")
 public class KeymarkUcUserServiceImpl implements KeymarkUcUserService{
 					
 	 @Autowired
