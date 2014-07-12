@@ -27,23 +27,28 @@ import com.bedrosians.bedlogic.domain.account.embeddable.Address;
 import com.bedrosians.bedlogic.domain.account.embeddable.Contact;
 import com.bedrosians.bedlogic.domain.account.enums.Status;
 import com.bedrosians.bedlogic.util.FormatUtil;
+import com.bedrosians.bedlogic.util.account.AccountDataUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonRootName;
 
+
+@JsonRootName(value = "accountBranch")
 @Entity
 @Table(name="armbr")
 @DynamicUpdate(value=true)
 @SelectBeforeUpdate(value=true)
 @DynamicInsert(value=true)
 
-public class AccountBranch implements Serializable {
+public class Branch implements Serializable {
 	
 	private static final long serialVersionUID = 5137707010951170389L;
 
 	private BranchPK branchPK;
 	private String branchName;
 	private Integer storeNumber;
-	private String status;
+	private String inactiveCode;
 	private String priceGroup;
-	private Integer customerGroup;
+	private String customerGroup;
 	private String groupCode;
 	private String userCode;
 	private Integer branchSalesNo;
@@ -51,8 +56,6 @@ public class AccountBranch implements Serializable {
 	private String taxClass;
 	private String resaleNo;
 	private String authOnly;
-	private String b2Email;
-	private Long b2Fax;
 	private String b2FromCorp;
 	private String accountManager;
 	private Address address;
@@ -63,133 +66,7 @@ public class AccountBranch implements Serializable {
 	private Account account;
 	
 	
-	/*$ArmBr_CustCd,
- $ArmBr_BranchCd,
- $ArmBr_BrName,
- $ArmBr_BrAddr1,
- $ArmBr_BrAddr2,
- $ArmBr_BrCity,
- $ArmBr_BrStateCd,
- $ArmBr_BrZip,
- $ArmBr_BrCountryCd,
- $ArmBr_InactiveCd,
- $ArmBr_ApContact,
- $ArmBr_ApPhone,
- $ArmBr_ApExt,
- $ArmBr_ApCellPhone,
- $ArmBr_ApFax,
- $ArmBr_ApEmail,
- $ArmBr_ApNotes,
- $ArmBr_MgrContact,
- $ArmBr_MgrPhone,
- $ArmBr_MgrExt,
- $ArmBr_MgrCellPhone,
- $ArmBr_MgrFax,
- $ArmBr_MgrEmail,
- $ArmBr_MgrNotes,
- $ArmBr_PurContact,
- $ArmBr_PurPhone,
- $ArmBr_PurExt,
- $ArmBr_PurCellPhone,
- $ArmBr_PurFax,
- $ArmBr_PurEmail,
- $ArmBr_PurNotes,
- $ArmBr_SlsContact,
- $ArmBr_SlsPhone,
- $ArmBr_SlsExt,
- $ArmBr_SlsCellPhone,
- $ArmBr_SlsFax,
- $ArmBr_SlsEmail,
- $ArmBr_SlsNotes,
- $ArmBr_AcctNote1,
- $ArmBr_AcctNote2,
- $ArmBr_AcctNote3,
- $ArmBr_AcctNote4,
- $ArmBr_AuthOnly,
- $ArmBr_B2Email,
- $ArmBr_B2Fax,
- $ArmBr_B2FromCorp,
- $ArmBr_BranchSalesNbr,
- $ArmBr_ContractLicNbr,
- $ArmBr_DaysToPay,
- $ArmBr_DefShipToCd,
- $ArmBr_FirstSoldDate,
- $ArmBr_HighBalAmt,
- $ArmBr_HighBalDate,
- $ArmBr_InvType,
- $ArmBr_LastStmtAmt,
- $ArmBr_LastStmtDate,
- $ArmBr_OurArContact,
- $ArmBr_ResaleNbr,
- $ArmBr_SetupDate,
- $ArmBr_StmtNbr,
- $ArmBr_StmtType,
- $ArmBr_StoreNbr,
- $ArmBr_TaxClass,
- $ArmBr_TotBalAmt,
- $ArmBr_BatchInv,
- $ArmBr_PrintStmt,
- $ArmBr_CustGroup,
- $ArmBr_PriceGroup,
- $ArmBr_InvLastE_Date,
- $ArmBr_InvLastM_Date,
- $ArmBr_StmtLastE_Date,
- $ArmBr_ApEmail2,
- $ArmBr_StmtLastE_Amt,
- $ArmBr_WDaysToPay,
- $ArmBr_SetupBy,
- $ArmBr_NotBlockCheck,
- $ArmBr_ResaleNbr_ExpDate,
- $ArmBr_GrpCode,
- $ArmBr_UserCd,
- $ArmBr_InfoEmail1,
- $ArmBr_InfoEmail2,
- $ArmBr_InfoEmail3,
- $ArmBr_InfoEmail4,
- $ArmBr_InfoEmail5,
- $ArmBr_InfoEmail6,
- $ArmBr_InfoEmail7,
- $ArmBr_InfoEmail8,
- $ArmBr_InfoEmail9,
- $ArmBr_ResaleNbr2,
- $ArmBr_ResaleNbr2_ExpDate,
- $ArmBr_ResaleNbr3,
- $ArmBr_ResaleNbr3_ExpDate,
- $ArmBr_ResaleNbr4,
- $ArmBr_ResaleNbr4_ExpDate,
- $ArmBr_ResaleNbr5,
- $ArmBr_ResaleNbr5_ExpDate,
- $ArmBr_ResaleNbr1_StateCd,
- $ArmBr_ResaleNbr2_StateCd,
- $ArmBr_ResaleNbr3_StateCd,
- $ArmBr_ResaleNbr4_StateCd,
- $ArmBr_ResaleNbr5_StateCd,
- $ArmBr_TaxStateCd,
- $ArmBr_TaxLocalCd,
- $ArmBr_BranchSalesNbrDate,
- $ArmBr_PriceGroupDate,
- $ArmBr_PhysAddr1,
- $ArmBr_PhysAddr2,
- $ArmBr_PhysCity,
- $ArmBr_PhysStateCd,
- $ArmBr_PhysZip
-) = trim_array($ArmBr_Record);
-if ($ArmBr_Found == 'no') $ArmBr_Record = array();
-$ArmBr_FirstSoldDate_df = cnv_date("$ArmBr_FirstSoldDate");
-$ArmBr_LastStmtDate_df = cnv_date("$ArmBr_LastStmtDate");
-$ArmBr_SetupDate_df = cnv_date("$ArmBr_SetupDate");
-$ArmBr_InvLastE_Date_df = cnv_date("$ArmBr_InvLastE_Date");
-$ArmBr_InvLastM_Date_df = cnv_date("$ArmBr_InvLastM_Date");
-$ArmBr_StmtLastE_Date_df = cnv_date("$ArmBr_StmtLastE_Date");
-$ArmBr_ResaleNbr_ExpDate_df = cnv_date("$ArmBr_ResaleNbr_ExpDate");
-$ArmBr_ResaleNbr2_ExpDate_df = cnv_date("$ArmBr_ResaleNbr2_ExpDate");
-$ArmBr_ResaleNbr3_ExpDate_df = cnv_date("$ArmBr_ResaleNbr3_ExpDate");
-$ArmBr_ResaleNbr4_ExpDate_df = cnv_date("$ArmBr_ResaleNbr4_ExpDate");
-$ArmBr_ResaleNbr5_ExpDate_df = cnv_date("$ArmBr_ResaleNbr5_ExpDate");
-$ArmBr_BranchSalesNbrDate_df = cnv_date("$ArmBr_BranchSalesNbrDate");
-$ArmBr_PriceGroupDate_df = cnv_date("$ArmBr_PriceGroupDate");
-*/
-	
+	@JsonIgnore
 	@EmbeddedId
 	public BranchPK getBranchPK() {
 		return branchPK;
@@ -215,10 +92,10 @@ $ArmBr_PriceGroupDate_df = cnv_date("$ArmBr_PriceGroupDate");
 	}
 
 	@Column(name="custgroup")
-	public Integer getCustomerGroup() {
+	public String getCustomerGroup() {
 		return customerGroup;
 	}
-	public void setCustomerGroup(Integer customerGroup) {
+	public void setCustomerGroup(String customerGroup) {
 		this.customerGroup = customerGroup;
 	}
 	
@@ -262,36 +139,30 @@ $ArmBr_PriceGroupDate_df = cnv_date("$ArmBr_PriceGroupDate");
 		this.taxClass = taxClass;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "custcd", nullable = false)
+	@JsonIgnore
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "custcd", updatable=false, insertable=false)
 	public Account getAccount() {
 		return account;
 	}
-
 	public void setAccount(Account account) {
 		this.account = account;
 	} 
 	
 	@Column(name="brname") 
 	public String getBranchName() {
-		return FormatUtil.process(branchName);
+		return branchName;
 	}
-
 	public void setBranchName(String branchName) {
 		this.branchName = branchName;
 	}
 
 	@Column(name="InactiveCd")
-	public String getStatus() {
-		if(status == null || status.trim().length()<1)
-			status = Status.ACTIVE.getName();
-		else
-		    status = Status.INACTIVE.getName();
-	    	return status;
-	}
-			
-	public void setStatus(String status) {
-		this.status = status;
+	public String getInactiveCode() {
+		return inactiveCode;
+	}		
+	public void setInactiveCode(String inactiveCode) {
+		this.inactiveCode = inactiveCode;
 	}
 
 	
@@ -309,22 +180,6 @@ $ArmBr_PriceGroupDate_df = cnv_date("$ArmBr_PriceGroupDate");
 	}
 	public void setAuthOnly(String authOnly) {
 		this.authOnly = authOnly;
-	}
-	
-	@Column(name="b2email")
-	public String getB2Email() {
-		return b2Email;
-	}
-	public void setB2Email(String b2Email) {
-		this.b2Email = b2Email;
-	}
-	
-	@Column(name="b2fax")
-	public Long getB2Fax() {
-		return b2Fax;
-	}
-	public void setB2Fax(Long b2Fax) {
-		this.b2Fax = b2Fax;
 	}
 	
 	@Column(name="b2fromcorp")
@@ -429,35 +284,50 @@ $ArmBr_PriceGroupDate_df = cnv_date("$ArmBr_PriceGroupDate");
 		this.salesContact = salesContact;
 	}
 
-	
-	@Transient
-	public String getAccountId() {
-		return FormatUtil.process(branchPK.getCustomerCode());
-	}
 
 	@Transient
-	public String getBranchId() {
-		return FormatUtil.process(branchPK.getCustomerCode());
+	public String getCustomerCode() {
+		return branchPK.getCustomerCode();
 	}
 	
-	public AccountBranch(){
+	@Transient
+	public String getBranchCode() {
+		return branchPK.getBranchCode();
 	}
 	
-	public AccountBranch(BranchPK branchPK, String branchName, String status,
-			Address address, Account account) {
-		super();
-		this.branchPK = branchPK;
-		this.branchName = branchName;
-		
-		this.account = account;
-	}
-	
+    //@Transient
+    //public boolean isTreatedAsStore(){
+	//       return AccountDataUtil.determineIsTreatedAsStore(account);	
+	//}
+	 
+    @Transient
+    public boolean isDefaultBranch(){
+       return AccountDataUtil.determineIsDefaultBranch(account, branchPK.getBranchCode());	
+    }
+    
+    @Transient
+    public String getCreditStatus(){
+       return AccountDataUtil.getCreditStatus(account);	
+    }
+    
+
 	/*
+	 *   $sql = "select arm.defbranchcd, arm.treatasstore, arm.creditstatus";
+        $sql .= ", armbr.custcd, armbr.branchcd, armbr.inactivecd, armbr.pricegroup";
+        $sql .= ", armbr.storenbr, armbr.brname, armbr.braddr1, armbr.braddr2, armbr.brcity, armbr.brstatecd, armbr.brzip";
+        $sql .= ", armbr.apcontact, armbr.apphone, armbr.apext";
+        $sql .= " from arm join armbr on arm.custcd=armbr.custcd";
+      
+      
 	armbr.pricegroup";
     $sql .= ", armbr.storenbr, armbr.brname, armbr.braddr1, armbr.braddr2, armbr.brcity, armbr.brstatecd, armbr.brzip";
     $sql .= ", armbr.apcontact, armbr.apphone, armbr.apext";
     $sql .= " from arm join armbr on arm.custcd=armbr.custcd";
-    */
+    */	
+    
+	public Branch(){
+	}
+
 
 	@Override
 	public int hashCode() {
@@ -478,7 +348,7 @@ $ArmBr_PriceGroupDate_df = cnv_date("$ArmBr_PriceGroupDate");
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		AccountBranch other = (AccountBranch) obj;
+		Branch other = (Branch) obj;
 		if (branchName == null) {
 			if (other.branchName != null)
 				return false;
@@ -726,4 +596,130 @@ $ArmBr_PriceGroupDate_df = cnv_date("$ArmBr_PriceGroupDate");
 	private Address physicalAddress;
 */	
 
+	/*$ArmBr_CustCd,
+	 $ArmBr_BranchCd,
+	 $ArmBr_BrName,
+	 $ArmBr_BrAddr1,
+	 $ArmBr_BrAddr2,
+	 $ArmBr_BrCity,
+	 $ArmBr_BrStateCd,
+	 $ArmBr_BrZip,
+	 $ArmBr_BrCountryCd,
+	 $ArmBr_InactiveCd,
+	 $ArmBr_ApContact,
+	 $ArmBr_ApPhone,
+	 $ArmBr_ApExt,
+	 $ArmBr_ApCellPhone,
+	 $ArmBr_ApFax,
+	 $ArmBr_ApEmail,
+	 $ArmBr_ApNotes,
+	 $ArmBr_MgrContact,
+	 $ArmBr_MgrPhone,
+	 $ArmBr_MgrExt,
+	 $ArmBr_MgrCellPhone,
+	 $ArmBr_MgrFax,
+	 $ArmBr_MgrEmail,
+	 $ArmBr_MgrNotes,
+	 $ArmBr_PurContact,
+	 $ArmBr_PurPhone,
+	 $ArmBr_PurExt,
+	 $ArmBr_PurCellPhone,
+	 $ArmBr_PurFax,
+	 $ArmBr_PurEmail,
+	 $ArmBr_PurNotes,
+	 $ArmBr_SlsContact,
+	 $ArmBr_SlsPhone,
+	 $ArmBr_SlsExt,
+	 $ArmBr_SlsCellPhone,
+	 $ArmBr_SlsFax,
+	 $ArmBr_SlsEmail,
+	 $ArmBr_SlsNotes,
+	 $ArmBr_AcctNote1,
+	 $ArmBr_AcctNote2,
+	 $ArmBr_AcctNote3,
+	 $ArmBr_AcctNote4,
+	 $ArmBr_AuthOnly,
+	 $ArmBr_B2Email,
+	 $ArmBr_B2Fax,
+	 $ArmBr_B2FromCorp,
+	 $ArmBr_BranchSalesNbr,
+	 $ArmBr_ContractLicNbr,
+	 $ArmBr_DaysToPay,
+	 $ArmBr_DefShipToCd,
+	 $ArmBr_FirstSoldDate,
+	 $ArmBr_HighBalAmt,
+	 $ArmBr_HighBalDate,
+	 $ArmBr_InvType,
+	 $ArmBr_LastStmtAmt,
+	 $ArmBr_LastStmtDate,
+	 $ArmBr_OurArContact,
+	 $ArmBr_ResaleNbr,
+	 $ArmBr_SetupDate,
+	 $ArmBr_StmtNbr,
+	 $ArmBr_StmtType,
+	 $ArmBr_StoreNbr,
+	 $ArmBr_TaxClass,
+	 $ArmBr_TotBalAmt,
+	 $ArmBr_BatchInv,
+	 $ArmBr_PrintStmt,
+	 $ArmBr_CustGroup,
+	 $ArmBr_PriceGroup,
+	 $ArmBr_InvLastE_Date,
+	 $ArmBr_InvLastM_Date,
+	 $ArmBr_StmtLastE_Date,
+	 $ArmBr_ApEmail2,
+	 $ArmBr_StmtLastE_Amt,
+	 $ArmBr_WDaysToPay,
+	 $ArmBr_SetupBy,
+	 $ArmBr_NotBlockCheck,
+	 $ArmBr_ResaleNbr_ExpDate,
+	 $ArmBr_GrpCode,
+	 $ArmBr_UserCd,
+	 $ArmBr_InfoEmail1,
+	 $ArmBr_InfoEmail2,
+	 $ArmBr_InfoEmail3,
+	 $ArmBr_InfoEmail4,
+	 $ArmBr_InfoEmail5,
+	 $ArmBr_InfoEmail6,
+	 $ArmBr_InfoEmail7,
+	 $ArmBr_InfoEmail8,
+	 $ArmBr_InfoEmail9,
+	 $ArmBr_ResaleNbr2,
+	 $ArmBr_ResaleNbr2_ExpDate,
+	 $ArmBr_ResaleNbr3,
+	 $ArmBr_ResaleNbr3_ExpDate,
+	 $ArmBr_ResaleNbr4,
+	 $ArmBr_ResaleNbr4_ExpDate,
+	 $ArmBr_ResaleNbr5,
+	 $ArmBr_ResaleNbr5_ExpDate,
+	 $ArmBr_ResaleNbr1_StateCd,
+	 $ArmBr_ResaleNbr2_StateCd,
+	 $ArmBr_ResaleNbr3_StateCd,
+	 $ArmBr_ResaleNbr4_StateCd,
+	 $ArmBr_ResaleNbr5_StateCd,
+	 $ArmBr_TaxStateCd,
+	 $ArmBr_TaxLocalCd,
+	 $ArmBr_BranchSalesNbrDate,
+	 $ArmBr_PriceGroupDate,
+	 $ArmBr_PhysAddr1,
+	 $ArmBr_PhysAddr2,
+	 $ArmBr_PhysCity,
+	 $ArmBr_PhysStateCd,
+	 $ArmBr_PhysZip
+	) = trim_array($ArmBr_Record);
+	if ($ArmBr_Found == 'no') $ArmBr_Record = array();
+	$ArmBr_FirstSoldDate_df = cnv_date("$ArmBr_FirstSoldDate");
+	$ArmBr_LastStmtDate_df = cnv_date("$ArmBr_LastStmtDate");
+	$ArmBr_SetupDate_df = cnv_date("$ArmBr_SetupDate");
+	$ArmBr_InvLastE_Date_df = cnv_date("$ArmBr_InvLastE_Date");
+	$ArmBr_InvLastM_Date_df = cnv_date("$ArmBr_InvLastM_Date");
+	$ArmBr_StmtLastE_Date_df = cnv_date("$ArmBr_StmtLastE_Date");
+	$ArmBr_ResaleNbr_ExpDate_df = cnv_date("$ArmBr_ResaleNbr_ExpDate");
+	$ArmBr_ResaleNbr2_ExpDate_df = cnv_date("$ArmBr_ResaleNbr2_ExpDate");
+	$ArmBr_ResaleNbr3_ExpDate_df = cnv_date("$ArmBr_ResaleNbr3_ExpDate");
+	$ArmBr_ResaleNbr4_ExpDate_df = cnv_date("$ArmBr_ResaleNbr4_ExpDate");
+	$ArmBr_ResaleNbr5_ExpDate_df = cnv_date("$ArmBr_ResaleNbr5_ExpDate");
+	$ArmBr_BranchSalesNbrDate_df = cnv_date("$ArmBr_BranchSalesNbrDate");
+	$ArmBr_PriceGroupDate_df = cnv_date("$ArmBr_PriceGroupDate");
+	*/
 }

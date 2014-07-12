@@ -5,16 +5,15 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Embeddable
 public class BranchPK implements Serializable {
 	
 	private static final long serialVersionUID = -6402519899819097510L;
 	
-	@Column(name="custcd")
 	private String customerCode;
-	
-	@Column(name="branchcd")
 	private String branchCode;
 	
 	public BranchPK(){}
@@ -25,6 +24,8 @@ public class BranchPK implements Serializable {
 		this.branchCode = branchCode;
 	}
 
+	@JsonIgnore
+	@Column(name="custcd")
 	public String getCustomerCode() {
 		return customerCode;
 	}
@@ -33,6 +34,7 @@ public class BranchPK implements Serializable {
 		this.customerCode = customerCode;
 	}
 
+	@Column(name="branchcd")
 	public String getBranchCode() {
 		return branchCode;
 	}

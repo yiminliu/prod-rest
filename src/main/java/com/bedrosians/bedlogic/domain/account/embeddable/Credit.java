@@ -10,7 +10,7 @@ import javax.persistence.TemporalType;
 
 
 @Embeddable
-public class CreditInfo{
+public class Credit{
 	
 	private Float creditLimit;
 	private String creditStatus;

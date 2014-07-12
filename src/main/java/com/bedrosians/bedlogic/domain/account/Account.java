@@ -1,7 +1,9 @@
 package com.bedrosians.bedlogic.domain.account;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.AttributeOverride;
@@ -18,43 +20,57 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.solr.analysis.LetterTokenizerFactory;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Analyzer;
+import org.hibernate.search.annotations.AnalyzerDef;
+import org.hibernate.search.annotations.Boost;
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.Store;
+import org.springframework.stereotype.Component;
 
 import com.bedrosians.bedlogic.domain.account.embeddable.Address;
 import com.bedrosians.bedlogic.domain.account.embeddable.Contact;
 import com.bedrosians.bedlogic.domain.account.embeddable.Contract;
-import com.bedrosians.bedlogic.domain.account.embeddable.CreditInfo;
+import com.bedrosians.bedlogic.domain.account.embeddable.Credit;
 import com.bedrosians.bedlogic.domain.account.embeddable.HighBalance;
 import com.bedrosians.bedlogic.domain.account.embeddable.Payment;
 import com.bedrosians.bedlogic.domain.account.embeddable.Owner;
 import com.bedrosians.bedlogic.domain.account.embeddable.Statement;
-import com.bedrosians.bedlogic.util.FormatUtil;
+import com.fasterxml.jackson.annotation.JsonRootName;
 
-Indexed
+@JsonRootName(value = "account")
 @Entity
-@Table(name="arm")
-@DynamicUpdate(value=true)
-@DynamicInsert(value=true)
-
-
+@Table(name = "arm", schema = "public")
+@DynamicUpdate
+@DynamicInsert
+@Indexed
+@Analyzer(impl = StandardAnalyzer.class)
+//@AnalyzerDef(name ="colorCategoryAnalyzer", tokenizer = @org.hibernate.search.annotations.TokenizerDef(factory=LetterTokenizerFactory.class))
+@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Account {
 
 	//--------- Basic Info ---------//
 	private String customerCode;
-	private String accountName;
-	private String companyName;
-	private String status;
+	private String customerName;
+	private String inactiveCode;
 	private String ownershipType;
 	private String isVendor;
 	private String isSlabStore;
 	private String treatAsStore;
-	private Integer b2Fax;
-	private String b2Email;
 	private Date bizEstablishedDate;
 	private String accountManager;
-	private String defaultBranchId;
+	private String defaultBranchCode;
 	private String buyingGroup;
 	private String cashDiscAllowed;
     private String jointCheck;
@@ -67,40 +83,53 @@ public class Account {
 	private Integer frtRateCwt; 
 	private String obNotes;
 	
-
 	//---------- Components ---------//	
 	private Contact apContact;
 	private Contact ceoContact;
 	private Contact cfoContact;
-	private Contact purchaseContact;
+	private Contact purchaserContact;
 	private Contact salesContact;
 	protected Address address;
 	protected Address physicalAddress;
-    private CreditInfo creditInfo;
+    private Credit credit;
 	private Statement statement;
 	private Payment payment;
 	private HighBalance highBalance;
 	private Owner owner;
     private Contract contract;
 	
+	private Set<BranchCode> branches = new HashSet<>(0);
+	
+	@OneToMany(mappedBy = "branchPK.customerCode", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    public Set<BranchCode> getBranches() {
+       return branches;
+    }
+
+    public void setBranches(Set<BranchCode> branches) {
+       this.branches = branches;
+    }
+
     //---------- Associations ---------//
-	private Set<AccountBranch> accountBranches = new HashSet<>(0);
-    
-	//@OneToMany(mappedBy = "branchPK.customerCode", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	//private Set<AccountBranchId> accountBranches = new HashSet<>(0);
+   	//private List<Branch> branches = new ArrayList<>(0);
+	//@OneToMany(mappedBy = "account", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	//public List<Branch> getBranches() {
+	//	return branches;
+	//}
+	//public void setBranches(List<Branch> branches) {
+	//	this.branches = branches;
+	//}
+	
 	
 	// private String bankcruptcyCaseNo;
 	// private List<CheckPayment> checkPayments = new ArrayList<CheckPayment>(0);
 	// private Set<AccountPhone> accountPhones = new HashSet<AccountPhone>(0);
 	// private Set<User> accountUsers = new HashSet<User>(0);
 	// private Set<BranchPK> brancheIds = new HashSet<>(0);
-	
-	protected Account() {
-	}
 
 	@Id
+	@DocumentId
 	@GeneratedValue(generator = "account_id_generator")
-	@GenericGenerator(name = "account_id_generator", strategy = "com.bedrosians.bedlogic.util.AccountIdGenerator")
+	@GenericGenerator(name = "account_id_generator", strategy = "com.bedrosians.bedlogic.util.account.AccountIdGenerator")
 	@Column(name = "custcd")
 	public String getCustomerCode() {
 		return customerCode;
@@ -109,20 +138,14 @@ public class Account {
 		this.customerCode = customerCode;
 	}
 	
+	@Field(index=Index.YES, analyze=Analyze.NO, store=Store.YES)
+	@Boost(2.0f)
 	@Column(name = "coname")
-	public String getAccountName() {
-		return accountName;
+	public String getCustomerName() {
+		return customerName;
 	}
-	public void setAccountName(String accountName) {
-		this.accountName = accountName;
-	}
-
-	@Column(name="Dba")
-	public String getCompanyName() {
-		return companyName;
-	}
-	public void setCompanyName(String companyName) {
-		this.companyName = companyName;
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
 	}
 	
 	@Column(name="ownershiptype")
@@ -134,11 +157,20 @@ public class Account {
 		this.ownershipType = ownershipType;
 	}
 
+	/*
+	@Field(index=Index.YES, analyze=Analyze.YES, store=Store.YES)
+	@Column(name="Dba")
+	public String getCompanyName() {
+		return companyName;
+	}
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
 	@Column(name="b2Fax")
-    public Integer getB2Fax() {
+    public Long getB2Fax() {
 		return b2Fax;
 	}
-	public void setB2Fax(Integer b2Fax) {
+	public void setB2Fax(Long b2Fax) {
 		this.b2Fax = b2Fax;
 	}
 
@@ -150,7 +182,7 @@ public class Account {
 	public void setB2Email(String b2Email) {
 		this.b2Email = b2Email;
 	}
-
+    */
 	@Temporal(TemporalType.DATE)
 	@Column(name="busestablishdate", columnDefinition = "date default current_date")
 
@@ -163,12 +195,12 @@ public class Account {
 	}
 	
 	@Column(name="defbranchcd")
-	public String getDefaultBranchId() {
-		return defaultBranchId;
+	public String getDefaultBranchCode() {
+		return defaultBranchCode;
 	}
 
-	public void setDefaultBranchId(String defaultBranchId) {
-		this.defaultBranchId = defaultBranchId;
+	public void setDefaultBranchCode(String defaultBranchCode) {
+		this.defaultBranchCode = defaultBranchCode;
 	}
 	
 	@Column(name="BuyingGroup")
@@ -202,7 +234,6 @@ public class Account {
 	public String getObNotes() {
 		return obNotes;
 	}
-
 	public void setObNotes(String obNotes) {
 		this.obNotes = obNotes;
 	}
@@ -211,7 +242,6 @@ public class Account {
 	public String getIsVoucherAccount() {
 		return isVoucherAccount;
 	}
-
 	public void setIsVoucherAccount(String isVoucherAccount) {
 		this.isVoucherAccount = isVoucherAccount;
 	}
@@ -221,7 +251,6 @@ public class Account {
 	public Date getJudgementDate() {
 		return judgementDate;
 	}
-
 	public void setJudgementDate(Date judgementDate) {
 		this.judgementDate = judgementDate;
 	}
@@ -230,14 +259,12 @@ public class Account {
 	public String getLockHold() {
 		return lockHold;
 	}
-
 	public void setLockHold(String lockHold) {
 		this.lockHold = lockHold;
 	}
 
 	@Temporal(TemporalType.DATE)
 	@Column(name="obepedate")
-
 	public Date getObepeDate() {
 		return obepeDate;
 	}
@@ -266,34 +293,30 @@ public class Account {
 	public Integer getFrtRateCwt() {
 		return frtRateCwt;
 	}
-
 	public void setFrtRateCwt(Integer frtRateCwt) {
 		this.frtRateCwt = frtRateCwt;
 	}
 	
 	@Embedded
-	public CreditInfo getCreditInfo() {
-		return creditInfo;
+	public Credit getCredit() {
+		return credit;
 	}
-
-	public void setCreditInfo(CreditInfo creditInfo) {
-		this.creditInfo = creditInfo;
+	public void setCredit(Credit credit) {
+		this.credit = credit;
 	}
 	
 	@Embedded
 	public Statement getStatement() {
 		return statement;
 	}
-
 	public void setStatement(Statement statement) {
 		this.statement = statement;
 	}
-
+	
 	@Embedded
 	public Payment getPayment() {
 		return payment;
 	}
-
 	public void setPayment(Payment payment) {
 		this.payment = payment;
 	}
@@ -302,7 +325,6 @@ public class Account {
 	public HighBalance getHighBalance() {
 		return highBalance;
 	}
-
 	public void setHighBalance(HighBalance highBalance) {
 		this.highBalance = highBalance;
 	}
@@ -311,7 +333,6 @@ public class Account {
 	public Owner getOwner() {
 		return owner;
 	}
-
 	public void setOwner(Owner owner) {
 		this.owner = owner;
 	}
@@ -380,12 +401,12 @@ public class Account {
 		@AttributeOverride(name="phone.extension", column=@Column(name="purExt")),
 		@AttributeOverride(name="phone.cellPhoneNumber", column=@Column(name="purCellPhone"))
 	})
-	public Contact getPurchaseContact() {
-		return purchaseContact;
+	public Contact getPurchaserContact() {
+		return purchaserContact;
 	}
 
-	public void setPurchaseContact(Contact purchaseContact) {
-		this.purchaseContact = purchaseContact;
+	public void setPurchaserContact(Contact purchaserContact) {
+		this.purchaserContact = purchaserContact;
 	}
 
 	@Embedded
@@ -407,6 +428,7 @@ public class Account {
 	}
 
 	@Embedded
+	@IndexedEmbedded(depth=1)
 	public Address getAddress() {
 		return address;
 	}
@@ -442,18 +464,18 @@ public class Account {
 	//}
 
 	@Column(name = "InactiveCd")
-	public String getStatus() {
-	//	if (status == null || status.trim().length() < 1)
-	//		status = Status.ACTIVE.getName();
-	//	else if("Y".equalsIgnoreCase(status.trim()))
-	//		status = Status.INACTIVE.getName();
-	//	else if("D".equalsIgnoreCase(status.trim()))
-	//		status = Status.DELETED.getName();	
-		return status;
+	public String getInactiveCode() {
+	//	if (inactiveCode == null || inactiveCode.trim().length() < 1)
+	//		inactiveCode = inactiveCode.ACTIVE.getName();
+	//	else if("Y".equalsIgnoreCase(inactiveCode.trim()))
+	//		inactiveCode = inactiveCode.INACTIVE.getName();
+	//	else if("D".equalsIgnoreCase(inactiveCode.trim()))
+	//		inactiveCode = inactiveCode.DELETED.getName();	
+		return inactiveCode;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
+	public void setInactiveCode(String inactiveCode) {
+		this.inactiveCode = inactiveCode;
 	}
   
 	@Column(name = "TreatAsStore")
@@ -501,22 +523,13 @@ public class Account {
 		this.contract = contract;
 	}
 	
-/*	@OneToMany(mappedBy = "account", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	public Set<AccountBranch> getAccountBranches() {
-		return accountBranches;
-	}
-
-	public void setAccountBranches(Set<AccountBranch> accountBranches) {
-		this.accountBranches = accountBranches;
-	}
-*/	
 	/*
 	@OneToMany(mappedBy = "branchPK.customerCode", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	public Set<AccountBranchId> getAccountBranches() {
+	public Set<BranchCode> getAccountBranches() {
 		return accountBranches;
 	}
 
-	public void setAccountBranches(Set<AccountBranchId> accountBranches) {
+	public void setAccountBranches(Set<BranchCode> accountBranches) {
 		this.accountBranches = accountBranches;
 	}
 	*/
@@ -544,7 +557,9 @@ public class Account {
 	 }
 	*/	 
 	
-	
+	public Account() {
+	}
+		
 	
 	@Override
 	public int hashCode() {
@@ -553,7 +568,7 @@ public class Account {
 		result = prime * result
 				+ ((customerCode == null) ? 0 : customerCode.hashCode());
 		result = prime * result
-				+ ((accountName == null) ? 0 : accountName.hashCode());
+				+ ((customerName == null) ? 0 : customerName.hashCode());
 		return result;
 	}
 
@@ -572,11 +587,11 @@ public class Account {
 		} 
 		else if (!customerCode.equals(other.customerCode))
 			return false;
-		if (accountName == null) {
-			if (other.accountName != null)
+		if (customerName == null) {
+			if (other.customerName != null)
 				return false;
 		} 
-		else if (!accountName.equals(other.accountName))
+		else if (!customerName.equals(other.customerName))
 			return false;
 		return true;
 	}

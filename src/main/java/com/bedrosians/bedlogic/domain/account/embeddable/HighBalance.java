@@ -11,12 +11,10 @@ import javax.persistence.TemporalType;
 @Embeddable
 public class HighBalance{
 	
-	
 	private Float highBalanceAmount;
 	private Date highBalanceDate;
 	private Float highBalance6Amt; 
 	private Date highBalance6Date;
-	
 	
 	@Column(name="highbalamt")
 	public Float getHighBalanceAmount() {

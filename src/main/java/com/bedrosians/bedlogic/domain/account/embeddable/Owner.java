@@ -4,44 +4,38 @@ import javax.persistence.Column;
 
 public class Owner {
 	
-	private String ownerFirstName;
-	private String ownerLastName;
-	private String ownerDriverLicenseNo;
+	private String firstName;
+	private String lastName;
+	private String driverLicenseNo;
 	
 	public Owner(){}
 			
-	public Owner(String ownerFirstName, String ownerLastName, String ownerDriverLicenseNo) {
-		super();
-		this.ownerFirstName = ownerFirstName;
-		this.ownerLastName = ownerLastName;
-		this.ownerDriverLicenseNo = ownerDriverLicenseNo;
-	}
 
 	@Column(name = "OwnerFirstName")
-	public String getOwnerFirstName() {
-		return ownerFirstName;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setOwnerFirstName(String ownerFirstName) {
-		this.ownerFirstName = ownerFirstName;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
 	@Column(name = "OwnerLastName")
-	public String getOwnerLastName() {
-		return ownerLastName;
+	public String getLastName() {
+		return lastName;
 	}
 
-	public void setOwnerLastName(String ownerLastName) {
-		this.ownerLastName = ownerLastName;
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 	@Column(name = "OwnerDriverLicNbr")
-	public String getOwnerDriverLicenseNo() {
-		return ownerDriverLicenseNo;
+	public String getDriverLicenseNo() {
+		return driverLicenseNo;
 	}
 
-	public void setOwnerDriverLicenseNo(String ownerDriverLicenseNo) {
-		this.ownerDriverLicenseNo = ownerDriverLicenseNo;
+	public void setDriverLicenseNo(String driverLicenseNo) {
+		this.driverLicenseNo = driverLicenseNo;
 	}
 	
 }

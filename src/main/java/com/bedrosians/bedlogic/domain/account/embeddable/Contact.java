@@ -13,18 +13,13 @@ public class Contact implements Serializable {
 	
 	private static final long serialVersionUID = -127451862418201850L;
 	
-	@Column(name="Contact")
 	private String name;	
-	@Column(name="Email")
 	private String email;
-	@Column(name="Fax")
 	private Long fax;
-	@Column(name="Notes")
 	private String notes;
-	@Embedded
 	private Phone phone;
 		
-
+	@Column(name="Contact")
 	public String getName() {
 		return name;
 	}
@@ -35,7 +30,7 @@ public class Contact implements Serializable {
 
 	//@OneToMany(fetch=FetchType.EAGER, mappedBy="user")
 	//@Cascade(CascadeType.ALL)
-	//@Embedded
+	@Embedded
 	public Phone getPhone() {
 		return phone;
 	}
@@ -44,6 +39,7 @@ public class Contact implements Serializable {
 		this.phone = phone;
 	}
 			
+	@Column(name="Email")
 	public String getEmail() {
 		return email;
 	}
@@ -52,6 +48,7 @@ public class Contact implements Serializable {
 		this.email = email;
 	}
 	
+	@Column(name="Fax")
 	public Long getFax() {
 		return fax;
 	}
@@ -59,7 +56,8 @@ public class Contact implements Serializable {
 	public void setFax(Long fax) {
 		this.fax = fax;
 	}
-		
+	
+	@Column(name="Notes")
 	public String getNotes() {
 		return notes;
 	}
