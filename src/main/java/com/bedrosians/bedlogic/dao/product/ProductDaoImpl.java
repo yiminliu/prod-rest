@@ -12,7 +12,6 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import org.hibernate.Criteria;
 import org.hibernate.FlushMode;
-import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -45,7 +44,6 @@ import com.bedrosians.bedlogic.domain.product.enums.Status;
 import com.bedrosians.bedlogic.domain.product.enums.SurfaceApplication;
 import com.bedrosians.bedlogic.domain.product.enums.SurfaceFinish;
 import com.bedrosians.bedlogic.domain.product.enums.SurfaceType;
-import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.util.product.ImsQueryUtil;
 
 
@@ -61,7 +59,7 @@ public class ProductDaoImpl extends GenericDaoImpl<Product, String> implements P
     
 	/*
 	 * This method returns an Product with associated entities for the given product id.
-     * Note: it's not set "Read Only" because is could be called by update()
+     * Note: it's not set "Read Only" because it could be called by update()
      */
 	@Override
 	public Product getItemById(Session session, final String itemId) {
@@ -70,32 +68,13 @@ public class ProductDaoImpl extends GenericDaoImpl<Product, String> implements P
 		return (Product)query.setCacheable(true).uniqueResult();
 	}
 	
+	/*This method only gets a proxy of the persistent entity, without hitting the database
+	*/
 	@Override
 	public Product loadItemById(Session session, final String itemId) {
        return loadById(session, itemId);
 	}
  
-	//The purpose of this method is to compare the performance of Hibernate Search and regular Hibernate query 
-	@Override
-	@Transactional(readOnly=true, propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED)
-	@SuppressWarnings("unchecked")
-	 public List<Product> getActiveAndShownOnWebsiteItems(){
-	   List<Product> products = null;
-	   FullTextSession fullTextSession = Search.getFullTextSession(getSession());
-	
-	   QueryBuilder queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(Product.class).get();
-	   // create native Lucene query
-       //org.apache.lucene.search.Query luceneQuery = queryBuilder.keyword().onField("colorcategory").matching("CLEAR").createQuery();
-       org.apache.lucene.search.Query luceneQuery = queryBuilder.bool()
-	   	                                       .must(queryBuilder.keyword().onField("inactivecode").matching("N  ").createQuery())//ims table uses char type witch may need some padding to match index id 
-   	                                           .must(queryBuilder.keyword().onField("showonwebsite").matching("Y").createQuery()).createQuery();
-       
-	   // wrap Lucene query in a javax.persistence.Query
-       org.hibernate.Query fullTextQuery = fullTextSession.createFullTextQuery(luceneQuery, Product.class).setCacheable(true);
- 	   products = (List<Product>)fullTextQuery.list();     
-   	   return products;
-	}
-	
 	/*  Rules for Pattern/Exact matches:
 	 *  colorcategory: always use LIKE on both sides: like '%data%'
 	 *  fulldesc and itemdesc1 always use LIKE on right side: like 'data%'
@@ -106,7 +85,7 @@ public class ProductDaoImpl extends GenericDaoImpl<Product, String> implements P
 	@SuppressWarnings("unchecked")
 	public List<Product> getItemsByQueryParameters(MultivaluedMap<String, String> queryParams){
 	   if(queryParams == null) 
-		   return null;
+		  return null;
 	   List<Product> products = null;
 	   boolean exactMatch = queryParams.containsKey("exactmatch")? true : queryParams.containsKey("exactMatch")? true : false;
 	   maxResults = ImsQueryUtil.getMaxResults(queryParams);
@@ -134,7 +113,7 @@ public class ProductDaoImpl extends GenericDaoImpl<Product, String> implements P
 	 	   	}
 	        value = values.get(0) == null? values.get(0) : values.get(0).trim();
 	        
-	        //----------- Compose hibernate criterias -------------//
+	        //----------- Compose hibernate criteria -------------//
 	 		//------ conditional pattern match -------//
     		if(!exactMatch && ("itemcode".equalsIgnoreCase(key) || ("material.materialcategory".equalsIgnoreCase(key)))){
     		   if(values.size() > 1)	
@@ -231,8 +210,28 @@ public class ProductDaoImpl extends GenericDaoImpl<Product, String> implements P
 		System.out.println(products == null? 0 : products.size() + " items returned");       
         return products;	
     }
-	
-    //------------------------------- creation DB operation -------------------------//
+
+	//The purpose of this method is to compare the performance of Hibernate Search and regular Hibernate query 
+	@Override
+	@Transactional(readOnly=true, propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED)
+	@SuppressWarnings("unchecked")
+    public List<Product> getActiveAndShownOnWebsiteItems(){
+	   List<Product> products = null;
+	   FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+		
+	   QueryBuilder queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(Product.class).get();
+	   // create native Lucene query
+	   org.apache.lucene.search.Query luceneQuery = queryBuilder.bool()
+		   	                                       .must(queryBuilder.keyword().onField("inactivecode").matching("N  ").createQuery())//ims table uses char type which may need some padding to match index id 
+	   	                                           .must(queryBuilder.keyword().onField("showonwebsite").matching("Y").createQuery()).createQuery();   
+	   // wrap Lucene query in a javax.persistence.Query
+	   org.hibernate.Query fullTextQuery = fullTextSession.createFullTextQuery(luceneQuery, Product.class).setCacheable(true);
+	   // retrieve product list
+	   products = (List<Product>)fullTextQuery.list();     
+	   return products;
+	}
+    
+	//------------------------------- creation DB operation -------------------------//
 	
 	@Override
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
@@ -240,7 +239,7 @@ public class ProductDaoImpl extends GenericDaoImpl<Product, String> implements P
 		return (String)save(sessionFactory.getCurrentSession(), product); 
 	}
 	
-	//------------------------------- update DB operation -------------------------//
+	//------------------------------- update DB operation ---------------------------//
 	
 	@Override
 	public void updateItem(Session session, Product product){
@@ -363,8 +362,7 @@ public class ProductDaoImpl extends GenericDaoImpl<Product, String> implements P
 	}
 	 
 	private DetachedCriteria parseSize(DetachedCriteria criteria, List<String> values){
-	   		   	
-		Disjunction disjunction = Restrictions.disjunction();
+	   	Disjunction disjunction = Restrictions.disjunction();
 		for(String value : values) {
 	   		   boolean lengthXwidth = true;
 	   		   String[] sizeArray = value.split(",");

@@ -3,11 +3,6 @@ package com.bedrosians.bedlogic.util;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import com.bedrosians.bedlogic.domain.account.Account;
-import com.bedrosians.bedlogic.domain.account.embeddable.Contact;
-import com.bedrosians.bedlogic.domain.account.embeddable.Owner;
-import com.bedrosians.bedlogic.domain.account.embeddable.Phone;
-import com.bedrosians.bedlogic.domain.account.embeddable.Statement;
 import com.bedrosians.bedlogic.domain.product.ProductVendor;
 import com.bedrosians.bedlogic.domain.product.Product;
 import com.bedrosians.bedlogic.util.product.ImsDataUtil;
@@ -16,7 +11,6 @@ import com.bedrosians.bedlogic.util.product.ImsDataUtil;
 public class FormatUtil {
   
 	public static String process(String data){
-		
 		if (data == null)
 			return new String("");
 		else {

@@ -1,10 +1,6 @@
 package com.bedrosians.bedlogic.util.JsonWrapper;
 
-//import org.codehaus.jackson.annotate.JsonProperty;
-//import org.codehaus.jackson.map.ObjectMapper;
-
 import com.bedrosians.bedlogic.domain.account.Account;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 

@@ -39,9 +39,6 @@ public class HelloResource
             {
                 throw new BedResUnAuthorizedException();
             }
-            String userType = userCodeParser.getUserType();
-            String userCode = userCodeParser.getUserCode();
-            
             // Return json reponse
             String     jsonStr = "{ \"hello\": \"world\" }";
             response = Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();

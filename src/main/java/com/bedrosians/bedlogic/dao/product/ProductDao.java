@@ -14,8 +14,8 @@ public interface ProductDao extends GenericDao<Product, String>{
    public Product loadItemById(Session session, String itemId);
    public List<Product> getActiveAndShownOnWebsiteItems();
    public List<Product> getItemsByQueryParameters(MultivaluedMap<String, String> queryParams);
-   public void updateItem(Session session, Product product);
    public String createItem(Product product);
+   public void updateItem(Session session, Product product);
    public void deleteItem(Product product);	
 
 }

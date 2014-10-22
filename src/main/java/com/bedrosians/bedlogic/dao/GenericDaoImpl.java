@@ -71,7 +71,6 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
 		session.delete(persistentObject);
 	}
 	
-
 	protected synchronized Session getSession(SessionFactory sessionFactory){
 		 return sessionFactory.getCurrentSession();
 	 }

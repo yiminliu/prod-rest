@@ -36,7 +36,7 @@ import com.bedrosians.bedlogic.util.JsonWrapper.ProductWrapper;
 
 
 /**
-* This is a restful web service resource class. It acts as the logical resource of Product Service to provide CRUD operations on products.
+* This restful web service resource class acts as the logical resource of Product Service to provide database CRUD operations on products.
 * This web service resource is used via HTTP request method (GET, POST, PUT, DELETE). JSON is the only format supported for message exchange by this resource.
 * This class uses "/product" as its endpoint.
 *
@@ -46,10 +46,6 @@ import com.bedrosians.bedlogic.util.JsonWrapper.ProductWrapper;
 @Path("/product")
 public class ProductsResource
 {
-    /**
-     * Products resource
-     */
-
 	private static final String domain = "PRODUCT";
 	@Autowired
 	private ProductService productService;
@@ -104,7 +100,7 @@ public class ProductsResource
         return response;
     }
 	
-	/** This method retrieves an product for the given product code.
+	/** This method retrieves an product for the given item code.
      * @param itemcode string.
      * @return Response object to include the status and a json object.
      * @exception BedDAOBadParamException, BedDAOBadException and BedResException on input error and server side condition errors as well.
@@ -114,7 +110,7 @@ public class ProductsResource
     @Produces({MediaType.APPLICATION_JSON})
     public Response getProductById(@Context HttpHeaders requestHeaders, @PathParam("itemcode") final String itemCode)
     {
-        Response    response;
+        Response response;
 
         try
         {
@@ -143,6 +139,7 @@ public class ProductsResource
         {
             response = BedResExceptionMapper.MapToResponse(e);
         }
+        
         return response;
     }
 	
@@ -164,7 +161,7 @@ public class ProductsResource
         	//Check user security
         	keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, domain, DBOperation.CREATE);
         	
-        	//Create a new product using the given data in json input, and save it into database  
+        	//Create a new product using the given data in json format, and save it into database  
             String itemCode = productService.createProduct(inputJsonObj);
             
             //Wrape the newly created product id into json
@@ -194,7 +191,7 @@ public class ProductsResource
 	
 	/**
 	* This method updates a product based on the given product info.
-	* @param A Json object containing product information to upate.
+	* @param A Json object containing product information to update.
 	* @return Response object to include the status.
 	* @exception BedDAOBadParamException, BedDAOBadException and BedResException on input error and server side condition errors as well.
 	*/
@@ -203,7 +200,7 @@ public class ProductsResource
 	@Consumes(MediaType.APPLICATION_JSON)
     public Response updateProduct(@Context HttpHeaders requestHeaders, JSONObject inputJsonObj)
     {
-        Response    response;
+        Response response;
 
         try
         {
@@ -243,7 +240,7 @@ public class ProductsResource
 	@Consumes(MediaType.APPLICATION_JSON)
     public Response deleteProduct(@Context HttpHeaders requestHeaders, JSONObject inputJsonObj)
     {
-        Response    response;
+        Response response;
 
         try
         {
@@ -268,6 +265,7 @@ public class ProductsResource
         {
             response = BedResExceptionMapper.MapToResponse(e);
         }
+        
         return response;
     }
 	
@@ -282,7 +280,7 @@ public class ProductsResource
     @Produces({MediaType.APPLICATION_JSON})
     public Response deleteProductById(@Context HttpHeaders requestHeaders, @PathParam("itemcode") final String itemCode)
     {
-        Response    response;
+        Response response;
 
         try
         {
@@ -307,6 +305,7 @@ public class ProductsResource
         {
             response = BedResExceptionMapper.MapToResponse(e);
         }
+        
         return response;
     }
 

@@ -9,11 +9,12 @@ import javax.ws.rs.core.MultivaluedMap;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 import org.codehaus.jettison.json.JSONObject;
+
 import org.hibernate.CacheMode;
 import org.hibernate.HibernateException;
-import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -25,7 +26,6 @@ import com.bedrosians.bedlogic.domain.product.Product;
 import com.bedrosians.bedlogic.domain.product.enums.DBOperation;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
-import com.bedrosians.bedlogic.exception.BedResException;
 import com.bedrosians.bedlogic.util.FormatUtil;
 import com.bedrosians.bedlogic.util.JsonUtil;
 import com.bedrosians.bedlogic.util.JsonWrapper.ProductWrapper;
@@ -97,7 +97,6 @@ public class ProductServiceImpl implements ProductService {
 		       throw new BedDAOException("Error occured during getProducts(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
 		  	else
 		  	   throw new BedDAOException("Error occured during getProducts(), due to: " +  hbe.getMessage());
-		
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
