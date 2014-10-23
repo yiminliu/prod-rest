@@ -10,7 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import com.bedrosians.bedlogic.domain.item.Item;
-import com.bedrosians.bedlogic.service.product.ProductService;
+import com.bedrosians.bedlogic.service.ims.ImsService;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -20,7 +20,7 @@ public class ProductServiceDeletionTest {
 		
 
 	@Autowired
-	ProductService productService;
+	ImsService imsService;
  	
 	@Before
 	public void setup(){
@@ -29,7 +29,7 @@ public class ProductServiceDeletionTest {
 	
 	@Test
 	public void testDeleteItemById()throws Exception {
-	    productService.deleteProductById("NEWITEMCODE");
+	    imsService.deleteProductById("NEWITEMCODE");
 	     System.out.println("testDeleteItem Done");
 	        
 	 }
@@ -39,7 +39,7 @@ public class ProductServiceDeletionTest {
 		Item item = new Item("NEWITEMCODE3");
 		String jStringItemInfo = "{\"itemcode\":\"newItemcode3\"}";
 		JSONObject params = new JSONObject(jStringItemInfo);
-	    productService.deleteProduct(params);
+	    imsService.deleteProduct(params);
 	     System.out.println("testDeleteItem Done");
 	        
 	 }

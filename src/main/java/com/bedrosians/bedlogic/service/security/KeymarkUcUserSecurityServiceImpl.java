@@ -6,13 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import com.bedrosians.bedlogic.domain.product.enums.DBOperation;
 import com.bedrosians.bedlogic.domain.user.KeymarkUcUser;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
 import com.bedrosians.bedlogic.service.user.KeymarkUcUserService;
 import com.bedrosians.bedlogic.usercode.UserCodeParser;
+import com.bedrosians.bedlogic.util.enums.ApiName;
+import com.bedrosians.bedlogic.util.enums.DBOperation;
 
 @Service("keymarkUcUserSecurityService")
 @Scope(value = "singleton")
@@ -30,19 +31,19 @@ public class KeymarkUcUserSecurityServiceImpl implements KeymarkUcUserSecuritySe
 	KeymarkUcUser keymarkUcUser = null;
 	
 	@Override
-	public void doSecurityCheck(String userType, String userCode, String password, boolean isPasswordBasedAuth, String domain, DBOperation permission) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{
+	public void doSecurityCheck(String userType, String userCode, String password, boolean isPasswordBasedAuth, ApiName apiName, DBOperation permission) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{
 		switch(userType) {
 		   case "guest": case "Guest":
 			   return;
 		   case "keymark":	
-			   validateUserInfo(userCode, password, isPasswordBasedAuth, domain, permission);
+			   validateUserInfo(userCode, password, isPasswordBasedAuth, apiName, permission);
 		   default:
 			   throw new BedDAOBadParamException ("Unsupported user type");	   
 		}
 	}
 	 
 	@Override
-    public void doUserSecurityCheck(HttpHeaders requestHeaders, String domain, DBOperation operation) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException {
+    public void doUserSecurityCheck(HttpHeaders requestHeaders, ApiName apName, DBOperation operation) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException {
 		 //Check usercode
        UserCodeParser  userCodeParser = new UserCodeParser(requestHeaders);
        if (!userCodeParser.isValidFormat())
@@ -53,11 +54,11 @@ public class KeymarkUcUserSecurityServiceImpl implements KeymarkUcUserSecuritySe
        String userCode = userCodeParser.getUserCode();
        
        //Authenticate the user
-       doSecurityCheck(userType, userCode, domain, operation);
+       doSecurityCheck(userType, userCode, apName, operation);
 	 }
 	 
 	@Override
-	public void doSecurityCheck(String userType, String userCode, String domain, DBOperation operation) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{
+	public void doSecurityCheck(String userType, String userCode, ApiName apiName, DBOperation operation) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{
 		switch(userType) {
 		   case "guest": case "Guest":
 			   if(DBOperation.SEARCH.equals(operation))
@@ -65,17 +66,17 @@ public class KeymarkUcUserSecurityServiceImpl implements KeymarkUcUserSecuritySe
 			   else
 				   throw new BedResUnAuthorizedException("Guest user is not allowed for " + operation);	
 		   case "keymark":	
-			   validateUserInfo(userCode, "", false, domain, operation);
+			   validateUserInfo(userCode, "", false, apiName, operation);
 			   break;
 		   default:
 			   throw new BedDAOBadParamException ("Unsupported user type");				      
 		}
 	}
 	
-	private void validateUserInfo(String userCode, String password, boolean isPasswordBased, String domain, DBOperation permission) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{
+	private void validateUserInfo(String userCode, String password, boolean isPasswordBased, ApiName apiName, DBOperation permission) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{
 		keymarkUcUser = getUser(userCode);        
 		keymarkUcUserAuthentication.authenticate(keymarkUcUser, password, isPasswordBased);
-		keymarkUcUserAuthorization.authorize(keymarkUcUser, domain, permission);
+		keymarkUcUserAuthorization.authorize(keymarkUcUser, apiName, permission);
 	}
 	
 	private KeymarkUcUser getUser(String userCode) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{

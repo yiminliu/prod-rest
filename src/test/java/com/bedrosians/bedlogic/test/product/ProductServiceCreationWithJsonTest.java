@@ -16,7 +16,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import com.bedrosians.bedlogic.domain.item.IconCollection;
 import com.bedrosians.bedlogic.domain.item.Item;
-import com.bedrosians.bedlogic.service.product.ProductService;
+import com.bedrosians.bedlogic.service.ims.ImsService;
 import com.bedrosians.bedlogic.util.ImsDataUtil;
 
 import static org.junit.Assert.*;
@@ -29,7 +29,7 @@ public class ProductServiceCreationWithJsonTest {
 	
 	
 	@Autowired
-	ProductService productService;
+	ImsService imsService;
 	
 	private static String testItemId = null;
 	
@@ -41,7 +41,7 @@ public class ProductServiceCreationWithJsonTest {
 	@Test
 	public void testItemCodeWithJsonObject() throws Exception {
 		JSONObject params = new JSONObject(jStringWithItemCode);
-        String id = productService.createProduct(params);
+        String id = imsService.createProduct(params);
         assertNotNull(id); 
 	}
 	
@@ -49,10 +49,10 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithDimensionsJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithDimensions: ");
 	        JSONObject params = new JSONObject(jStringWithDimensions);
-	        String id = productService.createProduct(params);
+	        String id = imsService.createProduct(params);
 	        assertNotNull(id);
 	       
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        
 	        assertEquals("11-13/16", item.getDimensions().getLength());
 	        assertEquals("11-13/16", item.getDimensions().getWidth());
@@ -67,9 +67,9 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithColorCategoryJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithColorCategory: ");
 	        JSONObject params = new JSONObject(jStringWithColorCategory);
-	        String id = productService.createProduct(params);
+	        String id = imsService.createProduct(params);
 	        assertNotNull(id);    
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        assertEquals("BLACK:WHITE", item.getColorcategory());
 	        assertEquals("[BLACK, WHITE]", item.getColorhues().toString());
 	//        for(ColorHue colorHue : item.getColorhues()){
@@ -82,10 +82,10 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithPricesJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithBasicInfo);
-	        String id = productService.createProduct(params);
+	        String id = imsService.createProduct(params);
 	        assertNotNull(id);
 	       
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        
 	        assertEquals("18.3800", item.getPrice().getListprice().toString());
 	        assertEquals("18.3800", item.getPrice().getSellprice().toString());
@@ -96,10 +96,10 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithMaterialJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithBasicInfo);
-	        String id = productService.createProduct(params);
+	        String id = imsService.createProduct(params);
 	        assertNotNull(id);
 	       
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        
 	        assertEquals("Porcelain", item.getMaterial().getMaterialtype());
 	        assertEquals("CTSRC", item.getMaterial().getMaterialclass());
@@ -111,9 +111,9 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithSeriesJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithBasicInfo);
-	        String id = productService.createProduct(params);
+	        String id = imsService.createProduct(params);
 	        assertNotNull(id);  
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        assertEquals("Athena", item.getSeries().getSeriesname());
 	        assertEquals("Ash", item.getSeries().getSeriescolor());
 	 }
@@ -122,10 +122,10 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithTestSpecsJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithBasicInfo);
-	        String id = productService.createProduct(params);
+	        String id = imsService.createProduct(params);
 	        assertNotNull(id);
 	       
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        
 	        assertEquals(Float.valueOf("0.1"), item.getTestSpecification().getWaterabsorption());
 	        assertEquals(Float.valueOf("0.2"), item.getTestSpecification().getScratchresistance());
@@ -145,10 +145,10 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithApplicationsJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithApplicationsInfo);
-	        String id = productService.createProduct(params);
+	        String id = imsService.createProduct(params);
 	        assertNotNull(id);
 	       
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        assertEquals("FR:WR:CR:SR:PR", item.getApplications().getResidential());
 	        assertEquals("FL:WL:CL:SL:PL", item.getApplications().getLightcommercial());
 	        assertEquals("FC:WC:CC:SC:PC", item.getApplications().getCommercial());
@@ -160,10 +160,10 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithUsageJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithBasicInfo);
-	        String id = productService.createProduct(params);
+	        String id = imsService.createProduct(params);
 	        assertNotNull(id);
 	       
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        System.out.println(item.getUsage());
 	        assertEquals("[FR, WR, CR, SR, PR, FL, WL, CL, SL, PL, FC, WC, CC, SC, PC]", item.getUsage().toString());
 	        assertEquals("FC:WC:CC:SC:PC", item.getApplications().getCommercial());
@@ -174,10 +174,10 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithNotesJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithBasicInfo);
-	        String id = productService.createProduct(params);
+	        String id = imsService.createProduct(params);
 	        assertNotNull(id);
 	       
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	         assertEquals("test po note", item.getNotes().getPonotes());
 	        assertEquals("test note1", item.getNotes().getBuyernotes());
 	        assertEquals("test note2", item.getNotes().getInternalnotes());
@@ -188,10 +188,10 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithPackagingInfoJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithBasicInfo);
-	        String id = productService.createProduct(params);
+	        String id = imsService.createProduct(params);
 	        assertNotNull(id);
 	       
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        
 	        assertEquals("Athena", item.getSeries().getSeriesname());
 	        assertEquals("Ash", item.getSeries().getSeriescolor());
@@ -203,10 +203,10 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithBasicInfoJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithBasicInfo);
-	        String id = productService.createProduct(params);
+	        String id = imsService.createProduct(params);
 	        assertNotNull(id);
 	        
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	             
 	        //assertEquals("BEIGE".toUpperCase(), item.getColorhues().get(0));
 	        assertEquals("ATHENA", item.getItemcategory());
@@ -236,10 +236,10 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithAllImsInfoJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringFullItemInfo);
-	        String id = productService.createProduct(params);
+	        String id = imsService.createProduct(params);
 	        assertNotNull(id);
 	        
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        
 	        //series
 	        assertEquals("Athena", item.getSeries().getSeriesname());
@@ -357,9 +357,9 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithColorHuesJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithColorHues: ");
 	        JSONObject params = new JSONObject(jStringWithColorHues);
-	        String id = productService.createProduct(params);
+	        String id = imsService.createProduct(params);
 	        assertNotNull(id);    
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        for(String colorHue : item.getColorhues()){
 		        assertEquals("BEIGE", colorHue);
 		        //    assertEquals(colorHue.getColorHue(), item.getColorcategory());
@@ -375,9 +375,9 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithMultipleColorHuesJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithColorHues: ");
 	        JSONObject params = new JSONObject(jStringWithMultipleColorHues);
-	        String id = productService.createProduct(params);
+	        String id = imsService.createProduct(params);
 	        assertNotNull(id);    
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        for(String colorHue : item.getColorhues()){
 		        assertEquals("BEIGE", colorHue);
 		        //    assertEquals(colorHue.getColorHue(), item.getColorcategory());
@@ -393,9 +393,9 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithNewFeatureByJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithNewFeature);            
-	        String id = productService.createProduct(params);
+	        String id = imsService.createProduct(params);
 	        assertNotNull(id);
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        assertEquals("First", item.getImsNewFeature().getGrade().getDescription());
 	        assertEquals("Good", item.getImsNewFeature().getStatus().getDescription());
 	        
@@ -418,9 +418,9 @@ public class ProductServiceCreationWithJsonTest {
 	        System.out.println("testCreateItemWithUnitAndVendor: ");
 	        JSONObject params = new JSONObject(jStringWithUnitAndVendor);
 	        //JSONObject params = new JSONObject(jStringWithNewVendorSystem);
-	        String id = productService.createProduct(params);
+	        String id = imsService.createProduct(params);
 	        assertNotNull(id);
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        assertEquals("SHT", item.getUnits().getBaseunit());
 	        assertEquals(Character.valueOf('Y'), item.getUnits().getBaseisstdsell());
 	        assertEquals(Character.valueOf('Y'), item.getUnits().getBaseisstdord());
@@ -473,10 +473,10 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithNewNotesJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithNewNotes: ");
 	        JSONObject params = new JSONObject(jStringWithNewNotes);
-	        String id = productService.createProduct(params);
+	        String id = imsService.createProduct(params);
 	        assertNotNull(id);
 	        System.out.println("newly created Item id  = " + id);
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        //for(Note note :)
 	        //assertEquals("First", item.getNewNoteSystem());
 	 }
@@ -485,10 +485,10 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithNewIconJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithNewIcon: ");
 	        JSONObject params = new JSONObject(jStringWithNewIcons);
-	        String id = productService.createProduct(params);
+	        String id = imsService.createProduct(params);
 	        assertNotNull(id);
 	        System.out.println("newly created Item id  = " + id);
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        IconCollection icon = item.getIconDescription();
 	        assertEquals("USA", icon.getMadeInCountry().getDescription());
 	        assertEquals(true, icon.getExteriorProduct());
@@ -535,10 +535,10 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithLagecyIconJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithNewIcon: ");
 	        JSONObject params = new JSONObject(jStringWithLagecyIcon);
-	        String id = productService.createProduct(params);
+	        String id = imsService.createProduct(params);
 	        assertNotNull(id);
 	        System.out.println("newly created Item id  = " + id);
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        
 	        IconCollection icon = item.getIconDescription();
 	        
@@ -587,10 +587,10 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithAllImsAndAssociationsByJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringFullItemAndAssociationInfo);
-	        String id = productService.createProduct(params);
+	        String id = imsService.createProduct(params);
 	        assertNotNull(id);
 	        
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        
 	        //series
 	        assertEquals("Athena", item.getSeries().getSeriesname());

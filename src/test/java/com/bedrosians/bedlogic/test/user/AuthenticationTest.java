@@ -9,12 +9,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import com.bedrosians.bedlogic.dao.user.KeymarkUcUserDao;
-import com.bedrosians.bedlogic.domain.item.enums.DBOperation;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
-import com.bedrosians.bedlogic.service.product.ProductService;
+import com.bedrosians.bedlogic.service.ims.ImsService;
 import com.bedrosians.bedlogic.service.security.KeymarkUcUserSecurityService;
+import com.bedrosians.bedlogic.util.enums.ApiName;
+import com.bedrosians.bedlogic.util.enums.DBOperation;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -23,8 +24,9 @@ import com.bedrosians.bedlogic.service.security.KeymarkUcUserSecurityService;
 @TransactionConfiguration(defaultRollback = false)
 public class AuthenticationTest {
 		
+	private static final ApiName APINAME = ApiName.IMS;
 	@Autowired
-	ProductService productService;
+	ImsService imsService;
 	@Autowired
 	KeymarkUcUserSecurityService keymarkUcUserSecurityService;
 	
@@ -41,7 +43,7 @@ public class AuthenticationTest {
 		String userType = "guest";
 		String userCode = "";
 		try{
-		   keymarkUcUserSecurityService.doSecurityCheck(userType, userCode, DBOperation.SEARCH);
+		   keymarkUcUserSecurityService.doSecurityCheck(userType, userCode, APINAME, DBOperation.SEARCH);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -51,14 +53,14 @@ public class AuthenticationTest {
 	public void testGuestUserForProductUpdatePermission()throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{
 		String userType = "guest";
 		String userCode = "";
-  	    keymarkUcUserSecurityService.doSecurityCheck(userType, userCode, DBOperation.UPDATE);
+  	    keymarkUcUserSecurityService.doSecurityCheck(userType, userCode, APINAME, DBOperation.UPDATE);
 	}
 	
 	@Test(expected = BedDAOBadParamException.class)
 	public void testBadUserType() throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{
 		String userType = "abcde";
 		String userCode = "";
-  	    keymarkUcUserSecurityService.doSecurityCheck(userType, userCode, DBOperation.UPDATE);
+  	    keymarkUcUserSecurityService.doSecurityCheck(userType, userCode, APINAME, DBOperation.UPDATE);
 	}
 	
 	
@@ -67,7 +69,7 @@ public class AuthenticationTest {
 		String userType = "keymark";
 		String userCode = "JBED";
 		try{
-		   keymarkUcUserSecurityService.doSecurityCheck(userType, userCode, DBOperation.SEARCH);
+		   keymarkUcUserSecurityService.doSecurityCheck(userType, userCode, APINAME, DBOperation.SEARCH);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -78,7 +80,7 @@ public class AuthenticationTest {
 		String userType = "keymark";
 		String userCode = "JBED";
 		try{
-		   keymarkUcUserSecurityService.doSecurityCheck(userType, userCode, DBOperation.UPDATE);
+		   keymarkUcUserSecurityService.doSecurityCheck(userType, userCode, APINAME, DBOperation.UPDATE);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -88,14 +90,14 @@ public class AuthenticationTest {
 	public void testInvalidKeymarkUcUser()throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{
 		String userType = "keymark";
 		String userCode = "yyyy";
-		keymarkUcUserSecurityService.doSecurityCheck(userType, userCode, DBOperation.UPDATE);
+		keymarkUcUserSecurityService.doSecurityCheck(userType, userCode, APINAME, DBOperation.UPDATE);
 	}
 	
 	@Test(expected = BedResUnAuthorizedException.class)
 	public void testKeymarkUcUserWithoutUpdatePermission() throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{
 		String userType = "keymark";
 		String userCode = "TEST";
-	    keymarkUcUserSecurityService.doSecurityCheck(userType, userCode, DBOperation.UPDATE);
+	    keymarkUcUserSecurityService.doSecurityCheck(userType, userCode, APINAME, DBOperation.UPDATE);
 		
 	}
 	

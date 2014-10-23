@@ -15,12 +15,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
+import com.bedrosians.bedlogic.dao.ims.ImsDao;
 import com.bedrosians.bedlogic.dao.item.ItemDao;
 import com.bedrosians.bedlogic.domain.item.IconCollection;
 import com.bedrosians.bedlogic.domain.item.Item;
 import com.bedrosians.bedlogic.domain.item.ItemNewFeature;
 import com.bedrosians.bedlogic.domain.user.KeymarkUcUser;
-import com.bedrosians.bedlogic.service.product.ProductService;
+import com.bedrosians.bedlogic.service.ims.ImsService;
 import com.bedrosians.bedlogic.service.user.KeymarkUcUserService;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 
@@ -33,11 +34,11 @@ public class CacheTest {
 	@Autowired
 	SessionFactory sessionFactory;
 	@Autowired
-	ItemDao itemDao;
+	ImsDao itemDao;
 	//@Autowired
 	//ColorHueDao colorHueDao;
 	@Autowired
-	ProductService productService;
+	ImsService imsService;
 	@Autowired
 	KeymarkUcUserService keymarkUcUserService;
 	
@@ -56,7 +57,7 @@ public class CacheTest {
 	      session.getTransaction().begin();
 	      System.out.println("Before 1st round Statistics().getEntityFetchCount() = "  + session.getStatistics().getEntityKeys());
          // item = itemDao.getItemById(session, "AECBUB218NR");
-	      item = productService.getProductById("AECBUB218NR");
+	      item = imsService.getProductById("AECBUB218NR");
           session.getTransaction().commit();
           session.close();
 	    }
@@ -91,7 +92,7 @@ public class CacheTest {
 	    	startTime = System.currentTimeMillis();
 	    	session.getTransaction().begin();
 	         // item = itemDao.getItemById(session, "AECBUB218NR       ");
-	     	item = productService.getProductById("AECBUB218NR");
+	     	item = imsService.getProductById("AECBUB218NR");
 	        System.out.println("2 round retrieved item = " + item);
 	        session.getTransaction().commit();
 	
@@ -185,7 +186,7 @@ public class CacheTest {
 	      session.getTransaction().begin();
 	      System.out.println("Before 1st round Statistics().getEntityFetchCount() = "  + session.getStatistics().getEntityKeys());
          // item = itemDao.getItemById(session, "AECBUB218NR");
-	      items = productService.getProducts(params);
+	      items = imsService.getProducts(params);
           session.getTransaction().commit();
           System.out.println("1st round Statistics().getEntityFetchCount() = "  + session.getStatistics().getEntityKeys());
           session.close();
@@ -208,7 +209,7 @@ public class CacheTest {
 	    try{
 	    	startTime = System.currentTimeMillis();
 	    	session.getTransaction().begin();
-	    	items = productService.getProducts(params);
+	    	items = imsService.getProducts(params);
 	        session.getTransaction().commit();
 	
 		}

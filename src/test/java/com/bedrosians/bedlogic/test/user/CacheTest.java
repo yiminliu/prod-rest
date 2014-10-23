@@ -14,10 +14,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
-import com.bedrosians.bedlogic.dao.item.ItemDao;
-import com.bedrosians.bedlogic.domain.item.Item;
+import com.bedrosians.bedlogic.dao.ims.ImsDao;
 import com.bedrosians.bedlogic.domain.user.KeymarkUcUser;
-import com.bedrosians.bedlogic.service.product.ProductService;
+import com.bedrosians.bedlogic.service.ims.ImsService;
 import com.bedrosians.bedlogic.service.user.KeymarkUcUserService;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 
@@ -30,10 +29,10 @@ public class CacheTest {
 	@Autowired
 	SessionFactory sessionFactory;
 	@Autowired
-	ItemDao itemDao;
+	ImsDao itemDao;
 
 	@Autowired
-	ProductService productService;
+	ImsService imsService;
 	@Autowired
 	KeymarkUcUserService keymarkUcUserService;
 	

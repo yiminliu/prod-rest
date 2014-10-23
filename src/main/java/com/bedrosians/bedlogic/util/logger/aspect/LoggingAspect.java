@@ -18,7 +18,7 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
-import com.bedrosians.bedlogic.domain.product.Product;
+import com.bedrosians.bedlogic.domain.ims.Ims;
 
 
 @Component
@@ -169,10 +169,10 @@ public class LoggingAspect {
 			id = "String";
 			descriptor = string;
 			clazz = string.getClass().getSimpleName();
-		} else if (arg instanceof Product) {
-			Product product = (Product) arg;
-			clazz = product.getClass().getSimpleName();
-			id = product.getItemcode();
+		} else if (arg instanceof Ims) {
+			Ims ims = (Ims) arg;
+			clazz = ims.getClass().getSimpleName();
+			id = ims.getItemcode();
 			descriptor = "";//product.getItemdesc() == null? "" : product.getItemdesc().getItemdesc1();
 		} else if (arg instanceof HttpServletRequest || arg instanceof HttpServletResponse) {
 			return buffer.toString();

@@ -3,8 +3,8 @@ package com.bedrosians.bedlogic.util;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import com.bedrosians.bedlogic.domain.product.ProductVendor;
-import com.bedrosians.bedlogic.domain.product.Product;
+import com.bedrosians.bedlogic.domain.ims.Ims;
+import com.bedrosians.bedlogic.domain.ims.Vendor;
 import com.bedrosians.bedlogic.util.product.ImsDataUtil;
 
 
@@ -75,132 +75,132 @@ public class FormatUtil {
 			return date;
 	}
 	
-	public static synchronized Product process(Product product){
-		if(product == null)
+	public static synchronized Ims process(Ims ims){
+		if(ims == null)
 		   return null;	
-		product.setItemcode(process(product.getItemcode()));	
-		product.setAbccode(process(product.getAbccode()));
-		product.setItemcategory(process(product.getItemcategory()));
-		product.setColorcategory(process(product.getColorcategory()));
-		product.setInactivecode(process(product.getInactivecode()));
-		product.setInventoryitemcode(process(product.getInventoryitemcode()));
-		product.setItemcode2(process(product.getItemcode2()));
-		product.setItemgroupnumber(process(product.getItemgroupnumber()));
-		product.setItemtypecode(process(product.getItemtypecode()));
-		product.setLottype(process(product.getLottype()));
-		product.setIconsystem(process(product.getIconsystem()));
-        product.setCountryorigin(process(product.getCountryorigin()));
-		product.setPrintlabel(process(product.getPrintlabel()));
-		product.setPriorlastupdated(process(product.getPriorlastupdated()));
-		product.setProductline(process(product.getProductline()));	
-		product.setShadevariation(process(product.getShadevariation()));
+		ims.setItemcode(process(ims.getItemcode()));	
+		ims.setAbccode(process(ims.getAbccode()));
+		ims.setItemcategory(process(ims.getItemcategory()));
+		ims.setColorcategory(process(ims.getColorcategory()));
+		ims.setInactivecode(process(ims.getInactivecode()));
+		ims.setInventoryitemcode(process(ims.getInventoryitemcode()));
+		ims.setItemcode2(process(ims.getItemcode2()));
+		ims.setItemgroupnumber(process(ims.getItemgroupnumber()));
+		ims.setItemtypecode(process(ims.getItemtypecode()));
+		ims.setLottype(process(ims.getLottype()));
+		ims.setIconsystem(process(ims.getIconsystem()));
+        ims.setCountryorigin(process(ims.getCountryorigin()));
+		ims.setPrintlabel(process(ims.getPrintlabel()));
+		ims.setPriorlastupdated(process(ims.getPriorlastupdated()));
+		ims.setProductline(process(ims.getProductline()));	
+		ims.setShadevariation(process(ims.getShadevariation()));
 		//product.setSubtype(process(product.getSubtype()));
 		//product.setType(process(product.getType()));
-		product.setUpdatecode(process(product.getUpdatecode()));
-		if(product.getItemdesc() != null){
-			product.getItemdesc().setFulldesc(process(product.getItemdesc().getFulldesc()));
-			product.getItemdesc().setItemdesc1(process(product.getItemdesc().getItemdesc1()));
+		ims.setUpdatecode(process(ims.getUpdatecode()));
+		if(ims.getItemdesc() != null){
+			ims.getItemdesc().setFulldesc(process(ims.getItemdesc().getFulldesc()));
+			ims.getItemdesc().setItemdesc1(process(ims.getItemdesc().getItemdesc1()));
 		}
-		if(product.getSeries() != null){
-		   product.getSeries().setSeriesname(process(product.getSeries().getSeriesname()));
-		   product.getSeries().setSeriescolor(process(product.getSeries().getSeriescolor()));
+		if(ims.getSeries() != null){
+		   ims.getSeries().setSeriesname(process(ims.getSeries().getSeriesname()));
+		   ims.getSeries().setSeriescolor(process(ims.getSeries().getSeriescolor()));
 		}	
-		if(product.getPurchasers() != null){
-			product.getPurchasers().setPurchaser(process(product.getPurchasers().getPurchaser()));	
-			product.getPurchasers().setPurchaser2(process(product.getPurchasers().getPurchaser2()));	
+		if(ims.getPurchasers() != null){
+			ims.getPurchasers().setPurchaser(process(ims.getPurchasers().getPurchaser()));	
+			ims.getPurchasers().setPurchaser2(process(ims.getPurchasers().getPurchaser2()));	
 		}
-		if(product.getApplications() != null){ 
-		   product.getApplications().setCommercial(process(product.getApplications().getCommercial()));
-		   product.getApplications().setLightcommercial(process(product.getApplications().getLightcommercial()));
-		   product.getApplications().setResidential(process(product.getApplications().getResidential()));
+		if(ims.getApplications() != null){ 
+		   ims.getApplications().setCommercial(process(ims.getApplications().getCommercial()));
+		   ims.getApplications().setLightcommercial(process(ims.getApplications().getLightcommercial()));
+		   ims.getApplications().setResidential(process(ims.getApplications().getResidential()));
 		}
-		if(product.getMaterial() != null){
-			product.getMaterial().setMaterialcategory(process(product.getMaterial().getMaterialcategory()));
-		    product.getMaterial().setMaterialclass(process(product.getMaterial().getMaterialclass()));
-		    product.getMaterial().setMaterialstyle(process(product.getMaterial().getMaterialstyle()));
-		    product.getMaterial().setMaterialtype(process(product.getMaterial().getMaterialtype()));
-		    product.getMaterial().setMaterialfeature(process(product.getMaterial().getMaterialfeature()));
+		if(ims.getMaterial() != null){
+			ims.getMaterial().setMaterialcategory(process(ims.getMaterial().getMaterialcategory()));
+		    ims.getMaterial().setMaterialclass(process(ims.getMaterial().getMaterialclass()));
+		    ims.getMaterial().setMaterialstyle(process(ims.getMaterial().getMaterialstyle()));
+		    ims.getMaterial().setMaterialtype(process(ims.getMaterial().getMaterialtype()));
+		    ims.getMaterial().setMaterialfeature(process(ims.getMaterial().getMaterialfeature()));
 		}
-		if(product.getDimensions() != null){
+		if(ims.getDimensions() != null){
 			//product.getDimensions().setNominallength(process(product.getDimensions().getNominallength()));
 			//product.getDimensions().setNominalthickness(process(product.getDimensions().getNominalthickness()));
 		    //product.getDimensions().setNominalwidth(process(product.getDimensions().getNominalwidth()));	
-		    product.getDimensions().setLength(process(product.getDimensions().getLength()));
-		    product.getDimensions().setThickness(process(product.getDimensions().getThickness()));
-		    product.getDimensions().setWidth(process(product.getDimensions().getWidth()));
-		    product.getDimensions().setSizeunits(process(product.getDimensions().getSizeunits()));
-		    product.getDimensions().setThicknessunit(process(product.getDimensions().getThicknessunit()));
+		    ims.getDimensions().setLength(process(ims.getDimensions().getLength()));
+		    ims.getDimensions().setThickness(process(ims.getDimensions().getThickness()));
+		    ims.getDimensions().setWidth(process(ims.getDimensions().getWidth()));
+		    ims.getDimensions().setSizeunits(process(ims.getDimensions().getSizeunits()));
+		    ims.getDimensions().setThicknessunit(process(ims.getDimensions().getThicknessunit()));
 		}
-		if(product.getPrice() != null){
-			product.getPrice().setPriceunit(process(product.getPrice().getPriceunit()));
-			product.getPrice().setPricegroup(process(product.getPrice().getPricegroup()));
+		if(ims.getPrice() != null){
+			ims.getPrice().setPriceunit(process(ims.getPrice().getPriceunit()));
+			ims.getPrice().setPricegroup(process(ims.getPrice().getPricegroup()));
 		}
-		if(product.getUnits() != null){
-			product.getUnits().setOrdunit(process(product.getUnits().getOrdunit()));
-			product.getUnits().setStdunit(process(product.getUnits().getStdunit()));
-			product.getUnits().setBasevolperunit(process(product.getUnits().getBasevolperunit()));
-			product.getUnits().setBaseunit(process(product.getUnits().getBaseunit()));
-			product.getUnits().setUnit1unit(process(product.getUnits().getUnit1unit()));
-			product.getUnits().setUnit2unit(process(product.getUnits().getUnit2unit()));
-			product.getUnits().setUnit3unit(process(product.getUnits().getUnit3unit()));
-			product.getUnits().setUnit4unit(process(product.getUnits().getUnit4unit()));
-			product.getUnits().setBaseupcdesc(process(product.getUnits().getBaseupcdesc()));
-			product.getUnits().setUnit1upcdesc(process(product.getUnits().getUnit1upcdesc()));
-			product.getUnits().setUnit2upcdesc(process(product.getUnits().getUnit2upcdesc()));
-			product.getUnits().setUnit3upcdesc(process(product.getUnits().getUnit3upcdesc()));
-			product.getUnits().setUnit4upcdesc(process(product.getUnits().getUnit4upcdesc()));
-			product.getUnits().setBasewgtperunit(process(product.getUnits().getBasewgtperunit()));
-			product.getUnits().setUnit1wgtperunit(process(product.getUnits().getUnit1wgtperunit()));
-			product.getUnits().setUnit2wgtperunit(process(product.getUnits().getUnit2wgtperunit()));
-			product.getUnits().setUnit3wgtperunit(process(product.getUnits().getUnit3wgtperunit()));
-			product.getUnits().setUnit4wgtperunit(process(product.getUnits().getUnit4wgtperunit()));
+		if(ims.getUnits() != null){
+			ims.getUnits().setOrdunit(process(ims.getUnits().getOrdunit()));
+			ims.getUnits().setStdunit(process(ims.getUnits().getStdunit()));
+			ims.getUnits().setBasevolperunit(process(ims.getUnits().getBasevolperunit()));
+			ims.getUnits().setBaseunit(process(ims.getUnits().getBaseunit()));
+			ims.getUnits().setUnit1unit(process(ims.getUnits().getUnit1unit()));
+			ims.getUnits().setUnit2unit(process(ims.getUnits().getUnit2unit()));
+			ims.getUnits().setUnit3unit(process(ims.getUnits().getUnit3unit()));
+			ims.getUnits().setUnit4unit(process(ims.getUnits().getUnit4unit()));
+			ims.getUnits().setBaseupcdesc(process(ims.getUnits().getBaseupcdesc()));
+			ims.getUnits().setUnit1upcdesc(process(ims.getUnits().getUnit1upcdesc()));
+			ims.getUnits().setUnit2upcdesc(process(ims.getUnits().getUnit2upcdesc()));
+			ims.getUnits().setUnit3upcdesc(process(ims.getUnits().getUnit3upcdesc()));
+			ims.getUnits().setUnit4upcdesc(process(ims.getUnits().getUnit4upcdesc()));
+			ims.getUnits().setBasewgtperunit(process(ims.getUnits().getBasewgtperunit()));
+			ims.getUnits().setUnit1wgtperunit(process(ims.getUnits().getUnit1wgtperunit()));
+			ims.getUnits().setUnit2wgtperunit(process(ims.getUnits().getUnit2wgtperunit()));
+			ims.getUnits().setUnit3wgtperunit(process(ims.getUnits().getUnit3wgtperunit()));
+			ims.getUnits().setUnit4wgtperunit(process(ims.getUnits().getUnit4wgtperunit()));
 		}
-		if(product.getTestSpecification() != null){
-			product.getTestSpecification().setLeadpoint(process(product.getTestSpecification().getLeadpoint()));
-			product.getTestSpecification().setBondstrength(process(product.getTestSpecification().getBondstrength()));
-			product.getTestSpecification().setScratchstandard(process(product.getTestSpecification().getScratchstandard()));
-			product.getTestSpecification().setBreakingstandard(process(product.getTestSpecification().getBreakingstandard()));
+		if(ims.getTestSpecification() != null){
+			ims.getTestSpecification().setLeadpoint(process(ims.getTestSpecification().getLeadpoint()));
+			ims.getTestSpecification().setBondstrength(process(ims.getTestSpecification().getBondstrength()));
+			ims.getTestSpecification().setScratchstandard(process(ims.getTestSpecification().getScratchstandard()));
+			ims.getTestSpecification().setBreakingstandard(process(ims.getTestSpecification().getBreakingstandard()));
 		}
-		if(product.getNotes() != null){
-		   product.getNotes().setPonotes(process(product.getNotes().getPonotes()));	
-		   product.getNotes().setBuyernotes(process(product.getNotes().getBuyernotes()));
-		   product.getNotes().setInternalnotes(process(product.getNotes().getInternalnotes()));
-		   product.getNotes().setInvoicenotes(process(product.getNotes().getInvoicenotes()));
+		if(ims.getNotes() != null){
+		   ims.getNotes().setPonotes(process(ims.getNotes().getPonotes()));	
+		   ims.getNotes().setBuyernotes(process(ims.getNotes().getBuyernotes()));
+		   ims.getNotes().setInternalnotes(process(ims.getNotes().getInternalnotes()));
+		   ims.getNotes().setInvoicenotes(process(ims.getNotes().getInvoicenotes()));
 		}   
-		if(product.getRelateditemcodes() != null){
-			product.getRelateditemcodes().setSimilaritemcd1(process(product.getRelateditemcodes().getSimilaritemcd1()));
-			product.getRelateditemcodes().setSimilaritemcd2(process(product.getRelateditemcodes().getSimilaritemcd2()));
-			product.getRelateditemcodes().setSimilaritemcd3(process(product.getRelateditemcodes().getSimilaritemcd3()));
-			product.getRelateditemcodes().setSimilaritemcd4(process(product.getRelateditemcodes().getSimilaritemcd4()));
-			product.getRelateditemcodes().setSimilaritemcd5(process(product.getRelateditemcodes().getSimilaritemcd5()));
-			product.getRelateditemcodes().setSimilaritemcd6(process(product.getRelateditemcodes().getSimilaritemcd6()));
+		if(ims.getRelateditemcodes() != null){
+			ims.getRelateditemcodes().setSimilaritemcd1(process(ims.getRelateditemcodes().getSimilaritemcd1()));
+			ims.getRelateditemcodes().setSimilaritemcd2(process(ims.getRelateditemcodes().getSimilaritemcd2()));
+			ims.getRelateditemcodes().setSimilaritemcd3(process(ims.getRelateditemcodes().getSimilaritemcd3()));
+			ims.getRelateditemcodes().setSimilaritemcd4(process(ims.getRelateditemcodes().getSimilaritemcd4()));
+			ims.getRelateditemcodes().setSimilaritemcd5(process(ims.getRelateditemcodes().getSimilaritemcd5()));
+			ims.getRelateditemcodes().setSimilaritemcd6(process(ims.getRelateditemcodes().getSimilaritemcd6()));
 		}
-		if(product.getVendors() != null){
-			product.getVendors().setVendorfob(process(product.getVendors().getVendorfob()));
-			product.getVendors().setVendorxrefcd(process(product.getVendors().getVendorxrefcd()));
-			product.getVendors().setVendorpriceunit(process(product.getVendors().getVendorpriceunit()));
-			product.getVendors().setVendorlandedbasecost(process(product.getVendors().getVendorlandedbasecost()));
+		if(ims.getVendors() != null){
+			ims.getVendors().setVendorfob(process(ims.getVendors().getVendorfob()));
+			ims.getVendors().setVendorxrefcd(process(ims.getVendors().getVendorxrefcd()));
+			ims.getVendors().setVendorpriceunit(process(ims.getVendors().getVendorpriceunit()));
+			ims.getVendors().setVendorlandedbasecost(process(ims.getVendors().getVendorlandedbasecost()));
 			//product.getVendors().setDutypct(process(product.getVendors().getDutypct()));
 		}//populate ProductVendor with lagec Vendor info when ProductVendor is empty, this maybe removed after Item_Vedor table is populated with the ims data
-		if(product.getVendors() != null && (product.getNewVendorSystem() == null || product.getNewVendorSystem().isEmpty())){
-			ProductVendor productVendor = ImsDataUtil.convertImsVendorInfoToItemVendor(product.getVendors());
-			productVendor.setVendorOrder(1);
-			product.addNewVendorSystem(productVendor);
+		if(ims.getVendors() != null && (ims.getNewVendorSystem() == null || ims.getNewVendorSystem().isEmpty())){
+			Vendor vendor = ImsDataUtil.convertImsVendorInfoToItemVendor(ims.getVendors());
+			vendor.setVendorOrder(1);
+			ims.addNewVendorSystem(vendor);
 		}
-		if(product.getIconDescription() == null)
-		   product.setIconDescription(ImsDataUtil.convertLegacyIconsToIconCollection(product.getIconsystem()));	
-	  	if(product.getPrice() != null)
-		   product.getPrice().setPriceunit(ImsDataUtil.getStandardSellUnit(product));//product.getStandardSellUnit());	
-		if(product.getUnits() != null)
-		   product.setPackaginginfo(ImsDataUtil.getPackagingInfo(product));
-		if(product.getApplications() != null)
-		   product.setUsage(ImsDataUtil.convertApplicationsToUsage(product));
-		if(product.getProductNewFeature() != null && product.getProductNewFeature().getMpsCode() == null)
-	       product.getProductNewFeature().setMpsCode(ImsDataUtil.convertInactivecdToMpsCode(product.getInactivecode()));	
+		if(ims.getIconDescription() == null)
+		   ims.setIconDescription(ImsDataUtil.convertLegacyIconsToIconCollection(ims.getIconsystem()));	
+	  	if(ims.getPrice() != null)
+		   ims.getPrice().setPriceunit(ImsDataUtil.getStandardSellUnit(ims));//product.getStandardSellUnit());	
+		if(ims.getUnits() != null)
+		   ims.setPackaginginfo(ImsDataUtil.getPackagingInfo(ims));
+		if(ims.getApplications() != null)
+		   ims.setUsage(ImsDataUtil.convertApplicationsToUsage(ims));
+		if(ims.getProductNewFeature() != null && ims.getProductNewFeature().getMpsCode() == null)
+	       ims.getProductNewFeature().setMpsCode(ImsDataUtil.convertInactivecdToMpsCode(ims.getInactivecode()));	
 	    //if((product.getColorhues() == null || product.getColorhues().isEmpty()) && product.getColorcategory() != null && !product.getColorcategory().isEmpty())
 	    //product.setColorhues(new ArrayList<>(ImsDataUtil.convertColorCategoryToColorHueObjects(product)));
 		//if(product.getNewVendorSystem() != null && !product.getNewVendorSystem().isEmpty())
 		//   product.setNewVendorSystem(new ArrayList<>(new HashSet<>(product.getNewVendorSystem())));	
-		return product;
+		return ims;
 	}	
 }

@@ -5,20 +5,20 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import com.bedrosians.bedlogic.domain.product.IconCollection;
-import com.bedrosians.bedlogic.domain.product.ProductNewFeature;
-import com.bedrosians.bedlogic.domain.product.ProductVendor;
-import com.bedrosians.bedlogic.domain.product.Product;
-import com.bedrosians.bedlogic.domain.product.embeddable.Applications;
-import com.bedrosians.bedlogic.domain.product.embeddable.Notes;
-import com.bedrosians.bedlogic.domain.product.embeddable.PackagingInfo;
-import com.bedrosians.bedlogic.domain.product.embeddable.Price;
-import com.bedrosians.bedlogic.domain.product.embeddable.Units;
-import com.bedrosians.bedlogic.domain.product.embeddable.VendorInfo;
-import com.bedrosians.bedlogic.domain.product.enums.DBOperation;
-import com.bedrosians.bedlogic.domain.product.enums.MpsCode;
-import com.bedrosians.bedlogic.domain.product.enums.OriginCountry;
+import com.bedrosians.bedlogic.domain.ims.IconCollection;
+import com.bedrosians.bedlogic.domain.ims.Ims;
+import com.bedrosians.bedlogic.domain.ims.ImsNewFeature;
+import com.bedrosians.bedlogic.domain.ims.Vendor;
+import com.bedrosians.bedlogic.domain.ims.embeddable.Applications;
+import com.bedrosians.bedlogic.domain.ims.embeddable.Notes;
+import com.bedrosians.bedlogic.domain.ims.embeddable.PackagingInfo;
+import com.bedrosians.bedlogic.domain.ims.embeddable.Price;
+import com.bedrosians.bedlogic.domain.ims.embeddable.Units;
+import com.bedrosians.bedlogic.domain.ims.embeddable.VendorInfo;
+import com.bedrosians.bedlogic.domain.ims.enums.MpsCode;
+import com.bedrosians.bedlogic.domain.ims.enums.OriginCountry;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
+import com.bedrosians.bedlogic.util.enums.DBOperation;
 
 
 public class ImsDataUtil {
@@ -134,43 +134,43 @@ public class ImsDataUtil {
     	return new String(legacyIcons);
     }
 	
-	public static ProductVendor convertImsVendorInfoToItemVendor(final  VendorInfo vendorInfo){
-		ProductVendor productVendor = new ProductVendor();
+	public static Vendor convertImsVendorInfoToItemVendor(final  VendorInfo vendorInfo){
+		Vendor vendor = new Vendor();
 		if(vendorInfo != null){
-			productVendor.setVendorId(vendorInfo.getVendornbr1());
-			productVendor.setVendorXrefId(vendorInfo.getVendorxrefcd());
-			productVendor.setVendorFob(vendorInfo.getVendorfob());
-			productVendor.setDutyPct(vendorInfo.getDutypct());
-			productVendor.setLeadTime(vendorInfo.getLeadtime());
-			if(vendorInfo.getVendorlistprice() != null) productVendor.setVendorListPrice(vendorInfo.getVendorlistprice());
-			if(vendorInfo.getVendorpriceunit() != null) productVendor.setVendorPriceUnit(vendorInfo.getVendorpriceunit());
-			if(vendorInfo.getVendordiscpct() != null) productVendor.setVendorDiscountPct(vendorInfo.getVendordiscpct());
-		    if(vendorInfo.getVendorroundaccuracy() != null) productVendor.setVendorPriceRoundAccuracy(vendorInfo.getVendorroundaccuracy());
-		    if(vendorInfo.getVendornetprice() != null) productVendor.setVendorNetPrice(vendorInfo.getVendornetprice());
-	        if(vendorInfo.getVendormarkuppct() != null) productVendor.setVendorMarkupPct(vendorInfo.getVendormarkuppct());
-		    if(vendorInfo.getVendorfreightratecwt() != null) productVendor.setVendorFreightRateCwt(vendorInfo.getVendorfreightratecwt());
-		    if(vendorInfo.getVendorlandedbasecost() != null) productVendor.setVendorLandedBaseCost(vendorInfo.getVendorlandedbasecost());
+			vendor.setVendorId(vendorInfo.getVendornbr1());
+			vendor.setVendorXrefId(vendorInfo.getVendorxrefcd());
+			vendor.setVendorFob(vendorInfo.getVendorfob());
+			vendor.setDutyPct(vendorInfo.getDutypct());
+			vendor.setLeadTime(vendorInfo.getLeadtime());
+			if(vendorInfo.getVendorlistprice() != null) vendor.setVendorListPrice(vendorInfo.getVendorlistprice());
+			if(vendorInfo.getVendorpriceunit() != null) vendor.setVendorPriceUnit(vendorInfo.getVendorpriceunit());
+			if(vendorInfo.getVendordiscpct() != null) vendor.setVendorDiscountPct(vendorInfo.getVendordiscpct());
+		    if(vendorInfo.getVendorroundaccuracy() != null) vendor.setVendorPriceRoundAccuracy(vendorInfo.getVendorroundaccuracy());
+		    if(vendorInfo.getVendornetprice() != null) vendor.setVendorNetPrice(vendorInfo.getVendornetprice());
+	        if(vendorInfo.getVendormarkuppct() != null) vendor.setVendorMarkupPct(vendorInfo.getVendormarkuppct());
+		    if(vendorInfo.getVendorfreightratecwt() != null) vendor.setVendorFreightRateCwt(vendorInfo.getVendorfreightratecwt());
+		    if(vendorInfo.getVendorlandedbasecost() != null) vendor.setVendorLandedBaseCost(vendorInfo.getVendorlandedbasecost());
 		 } 
-		return productVendor;
+		return vendor;
 	}
 
 	//convert new vendor system data to legacy vendor data
-	protected static VendorInfo convertItemVendorToImsVendorInfo(final ProductVendor productVendor){
+	protected static VendorInfo convertItemVendorToImsVendorInfo(final Vendor vendor){
 		VendorInfo vendorInfo = new VendorInfo();
-		if(productVendor != null){
-			if(productVendor.getProductVendorId() != null) vendorInfo.setVendornbr1(productVendor.getVendorId());
-			if(productVendor.getVendorXrefId() != null) vendorInfo.setVendorxrefcd(productVendor.getVendorXrefId());
-			if(productVendor.getVendorFob() != null) vendorInfo.setVendorfob(productVendor.getVendorFob());
-			if(productVendor.getDutyPct() != null) vendorInfo.setDutypct(productVendor.getDutyPct());
-			if(productVendor.getLeadTime() != null) vendorInfo.setLeadtime(productVendor.getLeadTime());
-			if(productVendor.getVendorListPrice() != null) vendorInfo.setVendorlistprice(productVendor.getVendorListPrice());
-			if(productVendor.getVendorPriceUnit() != null) vendorInfo.setVendorpriceunit(productVendor.getVendorPriceUnit());
-			if(productVendor.getVendorDiscountPct() != null) vendorInfo.setVendordiscpct(productVendor.getVendorDiscountPct());
-		    if(productVendor.getVendorPriceRoundAccuracy() != null) vendorInfo.setVendorroundaccuracy(productVendor.getVendorPriceRoundAccuracy());
-		    if(productVendor.getVendorNetPrice() != null) vendorInfo.setVendornetprice(productVendor.getVendorNetPrice());
-	        if(productVendor.getVendorMarkupPct() != null) vendorInfo.setVendormarkuppct(productVendor.getVendorMarkupPct());
-		    if(productVendor.getVendorFreightRateCwt() != null) vendorInfo.setVendorfreightratecwt(productVendor.getVendorFreightRateCwt());
-		    if(productVendor.getVendorLandedBaseCost() != null) vendorInfo.setVendorlandedbasecost(productVendor.getVendorLandedBaseCost());
+		if(vendor != null){
+			if(vendor.getProductVendorId() != null) vendorInfo.setVendornbr1(vendor.getVendorId());
+			if(vendor.getVendorXrefId() != null) vendorInfo.setVendorxrefcd(vendor.getVendorXrefId());
+			if(vendor.getVendorFob() != null) vendorInfo.setVendorfob(vendor.getVendorFob());
+			if(vendor.getDutyPct() != null) vendorInfo.setDutypct(vendor.getDutyPct());
+			if(vendor.getLeadTime() != null) vendorInfo.setLeadtime(vendor.getLeadTime());
+			if(vendor.getVendorListPrice() != null) vendorInfo.setVendorlistprice(vendor.getVendorListPrice());
+			if(vendor.getVendorPriceUnit() != null) vendorInfo.setVendorpriceunit(vendor.getVendorPriceUnit());
+			if(vendor.getVendorDiscountPct() != null) vendorInfo.setVendordiscpct(vendor.getVendorDiscountPct());
+		    if(vendor.getVendorPriceRoundAccuracy() != null) vendorInfo.setVendorroundaccuracy(vendor.getVendorPriceRoundAccuracy());
+		    if(vendor.getVendorNetPrice() != null) vendorInfo.setVendornetprice(vendor.getVendorNetPrice());
+	        if(vendor.getVendorMarkupPct() != null) vendorInfo.setVendormarkuppct(vendor.getVendorMarkupPct());
+		    if(vendor.getVendorFreightRateCwt() != null) vendorInfo.setVendorfreightratecwt(vendor.getVendorFreightRateCwt());
+		    if(vendor.getVendorLandedBaseCost() != null) vendorInfo.setVendorlandedbasecost(vendor.getVendorLandedBaseCost());
 		 } 
 		return vendorInfo;
 	}
@@ -328,60 +328,60 @@ public class ImsDataUtil {
 	//	return product;
 	//}
 	
-	public static List<String> convertApplicationsToUsage(Product product){
+	public static List<String> convertApplicationsToUsage(Ims ims){
 		StringBuilder stringBuilder = new StringBuilder();
-		if(product.getApplications() != null){
-	       if(product.getApplications().getResidential() != null && !product.getApplications().getResidential().isEmpty()){
-		      stringBuilder.append(product.getApplications().getResidential());
+		if(ims.getApplications() != null){
+	       if(ims.getApplications().getResidential() != null && !ims.getApplications().getResidential().isEmpty()){
+		      stringBuilder.append(ims.getApplications().getResidential());
 	       }   
-		   if(product.getApplications().getLightcommercial() != null && !product.getApplications().getLightcommercial().isEmpty()){
+		   if(ims.getApplications().getLightcommercial() != null && !ims.getApplications().getLightcommercial().isEmpty()){
 			  if(stringBuilder != null && stringBuilder.length() > 0)
-		         stringBuilder.append(":").append(product.getApplications().getLightcommercial());
+		         stringBuilder.append(":").append(ims.getApplications().getLightcommercial());
 		      else
-			     stringBuilder.append(product.getApplications().getLightcommercial());
+			     stringBuilder.append(ims.getApplications().getLightcommercial());
 		   }
-		   if(product.getApplications().getCommercial() != null && !product.getApplications().getCommercial().isEmpty()){
+		   if(ims.getApplications().getCommercial() != null && !ims.getApplications().getCommercial().isEmpty()){
 			   if(stringBuilder != null && stringBuilder.length() > 0)
-			      stringBuilder.append(":").append(product.getApplications().getCommercial());
+			      stringBuilder.append(":").append(ims.getApplications().getCommercial());
 			   else
-				  stringBuilder.append(product.getApplications().getCommercial());
+				  stringBuilder.append(ims.getApplications().getCommercial());
 		   }
 		}
 		return Arrays.asList(stringBuilder.toString().split(":"));
 	}
 	
-	public static String getStandardSellUnit(Product product) {
-		if(product.getUnits() == null)
+	public static String getStandardSellUnit(Ims ims) {
+		if(ims.getUnits() == null)
 		   return null;
-		String standardUnit = product.getUnits().getBaseunit();	
-        if (product.getUnits().getUnit1isstdsell() != null && product.getUnits().getUnit1isstdsell() == 'Y')
-        	standardUnit = product.getUnits().getUnit1unit();
-        else if (product.getUnits().getUnit2isstdsell() != null && product.getUnits().getUnit2isstdsell() == 'Y')
-        	standardUnit = product.getUnits().getUnit2unit();
-        else if (product.getUnits().getUnit3isstdsell() != null && product.getUnits().getUnit3isstdsell() == 'Y')
-        	standardUnit = product.getUnits().getUnit3unit();
-        else if (product.getUnits().getUnit4isstdsell() != null && product.getUnits().getUnit4isstdsell() == 'Y')
-        	standardUnit = product.getUnits().getUnit4unit();
+		String standardUnit = ims.getUnits().getBaseunit();	
+        if (ims.getUnits().getUnit1isstdsell() != null && ims.getUnits().getUnit1isstdsell() == 'Y')
+        	standardUnit = ims.getUnits().getUnit1unit();
+        else if (ims.getUnits().getUnit2isstdsell() != null && ims.getUnits().getUnit2isstdsell() == 'Y')
+        	standardUnit = ims.getUnits().getUnit2unit();
+        else if (ims.getUnits().getUnit3isstdsell() != null && ims.getUnits().getUnit3isstdsell() == 'Y')
+        	standardUnit = ims.getUnits().getUnit3unit();
+        else if (ims.getUnits().getUnit4isstdsell() != null && ims.getUnits().getUnit4isstdsell() == 'Y')
+        	standardUnit = ims.getUnits().getUnit4unit();
         return standardUnit;
     }
 	
-	public static String getStandardPurchaseUnit(Product product) {
-		if(product.getUnits() == null)
+	public static String getStandardPurchaseUnit(Ims ims) {
+		if(ims.getUnits() == null)
 		   return null;	
-		String standardUnit = product.getUnits().getBaseunit();
-		if (product.getUnits().getUnit1isstdsell() != null && product.getUnits().getUnit1isstdord() == 'Y')
-        	standardUnit = product.getUnits().getUnit1unit();
-        else if (product.getUnits().getUnit2isstdsell() != null && product.getUnits().getUnit2isstdord() == 'Y')
-        	standardUnit = product.getUnits().getUnit2unit();
-        else if (product.getUnits().getUnit3isstdsell() != null && product.getUnits().getUnit3isstdord() == 'Y')
-        	standardUnit = product.getUnits().getUnit3unit();
-        else if (product.getUnits().getUnit4isstdsell() != null && product.getUnits().getUnit4isstdord() == 'Y')
-        	standardUnit = product.getUnits().getUnit4unit();
+		String standardUnit = ims.getUnits().getBaseunit();
+		if (ims.getUnits().getUnit1isstdsell() != null && ims.getUnits().getUnit1isstdord() == 'Y')
+        	standardUnit = ims.getUnits().getUnit1unit();
+        else if (ims.getUnits().getUnit2isstdsell() != null && ims.getUnits().getUnit2isstdord() == 'Y')
+        	standardUnit = ims.getUnits().getUnit2unit();
+        else if (ims.getUnits().getUnit3isstdsell() != null && ims.getUnits().getUnit3isstdord() == 'Y')
+        	standardUnit = ims.getUnits().getUnit3unit();
+        else if (ims.getUnits().getUnit4isstdsell() != null && ims.getUnits().getUnit4isstdord() == 'Y')
+        	standardUnit = ims.getUnits().getUnit4unit();
         return standardUnit;
     }
 	
-    public static PackagingInfo getPackagingInfo(Product product) {
-	    if(product == null || product.getUnits() == null)
+    public static PackagingInfo getPackagingInfo(Ims ims) {
+	    if(ims == null || ims.getUnits() == null)
 	       return null;	
     	float boxPieces = 0f;
     	float boxSF = 0f;
@@ -395,15 +395,15 @@ public class ImsDataUtil {
     	Float unit4Ratio = 0F;
     	PackagingInfo packagingInfo = new PackagingInfo();
     	
-    	String unit1Unit = product.getUnits().getUnit1unit();
-    	String unit2Unit = product.getUnits().getUnit2unit();
-    	String unit4Unit = product.getUnits().getUnit4unit();	
-        unit1Ratio = product.getUnits().getUnit1ratio();
-        unit2Ratio = product.getUnits().getUnit2ratio();
-        unit4Ratio = product.getUnits().getUnit4ratio();
-        if(product.getUnits().getBasewgtperunit() != null)
-           baseWgtPerUnit = (product.getUnits().getBasewgtperunit()).floatValue();
-		String standardUnit = product.getUnits().getBaseunit();
+    	String unit1Unit = ims.getUnits().getUnit1unit();
+    	String unit2Unit = ims.getUnits().getUnit2unit();
+    	String unit4Unit = ims.getUnits().getUnit4unit();	
+        unit1Ratio = ims.getUnits().getUnit1ratio();
+        unit2Ratio = ims.getUnits().getUnit2ratio();
+        unit4Ratio = ims.getUnits().getUnit4ratio();
+        if(ims.getUnits().getBasewgtperunit() != null)
+           baseWgtPerUnit = (ims.getUnits().getBasewgtperunit()).floatValue();
+		String standardUnit = ims.getUnits().getBaseunit();
 		
 		if ("CTN".equalsIgnoreCase(unit1Unit)){
             boxPieces = unit1Ratio;
@@ -430,17 +430,17 @@ public class ImsDataUtil {
         return packagingInfo;
     }
    
-	public static float getBaseToSellRatio(Product product) {
+	public static float getBaseToSellRatio(Ims ims) {
 		float baseToSellRatio = 1f;
  
-        if(product.getUnits().getUnit1isstdsell() != null && "Y".equalsIgnoreCase(product.getUnits().getUnit1isstdsell().toString().trim()))
-            baseToSellRatio = product.getUnits().getUnit1ratio();
-        else if(product.getUnits().getUnit2isstdsell() != null && "Y".equalsIgnoreCase(product.getUnits().getUnit2isstdsell().toString().trim()))
-            baseToSellRatio = product.getUnits().getUnit2ratio();
-        else if(product.getUnits().getUnit3isstdsell() != null && "Y".equalsIgnoreCase(product.getUnits().getUnit3isstdsell().toString().trim()))
-            baseToSellRatio = product.getUnits().getUnit3ratio();
-        else if(product.getUnits().getUnit4isstdsell() != null && "Y".equalsIgnoreCase(product.getUnits().getUnit4isstdsell().toString().trim()));
-            baseToSellRatio = product.getUnits().getUnit4ratio();
+        if(ims.getUnits().getUnit1isstdsell() != null && "Y".equalsIgnoreCase(ims.getUnits().getUnit1isstdsell().toString().trim()))
+            baseToSellRatio = ims.getUnits().getUnit1ratio();
+        else if(ims.getUnits().getUnit2isstdsell() != null && "Y".equalsIgnoreCase(ims.getUnits().getUnit2isstdsell().toString().trim()))
+            baseToSellRatio = ims.getUnits().getUnit2ratio();
+        else if(ims.getUnits().getUnit3isstdsell() != null && "Y".equalsIgnoreCase(ims.getUnits().getUnit3isstdsell().toString().trim()))
+            baseToSellRatio = ims.getUnits().getUnit3ratio();
+        else if(ims.getUnits().getUnit4isstdsell() != null && "Y".equalsIgnoreCase(ims.getUnits().getUnit4isstdsell().toString().trim()));
+            baseToSellRatio = ims.getUnits().getUnit4ratio();
        
         if(baseToSellRatio == 0)
         	baseToSellRatio = 1;
@@ -449,27 +449,27 @@ public class ImsDataUtil {
     }
 	
 	
-	public static String getPackUnit(Product product)
+	public static String getPackUnit(Ims ims)
     {
-		String packUnit = product.getUnits().getBaseunit();
+		String packUnit = ims.getUnits().getBaseunit();
  
-        if(product.getUnits().getUnit1ispackunit() != null && "Y".equalsIgnoreCase(product.getUnits().getUnit1ispackunit().toString().trim()))
-           packUnit = product.getUnits().getUnit1unit();
-        else if(product.getUnits().getUnit2ispackunit() != null && "Y".equalsIgnoreCase(product.getUnits().getUnit2ispackunit().toString().trim()))
-           packUnit = product.getUnits().getUnit2unit();   
-        else if(product.getUnits().getUnit3ispackunit() != null && "Y".equalsIgnoreCase(product.getUnits().getUnit3ispackunit().toString().trim()))
-           packUnit = product.getUnits().getUnit3unit();   
-        else if(product.getUnits().getUnit4ispackunit() != null && "Y".equalsIgnoreCase(product.getUnits().getUnit4ispackunit().toString().trim()))
-           packUnit = product.getUnits().getUnit4unit();    
+        if(ims.getUnits().getUnit1ispackunit() != null && "Y".equalsIgnoreCase(ims.getUnits().getUnit1ispackunit().toString().trim()))
+           packUnit = ims.getUnits().getUnit1unit();
+        else if(ims.getUnits().getUnit2ispackunit() != null && "Y".equalsIgnoreCase(ims.getUnits().getUnit2ispackunit().toString().trim()))
+           packUnit = ims.getUnits().getUnit2unit();   
+        else if(ims.getUnits().getUnit3ispackunit() != null && "Y".equalsIgnoreCase(ims.getUnits().getUnit3ispackunit().toString().trim()))
+           packUnit = ims.getUnits().getUnit3unit();   
+        else if(ims.getUnits().getUnit4ispackunit() != null && "Y".equalsIgnoreCase(ims.getUnits().getUnit4ispackunit().toString().trim()))
+           packUnit = ims.getUnits().getUnit4unit();    
        
         return packUnit;
     }
 
-	public static Product transformItem(Product itemToDB, Product itemFromInput, DBOperation operation) throws BedDAOBadParamException{
+	public static Ims transformItem(Ims itemToDB, Ims itemFromInput, DBOperation operation) throws BedDAOBadParamException{
 		if(itemFromInput == null)
 	       throw new BedDAOBadParamException("The input is empty, nothing to update");	
 		if(itemToDB == null) 
-		   itemToDB = new Product(itemFromInput.getItemcode().toUpperCase());		
+		   itemToDB = new Ims(itemFromInput.getItemcode().toUpperCase());		
 		transferProperty(itemToDB, itemFromInput, operation);
 		if(operation != null && operation.equals(DBOperation.CREATE))
 	  	   transferComponent(itemToDB, itemFromInput);
@@ -479,11 +479,11 @@ public class ImsDataUtil {
 		return itemToDB;
 	}
 	
-	private static synchronized void transferAssociation(Product itemToDB, Product itemFromInput, DBOperation operation) throws BedDAOBadParamException{
+	private static synchronized void transferAssociation(Ims itemToDB, Ims itemFromInput, DBOperation operation) throws BedDAOBadParamException{
 	  try{
-		ProductNewFeature inputNewFeature = itemFromInput.getProductNewFeature();
+		ImsNewFeature inputNewFeature = itemFromInput.getProductNewFeature();
 	    IconCollection inputIconCollection = itemFromInput.getIconDescription();
-		List<ProductVendor> inputItemVendors = itemFromInput.getNewVendorSystem();
+		List<Vendor> inputItemVendors = itemFromInput.getNewVendorSystem();
 		VendorInfo vendorInfo = itemFromInput.getVendors();
 		String legacyIcon = itemFromInput.getIconsystem();
 		//List<ColorHue> inputColorHues = itemFromInput.getColorhues();
@@ -602,7 +602,7 @@ public class ImsDataUtil {
 		if(inputItemVendors != null && !inputItemVendors.isEmpty()){
 		   if(operation.equals(DBOperation.CREATE)|| //brand new Product
 		     (operation.equals(DBOperation.UPDATE) && (itemToDB.getNewVendorSystem() == null || itemToDB.getNewVendorSystem().isEmpty()))){ //existing Product, but brand new ItemVendors
-			  for(ProductVendor vendor : inputItemVendors){
+			  for(Vendor vendor : inputItemVendors){
 			      if(vendor != null && !vendor.isEmpty()){
 				     itemToDB.addNewVendorSystem(vendor);	
 				     //Populate vendor info in ims
@@ -615,11 +615,11 @@ public class ImsDataUtil {
     	   else if(operation.equals(DBOperation.UPDATE)){ //update Ims_Item_Vendor table for existing Product
     		   int sizeOfItemVendors = itemToDB.getNewVendorSystem().size();
 			   for(int i = 0; i < inputItemVendors.size(); i++){
-				   ProductVendor vendor = inputItemVendors.get(i);
+				   Vendor vendor = inputItemVendors.get(i);
 				   if(vendor.getProductVendorId() == null || vendor.getProductVendorId().getVendorId() == null || vendor.getProductVendorId().getVendorId() == 0)
 					  throw new BedDAOBadParamException("Error: No vendor ID is provided.");
 				   if(sizeOfItemVendors <= i)
-					  itemToDB.addNewVendorSystem(new ProductVendor()); //there more itemvendor in new product than the current one
+					  itemToDB.addNewVendorSystem(new Vendor()); //there more itemvendor in new product than the current one
 				  // if(itemToDB.getNewVendorSystem().get(i).getVendorId() == null || itemToDB.getNewVendorSystem().get(i).getVendorId() == null)
 					   itemToDB.getNewVendorSystem().get(i).setVendorId(vendor.getVendorId());
 				   if(vendor.getDutyPct() != null) itemToDB.getNewVendorSystem().get(i).setDutyPct(vendor.getDutyPct());
@@ -647,7 +647,7 @@ public class ImsDataUtil {
 		else if((vendorInfo != null && vendorInfo.getVendornbr1() != null) && (inputItemVendors == null || inputItemVendors.isEmpty())){
 			//ProductVendor vendor = convertImsVendorInfoToItemVendor(vendorInfo);
 			if(itemToDB.getNewVendorSystem() == null || itemToDB.getNewVendorSystem().isEmpty())
-			   itemToDB.addNewVendorSystem(new ProductVendor());
+			   itemToDB.addNewVendorSystem(new Vendor());
 			if(vendorInfo.getVendornbr1() != null) itemToDB.getNewVendorSystem().get(0).setVendorId(vendorInfo.getVendornbr1());
 			if(vendorInfo.getVendorxrefcd() != null) itemToDB.getNewVendorSystem().get(0).setVendorXrefId(vendorInfo.getVendorxrefcd());
 			if(vendorInfo.getVendorfob() != null) itemToDB.getNewVendorSystem().get(0).setVendorFob(vendorInfo.getVendorfob());
@@ -738,7 +738,7 @@ public class ImsDataUtil {
 		
 	}
 
-	private static synchronized void transferComponent(Product itemToDB, Product itemFromInput) throws BedDAOBadParamException{
+	private static synchronized void transferComponent(Ims itemToDB, Ims itemFromInput) throws BedDAOBadParamException{
 	  try{
 		if(itemFromInput.getApplications() != null) 
 		   itemToDB.setApplications(itemFromInput.getApplications());
@@ -779,7 +779,7 @@ public class ImsDataUtil {
 	  }		
 	}
 
-	private static synchronized void transferComponentForUpdate(Product itemToDB, Product itemFromInput) throws BedDAOBadParamException{
+	private static synchronized void transferComponentForUpdate(Ims itemToDB, Ims itemFromInput) throws BedDAOBadParamException{
 		  try{
 			   //description
 			   if(itemFromInput.getItemdesc() != null){
@@ -1126,7 +1126,7 @@ public class ImsDataUtil {
 		  }		
 	}
 	
-	private static synchronized void transferProperty(Product itemToDB, Product itemFromInput, DBOperation operation) throws BedDAOBadParamException{
+	private static synchronized void transferProperty(Ims itemToDB, Ims itemFromInput, DBOperation operation) throws BedDAOBadParamException{
 	  try{	
 		if(itemFromInput.getAbccode() != null) itemToDB.setAbccode(itemFromInput.getAbccode());
 		if(itemFromInput.getCountryorigin() != null) itemToDB.setCountryorigin(itemFromInput.getCountryorigin());

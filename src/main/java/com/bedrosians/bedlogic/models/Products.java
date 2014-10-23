@@ -11,9 +11,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.bedrosians.bedlogic.domain.product.Product;
+import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.exception.BedResException;
-import com.bedrosians.bedlogic.util.JsonWrapper.ProductWrapper;
+import com.bedrosians.bedlogic.util.JsonWrapper.ItemWrapper;
 
 
 public class Products
@@ -42,7 +42,7 @@ public class Products
        final ObjectMapper mapper = new ObjectMapper();
        //mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, true);
        //mapper.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
-       final ObjectWriter writer = mapper.writer().withRootName("products"); 
+       final ObjectWriter writer = mapper.writer().withRootName("ims"); 
        String json = null;
        try{
     	   //System.out.println("canSerialize(Product.class)? = " + writer.withType(Product.class).canSerialize(Product.class));

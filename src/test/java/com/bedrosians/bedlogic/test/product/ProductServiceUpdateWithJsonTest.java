@@ -13,7 +13,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import com.bedrosians.bedlogic.domain.item.IconCollection;
 import com.bedrosians.bedlogic.domain.item.Item;
-import com.bedrosians.bedlogic.service.product.ProductService;
+import com.bedrosians.bedlogic.service.ims.ImsService;
 import com.bedrosians.bedlogic.util.ImsDataUtil;
 
 import static org.junit.Assert.*;
@@ -31,7 +31,7 @@ public class ProductServiceUpdateWithJsonTest {
 	//productServiceImpl productService;
 	
 	@Autowired
-	ProductService productService;
+	ImsService imsService;
 	
 	private String id = "NEWITEMCODE1";
 	
@@ -45,9 +45,9 @@ public class ProductServiceUpdateWithJsonTest {
 	 public void testUpdateItemWithColorCategoryJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringColorCategory);
-	        productService.updateProduct(params);
+	        imsService.updateProduct(params);
 	        
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        assertEquals("RED:BLACK", item.getColorcategory());
 	        assertEquals("[RED, BLACK]", item.getColorhues().toString());
 	}  
@@ -56,9 +56,9 @@ public class ProductServiceUpdateWithJsonTest {
 	 public void testUpdateItemColorhuesWithJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithColorHues);
-	        productService.updateProduct(params);
+	        imsService.updateProduct(params);
 	        
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        assertEquals("GREEN", item.getColorcategory());
 	        assertEquals("[GREEN]", item.getColorhues().toString());
 	}  
@@ -67,16 +67,16 @@ public class ProductServiceUpdateWithJsonTest {
 	 public void testUpdateItemDesccriptionWithJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringDescription);
-	        productService.updateProduct(params);
+	        imsService.updateProduct(params);
 	}
 	
 	@Test
 	 public void testUpdateItemMaterialWithJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringMaterialInfo);
-	        productService.updateProduct(params);
+	        imsService.updateProduct(params);
 	        	        
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        
 	      
 	        //material
@@ -91,9 +91,9 @@ public class ProductServiceUpdateWithJsonTest {
 	 public void testUpdateItemDimensionWithJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithDimensions);
-	        productService.updateProduct(params);
+	        imsService.updateProduct(params);
 	        	        
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        
 	        //series
 	        assertEquals("Athena", item.getSeries().getSeriesname());
@@ -119,16 +119,16 @@ public class ProductServiceUpdateWithJsonTest {
 	 public void testUpdateItemPurchaserWithJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringDescription);
-	        productService.updateProduct(params);
+	        imsService.updateProduct(params);
 	}
 	
 	@Test
 	 public void testUpdateItemPriceWithJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithPriceAndCost);
-	        productService.updateProduct(params);
+	        imsService.updateProduct(params);
 	        
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	              
 	        //price
             assertEquals("18.3800", item.getPrice().getListprice().toString());
@@ -141,9 +141,9 @@ public class ProductServiceUpdateWithJsonTest {
 	 public void testUpdateItemApplicationsWithJsonObject() throws Exception {
 	        System.out.println("testUpdateItemApplicationWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithApplicationsInfo);
-	        productService.updateProduct(params);
+	        imsService.updateProduct(params);
 	        	        
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
    
 	        assertEquals("FR:WR:CR:SR:PR", item.getApplications().getResidential());
             assertEquals("FL:WL:CL:SL:PL", item.getApplications().getLightcommercial());
@@ -156,9 +156,9 @@ public class ProductServiceUpdateWithJsonTest {
 	 public void testUpdateItemWithUsage() throws Exception {
 	        System.out.println("testUpdateItemApplicationWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithUsageInfo);
-	        productService.updateProduct(params);
+	        imsService.updateProduct(params);
 	        	        
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
   
 	        assertEquals("FR:WR:CR:SR:PR", item.getApplications().getResidential());
             assertEquals("FL:WL:CL:SL:PL", item.getApplications().getLightcommercial());
@@ -173,9 +173,9 @@ public class ProductServiceUpdateWithJsonTest {
 	 public void testUpdateItemWithNotes() throws Exception {
 	        System.out.println("testUpdateItemApplicationWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithNotesInfo);
-	        productService.updateProduct(params);
+	        imsService.updateProduct(params);
 	        	        
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
  
 	        assertEquals("test po note", item.getNotes().getPonotes());
 	        assertEquals("test note1", item.getNotes().getBuyernotes());
@@ -188,9 +188,9 @@ public class ProductServiceUpdateWithJsonTest {
 	 public void testUpdateItemTestSpecs() throws Exception {
 	        System.out.println("testUpdateItemApplicationWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithTestSpecs);
-	        productService.updateProduct(params);
+	        imsService.updateProduct(params);
 	        	        
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 
 	      //test spec
 		    assertEquals(Float.valueOf("0.5"), item.getTestSpecification().getWaterabsorption());
@@ -210,9 +210,9 @@ public class ProductServiceUpdateWithJsonTest {
 	 public void testUpdateItemWithBasicImsInfoJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringFullItemInfo);
-	        productService.updateProduct(params);
+	        imsService.updateProduct(params);
 	        
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        
 	        //series
 	        assertEquals("update Athena", item.getSeries().getSeriesname());
@@ -326,9 +326,9 @@ public class ProductServiceUpdateWithJsonTest {
 	 public void testUpdateItemWithAllImsInfoNoUnitAndPriceJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringFullItemInfoWithouUnitAndPrice);
-	        productService.updateProduct(params);
+	        imsService.updateProduct(params);
 	        
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        
 	        //series
 	        assertEquals("Athena", item.getSeries().getSeriesname());
@@ -424,9 +424,9 @@ public class ProductServiceUpdateWithJsonTest {
 	 public void testUpdateItemWithNewFeatureByJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithNewFeature);            
-	        productService.updateProduct(params);
+	        imsService.updateProduct(params);
 	        
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        assertEquals("Second", item.getImsNewFeature().getGrade().getDescription());
 	        assertEquals("Better", item.getImsNewFeature().getStatus().getDescription());
 	        
@@ -450,9 +450,9 @@ public class ProductServiceUpdateWithJsonTest {
 	        System.out.println("testUpdateItemWithUnitAndVendor: ");
 	        //JSONObject params = new JSONObject(jStringWithUnitAndVendor);
 	        JSONObject params = new JSONObject(jStringWithNewVendorSystem);
-	        productService.updateProduct(params);
+	        imsService.updateProduct(params);
 	        
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        assertEquals("SHT", item.getUnits().getBaseunit());
 	        assertEquals(Character.valueOf('Y'), item.getUnits().getBaseisstdsell());
 	        assertEquals(Character.valueOf('Y'), item.getUnits().getBaseisstdord());
@@ -505,10 +505,10 @@ public class ProductServiceUpdateWithJsonTest {
 	 public void testUpdateItemWithNewNotesJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithNewNotes: ");
 	        JSONObject params = new JSONObject(jStringWithNewNotes);
-	        productService.updateProduct(params);
+	        imsService.updateProduct(params);
 	        
 	        System.out.println("newly Updated Item id  = " + id);
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        //for(Note note : item.getNewNoteSystem()){
 	            //assertTrue(note.g"First", item.getNewNoteSystem());
 	        //}    
@@ -518,10 +518,10 @@ public class ProductServiceUpdateWithJsonTest {
 	 public void testUpdateItemWithNewIconSystemJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithNewIcon: ");
 	        JSONObject params = new JSONObject(jStringWithNewIcons);
-	        productService.updateProduct(params);
+	        imsService.updateProduct(params);
 	        
 	        System.out.println("newly Updated Item id  = " + id);
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        IconCollection icon = item.getIconDescription();
 	        assertEquals("China", icon.getMadeInCountry().getDescription());
 	        assertEquals(false, icon.getExteriorProduct());
@@ -567,10 +567,10 @@ public class ProductServiceUpdateWithJsonTest {
 	 public void testUpdateItemWithLagecyIconJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithNewIcon: ");
 	        JSONObject params = new JSONObject(jStringWithLagecyIcon);
-	        productService.updateProduct(params);
+	        imsService.updateProduct(params);
 	        
 	        System.out.println("newly Updated Item id  = " + id);
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        IconCollection icon = item.getIconDescription();
 	        assertEquals("China", icon.getMadeInCountry().getDescription());
 	        assertEquals(false, icon.getExteriorProduct());
@@ -617,9 +617,9 @@ public class ProductServiceUpdateWithJsonTest {
 	 public void testUpdateItemWithAllImsAndAssociationsByJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringFullItemAndAssociationInfo);
-	        productService.updateProduct(params);
+	        imsService.updateProduct(params);
 	        	        
-	        Item item = productService.getProductById(id);
+	        Item item = imsService.getProductById(id);
 	        
 	        //series
 	        assertEquals("Athena", item.getSeries().getSeriesname());
