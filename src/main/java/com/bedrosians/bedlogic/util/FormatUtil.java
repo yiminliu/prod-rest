@@ -5,7 +5,7 @@ import java.util.Date;
 
 import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.domain.ims.Vendor;
-import com.bedrosians.bedlogic.util.product.ImsDataUtil;
+import com.bedrosians.bedlogic.util.ims.ImsDataUtil;
 
 
 public class FormatUtil {
@@ -60,7 +60,7 @@ public class FormatUtil {
 		BigDecimal newData = BigDecimal.valueOf(0);
 		if (data != null)
 			newData = data;
-		if(data.equals(BigDecimal.ZERO))
+		if(data != null && data.equals(BigDecimal.ZERO))
 		   return BigDecimal.ZERO;
 		else
 	       return newData.setScale(4, BigDecimal.ROUND_HALF_EVEN);
@@ -85,7 +85,7 @@ public class FormatUtil {
 		ims.setInactivecode(process(ims.getInactivecode()));
 		ims.setInventoryitemcode(process(ims.getInventoryitemcode()));
 		ims.setItemcode2(process(ims.getItemcode2()));
-		ims.setItemgroupnumber(process(ims.getItemgroupnumber()));
+		ims.setItemgroupnbr(process(ims.getItemgroupnbr()));
 		ims.setItemtypecode(process(ims.getItemtypecode()));
 		ims.setLottype(process(ims.getLottype()));
 		ims.setIconsystem(process(ims.getIconsystem()));
