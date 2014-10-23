@@ -31,7 +31,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name="ims_item_vendor")
 @DynamicUpdate
 @DynamicInsert
-@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+//@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Vendor implements java.io.Serializable {
 
 	private static final long serialVersionUID = -582265865921787L;

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -20,8 +19,6 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.solr.analysis.LetterTokenizerFactory;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
@@ -30,12 +27,10 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Analyzer;
-import org.hibernate.search.annotations.AnalyzerDef;
 import org.hibernate.search.annotations.Boost;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
-import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
 import org.springframework.stereotype.Component;
@@ -56,20 +51,20 @@ import com.bedrosians.bedlogic.domain.ims.embeddable.SimilarItemCode;
 import com.bedrosians.bedlogic.domain.ims.embeddable.TestSpecification;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Units;
 import com.bedrosians.bedlogic.domain.ims.embeddable.VendorInfo;
-import com.bedrosians.bedlogic.util.product.ImsDataUtil;
+import com.bedrosians.bedlogic.util.ims.ImsDataUtil;
 
 
-@JsonRootName(value = "product")
+@JsonRootName(value = "ims")
 @Component
 @Entity
 @Table(name = "ims", schema = "public")
 @DynamicUpdate
 @DynamicInsert
-@Indexed
-@Analyzer(impl = StandardAnalyzer.class)
-@AnalyzerDef(name ="colorCategoryAnalyzer", tokenizer = @org.hibernate.search.annotations.TokenizerDef(factory=LetterTokenizerFactory.class))
-@Cacheable
-@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+//@Indexed
+//@Analyzer(impl = StandardAnalyzer.class)
+//@AnalyzerDef(name ="colorCategoryAnalyzer", tokenizer = @org.hibernate.search.annotations.TokenizerDef(factory=LetterTokenizerFactory.class))
+//@Cacheable
+//@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Ims implements java.io.Serializable {
 
 	private static final long serialVersionUID = -8321358221787L;
@@ -97,7 +92,7 @@ public class Ims implements java.io.Serializable {
 	private String directship;
 	private Date dropdate;
 	private String productline;
-	private Integer itemgroupnumber;
+	private Integer itemgroupnbr;
 	private Date priorlastupdated;	
 	private Long version;
 	
@@ -106,7 +101,7 @@ public class Ims implements java.io.Serializable {
 	private Series series;
 	private Material material;
 	private Dimensions dimensions;
-	//this default aims to meet ims_check5
+	//the following default values aim to meet ims_check5 constrains defined in keymark ims table
 	private Price price = new Price();
 	private TestSpecification testSpecification;
 	private Purchasers purchasers;
@@ -327,11 +322,11 @@ public class Ims implements java.io.Serializable {
 	}
 
 	@Column(name = "itemgroupnbr", precision = 2, scale = 0)
-	public Integer getItemgroupnumber() {
-		return this.itemgroupnumber;
+	public Integer getItemgroupnbr() {
+		return this.itemgroupnbr;
 	}
-	public void setItemgroupnumber(Integer itemgroupnumber) {
-		this.itemgroupnumber = itemgroupnumber;
+	public void setItemgroupnbr(Integer itemgroupnbr) {
+		this.itemgroupnbr = itemgroupnbr;
 	}
 
 	@Column(name = "itemtypecd", length = 1)
@@ -472,7 +467,7 @@ public class Ims implements java.io.Serializable {
 		this.taxclass = taxclass;
 	}
 	
-	@OneToOne(fetch = FetchType.EAGER, mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(fetch = FetchType.EAGER, mappedBy = "ims", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Fetch(FetchMode.JOIN)
 	@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	@IndexedEmbedded
@@ -490,7 +485,7 @@ public class Ims implements java.io.Serializable {
 		this.newFeature = newFeature;
 	}
 	
-	@OneToOne(fetch = FetchType.EAGER, mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(fetch = FetchType.EAGER, mappedBy = "ims", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Fetch(FetchMode.JOIN)
 	@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	public IconCollection getIconDescription() {	
@@ -501,11 +496,11 @@ public class Ims implements java.io.Serializable {
 	}
 	
 	public void addIconDescription(IconCollection iconDescription){
-		iconDescription.setProduct(this);
+		iconDescription.setIms(this);
 		this.iconDescription = iconDescription;
 	}
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "ims", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Fetch(FetchMode.SUBSELECT)
 	//@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	@IndexedEmbedded(depth=2)
@@ -534,7 +529,7 @@ public class Ims implements java.io.Serializable {
 
 	/*	
 	//@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "product", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "ims", cascade = CascadeType.ALL)
 	//@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	//@Fetch(FetchMode.SUBSELECT)
 	public List<ColorHue> getColorhues() {
@@ -551,7 +546,7 @@ public class Ims implements java.io.Serializable {
 	}
 
 	//@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "product", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "ims", cascade = CascadeType.ALL)
 	public List<Note> getNewNoteSystem() {
 		return this.newNoteSystem;
 	}
@@ -650,7 +645,7 @@ public class Ims implements java.io.Serializable {
 		this.directship = directship;
 		this.dropdate = dropdate;
 		this.productline = productline;
-		this.itemgroupnumber = itemgroupnumber;
+		this.itemgroupnbr = itemgroupnumber;
 		this.priorlastupdated = priorlastupdated;
 		this.version = version;
 		this.itemdesc = itemdesc;
@@ -708,7 +703,7 @@ public class Ims implements java.io.Serializable {
 				+ ", abccode=" + abccode 
 				+ ", category=" + itemcategory 
 				+ ", inactivecd=" + inactivecode
-				+ ", itemgroupnbr=" + itemgroupnumber 
+				+ ", itemgroupnbr=" + itemgroupnbr 
 				+ ", itemtypecode=" + itemtypecode 
 				+ ", printlabel=" + printlabel 
 				+ ", productline=" + productline 

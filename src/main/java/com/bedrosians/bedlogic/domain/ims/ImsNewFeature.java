@@ -22,8 +22,8 @@ import javax.persistence.Version;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+//import org.hibernate.annotations.Cache;
+//import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
@@ -51,7 +51,7 @@ import com.bedrosians.bedlogic.util.FormatUtil;
 @Table(name = "ims_new_feature", schema = "public")
 @DynamicUpdate
 @DynamicInsert
-@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+//@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ImsNewFeature implements java.io.Serializable {
    
 	private static final long serialVersionUID = -11135822658657L;
@@ -79,7 +79,7 @@ public class ImsNewFeature implements java.io.Serializable {
 	
 	
 	@JsonIgnore
-	@GenericGenerator(name = "generator", strategy = "foreign", parameters = @Parameter(name = "property", value = "product"))
+	@GenericGenerator(name = "generator", strategy = "foreign", parameters = @Parameter(name = "property", value = "ims"))
 	@Id
 	@GeneratedValue(generator = "generator")
 	@Column(name = "item_code", unique = true, nullable = false)
@@ -363,7 +363,7 @@ public class ImsNewFeature implements java.io.Serializable {
 
 	@Override
 	public String toString() {
-		return "ProductNewFeature ["
+		return "NewFeature ["
 				+ "itemcode=" + itemCode 
 				+ ", imsEdge=" + edge
 				+ ", mpsCode =" + mpsCode

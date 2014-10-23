@@ -59,7 +59,7 @@ public class IconCollection implements java.io.Serializable {
 	private Ims ims;
 
 	@JsonIgnore
-	@GenericGenerator(name = "generator", strategy = "foreign", parameters = @Parameter(name = "property", value = "product"))
+	@GenericGenerator(name = "generator", strategy = "foreign", parameters = @Parameter(name = "property", value = "ims"))
 	@Id
 	@GeneratedValue(generator = "generator")
 	@Column(name = "item_code", unique = true, nullable = false)
@@ -75,11 +75,11 @@ public class IconCollection implements java.io.Serializable {
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="item_code")
 	@ContainedIn
-	public Ims getProduct() {
+	public Ims getIms() {
 		return this.ims;
 	}
 
-	public void setProduct(Ims ims) {
+	public void setIms(Ims ims) {
 		this.ims = ims;
 	}
     
