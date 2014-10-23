@@ -137,7 +137,7 @@ public class ImsDataUtil {
 	public static Vendor convertImsVendorInfoToItemVendor(final  VendorInfo vendorInfo){
 		Vendor vendor = new Vendor();
 		if(vendorInfo != null){
-			vendor.setVendorId(vendorInfo.getVendornbr1());
+			vendor.setId(vendorInfo.getVendornbr1());
 			vendor.setVendorXrefId(vendorInfo.getVendorxrefcd());
 			vendor.setVendorFob(vendorInfo.getVendorfob());
 			vendor.setDutyPct(vendorInfo.getDutypct());
@@ -158,7 +158,7 @@ public class ImsDataUtil {
 	protected static VendorInfo convertItemVendorToImsVendorInfo(final Vendor vendor){
 		VendorInfo vendorInfo = new VendorInfo();
 		if(vendor != null){
-			if(vendor.getProductVendorId() != null) vendorInfo.setVendornbr1(vendor.getVendorId());
+			if(vendor.getVendorId() != null) vendorInfo.setVendornbr1(vendor.getId());
 			if(vendor.getVendorXrefId() != null) vendorInfo.setVendorxrefcd(vendor.getVendorXrefId());
 			if(vendor.getVendorFob() != null) vendorInfo.setVendorfob(vendor.getVendorFob());
 			if(vendor.getDutyPct() != null) vendorInfo.setDutypct(vendor.getDutyPct());
@@ -481,7 +481,7 @@ public class ImsDataUtil {
 	
 	private static synchronized void transferAssociation(Ims itemToDB, Ims itemFromInput, DBOperation operation) throws BedDAOBadParamException{
 	  try{
-		ImsNewFeature inputNewFeature = itemFromInput.getProductNewFeature();
+		ImsNewFeature inputNewFeature = itemFromInput.getNewFeature();
 	    IconCollection inputIconCollection = itemFromInput.getIconDescription();
 		List<Vendor> inputItemVendors = itemFromInput.getNewVendorSystem();
 		VendorInfo vendorInfo = itemFromInput.getVendors();
@@ -491,28 +491,28 @@ public class ImsDataUtil {
 		//Notes legacyNotes = (itemFromInput.getNotes() != null)? itemFromInput.getNotes() : new Notes();
 		if(inputNewFeature != null && !inputNewFeature.isEmpty()){
 		    if(operation.equals(DBOperation.CREATE) || //brand new Product
-		      (operation.equals(DBOperation.UPDATE) && itemToDB.getProductNewFeature() == null)){ //create a brand new NewImsFeature for an existing Product 
+		      (operation.equals(DBOperation.UPDATE) && itemToDB.getNewFeature() == null)){ //create a brand new NewImsFeature for an existing Product 
 		       if(inputNewFeature.getCreatedDate() == null)	
 			      inputNewFeature.setCreatedDate(new Date());
-		       itemToDB.addProductNewFeature(inputNewFeature);
+		       itemToDB.addNewFeature(inputNewFeature);
 		    }
 		    else if(operation.equals(DBOperation.UPDATE)){ //update existing NewImsFeature
-		    	if(inputNewFeature.getBody() != null) itemToDB.getProductNewFeature().setBody(inputNewFeature.getBody());
-		    	if(inputNewFeature.getDesignLook() != null) itemToDB.getProductNewFeature().setDesignLook(inputNewFeature.getDesignLook());
-		    	if(inputNewFeature.getDesignStyle() != null) itemToDB.getProductNewFeature().setDesignStyle(inputNewFeature.getDesignStyle());
-		      	if(inputNewFeature.getDroppedDate() != null) itemToDB.getProductNewFeature().setDroppedDate(inputNewFeature.getDroppedDate());
-		    	if(inputNewFeature.getEdge() != null) itemToDB.getProductNewFeature().setEdge(inputNewFeature.getEdge());
-		    	if(inputNewFeature.getGrade() != null) itemToDB.getProductNewFeature().setGrade(inputNewFeature.getGrade());
-		      	if(inputNewFeature.getLaunchedDate() != null) itemToDB.getProductNewFeature().setLaunchedDate(inputNewFeature.getLaunchedDate());
-		    	if(inputNewFeature.getMpsCode() != null) itemToDB.getProductNewFeature().setMpsCode(inputNewFeature.getMpsCode());
-		    	if(inputNewFeature.getRecommendedGroutJointMax() != null) itemToDB.getProductNewFeature().setRecommendedGroutJointMax(inputNewFeature.getRecommendedGroutJointMax());
-		    	if(inputNewFeature.getRecommendedGroutJointMin() != null) itemToDB.getProductNewFeature().setRecommendedGroutJointMin(inputNewFeature.getRecommendedGroutJointMin());
-		    	if(inputNewFeature.getStatus() != null) itemToDB.getProductNewFeature().setStatus(inputNewFeature.getStatus());
-		    	if(inputNewFeature.getSurfaceApplication() != null) itemToDB.getProductNewFeature().setSurfaceApplication(inputNewFeature.getSurfaceApplication());
-		      	if(inputNewFeature.getSurfaceFinish() != null) itemToDB.getProductNewFeature().setSurfaceFinish(inputNewFeature.getSurfaceFinish());
-		    	if(inputNewFeature.getSurfaceType() != null) itemToDB.getProductNewFeature().setSurfaceType(inputNewFeature.getSurfaceType());
-		    	if(inputNewFeature.getWarranty() != null) itemToDB.getProductNewFeature().setWarranty(inputNewFeature.getWarranty());
-		    	itemToDB.getProductNewFeature().setLastModifiedDate(new Date());
+		    	if(inputNewFeature.getBody() != null) itemToDB.getNewFeature().setBody(inputNewFeature.getBody());
+		    	if(inputNewFeature.getDesignLook() != null) itemToDB.getNewFeature().setDesignLook(inputNewFeature.getDesignLook());
+		    	if(inputNewFeature.getDesignStyle() != null) itemToDB.getNewFeature().setDesignStyle(inputNewFeature.getDesignStyle());
+		      	if(inputNewFeature.getDroppedDate() != null) itemToDB.getNewFeature().setDroppedDate(inputNewFeature.getDroppedDate());
+		    	if(inputNewFeature.getEdge() != null) itemToDB.getNewFeature().setEdge(inputNewFeature.getEdge());
+		    	if(inputNewFeature.getGrade() != null) itemToDB.getNewFeature().setGrade(inputNewFeature.getGrade());
+		      	if(inputNewFeature.getLaunchedDate() != null) itemToDB.getNewFeature().setLaunchedDate(inputNewFeature.getLaunchedDate());
+		    	if(inputNewFeature.getMpsCode() != null) itemToDB.getNewFeature().setMpsCode(inputNewFeature.getMpsCode());
+		    	if(inputNewFeature.getRecommendedGroutJointMax() != null) itemToDB.getNewFeature().setRecommendedGroutJointMax(inputNewFeature.getRecommendedGroutJointMax());
+		    	if(inputNewFeature.getRecommendedGroutJointMin() != null) itemToDB.getNewFeature().setRecommendedGroutJointMin(inputNewFeature.getRecommendedGroutJointMin());
+		    	if(inputNewFeature.getStatus() != null) itemToDB.getNewFeature().setStatus(inputNewFeature.getStatus());
+		    	if(inputNewFeature.getSurfaceApplication() != null) itemToDB.getNewFeature().setSurfaceApplication(inputNewFeature.getSurfaceApplication());
+		      	if(inputNewFeature.getSurfaceFinish() != null) itemToDB.getNewFeature().setSurfaceFinish(inputNewFeature.getSurfaceFinish());
+		    	if(inputNewFeature.getSurfaceType() != null) itemToDB.getNewFeature().setSurfaceType(inputNewFeature.getSurfaceType());
+		    	if(inputNewFeature.getWarranty() != null) itemToDB.getNewFeature().setWarranty(inputNewFeature.getWarranty());
+		    	itemToDB.getNewFeature().setLastModifiedDate(new Date());
 		    } 	
 		}
 	
@@ -616,7 +616,7 @@ public class ImsDataUtil {
     		   int sizeOfItemVendors = itemToDB.getNewVendorSystem().size();
 			   for(int i = 0; i < inputItemVendors.size(); i++){
 				   Vendor vendor = inputItemVendors.get(i);
-				   if(vendor.getProductVendorId() == null || vendor.getProductVendorId().getVendorId() == null || vendor.getProductVendorId().getVendorId() == 0)
+				   if(vendor.getVendorId() == null || vendor.getVendorId().getId() == null || vendor.getVendorId().getId() == 0)
 					  throw new BedDAOBadParamException("Error: No vendor ID is provided.");
 				   if(sizeOfItemVendors <= i)
 					  itemToDB.addNewVendorSystem(new Vendor()); //there more itemvendor in new product than the current one
@@ -648,7 +648,7 @@ public class ImsDataUtil {
 			//ProductVendor vendor = convertImsVendorInfoToItemVendor(vendorInfo);
 			if(itemToDB.getNewVendorSystem() == null || itemToDB.getNewVendorSystem().isEmpty())
 			   itemToDB.addNewVendorSystem(new Vendor());
-			if(vendorInfo.getVendornbr1() != null) itemToDB.getNewVendorSystem().get(0).setVendorId(vendorInfo.getVendornbr1());
+			if(vendorInfo.getVendornbr1() != null) itemToDB.getNewVendorSystem().get(0).setId(vendorInfo.getVendornbr1());
 			if(vendorInfo.getVendorxrefcd() != null) itemToDB.getNewVendorSystem().get(0).setVendorXrefId(vendorInfo.getVendorxrefcd());
 			if(vendorInfo.getVendorfob() != null) itemToDB.getNewVendorSystem().get(0).setVendorFob(vendorInfo.getVendorfob());
 			if(vendorInfo.getDutypct() != null) itemToDB.getNewVendorSystem().get(0).setDutyPct(vendorInfo.getDutypct());
