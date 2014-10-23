@@ -27,10 +27,10 @@ import com.bedrosians.bedlogic.util.FormatUtil;
 import com.bedrosians.bedlogic.util.JsonUtil;
 import com.bedrosians.bedlogic.util.JsonWrapper.ItemWrapper;
 import com.bedrosians.bedlogic.util.enums.DBOperation;
+import com.bedrosians.bedlogic.util.ims.ImsDataUtil;
+import com.bedrosians.bedlogic.util.ims.ImsValidator;
 import com.bedrosians.bedlogic.util.logger.aspect.LogLevel;
 import com.bedrosians.bedlogic.util.logger.aspect.Loggable;
-import com.bedrosians.bedlogic.util.product.ImsDataUtil;
-import com.bedrosians.bedlogic.util.product.ImsValidator;
 
 @Service("imsService")
 public class ImsServiceImpl implements ImsService {
@@ -58,15 +58,15 @@ public class ImsServiceImpl implements ImsService {
 		catch(HibernateException hbe){
 			hbe.printStackTrace();
 			if(hbe.getCause() != null)
-		  	   throw new BedDAOException("Error occured during getProductById(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+		  	   throw new BedDAOException("Error occured during getItemByItemCode, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
 		  	else
-		  	   throw new BedDAOException("Error occured during getProductById(), due to: " +  hbe.getMessage());	
+		  	   throw new BedDAOException("Error occured during getItemByItemCode, due to: " +  hbe.getMessage());	
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-		  	   throw new BedDAOException("Error occured during getProductById(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+		  	   throw new BedDAOException("Error occured during getItemByItemCode, due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
 		  	else
-		  	   throw new BedDAOException("Error occured during getProductById(), due to: " +  e.getMessage());	
+		  	   throw new BedDAOException("Error occured during getItemByItemCode, due to: " +  e.getMessage());	
 		}
 		return FormatUtil.process(ims);
 	}
@@ -92,15 +92,15 @@ public class ImsServiceImpl implements ImsService {
 		catch(HibernateException hbe){
 			hbe.printStackTrace();
 			if(hbe.getCause() != null)
-		       throw new BedDAOException("Error occured during getProducts(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+		       throw new BedDAOException("Error occured during getItems(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
 		  	else
-		  	   throw new BedDAOException("Error occured during getProducts(), due to: " +  hbe.getMessage());
+		  	   throw new BedDAOException("Error occured during getItems(), due to: " +  hbe.getMessage());
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-		  	   throw new BedDAOException("Error occured during getProductById(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+		  	   throw new BedDAOException("Error occured during getItems(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
 		  	else
-		  	   throw new BedDAOException("Error occured during getProductById(), due to: " +  e.getMessage());	
+		  	   throw new BedDAOException("Error occured during getItems(), due to: " +  e.getMessage());	
 		}
 		List<Ims> processedItems = new ArrayList<>();
 		for(Ims ims : itemList){
@@ -124,16 +124,16 @@ public class ImsServiceImpl implements ImsService {
 		catch(HibernateException hbe){
 			hbe.printStackTrace();
 			if(hbe.getCause() != null)
-		       throw new BedDAOException("Error occured during getProducts(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+		       throw new BedDAOException("Error occured during getWrappedItems, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
 		  	else
-		  	   throw new BedDAOException("Error occured during getProducts(), due to: " +  hbe.getMessage());
+		  	   throw new BedDAOException("Error occured during getWrappedItems, due to: " +  hbe.getMessage());
 		
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-		  	   throw new BedDAOException("Error occured during getProductById(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+		  	   throw new BedDAOException("Error occured during getWrappedItems, due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
 		  	else
-		  	   throw new BedDAOException("Error occured during getProductById(), due to: " +  e.getMessage());	
+		  	   throw new BedDAOException("Error occured during getWrappedItems, due to: " +  e.getMessage());	
 		}
 		List<ItemWrapper> productWrapperList = new ArrayList<ItemWrapper>(itemList.size());
 		for(Ims ims : itemList){
@@ -160,20 +160,20 @@ public class ImsServiceImpl implements ImsService {
 		catch(HibernateException hbe){
 		   hbe.printStackTrace();
 		   if(hbe.getCause() != null)
-		      throw new BedDAOException("Error occured during createProduct(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+		      throw new BedDAOException("Error occured during createItem(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
 		   else
-		  	  throw new BedDAOException("Error occured during createProduct(), due to: " +  hbe.getMessage());	
+		  	  throw new BedDAOException("Error occured during createItem(), due to: " +  hbe.getMessage());	
 	    }	
    	    catch(Exception e){
 		  e.printStackTrace();
 		  if(e != null && e.getMessage().contains("constraint [ims_id]"))
-			  throw new BedDAOBadParamException("Invalid Product code, since it is already existing in the database");
+			  throw new BedDAOBadParamException("Invalid item code, since it is already existing in the database");
 		  else if(e.getMessage().contains("constraint [vendor_apv_fkey]"))
 			  throw new BedDAOBadParamException("Invalid vendor number (ID), since it cannot be found in the vendor table");
 		  else if(e.getCause() != null)
-	  	     throw new BedDAOException("Error occured during createProduct(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+	  	     throw new BedDAOException("Error occured during createItem(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
 	  	  else
-	  	     throw new BedDAOException("Error occured during createProduct(), due to: " +  e.getMessage());	
+	  	     throw new BedDAOException("Error occured during createItem(), due to: " +  e.getMessage());	
       }
 	  return id;		 	
     }
@@ -197,9 +197,9 @@ public class ImsServiceImpl implements ImsService {
 	    }
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-		  	   throw new BedDAOException("Error occured during getProductById(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+		  	   throw new BedDAOException("Error occured during updateItem(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
 		  	else
-		  	   throw new BedDAOException("Error occured during getProductById(), due to: " +  e.getMessage());	
+		  	   throw new BedDAOException("Error occured during updateItem(), due to: " +  e.getMessage());	
 		}
 		if(itemToUpdate == null)
 	       throw new BedDAOException("No data found for the given item code");	 
@@ -210,17 +210,17 @@ public class ImsServiceImpl implements ImsService {
 	 	}
     	catch(HibernateException hbe){
      	      if(hbe.getCause() != null)
- 		         throw new BedDAOException("Error occured during createProduct(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+ 		         throw new BedDAOException("Error occured during updateItem, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
  		      else
- 		  	     throw new BedDAOException("Error occured during createProduct(), due to: " +  hbe.getMessage());	
+ 		  	     throw new BedDAOException("Error occured during updateItem, due to: " +  hbe.getMessage());	
  	    }	
     	catch(Exception e){
 			  if(e.getMessage().contains("constraint [vendor_apv_fkey]"))
 			     throw new BedDAOBadParamException("Invalid vendor number (ID), since it cannot be found in the vendor table");
 			  if(e.getCause() != null)
-		         throw new BedDAOException("Error occured during updateProduct(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+		         throw new BedDAOException("Error occured during updateItem(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
 		  	  else
-			     throw new BedDAOException("Error occured during updateProduct(), due to: " +  e.getMessage());	
+			     throw new BedDAOException("Error occured during updateItem(), due to: " +  e.getMessage());	
 		   }	   
 	}
 	
@@ -238,16 +238,16 @@ public class ImsServiceImpl implements ImsService {
 		catch(HibernateException hbe){
 			hbe.printStackTrace();
 			if(hbe.getCause() != null)
-		       throw new BedDAOException("Error occured during getProducts(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+		       throw new BedDAOException("Error occured during deleteItemByItemCode(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
 		  	else
-		  	   throw new BedDAOException("Error occured during getProducts(), due to: " +  hbe.getMessage());
+		  	   throw new BedDAOException("Error occured during deleteItemByItemCode(), due to: " +  hbe.getMessage());
 		
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-		  	   throw new BedDAOException("Error occured during getProductById(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+		  	   throw new BedDAOException("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
 		  	else
-		  	   throw new BedDAOException("Error occured during getProductById(), due to: " +  e.getMessage());	
+		  	   throw new BedDAOException("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage());	
 		}
 	}
 	
