@@ -195,8 +195,8 @@ public class FormatUtil {
 		   ims.setPackaginginfo(ImsDataUtil.getPackagingInfo(ims));
 		if(ims.getApplications() != null)
 		   ims.setUsage(ImsDataUtil.convertApplicationsToUsage(ims));
-		if(ims.getProductNewFeature() != null && ims.getProductNewFeature().getMpsCode() == null)
-	       ims.getProductNewFeature().setMpsCode(ImsDataUtil.convertInactivecdToMpsCode(ims.getInactivecode()));	
+		if(ims.getNewFeature() != null && ims.getNewFeature().getMpsCode() == null)
+	       ims.getNewFeature().setMpsCode(ImsDataUtil.convertInactivecdToMpsCode(ims.getInactivecode()));	
 	    //if((product.getColorhues() == null || product.getColorhues().isEmpty()) && product.getColorcategory() != null && !product.getColorcategory().isEmpty())
 	    //product.setColorhues(new ArrayList<>(ImsDataUtil.convertColorCategoryToColorHueObjects(product)));
 		//if(product.getNewVendorSystem() != null && !product.getNewVendorSystem().isEmpty())
