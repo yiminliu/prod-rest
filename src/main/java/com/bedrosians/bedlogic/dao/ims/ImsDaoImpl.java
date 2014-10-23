@@ -44,7 +44,7 @@ import com.bedrosians.bedlogic.domain.ims.enums.Status;
 import com.bedrosians.bedlogic.domain.ims.enums.SurfaceApplication;
 import com.bedrosians.bedlogic.domain.ims.enums.SurfaceFinish;
 import com.bedrosians.bedlogic.domain.ims.enums.SurfaceType;
-import com.bedrosians.bedlogic.util.product.ImsQueryUtil;
+import com.bedrosians.bedlogic.util.ims.ImsQueryUtil;
 
 
 @Repository("imsDao")
