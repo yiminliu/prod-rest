@@ -1,4 +1,4 @@
-package com.bedrosians.bedlogic.test.product;
+package com.bedrosians.bedlogic.test.ims;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,10 +16,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import com.bedrosians.bedlogic.dao.ims.ImsDao;
-import com.bedrosians.bedlogic.dao.item.ItemDao;
-import com.bedrosians.bedlogic.domain.item.IconCollection;
-import com.bedrosians.bedlogic.domain.item.Item;
-import com.bedrosians.bedlogic.domain.item.ItemNewFeature;
+import com.bedrosians.bedlogic.domain.ims.IconCollection;
+import com.bedrosians.bedlogic.domain.ims.Ims;
+import com.bedrosians.bedlogic.domain.ims.ImsNewFeature;
 import com.bedrosians.bedlogic.domain.user.KeymarkUcUser;
 import com.bedrosians.bedlogic.service.ims.ImsService;
 import com.bedrosians.bedlogic.service.user.KeymarkUcUserService;
@@ -34,11 +33,9 @@ public class CacheTest {
 	@Autowired
 	SessionFactory sessionFactory;
 	@Autowired
-	ImsDao itemDao;
-	//@Autowired
-	//ColorHueDao colorHueDao;
-	@Autowired
 	ImsService imsService;
+	@Autowired
+	ImsDao imsDao;
 	@Autowired
 	KeymarkUcUserService keymarkUcUserService;
 	
@@ -52,12 +49,12 @@ public class CacheTest {
 		//params.put("itemcode", Arrays.asList(new String[]{"AECBUB218NR"}));
 		params.put("maxResults", Arrays.asList(new String[]{"500"}));
 		Session session = sessionFactory.openSession();
-		Item item = null;
+		Ims item = null;
 	    try{
 	      session.getTransaction().begin();
 	      System.out.println("Before 1st round Statistics().getEntityFetchCount() = "  + session.getStatistics().getEntityKeys());
          // item = itemDao.getItemById(session, "AECBUB218NR");
-	      item = imsService.getProductById("AECBUB218NR");
+	      item = imsService.getItemByItemCode("AECBUB218NR");
           session.getTransaction().commit();
           session.close();
 	    }
@@ -73,8 +70,8 @@ public class CacheTest {
         System.out.println("Item retrieved: " + item);
 	    System.out.println("Start 2nd round requery....");
 	    session = sessionFactory.openSession(); 
-	    System.out.println("Cache Contains Item \"AECBUB218NR\" ?"+sessionFactory.getCache().containsEntity(Item.class, "AECBUB218NR"));
-	    System.out.println("Cache Contains Item\"AECBUB218NR       \" ?"+sessionFactory.getCache().containsEntity(Item.class, "AECBUB218NR       "));
+	    System.out.println("Cache Contains Item \"AECBUB218NR\" ?"+sessionFactory.getCache().containsEntity(Ims.class, "AECBUB218NR"));
+	    System.out.println("Cache Contains Item\"AECBUB218NR       \" ?"+sessionFactory.getCache().containsEntity(Ims.class, "AECBUB218NR       "));
 	
 	    //System.out.println("Cache Contains ItemNewFeature \"AECBUB218NR\" ?"+sessionFactory.getCache().containsEntity("itemNewFeature", "AECBUB218NR"));
 	    //System.out.println("Cache Contains ItemNewFeature \"AECBUB218NR       \" ?"+sessionFactory.getCache().containsEntity("Item.itemNewFeature", "AECBUB218NR       "));
@@ -82,8 +79,8 @@ public class CacheTest {
 	    //System.out.println("Cache Contains IconCollection \"AECBUB218NR\" ?"+sessionFactory.getCache().containsEntity("item.iconDescription", "AECBUB218NR"));
 	    //System.out.println("Cache Contains IconCollection \"AECBUB218NR       \" ?"+sessionFactory.getCache().containsEntity("Item.iconDescription", "AECBUB218NR       "));
 	
-	    System.out.println("Cache Contains ItemNewFeature \"AECBUB218NR\" ?"+sessionFactory.getCache().containsEntity(ItemNewFeature.class, "AECBUB218NR"));
-	    System.out.println("Cache Contains ItemNewFeature \"AECBUB218NR       \" ?"+sessionFactory.getCache().containsEntity(ItemNewFeature.class, "AECBUB218NR       "));
+	    System.out.println("Cache Contains ItemNewFeature \"AECBUB218NR\" ?"+sessionFactory.getCache().containsEntity(ImsNewFeature.class, "AECBUB218NR"));
+	    System.out.println("Cache Contains ItemNewFeature \"AECBUB218NR       \" ?"+sessionFactory.getCache().containsEntity(ImsNewFeature.class, "AECBUB218NR       "));
 	  
 	    System.out.println("Cache Contains IconCollection \"AECBUB218NR\" ?"+sessionFactory.getCache().containsEntity(IconCollection.class, "AECBUB218NR"));
 	    System.out.println("Cache Contains IconCollection \"AECBUB218NR       \" ?"+sessionFactory.getCache().containsEntity(IconCollection.class, "AECBUB218NR       "));
@@ -92,7 +89,7 @@ public class CacheTest {
 	    	startTime = System.currentTimeMillis();
 	    	session.getTransaction().begin();
 	         // item = itemDao.getItemById(session, "AECBUB218NR       ");
-	     	item = imsService.getProductById("AECBUB218NR");
+	     	item = imsService.getItemByItemCode("AECBUB218NR");
 	        System.out.println("2 round retrieved item = " + item);
 	        session.getTransaction().commit();
 	
@@ -128,11 +125,11 @@ public class CacheTest {
 		params.put("itemcode", Arrays.asList(new String[]{"TCRD"}));
 		params.put("maxResults", Arrays.asList(new String[]{"500"}));
 		Session session = sessionFactory.openSession();
-		List<Item> items = null;
+		List<Ims> items = null;
 	    try{
 	      session.getTransaction().begin();
 	      System.out.println("Before 1st round Statistics().getEntityFetchCount() = "  + session.getStatistics().getEntityKeys());
-	      items = itemDao.getItemsByQueryParameters(params);
+	      items = imsDao.getItemsByQueryParameters(params);
           session.getTransaction().commit();
           session.close();
 	    }
@@ -152,7 +149,7 @@ public class CacheTest {
 	   	    session = sessionFactory.openSession(); 
 
 	    	session.getTransaction().begin();
-	    	items = itemDao.getItemsByQueryParameters(params);
+	    	items = imsDao.getItemsByQueryParameters(params);
 	        session.getTransaction().commit();
 		}
 		catch(Exception e){
@@ -181,12 +178,12 @@ public class CacheTest {
 		params.put("origin", Arrays.asList(new String[]{"USA"}));
 		params.put("maxResults", Arrays.asList(new String[]{"500"}));
 		Session session = sessionFactory.openSession();
-		List<Item> items = null;
+		List<Ims> items = null;
 	    try{
 	      session.getTransaction().begin();
 	      System.out.println("Before 1st round Statistics().getEntityFetchCount() = "  + session.getStatistics().getEntityKeys());
          // item = itemDao.getItemById(session, "AECBUB218NR");
-	      items = imsService.getProducts(params);
+	      items = imsService.getItems(params);
           session.getTransaction().commit();
           System.out.println("1st round Statistics().getEntityFetchCount() = "  + session.getStatistics().getEntityKeys());
           session.close();
@@ -209,7 +206,7 @@ public class CacheTest {
 	    try{
 	    	startTime = System.currentTimeMillis();
 	    	session.getTransaction().begin();
-	    	items = imsService.getProducts(params);
+	    	items = imsService.getItems(params);
 	        session.getTransaction().commit();
 	
 		}

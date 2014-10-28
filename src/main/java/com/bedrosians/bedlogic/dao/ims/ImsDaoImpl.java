@@ -93,6 +93,7 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 	   Iterator<Map.Entry<String, List<String>>> it = entrySet.iterator();
 	   DetachedCriteria newFeatureCriteria = null;
 	   DetachedCriteria vendorCriteria = null;
+	   DetachedCriteria colorHueCriteria = null;
 	   DetachedCriteria itemCriteria = DetachedCriteria.forClass(Ims.class);
 	   String key, value = null;
 	   List<String> values = null;
@@ -123,14 +124,15 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 	           continue;
             }
     		//------ unconditional pattern match -------//
-   	        //if("colorHue".equalsIgnoreCase(key)){
-   	        //	colorHueCriteria = itemCriteria.createCriteria("colorhues");
-	        //	if(values.size() > 1)	
-	        //		colorHueCriteria = generateLikeDisjunctionCriteria(colorHueCriteria, key, values);
-	        //	else
-	        //		colorHueCriteria.add(Restrictions.ilike(key, value, MatchMode.ANYWHERE));
-		    //    continue;
-		    //}  
+   	        if("colorHue".equalsIgnoreCase(key)){
+   	         	colorHueCriteria = itemCriteria.createCriteria("colorhues");
+	        	if(values.size() > 1)	
+	        		colorHueCriteria = generateEqualsDisjunctionCriteria(colorHueCriteria, key, values);
+	        	else
+	        		//colorHueCriteria.add(Restrictions.ilike(key, value, MatchMode.ANYWHERE));
+	        		colorHueCriteria.add(Restrictions.eq(key, value));
+		        continue;
+		    }  
 		    if("itemdesc.fulldesc".equalsIgnoreCase(key) || "itemdesc.itemdesc1".equalsIgnoreCase(key) || "colorcategory".equalsIgnoreCase(key)){
 		      	if(values.size() > 1)	
 	     		   itemCriteria = generateWildcardDisjunctionCriteria(itemCriteria, key, values);
@@ -271,7 +273,7 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 	         key = "colorcategory";
 	   	     break;	
 		  case "colorhues": case "colorHues": case "colorhue": case "colorHue": 
-   		     key = "colorcategory"; //"colorHue";
+   		     key = "colorHue";
    		     break;
 		  case "seriesname": case "seriesName":
    		     key = "series.seriesname";
@@ -389,7 +391,7 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 		return criteria;
    }
 	
-	private DetachedCriteria generateWildcardDisjunctionCriteria(DetachedCriteria criteria, String name, List<String> values){
+   private DetachedCriteria generateWildcardDisjunctionCriteria(DetachedCriteria criteria, String name, List<String> values){
 	    Disjunction or = Restrictions.disjunction();
 		for(String value : values) {
 			if("colorcategory".equalsIgnoreCase(name) || name.startsWith("itemdesc"))

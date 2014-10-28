@@ -31,7 +31,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "ims_icon", schema = "public")
 @DynamicUpdate
 @DynamicInsert
-@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+//@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class IconCollection implements java.io.Serializable {
   
 	private static final long serialVersionUID = -1113582221787L;

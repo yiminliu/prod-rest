@@ -10,8 +10,13 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Immutable;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Boost;
 import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.Store;
 
 
 @Entity
@@ -73,6 +78,8 @@ public class KeymarkUcUser implements Serializable {
 			this.username = username;
 		}
 		
+		@Field(index=Index.YES, analyze=Analyze.NO, store=Store.YES)
+		@Boost(2.0f)
 		@Column(name = "passwd", length = 10)
 		public String getPasswd() {
 			return this.passwd;
@@ -133,6 +140,8 @@ public class KeymarkUcUser implements Serializable {
 			return this.imallowcreateitem;
 		}
 
+		@Field(index=Index.YES, analyze=Analyze.NO, store=Store.YES)
+		@Boost(1.5f)
 		public void setImallowcreateitem(Character imallowcreateitem) {
 			this.imallowcreateitem = imallowcreateitem;
 		}
@@ -155,6 +164,8 @@ public class KeymarkUcUser implements Serializable {
 			this.imchgpurchcost = imchgpurchcost;
 		}
 
+		@Field(index=Index.YES, analyze=Analyze.NO, store=Store.YES)
+		@Boost(1.5f)
 		@Column(name = "imchgtmpprice", length = 1)
 		public Character getImchgtmpprice() {
 			return this.imchgtmpprice;
@@ -173,6 +184,8 @@ public class KeymarkUcUser implements Serializable {
 			this.imchgqty = imchgqty;
 		}
 
+		@Field(index=Index.YES, analyze=Analyze.NO, store=Store.YES)
+		@Boost(1.5f)
 		@Column(name = "imallowchgims", length = 1)
 		public Character getImallowchgims() {
 			return this.imallowchgims;

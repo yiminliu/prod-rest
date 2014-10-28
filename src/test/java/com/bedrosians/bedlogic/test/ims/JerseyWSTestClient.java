@@ -1,4 +1,4 @@
-package com.bedrosians.bedlogic.test.product;
+package com.bedrosians.bedlogic.test.ims;
 
 import java.net.URI;
 import java.util.Arrays;

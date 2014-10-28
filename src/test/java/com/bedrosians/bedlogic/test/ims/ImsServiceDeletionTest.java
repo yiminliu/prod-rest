@@ -1,4 +1,4 @@
-package com.bedrosians.bedlogic.test.product;
+package com.bedrosians.bedlogic.test.ims;
 
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.Before;
@@ -9,14 +9,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
-import com.bedrosians.bedlogic.domain.item.Item;
+import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.service.ims.ImsService;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/application_context/bedlogic-context.xml", "/application_context/bedlogic-persistence.xml"})
 @TransactionConfiguration(defaultRollback = false)
-public class ProductServiceDeletionTest {
+public class ImsServiceDeletionTest {
 		
 
 	@Autowired
@@ -29,17 +29,17 @@ public class ProductServiceDeletionTest {
 	
 	@Test
 	public void testDeleteItemById()throws Exception {
-	    imsService.deleteProductById("NEWITEMCODE");
+	    imsService.deleteItemByItemCode("NEWITEMCODE");
 	     System.out.println("testDeleteItem Done");
 	        
 	 }
 	
 	@Test
 	public void testDeleteItem()throws Exception {
-		Item item = new Item("NEWITEMCODE3");
+		Ims item = new Ims("NEWITEMCODE3");
 		String jStringItemInfo = "{\"itemcode\":\"newItemcode3\"}";
 		JSONObject params = new JSONObject(jStringItemInfo);
-	    imsService.deleteProduct(params);
+	    imsService.deleteItem(params);
 	     System.out.println("testDeleteItem Done");
 	        
 	 }

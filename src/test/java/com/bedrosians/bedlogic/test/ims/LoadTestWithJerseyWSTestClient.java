@@ -1,4 +1,4 @@
-package com.bedrosians.bedlogic.test.product;
+package com.bedrosians.bedlogic.test.ims;
 
 
 import java.net.URI;
@@ -9,9 +9,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriBuilder;
 
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
-import org.hibernate.Session;
 
-import com.bedrosians.bedlogic.domain.item.Item;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -25,7 +23,7 @@ public class LoadTestWithJerseyWSTestClient {
 
 	private static final String mediaTypeJson = MediaType.APPLICATION_JSON;
 	private static final String rootPath = "bedlogic/v2";
-	private static final String appPath = "product";
+	private static final String appPath = "ims";
 	private static final String testItemCode = "AECBUB218NR".toUpperCase();
 	private static final String colorHue = "RED";
 	private static final String originCountry = "USA";
@@ -36,18 +34,19 @@ public class LoadTestWithJerseyWSTestClient {
 	   long startTime = System.currentTimeMillis();
 		init();
 	   
-	   //testGetProductById(testItemCode);
-		//testGetProductByMultipleIds();
-	  //testGetProductByColorHues(colorHue);
-		//testGetProductByMultipleColorHues(new String[]{colorHue, "GREEN", "YELLOW"});
-	
-		for(int i = 0; i < 100; i++){
-			testGetProductByOriginCountry(originCountry);
-		}
-	   //testGetProductByOriginCountry(originCountry);
-	   //testGetProductsWIthMultipleMaterialStyles();
-	   //testGetAllProducts();
-		//testGetAllActiveProducts();
+	   //testGetItemByItemCode(testItemCode);
+		//testGetItemByMultipleIds();
+	   //testGetItemByColorHues(colorHue);
+		testGetItemByMultipleColorCategories(new String[]{colorHue, "GREEN", "YELLOW"});
+		testGetItemByMultipleColorHues(new String[]{colorHue, "GREEN", "YELLOW"});
+		
+		//for(int i = 0; i < 100; i++){
+		//	testGetItemByOriginCountry(originCountry);
+		//}
+	   //testGetItemByOriginCountry(originCountry);
+	   //testGetItemsWIthMultipleMaterialStyles();
+	   //testGetAllItems();
+		//testGetAllActiveItems();
 	   //testCreate();
 	   //testUpdateWithJsonString();
 	   long totalTime = (System.currentTimeMillis() - startTime);
@@ -60,14 +59,15 @@ public class LoadTestWithJerseyWSTestClient {
 	   client = Client.create(config);
 	}
 	
-	private static void testGetProductById(String itemCode){
-	   System.out.println("testGetProductById");
+	private static void testGetItemByItemCode(String itemCode){
+	   System.out.println("testGetItemById");
 	   service = client.resource(getByIdTestURI(""));
 	   //service.path(rootPath).path(appPath).accept(mediaTypeJson);
 	   service.queryParam("itemcode", itemCode);
 	   service.type(mediaTypeJson);
 	   service.accept(mediaTypeJson);
 	   System.out.println("Resource URL = " + service.getURI().toASCIIString());
+	   client.addFilter(new HTTPBasicAuthFilter("guest", ""));
 	   //service.method("GET");
 	   //ClientResponse response = service.accept("application/json").get(ClientResponse.class);
 	   ClientResponse response = service.get(ClientResponse.class);
@@ -79,14 +79,15 @@ public class LoadTestWithJerseyWSTestClient {
 	   System.out.println("Output = " + s);
 	}
 	
-	private static void testGetProductByMultipleIds(){
-		   System.out.println("testGetProductById");
+	private static void testGetItemByMultipleIds(){
+		   System.out.println("testGetItemById");
 		   service = client.resource(getTestBaseURI());
 		   //service.path(rootPath).path(appPath).accept(mediaTypeJson);
 		   service.queryParam("itemcode", "{AECBUB217NR,CRDBARBRU440}");
 		   service.type(mediaTypeJson);
 		   service.accept(mediaTypeJson);
 		   System.out.println("Resource URL = " + service.getURI().toASCIIString());
+		   client.addFilter(new HTTPBasicAuthFilter("guest", ""));
 		   //service.method("GET");
 		   //ClientResponse response = service.accept("application/json").get(ClientResponse.class);
 		   ClientResponse response = service.get(ClientResponse.class);
@@ -98,8 +99,8 @@ public class LoadTestWithJerseyWSTestClient {
 		   System.out.println("Output = " + s);
 		}
 	
-	private static void testGetProductByOriginCountry(String country){
-	  	   System.out.println("testGetProductByOriginCountry");
+	private static void testGetItemByOriginCountry(String country){
+	  	   System.out.println("testGetItemByOriginCountry");
 	  	   MultivaluedMap<String,String> params = new MultivaluedMapImpl();
 	       params.put("inactivecd", Arrays.asList(new String[]{"N"}));
 	       params.put("origin", Arrays.asList(new String[]{country}));
@@ -108,6 +109,7 @@ public class LoadTestWithJerseyWSTestClient {
 		   service.type(mediaTypeJson);
 		   service.accept(mediaTypeJson);
 		   System.out.println("Resource URL = " + service.getURI().toASCIIString());
+		   client.addFilter(new HTTPBasicAuthFilter("guest", ""));
 		   ClientResponse response = service.queryParams(params).get(ClientResponse.class);
 			  
 		   System.out.println("Response header : "+ response.getHeaders());
@@ -117,8 +119,55 @@ public class LoadTestWithJerseyWSTestClient {
 		   //System.out.println("Output = " + s);
 	}
 	
-	private static void testGetProductByColorHues(String colorHue){
-	  	   System.out.println("testGetProductByColorHues");
+	private static void testGetItemByColorCategory(String colorHue){
+	  	   System.out.println("testGetItemByColorCategory");
+	  	   long startTime = System.currentTimeMillis();
+	  	   MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	       params.put("inactivecd", Arrays.asList(new String[]{"N"}));
+	       params.put("colorcategory", Arrays.asList(new String[]{colorHue}));
+	    
+		   service = client.resource(getTestBaseURI());
+		   client.addFilter(new HTTPBasicAuthFilter("guest", ""));
+		   service.type(mediaTypeJson);
+		   service.accept(mediaTypeJson);
+		   System.out.println("Resource URL = " + service.getURI().toASCIIString());
+		   ClientResponse response = service.queryParams(params).get(ClientResponse.class);
+		
+		   //System.out.println("Response header : "+ response.getHeaders());
+		   System.out.println("Response data : "+ response.toString());
+		   
+		   String s = response.getEntity(String.class);
+		   //System.out.println("Output = " + s);
+		   long totalTime = System.currentTimeMillis() - startTime;
+		   System.out.println("Method execution time = " + totalTime + "\n");
+	 }
+	
+	private static void testGetItemByMultipleColorCategories(String[] colorHues){
+	  	   System.out.println("testGetItemByMultipleColorCategories");
+	  	   long startTime = System.currentTimeMillis();
+	  	   MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	       params.put("inactivecd", Arrays.asList(new String[]{"N"}));
+	       params.put("colorcategory", Arrays.asList(colorHues));
+	    
+		   service = client.resource(getTestBaseURI());
+		   service.type(mediaTypeJson);
+		   service.accept(mediaTypeJson);
+		   System.out.println("Resource URL = " + service.getURI().toASCIIString());
+		   client.addFilter(new HTTPBasicAuthFilter("guest", ""));
+		   ClientResponse response = service.queryParams(params).get(ClientResponse.class);
+			  
+		   //System.out.println("Response header : "+ response.getHeaders());
+		   System.out.println("Response data : "+ response.toString());
+		   
+		   String s = response.getEntity(String.class);
+		   //System.out.println("Output = " + s);
+		   long totalTime = System.currentTimeMillis() - startTime;
+		   System.out.println("Method execution time = " + totalTime + "\n");
+	 }
+	
+	private static void testGetItemByColorHues(String colorHue){
+	  	   System.out.println("testGetItemByColorHues");
+	  	   long startTime = System.currentTimeMillis();
 	  	   MultivaluedMap<String,String> params = new MultivaluedMapImpl();
 	       params.put("inactivecd", Arrays.asList(new String[]{"N"}));
 	       params.put("colorhues", Arrays.asList(new String[]{colorHue}));
@@ -130,15 +179,18 @@ public class LoadTestWithJerseyWSTestClient {
 		   System.out.println("Resource URL = " + service.getURI().toASCIIString());
 		   ClientResponse response = service.queryParams(params).get(ClientResponse.class);
 		
-		   System.out.println("Response header : "+ response.getHeaders());
+		   //System.out.println("Response header : "+ response.getHeaders());
 		   System.out.println("Response data : "+ response.toString());
 		   
 		   String s = response.getEntity(String.class);
 		   //System.out.println("Output = " + s);
+		   long totalTime = System.currentTimeMillis() - startTime;
+		   System.out.println("Method execution time = " + totalTime + "\n");
 	 }
 	
-	private static void testGetProductByMultipleColorHues(String[] colorHues){
-	  	   System.out.println("testGetProductByColorHues");
+	private static void testGetItemByMultipleColorHues(String[] colorHues){
+	  	   System.out.println("testGetItemByMultipleColorHues");
+	  	   long startTime = System.currentTimeMillis();
 	  	   MultivaluedMap<String,String> params = new MultivaluedMapImpl();
 	       params.put("inactivecd", Arrays.asList(new String[]{"N"}));
 	       params.put("colorhues", Arrays.asList(colorHues));
@@ -147,17 +199,20 @@ public class LoadTestWithJerseyWSTestClient {
 		   service.type(mediaTypeJson);
 		   service.accept(mediaTypeJson);
 		   System.out.println("Resource URL = " + service.getURI().toASCIIString());
+		   client.addFilter(new HTTPBasicAuthFilter("guest", ""));
 		   ClientResponse response = service.queryParams(params).get(ClientResponse.class);
 			  
-		   System.out.println("Response header : "+ response.getHeaders());
+		   //System.out.println("Response header : "+ response.getHeaders());
 		   System.out.println("Response data : "+ response.toString());
-		   
 		   String s = response.getEntity(String.class);
 		   //System.out.println("Output = " + s);
+		   long totalTime = System.currentTimeMillis() - startTime;
+		   System.out.println("Method execution time = " + totalTime + "\n");
 	 }
 	 
-	 private static void testGetProductsWIthMultipleMaterialStyles(){
-	  	   System.out.println("testGetProductsWIthMultipleMaterialStyles");
+	 private static void testGetItemsWIthMultipleMaterialStyles(){
+	  	   System.out.println("testGetItemsWIthMultipleMaterialStyles");
+	  	 long startTime = System.currentTimeMillis();
 	  	   MultivaluedMap<String,String> params = new MultivaluedMapImpl();
 	       params.put("inactivecd", Arrays.asList(new String[]{"N"}));
 	       params.put("materialstyle", Arrays.asList(new String[]{"SFCR", "FL"}));
@@ -173,10 +228,12 @@ public class LoadTestWithJerseyWSTestClient {
 		   
 		   String s = response.getEntity(String.class);
 		  // System.out.println("Output = " + s);
+		   long totalTime = System.currentTimeMillis() - startTime;
+		   System.out.println("Method execution time = " + totalTime);
 	}
 	 
-	private static void testGetAllActiveProducts(){
-	  	   System.out.println("testGetActiveAllProducts");
+	private static void testGetAllActiveItems(){
+	  	   System.out.println("testGetActiveAllItems");
 	  	   MultivaluedMap<String,String> params = new MultivaluedMapImpl();
 	       params.put("inactivecd", Arrays.asList(new String[]{"N"}));
 	      
@@ -194,8 +251,8 @@ public class LoadTestWithJerseyWSTestClient {
 		  // System.out.println("Output = " + s);
 		}
 	
-	private static void testGetAllProducts(){
-	  	   System.out.println("testGetAllProducts");
+	private static void testGetAllItems(){
+	  	   System.out.println("testGetAllItems");
 	  	   MultivaluedMap<String,String> params = new MultivaluedMapImpl();
 	       //params.put("inactivecd", Arrays.asList(new String[]{"N"}));
 	       //params.put("colorhues", Arrays.asList(new String[]{colorHue, "GREEN"}));
@@ -298,7 +355,7 @@ public class LoadTestWithJerseyWSTestClient {
 	
 	
 	/*
-	private static void testGetProducts(){
+	private static void testGetItems(){
 	   service.method("GET");
 	   ClientResponse response = service.get(ClientResponse.class);
 	   int status = response.getStatus();

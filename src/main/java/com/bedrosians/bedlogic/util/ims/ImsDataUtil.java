@@ -1,18 +1,29 @@
 package com.bedrosians.bedlogic.util.ims;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import com.bedrosians.bedlogic.domain.ims.ColorHue;
 import com.bedrosians.bedlogic.domain.ims.IconCollection;
 import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.domain.ims.ImsNewFeature;
 import com.bedrosians.bedlogic.domain.ims.Vendor;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Applications;
+import com.bedrosians.bedlogic.domain.ims.embeddable.Cost;
+import com.bedrosians.bedlogic.domain.ims.embeddable.Dimensions;
+import com.bedrosians.bedlogic.domain.ims.embeddable.Material;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Notes;
 import com.bedrosians.bedlogic.domain.ims.embeddable.PackagingInfo;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Price;
+import com.bedrosians.bedlogic.domain.ims.embeddable.Purchasers;
+import com.bedrosians.bedlogic.domain.ims.embeddable.Series;
+import com.bedrosians.bedlogic.domain.ims.embeddable.SimilarItemCode;
+import com.bedrosians.bedlogic.domain.ims.embeddable.TestSpecification;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Units;
 import com.bedrosians.bedlogic.domain.ims.embeddable.VendorInfo;
 import com.bedrosians.bedlogic.domain.ims.enums.MpsCode;
@@ -266,21 +277,31 @@ public class ImsDataUtil {
 		}
 	}
 	
-	/*public static Set<ColorHue> convertColorCategoryToColorHueString(String colorCategory){
-		if(colorCategory == null || colorCategory.isEmpty())
+	public static String convertColorHuesToColorCategory(List<ColorHue> colorHues){
+		if(colorHues == null || colorHues.isEmpty())
 		   return null;	
-		else
-		   return new HashSet(Arrays.asList(colorCategory.trim().split(":")));
+		else{
+		    int i = 0;	
+		    StringBuilder sBuilder = new StringBuilder();	
+			for(ColorHue colorHue : colorHues){
+				if(i == colorHues.size() - 1)
+				   sBuilder.append(colorHue.getColorHue());
+				else
+					sBuilder.append(colorHue.getColorHue()).append(":");
+				i++;
+			}
+		return sBuilder.toString();
+	  }
 	}
 	
-	public static Set<ColorHue> convertColorCategoryToColorHueObjects(Product product){
+	public static Set<ColorHue> convertColorCategoryToColorHueObjects(Ims product){
 		Set<ColorHue> colorHues = new HashSet<>();
 		ColorHue colorHue = null;
 		if(product.getColorcategory() != null && !product.getColorcategory().isEmpty()) {
 		   for(String color : product.getColorcategory().trim().split(":")){
 			   if(color != null && !color.isEmpty()){
   			      colorHue = new ColorHue(color);
-			      colorHue.setItem(product);
+			      colorHue.setIms(product);
 			      colorHues.add(colorHue);
 			   }
 		   }	   
@@ -302,22 +323,15 @@ public class ImsDataUtil {
 		}
 	}
 	
-	public static String convertColorHuesToColorCategory(List<ColorHue> colorHues){
-		if(colorHues == null || colorHues.isEmpty())
+	/*public static Set<ColorHue> convertColorCategoryToColorHueString(String colorCategory){
+		if(colorCategory == null || colorCategory.isEmpty())
 		   return null;	
-		else{
-		    int i = 0;	
-		    StringBuilder sBuilder = new StringBuilder();	
-			for(ColorHue colorHue : colorHues){
-				if(i == colorHues.size() - 1)
-				   sBuilder.append(colorHue.getColorHue());
-				else
-					sBuilder.append(colorHue.getColorHue()).append(":");
-				i++;
-			}
-		return sBuilder.toString();
-	  }
-	}	
+		else
+		   return new HashSet(Arrays.asList(colorCategory.trim().split(":")));
+	}
+	
+	
+		
 	*/
 	//public static Product parsePriorVendor(Product product){
 	//	
@@ -467,7 +481,7 @@ public class ImsDataUtil {
 
 	public static Ims transformItem(Ims itemToDB, Ims itemFromInput, DBOperation operation) throws BedDAOBadParamException{
 		if(itemFromInput == null)
-	       throw new BedDAOBadParamException("The input is empty, nothing to update");	
+	       throw new BedDAOBadParamException("The input is empty, nothing to " + operation.getDescription());	
 		if(itemToDB == null) 
 		   itemToDB = new Ims(itemFromInput.getItemcode().toUpperCase());		
 		transferProperty(itemToDB, itemFromInput, operation);
@@ -486,7 +500,16 @@ public class ImsDataUtil {
 		List<Vendor> inputItemVendors = itemFromInput.getNewVendorSystem();
 		VendorInfo vendorInfo = itemFromInput.getVendors();
 		String legacyIcon = itemFromInput.getIconsystem();
-		//List<ColorHue> inputColorHues = itemFromInput.getColorhues();
+		List<ColorHue> inputColorHues = itemFromInput.getColorhues();
+		//if colorhues is not available in input data obtain it from colorCategory in input data
+		if((inputColorHues == null || inputColorHues.isEmpty()) && itemFromInput.getColorcategory() != null && !itemFromInput.getColorcategory().isEmpty()){
+			inputColorHues = ImsDataUtil.convertColorCategoryToColorHueObjects(itemFromInput.getColorcategory());
+		}
+		//	for(ColorHue color : inputColorHues){	
+		//	    if(color != null && color.getColorHue() != null && !color.getColorHue().isEmpty())
+		//		   itemToDB.addColorhue(color);	
+		//	}
+		//})
 		//List<Note> noteList = itemFromInput.getNewNoteSystem();
 		//Notes legacyNotes = (itemFromInput.getNotes() != null)? itemFromInput.getNotes() : new Notes();
 		if(inputNewFeature != null && !inputNewFeature.isEmpty()){
@@ -571,34 +594,26 @@ public class ImsDataUtil {
 				if(iconCollection.getVersaillesPattern() != null) itemToDB.getIconDescription().setVersaillesPattern(inputIconCollection.getVersaillesPattern());
 			}
 		}
-/*		//---------------Color Hue data---------------//
+		//---------------ColorHue data---------------//
 		if(inputColorHues != null && !inputColorHues.isEmpty()){
 			if(operation.equals(DBOperation.CREATE) || //Brand new Product
-			  (operation.equals(DBOperation.UPDATE) && (itemToDB.getColorhues() == null || itemToDB.getColorhues().isEmpty()))){ //existing Product, but brand new ItemColoeHue
+			  (operation.equals(DBOperation.UPDATE) && (itemToDB.getColorhues() == null || itemToDB.getColorhues().isEmpty()))){ //existing item, but brand new ItemColorHue
 			   for(ColorHue color : inputColorHues){	
 	  		       if(color != null && color.getColorHue() != null && !color.getColorHue().isEmpty())
 			          itemToDB.addColorhue(color);	
 		       }
-			}  //update existing ItemColoeHue
+			}  //update existing colorHue
 			else if(operation.equals(DBOperation.UPDATE)){
 			   for(int i = 0; i < inputColorHues.size(); i++){
 				   ColorHue colorHue = inputColorHues.get(i);
 				   if(i >= itemToDB.getColorhues().size())
 					   itemToDB.getColorhues().add(i, new ColorHue(itemToDB.getItemcode())); 
-				   if(colorHue.getColorHue() != null) itemToDB.getColorhues().get(i).setColorHue(colorHue.getColorHue());
+				   if(colorHue.getColorHue() != null) 
+					   itemToDB.getColorhues().get(i).setColorHue(colorHue.getColorHue());
 			   }	   
 			}
-	        itemToDB.setColorcategory(ImsDataUtil.convertColorHuesToColorCategory(inputColorHues));
-		
-		}//obtain ColorHue objects from colorCategory in the input, in order to sync the color_hue table with ims table, if the input doesn't contain associated colueHue
-		else if(itemFromInput.getColorcategory() != null && !itemFromInput.getColorcategory().isEmpty()){
-			inputColorHues = ImsDataUtil.convertColorCategoryToColorHueObjects(itemFromInput.getColorcategory());
-			for(ColorHue color : inputColorHues){	
-			    if(color != null && color.getColorHue() != null && !color.getColorHue().isEmpty())
-				   itemToDB.addColorhue(color);	
-			}
 		}
-*/	    //---------- vendors data ----------//
+	    //---------- vendors data ----------//
 		if(inputItemVendors != null && !inputItemVendors.isEmpty()){
 		   if(operation.equals(DBOperation.CREATE)|| //brand new Product
 		     (operation.equals(DBOperation.UPDATE) && (itemToDB.getNewVendorSystem() == null || itemToDB.getNewVendorSystem().isEmpty()))){ //existing Product, but brand new ItemVendors
@@ -739,391 +754,411 @@ public class ImsDataUtil {
 	}
 
 	private static synchronized void transferComponent(Ims itemToDB, Ims itemFromInput) throws BedDAOBadParamException{
-	  try{
-		if(itemFromInput.getApplications() != null) 
-		   itemToDB.setApplications(itemFromInput.getApplications());
-		else if(itemFromInput.getUsage() != null) 
-		   itemToDB.setApplications(convertUsageToApplications(itemFromInput.getUsage()));	
-		if(itemFromInput.getCost() != null) itemToDB.setCost(itemFromInput.getCost());
-		if(itemFromInput.getDimensions() != null) itemToDB.setDimensions(itemFromInput.getDimensions());
-		if(itemFromInput.getItemdesc() != null) itemToDB.setItemdesc(itemFromInput.getItemdesc());
-		if(itemFromInput.getMaterial() != null) itemToDB.setMaterial(itemFromInput.getMaterial());
-		if(itemFromInput.getNotes() != null) itemToDB.setNotes(itemFromInput.getNotes());
-		if(itemFromInput.getPackaginginfo() != null) itemToDB.setPackaginginfo(itemFromInput.getPackaginginfo());
-		//if(itemFromInput.getPriorVendor() != null) itemToDB.setPriorVendor(itemFromInput.getPriorVendor());
-		if(itemFromInput.getPurchasers() != null) itemToDB.setPurchasers(itemFromInput.getPurchasers());
-		if(itemFromInput.getRelateditemcodes() != null) itemToDB.setRelateditemcodes(itemFromInput.getRelateditemcodes());
-		if(itemFromInput.getSeries() != null) itemToDB.setSeries(itemFromInput.getSeries());
-		if(itemFromInput.getTestSpecification() != null) itemToDB.setTestSpecification(itemFromInput.getTestSpecification());
-		if(itemFromInput.getVendors() != null && !itemFromInput.getVendors().isDefault()) itemToDB.setVendors(itemFromInput.getVendors());
-		if(itemFromInput.getPrice() != null){
-			Price price = itemFromInput.getPrice();
-			if(price.getSellpricemarginpct() == null)
+	   try{
+		  if(itemFromInput.getApplications() != null) 
+		     itemToDB.setApplications(itemFromInput.getApplications());
+		  else if(itemFromInput.getUsage() != null) 
+		     itemToDB.setApplications(convertUsageToApplications(itemFromInput.getUsage()));	
+		  if(itemFromInput.getCost() != null) itemToDB.setCost(itemFromInput.getCost());
+		  if(itemFromInput.getDimensions() != null) itemToDB.setDimensions(itemFromInput.getDimensions());
+		  if(itemFromInput.getItemdesc() != null) itemToDB.setItemdesc(itemFromInput.getItemdesc());
+		  if(itemFromInput.getMaterial() != null) itemToDB.setMaterial(itemFromInput.getMaterial());
+		  if(itemFromInput.getNotes() != null) itemToDB.setNotes(itemFromInput.getNotes());
+		  if(itemFromInput.getPackaginginfo() != null) itemToDB.setPackaginginfo(itemFromInput.getPackaginginfo());
+		  //if(itemFromInput.getPriorVendor() != null) itemToDB.setPriorVendor(itemFromInput.getPriorVendor());
+		  if(itemFromInput.getPurchasers() != null) itemToDB.setPurchasers(itemFromInput.getPurchasers());
+		  if(itemFromInput.getRelateditemcodes() != null) itemToDB.setRelateditemcodes(itemFromInput.getRelateditemcodes());
+		  if(itemFromInput.getSeries() != null) itemToDB.setSeries(itemFromInput.getSeries());
+		  if(itemFromInput.getTestSpecification() != null) itemToDB.setTestSpecification(itemFromInput.getTestSpecification());
+		  if(itemFromInput.getVendors() != null && !itemFromInput.getVendors().isDefault()) itemToDB.setVendors(itemFromInput.getVendors());
+		  if(itemFromInput.getPrice() != null){
+			 Price price = itemFromInput.getPrice();
+			 if(price.getSellpricemarginpct() == null)
 				price.setSellpricemarginpct(0f);
-			if(price.getSellpriceroundaccuracy() == null)
+			 if(price.getSellpriceroundaccuracy() == null)
 				price.setSellpriceroundaccuracy(0);
-			if(price.getListpricemarginpct() == null)
+			 if(price.getListpricemarginpct() == null)
 				price.setListpricemarginpct(0f);
 			itemToDB.setPrice(price);
-		}
-		
-		if(itemFromInput.getUnits() != null && !itemFromInput.getUnits().isDefault()){
-			Units units = itemFromInput.getUnits();
+		  }
+		  if(itemFromInput.getUnits() != null && !itemFromInput.getUnits().isDefault()){
+		  	 Units units = itemFromInput.getUnits();
 			if(units.getBaseunit() == null)
 			   units.setBaseunit("PCS");		
 			itemToDB.setUnits(units);
-		}
-	  }
-	  catch(Exception e){
-			  throw new BedDAOBadParamException("Error occured while transferComponent(): " + e.getMessage(), e.getCause());	
-	  }		
+		  }
+	   }
+	   catch(Exception e){
+		  throw new BedDAOBadParamException("Error occured while transferComponent(): " + e.getMessage(), e.getCause());	
+	   }		
 	}
 
 	private static synchronized void transferComponentForUpdate(Ims itemToDB, Ims itemFromInput) throws BedDAOBadParamException{
-		  try{
-			   //description
-			   if(itemFromInput.getItemdesc() != null){
-				  if(itemFromInput.getItemdesc().getFulldesc() != null) 
-				 	 itemToDB.getItemdesc().setFulldesc(itemFromInput.getItemdesc().getFulldesc());
-				  if(itemFromInput.getItemdesc().getItemdesc1() != null) 
-					 itemToDB.getItemdesc().setItemdesc1(itemFromInput.getItemdesc().getItemdesc1());
-			   }
-			   //material
-			   if(itemFromInput.getMaterial() != null){
-				  if(itemFromInput.getMaterial().getMaterialcategory() != null) 
-					 itemToDB.getMaterial().setMaterialcategory(itemFromInput.getMaterial().getMaterialcategory());
-				  if(itemFromInput.getMaterial().getMaterialclass() != null) 
-					 itemToDB.getMaterial().setMaterialclass(itemFromInput.getMaterial().getMaterialclass());
-				  if(itemFromInput.getMaterial().getMaterialfeature() != null) 
-					 itemToDB.getMaterial().setMaterialfeature(itemFromInput.getMaterial().getMaterialfeature());
-			      if(itemFromInput.getMaterial().getMaterialstyle() != null) 
-			    	 itemToDB.getMaterial().setMaterialstyle(itemFromInput.getMaterial().getMaterialstyle());
-				  if(itemFromInput.getMaterial().getMaterialtype() != null) 
-					 itemToDB.getMaterial().setMaterialtype(itemFromInput.getMaterial().getMaterialtype());
-			   }
-			   //series
-			   if(itemFromInput.getSeries() != null){
-				  if(itemFromInput.getSeries().getSeriesname() != null) 
-					 itemToDB.getSeries().setSeriesname(itemFromInput.getSeries().getSeriesname());
-				  if(itemFromInput.getSeries().getSeriescolor() != null) 
-					 itemToDB.getSeries().setSeriescolor(itemFromInput.getSeries().getSeriescolor());
-			   }
-			   //dimension
-			   if(itemFromInput.getDimensions() != null){
-			  	  if(itemFromInput.getDimensions().getLength() != null) 
-			  	     itemToDB.getDimensions().setLength(itemFromInput.getDimensions().getLength());
-			  	  if(itemFromInput.getDimensions().getWidth() != null) 
-			  		 itemToDB.getDimensions().setWidth(itemFromInput.getDimensions().getWidth());
-			  	  if(itemFromInput.getDimensions().getThickness() != null) 
-			  		 itemToDB.getDimensions().setThickness(itemFromInput.getDimensions().getThickness());
-			  	  if(itemFromInput.getDimensions().getNominallength() != null) 
-			  		 itemToDB.getDimensions().setNominallength(itemFromInput.getDimensions().getNominallength());
-			  	  if(itemFromInput.getDimensions().getNominalthickness() != null) 
-			  		 itemToDB.getDimensions().setNominalthickness(itemFromInput.getDimensions().getNominalthickness());
-			  	  if(itemFromInput.getDimensions().getNominalwidth() != null) 
-			  		 itemToDB.getDimensions().setNominalwidth(itemFromInput.getDimensions().getNominalwidth());
-			  	  if(itemFromInput.getDimensions().getSizeunits() != null) 
-			  		 itemToDB.getDimensions().setSizeunits(itemFromInput.getDimensions().getSizeunits());
-			   	  if(itemFromInput.getDimensions().getThicknessunit() != null) 
-			  		 itemToDB.getDimensions().setThicknessunit(itemFromInput.getDimensions().getThicknessunit());
-			   }
-			   //price 
-			   if(itemFromInput.getPrice() != null && !itemFromInput.getPrice().isDefault()){
-				  Price newPrice = itemFromInput.getPrice();
-				  if(newPrice.getFuturesell() != null) 
-					 itemToDB.getPrice().setFuturesell(newPrice.getFuturesell());
-				  if(newPrice.getListprice() != null) 
-				 	 itemToDB.getPrice().setListprice(newPrice.getListprice());
-				  if(newPrice.getListpricemarginpct() != null && newPrice.getListpricemarginpct() != 0F) 
-				 	 itemToDB.getPrice().setListpricemarginpct(newPrice.getListpricemarginpct());
-				  if(newPrice.getSellprice() != null) 
-					 itemToDB.getPrice().setSellprice(newPrice.getSellprice());
-				  if(newPrice.getSellpricemarginpct() != null && newPrice.getSellpricemarginpct() != 0F) 
-					 itemToDB.getPrice().setSellpricemarginpct(newPrice.getSellpricemarginpct());
-				  if(newPrice.getSellpriceroundaccuracy() != null && newPrice.getSellpriceroundaccuracy() != 0) 
-					 itemToDB.getPrice().setSellpriceroundaccuracy(newPrice.getSellpriceroundaccuracy());
-				  if(newPrice.getMinmarginpct() != null) 
-					 itemToDB.getPrice().setMinmarginpct(newPrice.getMinmarginpct());
-				  if(newPrice.getPricegroup() != null) 
-					 itemToDB.getPrice().setPricegroup(newPrice.getPricegroup());
-				  if(newPrice.getPriceunit() != null) 
-					 itemToDB.getPrice().setPriceunit(newPrice.getPriceunit());
-				  if(newPrice.getPriorlistprice() != null) 
-					 itemToDB.getPrice().setPriorlistprice(newPrice.getPriorlistprice());
-				  if(newPrice.getPriorsellprice() != null) 
-					 itemToDB.getPrice().setPriorsellprice(newPrice.getPriorsellprice());
-				  if(newPrice.getTempprice() != null) 
-					 itemToDB.getPrice().setTempprice(newPrice.getTempprice());
-				  if(newPrice.getTempdatefrom() != null) 
-					 itemToDB.getPrice().setTempdatefrom(newPrice.getTempdatefrom());
-				  if(newPrice.getTempdatethru() != null) 
-					 itemToDB.getPrice().setTempdatethru(newPrice.getTempdatethru());	
-			  } 
-			  //cost
-			  if(itemFromInput.getCost() != null){
-				  if(itemFromInput.getCost().getCost1() != null)
-					 itemToDB.getCost().setCost1(itemFromInput.getCost().getCost1());
-				  if(itemFromInput.getCost().getCostrangepct() != null)
-					 itemToDB.getCost().setCostrangepct(itemFromInput.getCost().getCostrangepct()); 
-				  if(itemFromInput.getCost().getFuturecost() != null)
-					 itemToDB.getCost().setFuturecost(itemFromInput.getCost().getFuturecost());
-				  if(itemFromInput.getCost().getNonstockcostpct() != null)
-					 itemToDB.getCost().setNonstockcostpct(itemFromInput.getCost().getNonstockcostpct()); 
-				  if(itemFromInput.getCost().getPoincludeinvendorcost() != null)
-					 itemToDB.getCost().setPoincludeinvendorcost(itemFromInput.getCost().getPoincludeinvendorcost()); 
-				  if(itemFromInput.getCost().getPriorcost() != null)
-					 itemToDB.getCost().setPriorcost(itemFromInput.getCost().getPriorcost()); 
-			  }
-			  //applications
-			  if(itemFromInput.getApplications() != null){
-				  if(itemFromInput.getApplications().getCommercial() != null)
-					  itemToDB.getApplications().setCommercial(itemFromInput.getApplications().getCommercial()); 
-				  if(itemFromInput.getApplications().getLightcommercial() != null)
-					  itemToDB.getApplications().setLightcommercial(itemFromInput.getApplications().getLightcommercial());
-				  if(itemFromInput.getApplications().getResidential() != null)	
-					  itemToDB.getApplications().setResidential(itemFromInput.getApplications().getResidential());	  
-			  }
-			  //update applications fields with usage input data when applications data is not available
-			  else if(itemFromInput.getUsage() != null){ 
-				  Applications applications = convertUsageToApplications(itemFromInput.getUsage());
-				  itemToDB.setApplications(new Applications());
-				  if(applications != null && applications.getCommercial() != null && !applications.getCommercial().isEmpty())
-					  itemToDB.getApplications().setCommercial(applications.getCommercial()); 
-				  if(applications != null && applications.getLightcommercial() != null && !applications.getLightcommercial().isEmpty())
-					  itemToDB.getApplications().setLightcommercial(applications.getLightcommercial());
-				  if(applications != null && applications.getResidential() != null && !applications.getResidential().isEmpty())
-					  itemToDB.getApplications().setResidential(applications.getResidential());
-			  }	  
-			  //notes
-	 		  if(itemFromInput.getNotes() != null){
-				if(itemToDB.getNotes() == null)
-					itemToDB.setNotes(new Notes());
-				if(itemFromInput.getNotes().getBuyernotes() != null)
-					itemToDB.getNotes().setBuyernotes(itemFromInput.getNotes().getBuyernotes());
-				if(itemFromInput.getNotes().getInternalnotes() != null) 
-					itemToDB.getNotes().setInternalnotes(itemFromInput.getNotes().getInternalnotes());
-				if(itemFromInput.getNotes().getInvoicenotes() != null) 
-					itemToDB.getNotes().setInvoicenotes(itemFromInput.getNotes().getInvoicenotes());
-				if(itemFromInput.getNotes().getPonotes() != null) 
-					itemToDB.getNotes().setPonotes(itemFromInput.getNotes().getPonotes());
-			}
-			//purchaser
-			if(itemFromInput.getPurchasers() != null){
-				if(itemFromInput.getPurchasers().getPurchaser() != null) 
-					itemToDB.getPurchasers().setPurchaser(itemFromInput.getPurchasers().getPurchaser()); 
-				if(itemFromInput.getPurchasers().getPurchaser2() != null) 
-					itemToDB.getPurchasers().setPurchaser2(itemFromInput.getPurchasers().getPurchaser2()); 
-			}
-			//related items
-			if(itemFromInput.getRelateditemcodes() != null){
-				if(itemFromInput.getRelateditemcodes().getSimilaritemcd1() != null)
-				   itemToDB.getRelateditemcodes().setSimilaritemcd1(itemFromInput.getRelateditemcodes().getSimilaritemcd1());	
-				if(itemFromInput.getRelateditemcodes().getSimilaritemcd2() != null)
-				   itemToDB.getRelateditemcodes().setSimilaritemcd2(itemFromInput.getRelateditemcodes().getSimilaritemcd2());	
-				if(itemFromInput.getRelateditemcodes().getSimilaritemcd3() != null)
-				   itemToDB.getRelateditemcodes().setSimilaritemcd3(itemFromInput.getRelateditemcodes().getSimilaritemcd3());	
-				if(itemFromInput.getRelateditemcodes().getSimilaritemcd4() != null)
-				   itemToDB.getRelateditemcodes().setSimilaritemcd4(itemFromInput.getRelateditemcodes().getSimilaritemcd4());	
-				if(itemFromInput.getRelateditemcodes().getSimilaritemcd5() != null)
-				   itemToDB.getRelateditemcodes().setSimilaritemcd5(itemFromInput.getRelateditemcodes().getSimilaritemcd5());	
-				if(itemFromInput.getRelateditemcodes().getSimilaritemcd6() != null)
-				   itemToDB.getRelateditemcodes().setSimilaritemcd6(itemFromInput.getRelateditemcodes().getSimilaritemcd6());	
-				if(itemFromInput.getRelateditemcodes().getSimilaritemcd7() != null)
-				   itemToDB.getRelateditemcodes().setSimilaritemcd7(itemFromInput.getRelateditemcodes().getSimilaritemcd7());	
-			}
-			//test spec
-			if(itemFromInput.getTestSpecification() != null){
-			   if(itemFromInput.getTestSpecification().getBondstrength() != null)
-			  	  itemToDB.getTestSpecification().setBondstrength(itemFromInput.getTestSpecification().getBondstrength());
-			   if(itemFromInput.getTestSpecification().getBreakingstandard() != null)
-			  	  itemToDB.getTestSpecification().setBreakingstandard(itemFromInput.getTestSpecification().getBreakingstandard());
-			   if(itemFromInput.getTestSpecification().getBreakingstrength() != null)
-			  	  itemToDB.getTestSpecification().setBreakingstrength(itemFromInput.getTestSpecification().getBreakingstrength());
-			   if(itemFromInput.getTestSpecification().getChemicalresistance() != null)
-			  	  itemToDB.getTestSpecification().setChemicalresistance(itemFromInput.getTestSpecification().getChemicalresistance());
-			   if(itemFromInput.getTestSpecification().getDcof() != null)
-			  	  itemToDB.getTestSpecification().setDcof(itemFromInput.getTestSpecification().getDcof());
-			   if(itemFromInput.getTestSpecification().getFrostresistance() != null)
-			  	  itemToDB.getTestSpecification().setFrostresistance(itemFromInput.getTestSpecification().getFrostresistance());
-			   if(itemFromInput.getTestSpecification().getGreenfriendly() != null)
-			  	  itemToDB.getTestSpecification().setGreenfriendly(itemFromInput.getTestSpecification().getGreenfriendly());
-			   if(itemFromInput.getTestSpecification().getLeadpoint() != null)
-			  	  itemToDB.getTestSpecification().setLeadpoint(itemFromInput.getTestSpecification().getLeadpoint());
-			   if(itemFromInput.getTestSpecification().getMoh() != null)
-			  	  itemToDB.getTestSpecification().setMoh(itemFromInput.getTestSpecification().getMoh());
-			   if(itemFromInput.getTestSpecification().getPeiabrasion() != null)
-			  	  itemToDB.getTestSpecification().setPeiabrasion(itemFromInput.getTestSpecification().getPeiabrasion());
-			   if(itemFromInput.getTestSpecification().getPosconsummer() != null)
-			  	  itemToDB.getTestSpecification().setPosconsummer(itemFromInput.getTestSpecification().getPosconsummer());
-			   if(itemFromInput.getTestSpecification().getPreconsummer() != null)
-			  	  itemToDB.getTestSpecification().setPreconsummer(itemFromInput.getTestSpecification().getPreconsummer());
-			   if(itemFromInput.getTestSpecification().getRestricted() != null)
-			  	  itemToDB.getTestSpecification().setRestricted(itemFromInput.getTestSpecification().getRestricted());
-			   if(itemFromInput.getTestSpecification().getScofdry() != null)
-			  	  itemToDB.getTestSpecification().setScofdry(itemFromInput.getTestSpecification().getScofdry());
-			   if(itemFromInput.getTestSpecification().getScofwet() != null)
-			  	  itemToDB.getTestSpecification().setScofwet(itemFromInput.getTestSpecification().getScofwet());
- 			   if(itemFromInput.getTestSpecification().getScratchresistance() != null)
-			  	  itemToDB.getTestSpecification().setScratchresistance(itemFromInput.getTestSpecification().getScratchresistance());
-			   if(itemFromInput.getTestSpecification().getScratchstandard() != null)
-			  	  itemToDB.getTestSpecification().setScratchstandard(itemFromInput.getTestSpecification().getScratchstandard());
-			   if(itemFromInput.getTestSpecification().getThermalshock() != null)
-			  	  itemToDB.getTestSpecification().setThermalshock(itemFromInput.getTestSpecification().getThermalshock()); 
-			   if(itemFromInput.getTestSpecification().getWarpage() != null)
-			  	  itemToDB.getTestSpecification().setWarpage(itemFromInput.getTestSpecification().getWarpage());
-			   if(itemFromInput.getTestSpecification().getWaterabsorption() != null)
-			  	  itemToDB.getTestSpecification().setWaterabsorption(itemFromInput.getTestSpecification().getWaterabsorption());
-			   if(itemFromInput.getTestSpecification().getWedging() != null)
-			  	  itemToDB.getTestSpecification().setWedging(itemFromInput.getTestSpecification().getWedging());
-			}
-			//vendor info
-			if(itemFromInput.getVendors() != null && !itemFromInput.getVendors().isDefault()){
-			   if(itemFromInput.getVendors().getDutypct() != null)
-				  itemToDB.getVendors().setDutypct(itemFromInput.getVendors().getDutypct());
-			   if(itemFromInput.getVendors().getVendordiscpct() != null && itemFromInput.getVendors().getVendordiscpct() !=0 )
-				  itemToDB.getVendors().setVendordiscpct(itemFromInput.getVendors().getVendordiscpct());
-			   if(itemFromInput.getVendors().getVendordiscpct2() != null && itemFromInput.getVendors().getVendordiscpct2() !=0 ) 
-				  itemToDB.getVendors().setVendordiscpct2(itemFromInput.getVendors().getVendordiscpct2());
-			   if(itemFromInput.getVendors().getVendordiscpct3() != null && itemFromInput.getVendors().getVendordiscpct3() !=0 )
-				  itemToDB.getVendors().setVendordiscpct3(itemFromInput.getVendors().getVendordiscpct3());
-			   if(itemFromInput.getVendors().getLeadtime() != null)
-				  itemToDB.getVendors().setLeadtime(itemFromInput.getVendors().getLeadtime());
-			   if(itemFromInput.getVendors().getVendorfob() != null)
-				  itemToDB.getVendors().setVendorfob(itemFromInput.getVendors().getVendorfob());
-			   if(itemFromInput.getVendors().getVendorfreightratecwt() != null)
-				  itemToDB.getVendors().setVendorfreightratecwt(itemFromInput.getVendors().getVendorfreightratecwt());
-			   if(itemFromInput.getVendors().getVendorlandedbasecost() != null && itemFromInput.getVendors().getVendorlandedbasecost().compareTo(BigDecimal.ZERO) != 0)
-				  itemToDB.getVendors().setVendorlandedbasecost(itemFromInput.getVendors().getVendorlandedbasecost());
-			   if(itemFromInput.getVendors().getVendorlistprice() != null && itemFromInput.getVendors().getVendorlistprice().compareTo(BigDecimal.ZERO) != 0)
-				  itemToDB.getVendors().setVendorlistprice(itemFromInput.getVendors().getVendorlistprice());
-			   if(itemFromInput.getVendors().getVendormarkuppct() != null)
-				  itemToDB.getVendors().setVendormarkuppct(itemFromInput.getVendors().getVendormarkuppct());
-			   if(itemFromInput.getVendors().getVendornbr() != null)
-				  itemToDB.getVendors().setVendornbr(itemFromInput.getVendors().getVendornbr());
-			   if(itemFromInput.getVendors().getVendornbr1() != null)
-				  itemToDB.getVendors().setVendornbr1(itemFromInput.getVendors().getVendornbr1());
-			   if(itemFromInput.getVendors().getVendornbr2() != null)
-				  itemToDB.getVendors().setVendornbr2(itemFromInput.getVendors().getVendornbr2());
-			   if(itemFromInput.getVendors().getVendornetprice() != null && itemFromInput.getVendors().getVendornetprice().compareTo(BigDecimal.ZERO) != 0)
-				  itemToDB.getVendors().setVendornetprice(itemFromInput.getVendors().getVendornetprice());
-			   if(itemFromInput.getVendors().getVendorpriceunit() != null && !itemFromInput.getVendors().getVendorpriceunit().equalsIgnoreCase("PCS"))
-				  itemToDB.getVendors().setVendorpriceunit(itemFromInput.getVendors().getVendorpriceunit());
-			   if(itemFromInput.getVendors().getVendorroundaccuracy() != null && itemFromInput.getVendors().getVendorroundaccuracy() != 1)
-				  itemToDB.getVendors().setVendorroundaccuracy(itemFromInput.getVendors().getVendorroundaccuracy());
-			   if(itemFromInput.getVendors().getVendorxrefcd() != null)
-				  itemToDB.getVendors().setVendorxrefcd(itemFromInput.getVendors().getVendorxrefcd());
-			}
-			//units
-			if(itemFromInput.getUnits() != null && !itemFromInput.getUnits().isDefault()){
-				//----general----//
-				if(itemFromInput.getUnits().getOrdratio() != null && itemFromInput.getUnits().getOrdratio() != 0)
-				   itemToDB.getUnits().setOrdratio(itemFromInput.getUnits().getOrdratio());
-				if(itemFromInput.getUnits().getOrdunit() != null)
-				   itemToDB.getUnits().setOrdunit(itemFromInput.getUnits().getOrdunit());
-			    if(itemFromInput.getUnits().getStdratio() != null && itemFromInput.getUnits().getStdratio() != 0)
-				   itemToDB.getUnits().setStdratio(itemFromInput.getUnits().getStdratio());	
-			   //---base unit----//	
-			   if(itemFromInput.getUnits().getBaseisfractqty() != null)
-				  itemToDB.getUnits().setBaseisfractqty(itemFromInput.getUnits().getBaseisfractqty());
-			   if(itemFromInput.getUnits().getBaseispackunit() != null)
-				  itemToDB.getUnits().setBaseispackunit(itemFromInput.getUnits().getBaseispackunit());
-			   if(itemFromInput.getUnits().getBaseisstdord() != null)
-				  itemToDB.getUnits().setBaseisstdord(itemFromInput.getUnits().getBaseisstdord());
-			   if(itemFromInput.getUnits().getBaseisstdsell() != null)
-				  itemToDB.getUnits().setBaseisstdsell(itemFromInput.getUnits().getBaseisstdsell());
-			   if(itemFromInput.getUnits().getBaseunit() != null)
-				  itemToDB.getUnits().setBaseunit(itemFromInput.getUnits().getBaseunit());
-			   if(itemFromInput.getUnits().getBaseupc() != null)
-				  itemToDB.getUnits().setBaseupc(itemFromInput.getUnits().getBaseupc());
-			   if(itemFromInput.getUnits().getBaseupcdesc() != null)
-				  itemToDB.getUnits().setBaseupcdesc(itemFromInput.getUnits().getBaseupcdesc());
-			   if(itemFromInput.getUnits().getBasevolperunit() != null)
-				  itemToDB.getUnits().setBasevolperunit(itemFromInput.getUnits().getBasevolperunit());
-			   if(itemFromInput.getUnits().getBasewgtperunit() != null)
-				  itemToDB.getUnits().setBasewgtperunit(itemFromInput.getUnits().getBasewgtperunit());
-			   //---unit 1----//
-			   if(itemFromInput.getUnits().getUnit1isfractqty() != null)
-				  itemToDB.getUnits().setUnit1isfractqty(itemFromInput.getUnits().getUnit1isfractqty());
-			   if(itemFromInput.getUnits().getUnit1ispackunit() != null)
-				  itemToDB.getUnits().setUnit1ispackunit(itemFromInput.getUnits().getUnit1ispackunit());
-			   if(itemFromInput.getUnits().getUnit1isstdord() != null)
-				  itemToDB.getUnits().setUnit1isstdord(itemFromInput.getUnits().getUnit1isstdord());
-			   if(itemFromInput.getUnits().getUnit1isstdsell() != null)
-				  itemToDB.getUnits().setUnit1isstdsell(itemFromInput.getUnits().getUnit1isstdsell());
-			   if(itemFromInput.getUnits().getUnit1ratio() != null)
-				  itemToDB.getUnits().setUnit1ratio(itemFromInput.getUnits().getUnit1ratio());
-			   if(itemFromInput.getUnits().getUnit1unit() != null)
-				  itemToDB.getUnits().setUnit1unit(itemFromInput.getUnits().getUnit1unit());
-			   if(itemFromInput.getUnits().getUnit1upc() != null)
-				  itemToDB.getUnits().setUnit1upc(itemFromInput.getUnits().getUnit1upc());
-			   if(itemFromInput.getUnits().getUnit1upcdesc() != null)
-				  itemToDB.getUnits().setUnit1upcdesc(itemFromInput.getUnits().getUnit1upcdesc());
-			   if(itemFromInput.getUnits().getUnit1wgtperunit() != null)
-				  itemToDB.getUnits().setUnit1wgtperunit(itemFromInput.getUnits().getUnit1wgtperunit());
-			   //---unit 2----//
-			   if(itemFromInput.getUnits().getUnit2isfractqty() != null)
-				  itemToDB.getUnits().setUnit2isfractqty(itemFromInput.getUnits().getUnit2isfractqty());
-			   if(itemFromInput.getUnits().getUnit2ispackunit() != null)
-				  itemToDB.getUnits().setUnit2ispackunit(itemFromInput.getUnits().getUnit2ispackunit());
-			   if(itemFromInput.getUnits().getUnit2isstdord() != null)
-				  itemToDB.getUnits().setUnit2isstdord(itemFromInput.getUnits().getUnit2isstdord());
-			   if(itemFromInput.getUnits().getUnit2isstdsell() != null)
-				  itemToDB.getUnits().setUnit2isstdsell(itemFromInput.getUnits().getUnit2isstdsell());
-			   if(itemFromInput.getUnits().getUnit2ratio() != null)
-				  itemToDB.getUnits().setUnit2ratio(itemFromInput.getUnits().getUnit2ratio());
-			   if(itemFromInput.getUnits().getUnit2unit() != null)
-				  itemToDB.getUnits().setUnit2unit(itemFromInput.getUnits().getUnit2unit());
-			   if(itemFromInput.getUnits().getUnit2upc() != null)
-				  itemToDB.getUnits().setUnit2upc(itemFromInput.getUnits().getUnit2upc());
-			   if(itemFromInput.getUnits().getUnit2upcdesc() != null)
-				  itemToDB.getUnits().setUnit2upcdesc(itemFromInput.getUnits().getUnit2upcdesc());
-			   if(itemFromInput.getUnits().getUnit2wgtperunit() != null)
-				  itemToDB.getUnits().setUnit2wgtperunit(itemFromInput.getUnits().getUnit2wgtperunit());
-			   //---unit 3----//
-			   if(itemFromInput.getUnits().getUnit3isfractqty() != null)
-				  itemToDB.getUnits().setUnit3isfractqty(itemFromInput.getUnits().getUnit3isfractqty());
-			   if(itemFromInput.getUnits().getUnit3ispackunit() != null)
-				  itemToDB.getUnits().setUnit3ispackunit(itemFromInput.getUnits().getUnit3ispackunit());
-			   if(itemFromInput.getUnits().getUnit3isstdord() != null)
-				  itemToDB.getUnits().setUnit3isstdord(itemFromInput.getUnits().getUnit3isstdord());
-			   if(itemFromInput.getUnits().getUnit3isstdsell() != null)
-				  itemToDB.getUnits().setUnit3isstdsell(itemFromInput.getUnits().getUnit3isstdsell());
-			   if(itemFromInput.getUnits().getUnit3ratio() != null)
-				  itemToDB.getUnits().setUnit3ratio(itemFromInput.getUnits().getUnit3ratio());
-			   if(itemFromInput.getUnits().getUnit3unit() != null)
-				  itemToDB.getUnits().setUnit3unit(itemFromInput.getUnits().getUnit3unit());
-			   if(itemFromInput.getUnits().getUnit3upc() != null)
-				  itemToDB.getUnits().setUnit3upc(itemFromInput.getUnits().getUnit3upc());
-			   if(itemFromInput.getUnits().getUnit3upcdesc() != null)
-				  itemToDB.getUnits().setUnit3upcdesc(itemFromInput.getUnits().getUnit3upcdesc());
-			   if(itemFromInput.getUnits().getUnit3wgtperunit() != null)
-				  itemToDB.getUnits().setUnit3wgtperunit(itemFromInput.getUnits().getUnit3wgtperunit());
-			   //---unit 4----//
-			   if(itemFromInput.getUnits().getUnit4isfractqty() != null)
-				  itemToDB.getUnits().setUnit4isfractqty(itemFromInput.getUnits().getUnit4isfractqty());
-			   if(itemFromInput.getUnits().getUnit4ispackunit() != null)
-				  itemToDB.getUnits().setUnit4ispackunit(itemFromInput.getUnits().getUnit4ispackunit());
-			   if(itemFromInput.getUnits().getUnit4isstdord() != null)
-				  itemToDB.getUnits().setUnit4isstdord(itemFromInput.getUnits().getUnit4isstdord());
-			   if(itemFromInput.getUnits().getUnit4isstdsell() != null)
-				  itemToDB.getUnits().setUnit4isstdsell(itemFromInput.getUnits().getUnit4isstdsell());
-			   if(itemFromInput.getUnits().getUnit4ratio() != null)
-				  itemToDB.getUnits().setUnit4ratio(itemFromInput.getUnits().getUnit4ratio());
-			   if(itemFromInput.getUnits().getUnit4unit() != null)
-				  itemToDB.getUnits().setUnit4unit(itemFromInput.getUnits().getUnit4unit());
-			   if(itemFromInput.getUnits().getUnit4upc() != null)
-				  itemToDB.getUnits().setUnit4upc(itemFromInput.getUnits().getUnit4upc());
-			   if(itemFromInput.getUnits().getUnit4upcdesc() != null)
-				  itemToDB.getUnits().setUnit4upcdesc(itemFromInput.getUnits().getUnit4upcdesc());
-			   if(itemFromInput.getUnits().getUnit4wgtperunit() != null)
-				  itemToDB.getUnits().setUnit4wgtperunit(itemFromInput.getUnits().getUnit4wgtperunit());
-				
-				//if(itemFromInput.getPriorVendor() != null) itemToDB.setPriorVendor(itemFromInput.getPriorVendor());
-	    	}
+	   try{
+		   //description
+		   if(itemFromInput.getItemdesc() != null){
+			  if(itemFromInput.getItemdesc().getFulldesc() != null) 
+			 	 itemToDB.getItemdesc().setFulldesc(itemFromInput.getItemdesc().getFulldesc());
+			  if(itemFromInput.getItemdesc().getItemdesc1() != null) 
+				  itemToDB.getItemdesc().setItemdesc1(itemFromInput.getItemdesc().getItemdesc1());
+		   }
+		   //material
+		   if(itemFromInput.getMaterial() != null){
+			  if(itemToDB.getMaterial() == null)
+			     itemToDB.setMaterial(new Material()); 
+			  if(itemFromInput.getMaterial().getMaterialcategory() != null) 
+				 itemToDB.getMaterial().setMaterialcategory(itemFromInput.getMaterial().getMaterialcategory());
+			  if(itemFromInput.getMaterial().getMaterialclass() != null) 
+				 itemToDB.getMaterial().setMaterialclass(itemFromInput.getMaterial().getMaterialclass());
+			  if(itemFromInput.getMaterial().getMaterialfeature() != null) 
+				 itemToDB.getMaterial().setMaterialfeature(itemFromInput.getMaterial().getMaterialfeature());
+			  if(itemFromInput.getMaterial().getMaterialstyle() != null) 
+			   	 itemToDB.getMaterial().setMaterialstyle(itemFromInput.getMaterial().getMaterialstyle());
+			  if(itemFromInput.getMaterial().getMaterialtype() != null) 
+				 itemToDB.getMaterial().setMaterialtype(itemFromInput.getMaterial().getMaterialtype());
+		   }
+		   //series
+		   if(itemFromInput.getSeries() != null){
+			  if(itemToDB.getSeries() == null)
+				 itemToDB.setSeries(new Series()); 
+			  if(itemFromInput.getSeries().getSeriesname() != null) 
+				 itemToDB.getSeries().setSeriesname(itemFromInput.getSeries().getSeriesname());
+			  if(itemFromInput.getSeries().getSeriescolor() != null) 
+				 itemToDB.getSeries().setSeriescolor(itemFromInput.getSeries().getSeriescolor());
+		   }
+		   //dimension
+		   if(itemFromInput.getDimensions() != null){
+			  if(itemToDB.getDimensions() == null)
+			     itemToDB.setDimensions(new Dimensions()); 
+	   	      if(itemFromInput.getDimensions().getLength() != null) 
+			     itemToDB.getDimensions().setLength(itemFromInput.getDimensions().getLength());
+		  	  if(itemFromInput.getDimensions().getWidth() != null) 
+		  		 itemToDB.getDimensions().setWidth(itemFromInput.getDimensions().getWidth());
+		  	  if(itemFromInput.getDimensions().getThickness() != null) 
+			  	 itemToDB.getDimensions().setThickness(itemFromInput.getDimensions().getThickness());
+			  if(itemFromInput.getDimensions().getNominallength() != null) 
+		  		 itemToDB.getDimensions().setNominallength(itemFromInput.getDimensions().getNominallength());
+		  	  if(itemFromInput.getDimensions().getNominalthickness() != null) 
+		  		 itemToDB.getDimensions().setNominalthickness(itemFromInput.getDimensions().getNominalthickness());
+		 	  if(itemFromInput.getDimensions().getNominalwidth() != null) 
+		 		 itemToDB.getDimensions().setNominalwidth(itemFromInput.getDimensions().getNominalwidth());
+		  	  if(itemFromInput.getDimensions().getSizeunits() != null) 
+			  	 itemToDB.getDimensions().setSizeunits(itemFromInput.getDimensions().getSizeunits());
+			  if(itemFromInput.getDimensions().getThicknessunit() != null) 
+		  		 itemToDB.getDimensions().setThicknessunit(itemFromInput.getDimensions().getThicknessunit());
+		   }
+		   //price 
+		   if(itemFromInput.getPrice() != null && !itemFromInput.getPrice().isDefault()){
+			  if(itemToDB.getPrice() == null)
+				itemToDB.setPrice(new Price());
+			  Price newPrice = itemFromInput.getPrice();
+		      if(newPrice.getFuturesell() != null) 
+				 itemToDB.getPrice().setFuturesell(newPrice.getFuturesell());
+			  if(newPrice.getListprice() != null) 
+			 	 itemToDB.getPrice().setListprice(newPrice.getListprice());
+			  if(newPrice.getListpricemarginpct() != null && newPrice.getListpricemarginpct() != 0F) 
+			 	 itemToDB.getPrice().setListpricemarginpct(newPrice.getListpricemarginpct());
+			  if(newPrice.getSellprice() != null) 
+				 itemToDB.getPrice().setSellprice(newPrice.getSellprice());
+			  if(newPrice.getSellpricemarginpct() != null && newPrice.getSellpricemarginpct() != 0F) 
+				 itemToDB.getPrice().setSellpricemarginpct(newPrice.getSellpricemarginpct());
+			  if(newPrice.getSellpriceroundaccuracy() != null && newPrice.getSellpriceroundaccuracy() != 0) 
+				 itemToDB.getPrice().setSellpriceroundaccuracy(newPrice.getSellpriceroundaccuracy());
+			  if(newPrice.getMinmarginpct() != null) 
+				 itemToDB.getPrice().setMinmarginpct(newPrice.getMinmarginpct());
+			  if(newPrice.getPricegroup() != null) 
+				 itemToDB.getPrice().setPricegroup(newPrice.getPricegroup());
+			  if(newPrice.getPriceunit() != null) 
+				 itemToDB.getPrice().setPriceunit(newPrice.getPriceunit());
+			  if(newPrice.getPriorlistprice() != null) 
+				 itemToDB.getPrice().setPriorlistprice(newPrice.getPriorlistprice());
+			  if(newPrice.getPriorsellprice() != null) 
+				 itemToDB.getPrice().setPriorsellprice(newPrice.getPriorsellprice());
+			  if(newPrice.getTempprice() != null) 
+				 itemToDB.getPrice().setTempprice(newPrice.getTempprice());
+			  if(newPrice.getTempdatefrom() != null) 
+				 itemToDB.getPrice().setTempdatefrom(newPrice.getTempdatefrom());
+			  if(newPrice.getTempdatethru() != null) 
+				 itemToDB.getPrice().setTempdatethru(newPrice.getTempdatethru());	
+		  } 
+		  //cost
+		  if(itemFromInput.getCost() != null){
+			 if(itemToDB.getCost() == null)
+			    itemToDB.setCost(new Cost());  
+		     if(itemFromInput.getCost().getCost1() != null)
+			    itemToDB.getCost().setCost1(itemFromInput.getCost().getCost1());
+		     if(itemFromInput.getCost().getCostrangepct() != null)
+			    itemToDB.getCost().setCostrangepct(itemFromInput.getCost().getCostrangepct()); 
+		     if(itemFromInput.getCost().getFuturecost() != null)
+		   	   itemToDB.getCost().setFuturecost(itemFromInput.getCost().getFuturecost());
+		     if(itemFromInput.getCost().getNonstockcostpct() != null)
+		 	   itemToDB.getCost().setNonstockcostpct(itemFromInput.getCost().getNonstockcostpct()); 
+		     if(itemFromInput.getCost().getPoincludeinvendorcost() != null)
+			    itemToDB.getCost().setPoincludeinvendorcost(itemFromInput.getCost().getPoincludeinvendorcost()); 
+		     if(itemFromInput.getCost().getPriorcost() != null)
+			    itemToDB.getCost().setPriorcost(itemFromInput.getCost().getPriorcost()); 
+		   }
+		  //applications
+		  if(itemFromInput.getApplications() != null){
+			 if(itemToDB.getApplications() == null)
+				itemToDB.setApplications(new Applications()); 
+		     if(itemFromInput.getApplications().getCommercial() != null)
+			    itemToDB.getApplications().setCommercial(itemFromInput.getApplications().getCommercial()); 
+		     if(itemFromInput.getApplications().getLightcommercial() != null)
+			    itemToDB.getApplications().setLightcommercial(itemFromInput.getApplications().getLightcommercial());
+		     if(itemFromInput.getApplications().getResidential() != null)	
+			    itemToDB.getApplications().setResidential(itemFromInput.getApplications().getResidential());	  
 		  }
-		  catch(Exception e){
-				  throw new BedDAOBadParamException("Error occured while transferComponent(): " + e.getMessage(), e.getCause());	
-		  }		
+		  //update applications fields with usage input data when applications data is not available
+		  else if(itemFromInput.getUsage() != null){ 
+	         Applications applications = convertUsageToApplications(itemFromInput.getUsage());
+			 itemToDB.setApplications(new Applications());
+			 if(applications != null && applications.getCommercial() != null && !applications.getCommercial().isEmpty())
+			    itemToDB.getApplications().setCommercial(applications.getCommercial()); 
+	    	 if(applications != null && applications.getLightcommercial() != null && !applications.getLightcommercial().isEmpty())
+			    itemToDB.getApplications().setLightcommercial(applications.getLightcommercial());
+			 if(applications != null && applications.getResidential() != null && !applications.getResidential().isEmpty())
+			    itemToDB.getApplications().setResidential(applications.getResidential());
+		  }	  
+		  //notes
+	 	  if(itemFromInput.getNotes() != null){
+		 	 if(itemToDB.getNotes() == null)
+				itemToDB.setNotes(new Notes());
+	 		 if(itemFromInput.getNotes().getBuyernotes() != null)
+				itemToDB.getNotes().setBuyernotes(itemFromInput.getNotes().getBuyernotes());
+			 if(itemFromInput.getNotes().getInternalnotes() != null) 
+				itemToDB.getNotes().setInternalnotes(itemFromInput.getNotes().getInternalnotes());
+			 if(itemFromInput.getNotes().getInvoicenotes() != null) 
+				itemToDB.getNotes().setInvoicenotes(itemFromInput.getNotes().getInvoicenotes());
+			 if(itemFromInput.getNotes().getPonotes() != null) 
+				itemToDB.getNotes().setPonotes(itemFromInput.getNotes().getPonotes());
+		  }
+		  //purchaser
+		  if(itemFromInput.getPurchasers() != null){
+			 if(itemToDB.getPurchasers() == null)
+				itemToDB.setPurchasers(new Purchasers()); 
+		  	 if(itemFromInput.getPurchasers().getPurchaser() != null) 
+				itemToDB.getPurchasers().setPurchaser(itemFromInput.getPurchasers().getPurchaser()); 
+			 if(itemFromInput.getPurchasers().getPurchaser2() != null) 
+				itemToDB.getPurchasers().setPurchaser2(itemFromInput.getPurchasers().getPurchaser2()); 
+	   	  }
+		  //related items
+		  if(itemFromInput.getRelateditemcodes() != null){
+			 if(itemToDB.getRelateditemcodes() == null)
+				itemToDB.setRelateditemcodes(new SimilarItemCode());
+			 if(itemFromInput.getRelateditemcodes().getSimilaritemcd1() != null)
+			    itemToDB.getRelateditemcodes().setSimilaritemcd1(itemFromInput.getRelateditemcodes().getSimilaritemcd1());	
+			 if(itemFromInput.getRelateditemcodes().getSimilaritemcd2() != null)
+			   itemToDB.getRelateditemcodes().setSimilaritemcd2(itemFromInput.getRelateditemcodes().getSimilaritemcd2());	
+			 if(itemFromInput.getRelateditemcodes().getSimilaritemcd3() != null)
+			   itemToDB.getRelateditemcodes().setSimilaritemcd3(itemFromInput.getRelateditemcodes().getSimilaritemcd3());	
+			 if(itemFromInput.getRelateditemcodes().getSimilaritemcd4() != null)
+			   itemToDB.getRelateditemcodes().setSimilaritemcd4(itemFromInput.getRelateditemcodes().getSimilaritemcd4());	
+			 if(itemFromInput.getRelateditemcodes().getSimilaritemcd5() != null)
+			   itemToDB.getRelateditemcodes().setSimilaritemcd5(itemFromInput.getRelateditemcodes().getSimilaritemcd5());	
+			 if(itemFromInput.getRelateditemcodes().getSimilaritemcd6() != null)
+			   itemToDB.getRelateditemcodes().setSimilaritemcd6(itemFromInput.getRelateditemcodes().getSimilaritemcd6());	
+			 if(itemFromInput.getRelateditemcodes().getSimilaritemcd7() != null)
+			   itemToDB.getRelateditemcodes().setSimilaritemcd7(itemFromInput.getRelateditemcodes().getSimilaritemcd7());	
+		}
+		//test spec
+		if(itemFromInput.getTestSpecification() != null){
+		   if(itemToDB.getTestSpecification() == null)
+			  itemToDB.setTestSpecification(new TestSpecification());	
+		   if(itemFromInput.getTestSpecification().getBondstrength() != null)
+		  	  itemToDB.getTestSpecification().setBondstrength(itemFromInput.getTestSpecification().getBondstrength());
+	 	   if(itemFromInput.getTestSpecification().getBreakingstandard() != null)
+		  	  itemToDB.getTestSpecification().setBreakingstandard(itemFromInput.getTestSpecification().getBreakingstandard());
+		   if(itemFromInput.getTestSpecification().getBreakingstrength() != null)
+		  	  itemToDB.getTestSpecification().setBreakingstrength(itemFromInput.getTestSpecification().getBreakingstrength());
+		   if(itemFromInput.getTestSpecification().getChemicalresistance() != null)
+		  	  itemToDB.getTestSpecification().setChemicalresistance(itemFromInput.getTestSpecification().getChemicalresistance());
+		   if(itemFromInput.getTestSpecification().getDcof() != null)
+		  	  itemToDB.getTestSpecification().setDcof(itemFromInput.getTestSpecification().getDcof());
+		   if(itemFromInput.getTestSpecification().getFrostresistance() != null)
+		  	  itemToDB.getTestSpecification().setFrostresistance(itemFromInput.getTestSpecification().getFrostresistance());
+		   if(itemFromInput.getTestSpecification().getGreenfriendly() != null)
+		  	  itemToDB.getTestSpecification().setGreenfriendly(itemFromInput.getTestSpecification().getGreenfriendly());
+		   if(itemFromInput.getTestSpecification().getLeadpoint() != null)
+		  	  itemToDB.getTestSpecification().setLeadpoint(itemFromInput.getTestSpecification().getLeadpoint());
+		   if(itemFromInput.getTestSpecification().getMoh() != null)
+		 	  itemToDB.getTestSpecification().setMoh(itemFromInput.getTestSpecification().getMoh());
+		   if(itemFromInput.getTestSpecification().getPeiabrasion() != null)
+		  	  itemToDB.getTestSpecification().setPeiabrasion(itemFromInput.getTestSpecification().getPeiabrasion());
+		   if(itemFromInput.getTestSpecification().getPosconsummer() != null)
+		 	  itemToDB.getTestSpecification().setPosconsummer(itemFromInput.getTestSpecification().getPosconsummer());
+		   if(itemFromInput.getTestSpecification().getPreconsummer() != null)
+		  	  itemToDB.getTestSpecification().setPreconsummer(itemFromInput.getTestSpecification().getPreconsummer());
+		   if(itemFromInput.getTestSpecification().getRestricted() != null)
+		  	  itemToDB.getTestSpecification().setRestricted(itemFromInput.getTestSpecification().getRestricted());
+		   if(itemFromInput.getTestSpecification().getScofdry() != null)
+		  	  itemToDB.getTestSpecification().setScofdry(itemFromInput.getTestSpecification().getScofdry());
+		   if(itemFromInput.getTestSpecification().getScofwet() != null)
+		 	  itemToDB.getTestSpecification().setScofwet(itemFromInput.getTestSpecification().getScofwet());
+ 		   if(itemFromInput.getTestSpecification().getScratchresistance() != null)
+		  	  itemToDB.getTestSpecification().setScratchresistance(itemFromInput.getTestSpecification().getScratchresistance());
+		   if(itemFromInput.getTestSpecification().getScratchstandard() != null)
+		  	  itemToDB.getTestSpecification().setScratchstandard(itemFromInput.getTestSpecification().getScratchstandard());
+		   if(itemFromInput.getTestSpecification().getThermalshock() != null)
+		  	  itemToDB.getTestSpecification().setThermalshock(itemFromInput.getTestSpecification().getThermalshock()); 
+		   if(itemFromInput.getTestSpecification().getWarpage() != null)
+		 	  itemToDB.getTestSpecification().setWarpage(itemFromInput.getTestSpecification().getWarpage());
+		   if(itemFromInput.getTestSpecification().getWaterabsorption() != null)
+		 	  itemToDB.getTestSpecification().setWaterabsorption(itemFromInput.getTestSpecification().getWaterabsorption());
+		   if(itemFromInput.getTestSpecification().getWedging() != null)
+		 	  itemToDB.getTestSpecification().setWedging(itemFromInput.getTestSpecification().getWedging());
+		}
+		//vendor info
+		if(itemFromInput.getVendors() != null && !itemFromInput.getVendors().isDefault()){
+		   if(itemToDB.getVendors() == null)
+			  itemToDB.setVendors(new VendorInfo());
+		   if(itemFromInput.getVendors().getDutypct() != null)
+			  itemToDB.getVendors().setDutypct(itemFromInput.getVendors().getDutypct());
+		   if(itemFromInput.getVendors().getVendordiscpct() != null && itemFromInput.getVendors().getVendordiscpct() !=0 )
+			  itemToDB.getVendors().setVendordiscpct(itemFromInput.getVendors().getVendordiscpct());
+		   if(itemFromInput.getVendors().getVendordiscpct2() != null && itemFromInput.getVendors().getVendordiscpct2() !=0 ) 
+			  itemToDB.getVendors().setVendordiscpct2(itemFromInput.getVendors().getVendordiscpct2());
+		   if(itemFromInput.getVendors().getVendordiscpct3() != null && itemFromInput.getVendors().getVendordiscpct3() !=0 )
+			  itemToDB.getVendors().setVendordiscpct3(itemFromInput.getVendors().getVendordiscpct3());
+		   if(itemFromInput.getVendors().getLeadtime() != null)
+			  itemToDB.getVendors().setLeadtime(itemFromInput.getVendors().getLeadtime());
+		   if(itemFromInput.getVendors().getVendorfob() != null)
+			  itemToDB.getVendors().setVendorfob(itemFromInput.getVendors().getVendorfob());
+		   if(itemFromInput.getVendors().getVendorfreightratecwt() != null)
+			  itemToDB.getVendors().setVendorfreightratecwt(itemFromInput.getVendors().getVendorfreightratecwt());
+		   if(itemFromInput.getVendors().getVendorlandedbasecost() != null && itemFromInput.getVendors().getVendorlandedbasecost().compareTo(BigDecimal.ZERO) != 0)
+			  itemToDB.getVendors().setVendorlandedbasecost(itemFromInput.getVendors().getVendorlandedbasecost());
+		   if(itemFromInput.getVendors().getVendorlistprice() != null && itemFromInput.getVendors().getVendorlistprice().compareTo(BigDecimal.ZERO) != 0)
+			  itemToDB.getVendors().setVendorlistprice(itemFromInput.getVendors().getVendorlistprice());
+		   if(itemFromInput.getVendors().getVendormarkuppct() != null)
+			  itemToDB.getVendors().setVendormarkuppct(itemFromInput.getVendors().getVendormarkuppct());
+		   if(itemFromInput.getVendors().getVendornbr() != null)
+			  itemToDB.getVendors().setVendornbr(itemFromInput.getVendors().getVendornbr());
+		   if(itemFromInput.getVendors().getVendornbr1() != null)
+			  itemToDB.getVendors().setVendornbr1(itemFromInput.getVendors().getVendornbr1());
+		   if(itemFromInput.getVendors().getVendornbr2() != null)
+			  itemToDB.getVendors().setVendornbr2(itemFromInput.getVendors().getVendornbr2());
+		   if(itemFromInput.getVendors().getVendornetprice() != null && itemFromInput.getVendors().getVendornetprice().compareTo(BigDecimal.ZERO) != 0)
+			  itemToDB.getVendors().setVendornetprice(itemFromInput.getVendors().getVendornetprice());
+		   if(itemFromInput.getVendors().getVendorpriceunit() != null && !itemFromInput.getVendors().getVendorpriceunit().equalsIgnoreCase("PCS"))
+			  itemToDB.getVendors().setVendorpriceunit(itemFromInput.getVendors().getVendorpriceunit());
+		   if(itemFromInput.getVendors().getVendorroundaccuracy() != null && itemFromInput.getVendors().getVendorroundaccuracy() != 1)
+			  itemToDB.getVendors().setVendorroundaccuracy(itemFromInput.getVendors().getVendorroundaccuracy());
+		   if(itemFromInput.getVendors().getVendorxrefcd() != null)
+			  itemToDB.getVendors().setVendorxrefcd(itemFromInput.getVendors().getVendorxrefcd());
+		}
+		//units
+		if(itemFromInput.getUnits() != null && !itemFromInput.getUnits().isDefault()){
+		   if(itemToDB.getUnits() == null)
+			  itemToDB.setUnits(new Units());
+			//----general----//
+		   if(itemFromInput.getUnits().getOrdratio() != null && itemFromInput.getUnits().getOrdratio() != 0)
+			  itemToDB.getUnits().setOrdratio(itemFromInput.getUnits().getOrdratio());
+		   if(itemFromInput.getUnits().getOrdunit() != null)
+			  itemToDB.getUnits().setOrdunit(itemFromInput.getUnits().getOrdunit());
+		   if(itemFromInput.getUnits().getStdratio() != null && itemFromInput.getUnits().getStdratio() != 0)
+			  itemToDB.getUnits().setStdratio(itemFromInput.getUnits().getStdratio());	
+		   //---base unit----//	
+		   if(itemFromInput.getUnits().getBaseisfractqty() != null)
+			  itemToDB.getUnits().setBaseisfractqty(itemFromInput.getUnits().getBaseisfractqty());
+		   if(itemFromInput.getUnits().getBaseispackunit() != null)
+			  itemToDB.getUnits().setBaseispackunit(itemFromInput.getUnits().getBaseispackunit());
+		   if(itemFromInput.getUnits().getBaseisstdord() != null)
+			  itemToDB.getUnits().setBaseisstdord(itemFromInput.getUnits().getBaseisstdord());
+		   if(itemFromInput.getUnits().getBaseisstdsell() != null)
+			  itemToDB.getUnits().setBaseisstdsell(itemFromInput.getUnits().getBaseisstdsell());
+		   if(itemFromInput.getUnits().getBaseunit() != null)
+			  itemToDB.getUnits().setBaseunit(itemFromInput.getUnits().getBaseunit());
+		   if(itemFromInput.getUnits().getBaseupc() != null)
+			  itemToDB.getUnits().setBaseupc(itemFromInput.getUnits().getBaseupc());
+		   if(itemFromInput.getUnits().getBaseupcdesc() != null)
+			  itemToDB.getUnits().setBaseupcdesc(itemFromInput.getUnits().getBaseupcdesc());
+		   if(itemFromInput.getUnits().getBasevolperunit() != null)
+			  itemToDB.getUnits().setBasevolperunit(itemFromInput.getUnits().getBasevolperunit());
+		   if(itemFromInput.getUnits().getBasewgtperunit() != null)
+			  itemToDB.getUnits().setBasewgtperunit(itemFromInput.getUnits().getBasewgtperunit());
+		   //---unit 1----//
+		   if(itemFromInput.getUnits().getUnit1isfractqty() != null)
+			  itemToDB.getUnits().setUnit1isfractqty(itemFromInput.getUnits().getUnit1isfractqty());
+		   if(itemFromInput.getUnits().getUnit1ispackunit() != null)
+			  itemToDB.getUnits().setUnit1ispackunit(itemFromInput.getUnits().getUnit1ispackunit());
+		   if(itemFromInput.getUnits().getUnit1isstdord() != null)
+			  itemToDB.getUnits().setUnit1isstdord(itemFromInput.getUnits().getUnit1isstdord());
+		   if(itemFromInput.getUnits().getUnit1isstdsell() != null)
+			  itemToDB.getUnits().setUnit1isstdsell(itemFromInput.getUnits().getUnit1isstdsell());
+		   if(itemFromInput.getUnits().getUnit1ratio() != null)
+			  itemToDB.getUnits().setUnit1ratio(itemFromInput.getUnits().getUnit1ratio());
+		   if(itemFromInput.getUnits().getUnit1unit() != null)
+			  itemToDB.getUnits().setUnit1unit(itemFromInput.getUnits().getUnit1unit());
+		   if(itemFromInput.getUnits().getUnit1upc() != null)
+			  itemToDB.getUnits().setUnit1upc(itemFromInput.getUnits().getUnit1upc());
+		   if(itemFromInput.getUnits().getUnit1upcdesc() != null)
+			  itemToDB.getUnits().setUnit1upcdesc(itemFromInput.getUnits().getUnit1upcdesc());
+		   if(itemFromInput.getUnits().getUnit1wgtperunit() != null)
+			  itemToDB.getUnits().setUnit1wgtperunit(itemFromInput.getUnits().getUnit1wgtperunit());
+		   //---unit 2----//
+		   if(itemFromInput.getUnits().getUnit2isfractqty() != null)
+			  itemToDB.getUnits().setUnit2isfractqty(itemFromInput.getUnits().getUnit2isfractqty());
+		   if(itemFromInput.getUnits().getUnit2ispackunit() != null)
+			  itemToDB.getUnits().setUnit2ispackunit(itemFromInput.getUnits().getUnit2ispackunit());
+		   if(itemFromInput.getUnits().getUnit2isstdord() != null)
+			  itemToDB.getUnits().setUnit2isstdord(itemFromInput.getUnits().getUnit2isstdord());
+		   if(itemFromInput.getUnits().getUnit2isstdsell() != null)
+			  itemToDB.getUnits().setUnit2isstdsell(itemFromInput.getUnits().getUnit2isstdsell());
+		   if(itemFromInput.getUnits().getUnit2ratio() != null)
+			  itemToDB.getUnits().setUnit2ratio(itemFromInput.getUnits().getUnit2ratio());
+		   if(itemFromInput.getUnits().getUnit2unit() != null)
+			  itemToDB.getUnits().setUnit2unit(itemFromInput.getUnits().getUnit2unit());
+		   if(itemFromInput.getUnits().getUnit2upc() != null)
+			  itemToDB.getUnits().setUnit2upc(itemFromInput.getUnits().getUnit2upc());
+		   if(itemFromInput.getUnits().getUnit2upcdesc() != null)
+			  itemToDB.getUnits().setUnit2upcdesc(itemFromInput.getUnits().getUnit2upcdesc());
+		   if(itemFromInput.getUnits().getUnit2wgtperunit() != null)
+			  itemToDB.getUnits().setUnit2wgtperunit(itemFromInput.getUnits().getUnit2wgtperunit());
+		   //---unit 3----//
+		   if(itemFromInput.getUnits().getUnit3isfractqty() != null)
+			  itemToDB.getUnits().setUnit3isfractqty(itemFromInput.getUnits().getUnit3isfractqty());
+		   if(itemFromInput.getUnits().getUnit3ispackunit() != null)
+			  itemToDB.getUnits().setUnit3ispackunit(itemFromInput.getUnits().getUnit3ispackunit());
+		   if(itemFromInput.getUnits().getUnit3isstdord() != null)
+			  itemToDB.getUnits().setUnit3isstdord(itemFromInput.getUnits().getUnit3isstdord());
+		   if(itemFromInput.getUnits().getUnit3isstdsell() != null)
+			  itemToDB.getUnits().setUnit3isstdsell(itemFromInput.getUnits().getUnit3isstdsell());
+		   if(itemFromInput.getUnits().getUnit3ratio() != null)
+			  itemToDB.getUnits().setUnit3ratio(itemFromInput.getUnits().getUnit3ratio());
+		   if(itemFromInput.getUnits().getUnit3unit() != null)
+			  itemToDB.getUnits().setUnit3unit(itemFromInput.getUnits().getUnit3unit());
+		   if(itemFromInput.getUnits().getUnit3upc() != null)
+			  itemToDB.getUnits().setUnit3upc(itemFromInput.getUnits().getUnit3upc());
+		   if(itemFromInput.getUnits().getUnit3upcdesc() != null)
+			  itemToDB.getUnits().setUnit3upcdesc(itemFromInput.getUnits().getUnit3upcdesc());
+		   if(itemFromInput.getUnits().getUnit3wgtperunit() != null)
+			  itemToDB.getUnits().setUnit3wgtperunit(itemFromInput.getUnits().getUnit3wgtperunit());
+		   //---unit 4----//
+		   if(itemFromInput.getUnits().getUnit4isfractqty() != null)
+			  itemToDB.getUnits().setUnit4isfractqty(itemFromInput.getUnits().getUnit4isfractqty());
+		   if(itemFromInput.getUnits().getUnit4ispackunit() != null)
+			  itemToDB.getUnits().setUnit4ispackunit(itemFromInput.getUnits().getUnit4ispackunit());
+		   if(itemFromInput.getUnits().getUnit4isstdord() != null)
+			  itemToDB.getUnits().setUnit4isstdord(itemFromInput.getUnits().getUnit4isstdord());
+		   if(itemFromInput.getUnits().getUnit4isstdsell() != null)
+			  itemToDB.getUnits().setUnit4isstdsell(itemFromInput.getUnits().getUnit4isstdsell());
+		   if(itemFromInput.getUnits().getUnit4ratio() != null)
+			  itemToDB.getUnits().setUnit4ratio(itemFromInput.getUnits().getUnit4ratio());
+		   if(itemFromInput.getUnits().getUnit4unit() != null)
+			  itemToDB.getUnits().setUnit4unit(itemFromInput.getUnits().getUnit4unit());
+		   if(itemFromInput.getUnits().getUnit4upc() != null)
+			  itemToDB.getUnits().setUnit4upc(itemFromInput.getUnits().getUnit4upc());
+		   if(itemFromInput.getUnits().getUnit4upcdesc() != null)
+			  itemToDB.getUnits().setUnit4upcdesc(itemFromInput.getUnits().getUnit4upcdesc());
+		   if(itemFromInput.getUnits().getUnit4wgtperunit() != null)
+			  itemToDB.getUnits().setUnit4wgtperunit(itemFromInput.getUnits().getUnit4wgtperunit());		
+			//if(itemFromInput.getPriorVendor() != null) itemToDB.setPriorVendor(itemFromInput.getPriorVendor());
+	    }
+	  }
+	  catch(Exception e){
+		  throw new BedDAOBadParamException("Error occured while transferComponent(): " + e.getMessage(), e.getCause());	
+	  }		
 	}
 	
 	private static synchronized void transferProperty(Ims itemToDB, Ims itemFromInput, DBOperation operation) throws BedDAOBadParamException{
@@ -1153,23 +1188,10 @@ public class ImsDataUtil {
 		   itemToDB.setPriorlastupdated(new Date());
 		//if(itemFromInput.getSubtype() != null) itemToDB.setSubtype(itemFromInput.getSubtype());
 		//if(itemFromInput.getType() != null) itemToDB.setType(itemFromInput.getType());
-		if(itemFromInput.getColorcategory() != null && !itemFromInput.getColorcategory().isEmpty()){
+		if(itemFromInput.getColorcategory() != null && !itemFromInput.getColorcategory().isEmpty())
 			itemToDB.setColorcategory(itemFromInput.getColorcategory());
-		}
-		else if(itemFromInput.getColorhues() != null && !itemFromInput.getColorhues().isEmpty()){
-				itemToDB.setColorcategory(ImsDataUtil.convertColorhueStringListToColorCategory(itemFromInput.getColorhues()));	
-		}
-		
-	    /*if(itemFromInput.getColorcategory() != null){
-		   if(itemFromInput.getColorcategory().contains(":")){
-			  String[] colors = itemFromInput.getColorcategory().split(":");
-			  for(String color : colors){
-				  itemToDB.addColorhue(new ColorHue(color));
-			  }
-		   }
-		   itemToDB.setColorcategory(itemFromInput.getColorcategory());
-		}
-		*/
+		else if(itemFromInput.getColorhues() != null || !itemFromInput.getColorhues().isEmpty())
+		   	itemToDB.setColorcategory(ImsDataUtil.convertColorHuesToColorCategory(itemFromInput.getColorhues()));
 	  }
 	  catch(Exception e){
 			  throw new BedDAOBadParamException("Error occured while transferProperty(): " + e.getMessage(), e.getCause());	

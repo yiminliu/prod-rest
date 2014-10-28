@@ -1,4 +1,4 @@
-package com.bedrosians.bedlogic.test.product;
+package com.bedrosians.bedlogic.test.ims;
 
 
 import java.math.BigDecimal;
@@ -14,10 +14,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
-import com.bedrosians.bedlogic.domain.item.IconCollection;
-import com.bedrosians.bedlogic.domain.item.Item;
+import com.bedrosians.bedlogic.domain.ims.ColorHue;
+import com.bedrosians.bedlogic.domain.ims.IconCollection;
+import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.service.ims.ImsService;
-import com.bedrosians.bedlogic.util.ImsDataUtil;
+import com.bedrosians.bedlogic.util.ims.ImsDataUtil;
 
 import static org.junit.Assert.*;
 
@@ -25,7 +26,7 @@ import static org.junit.Assert.*;
 //@ContextConfiguration(locations = "/Bedlogic-test-context.xml")
 @ContextConfiguration(locations = {"/application_context/bedlogic-context.xml", "/application_context/bedlogic-persistence.xml"})
 @TransactionConfiguration(defaultRollback = false)
-public class ProductServiceCreationWithJsonTest {
+public class ImsServiceCreationWithJsonTest {
 	
 	
 	@Autowired
@@ -41,7 +42,7 @@ public class ProductServiceCreationWithJsonTest {
 	@Test
 	public void testItemCodeWithJsonObject() throws Exception {
 		JSONObject params = new JSONObject(jStringWithItemCode);
-        String id = imsService.createProduct(params);
+        String id = imsService.createItem(params);
         assertNotNull(id); 
 	}
 	
@@ -49,10 +50,10 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithDimensionsJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithDimensions: ");
 	        JSONObject params = new JSONObject(jStringWithDimensions);
-	        String id = imsService.createProduct(params);
+	        String id = imsService.createItem(params);
 	        assertNotNull(id);
 	       
-	        Item item = imsService.getProductById(id);
+	        Ims item = imsService.getItemByItemCode(id);
 	        
 	        assertEquals("11-13/16", item.getDimensions().getLength());
 	        assertEquals("11-13/16", item.getDimensions().getWidth());
@@ -67,25 +68,25 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithColorCategoryJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithColorCategory: ");
 	        JSONObject params = new JSONObject(jStringWithColorCategory);
-	        String id = imsService.createProduct(params);
+	        String id = imsService.createItem(params);
 	        assertNotNull(id);    
-	        Item item = imsService.getProductById(id);
+	        Ims item = imsService.getItemByItemCode(id);
 	        assertEquals("BLACK:WHITE", item.getColorcategory());
-	        assertEquals("[BLACK, WHITE]", item.getColorhues().toString());
-	//        for(ColorHue colorHue : item.getColorhues()){
-	//            assertTrue(colorHue.getColorHue().equals("GREEN") || colorHue.getColorHue().equals("WHITE"));
-	////            assertTrue(item.getColorcategory().contains(colorHue.getColorHue()));
-	//        } 
+	        //assertEquals("[BLACK, WHITE]", item.getColorhues().toString());
+	        for(ColorHue colorHue : item.getColorhues()){
+	            //assertTrue(colorHue.getColorHue().equals("GREEN") || colorHue.getColorHue().equals("WHITE"));
+	            assertTrue(item.getColorcategory().contains(colorHue.getColorHue()));
+	        } 
 	 }
 	 
 	 @Test
 	 public void testCreateItemWithPricesJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithBasicInfo);
-	        String id = imsService.createProduct(params);
+	        String id = imsService.createItem(params);
 	        assertNotNull(id);
 	       
-	        Item item = imsService.getProductById(id);
+	        Ims item = imsService.getItemByItemCode(id);
 	        
 	        assertEquals("18.3800", item.getPrice().getListprice().toString());
 	        assertEquals("18.3800", item.getPrice().getSellprice().toString());
@@ -96,10 +97,10 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithMaterialJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithBasicInfo);
-	        String id = imsService.createProduct(params);
+	        String id = imsService.createItem(params);
 	        assertNotNull(id);
 	       
-	        Item item = imsService.getProductById(id);
+	        Ims item = imsService.getItemByItemCode(id);
 	        
 	        assertEquals("Porcelain", item.getMaterial().getMaterialtype());
 	        assertEquals("CTSRC", item.getMaterial().getMaterialclass());
@@ -111,9 +112,9 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithSeriesJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithBasicInfo);
-	        String id = imsService.createProduct(params);
+	        String id = imsService.createItem(params);
 	        assertNotNull(id);  
-	        Item item = imsService.getProductById(id);
+	        Ims item = imsService.getItemByItemCode(id);
 	        assertEquals("Athena", item.getSeries().getSeriesname());
 	        assertEquals("Ash", item.getSeries().getSeriescolor());
 	 }
@@ -122,10 +123,10 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithTestSpecsJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithBasicInfo);
-	        String id = imsService.createProduct(params);
+	        String id = imsService.createItem(params);
 	        assertNotNull(id);
 	       
-	        Item item = imsService.getProductById(id);
+	        Ims item = imsService.getItemByItemCode(id);
 	        
 	        assertEquals(Float.valueOf("0.1"), item.getTestSpecification().getWaterabsorption());
 	        assertEquals(Float.valueOf("0.2"), item.getTestSpecification().getScratchresistance());
@@ -145,10 +146,10 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithApplicationsJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithApplicationsInfo);
-	        String id = imsService.createProduct(params);
+	        String id = imsService.createItem(params);
 	        assertNotNull(id);
 	       
-	        Item item = imsService.getProductById(id);
+	        Ims item = imsService.getItemByItemCode(id);
 	        assertEquals("FR:WR:CR:SR:PR", item.getApplications().getResidential());
 	        assertEquals("FL:WL:CL:SL:PL", item.getApplications().getLightcommercial());
 	        assertEquals("FC:WC:CC:SC:PC", item.getApplications().getCommercial());
@@ -160,10 +161,10 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithUsageJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithBasicInfo);
-	        String id = imsService.createProduct(params);
+	        String id = imsService.createItem(params);
 	        assertNotNull(id);
 	       
-	        Item item = imsService.getProductById(id);
+	        Ims item = imsService.getItemByItemCode(id);
 	        System.out.println(item.getUsage());
 	        assertEquals("[FR, WR, CR, SR, PR, FL, WL, CL, SL, PL, FC, WC, CC, SC, PC]", item.getUsage().toString());
 	        assertEquals("FC:WC:CC:SC:PC", item.getApplications().getCommercial());
@@ -174,10 +175,10 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithNotesJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithBasicInfo);
-	        String id = imsService.createProduct(params);
+	        String id = imsService.createItem(params);
 	        assertNotNull(id);
 	       
-	        Item item = imsService.getProductById(id);
+	        Ims item = imsService.getItemByItemCode(id);
 	         assertEquals("test po note", item.getNotes().getPonotes());
 	        assertEquals("test note1", item.getNotes().getBuyernotes());
 	        assertEquals("test note2", item.getNotes().getInternalnotes());
@@ -188,10 +189,10 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithPackagingInfoJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithBasicInfo);
-	        String id = imsService.createProduct(params);
+	        String id = imsService.createItem(params);
 	        assertNotNull(id);
 	       
-	        Item item = imsService.getProductById(id);
+	        Ims item = imsService.getItemByItemCode(id);
 	        
 	        assertEquals("Athena", item.getSeries().getSeriesname());
 	        assertEquals("Ash", item.getSeries().getSeriescolor());
@@ -203,23 +204,23 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithBasicInfoJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithBasicInfo);
-	        String id = imsService.createProduct(params);
+	        String id = imsService.createItem(params);
 	        assertNotNull(id);
 	        
-	        Item item = imsService.getProductById(id);
+	        Ims item = imsService.getItemByItemCode(id);
 	             
 	        //assertEquals("BEIGE".toUpperCase(), item.getColorhues().get(0));
 	        assertEquals("ATHENA", item.getItemcategory());
 	        assertEquals("Italy", item.getCountryorigin());
 	        assertEquals("N", item.getInactivecode());
 	        assertEquals("2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)", item.getItemdesc().getFulldesc());    
-		    assertEquals("[BEIGE]", item.getColorhues().toString());
+		    //assertEquals("[BEIGE]", item.getColorhues().toString());
 		    assertTrue(item.getColorhues().contains("BEIGE"));
 		    assertEquals("BEIGE", item.getColorcategory());
 		    assertEquals(item.getColorcategory(), item.getColorhues().get(0));
-		    assertEquals("F", item.getItemtypecd());
+		    assertEquals("F", item.getItemtypecode());
 		    //assertEquals("test", item.getType());
-		    assertEquals("C", item.getAbccd());
+		    assertEquals("C", item.getAbccode());
 		    assertEquals("T", item.getTaxclass());
 		    assertEquals("ALICIAB", item.getPurchasers().getPurchaser());
 		    assertEquals("GFIL", item.getPurchasers().getPurchaser2());
@@ -236,10 +237,10 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithAllImsInfoJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringFullItemInfo);
-	        String id = imsService.createProduct(params);
+	        String id = imsService.createItem(params);
 	        assertNotNull(id);
 	        
-	        Item item = imsService.getProductById(id);
+	        Ims item = imsService.getItemByItemCode(id);
 	        
 	        //series
 	        assertEquals("Athena", item.getSeries().getSeriesname());
@@ -330,9 +331,9 @@ public class ProductServiceCreationWithJsonTest {
 	        assertEquals("2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)", item.getItemdesc().getFulldesc());    
 		    assertEquals("[BEIGE]", item.getColorhues().toString());
 		    //assertTrue(item.getColorhues().contains("BEIGE"));
-		    assertEquals("F", item.getItemtypecd());
+		    assertEquals("F", item.getItemtypecode());
 		    //assertEquals("test", item.getType());
-		    assertEquals("C", item.getAbccd());
+		    assertEquals("C", item.getAbccode());
 		    assertEquals("T", item.getTaxclass());
 		    assertEquals("ALICIAB", item.getPurchasers().getPurchaser());
 		    assertEquals("GFIL", item.getPurchasers().getPurchaser2());
@@ -357,11 +358,11 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithColorHuesJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithColorHues: ");
 	        JSONObject params = new JSONObject(jStringWithColorHues);
-	        String id = imsService.createProduct(params);
+	        String id = imsService.createItem(params);
 	        assertNotNull(id);    
-	        Item item = imsService.getProductById(id);
-	        for(String colorHue : item.getColorhues()){
-		        assertEquals("BEIGE", colorHue);
+	        Ims item = imsService.getItemByItemCode(id);
+	        for(ColorHue colorHue : item.getColorhues()){
+		        assertEquals("BEIGE", colorHue.getColorHue());
 		        //    assertEquals(colorHue.getColorHue(), item.getColorcategory());
 		    } 
 	        //for(ColorHue colorHue : item.getColorhues()){
@@ -375,11 +376,11 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithMultipleColorHuesJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithColorHues: ");
 	        JSONObject params = new JSONObject(jStringWithMultipleColorHues);
-	        String id = imsService.createProduct(params);
+	        String id = imsService.createItem(params);
 	        assertNotNull(id);    
-	        Item item = imsService.getProductById(id);
-	        for(String colorHue : item.getColorhues()){
-		        assertEquals("BEIGE", colorHue);
+	        Ims item = imsService.getItemByItemCode(id);
+	        for(ColorHue colorHue : item.getColorhues()){
+		        assertEquals("BEIGE", colorHue.getColorHue());
 		        //    assertEquals(colorHue.getColorHue(), item.getColorcategory());
 		    } 
 	        //for(ColorHue colorHue : item.getColorhues()){
@@ -393,24 +394,24 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithNewFeatureByJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithNewFeature);            
-	        String id = imsService.createProduct(params);
+	        String id = imsService.createItem(params);
 	        assertNotNull(id);
-	        Item item = imsService.getProductById(id);
-	        assertEquals("First", item.getImsNewFeature().getGrade().getDescription());
-	        assertEquals("Good", item.getImsNewFeature().getStatus().getDescription());
+	        Ims item = imsService.getItemByItemCode(id);
+	        assertEquals("First", item.getNewFeature().getGrade().getDescription());
+	        assertEquals("Good", item.getNewFeature().getStatus().getDescription());
 	        
-	        assertEquals("Red Body", item.getImsNewFeature().getBody().getDescription());
-	        assertEquals("Tumbled", item.getImsNewFeature().getEdge().getDescription());
-	        assertEquals("Drop", item.getImsNewFeature().getMpsCode().getDescription());
+	        assertEquals("Red Body", item.getNewFeature().getBody().getDescription());
+	        assertEquals("Tumbled", item.getNewFeature().getEdge().getDescription());
+	        assertEquals("Drop", item.getNewFeature().getMpsCode().getDescription());
 	        
-	        assertEquals("Wood", item.getImsNewFeature().getDesignLook().getDescription());
-	        assertEquals("Modern", item.getImsNewFeature().getDesignStyle().getDescription());
-	        assertEquals("Silk", item.getImsNewFeature().getSurfaceApplication().getDescription());
-	        assertEquals("Cross Cut", item.getImsNewFeature().getSurfaceType().getDescription());
-	        assertEquals("Antiquated", item.getImsNewFeature().getSurfaceFinish().getDescription());
-	        assertEquals(new Integer("3"), item.getImsNewFeature().getWarranty());
-	        assertEquals("1", item.getImsNewFeature().getRecommendedGroutJointMin());
-	        assertEquals("2", item.getImsNewFeature().getRecommendedGroutJointMax());
+	        assertEquals("Wood", item.getNewFeature().getDesignLook().getDescription());
+	        assertEquals("Modern", item.getNewFeature().getDesignStyle().getDescription());
+	        assertEquals("Silk", item.getNewFeature().getSurfaceApplication().getDescription());
+	        assertEquals("Cross Cut", item.getNewFeature().getSurfaceType().getDescription());
+	        assertEquals("Antiquated", item.getNewFeature().getSurfaceFinish().getDescription());
+	        assertEquals(new Integer("3"), item.getNewFeature().getWarranty());
+	        assertEquals("1", item.getNewFeature().getRecommendedGroutJointMin());
+	        assertEquals("2", item.getNewFeature().getRecommendedGroutJointMax());
 	 }
 	 
 	 @Test
@@ -418,9 +419,9 @@ public class ProductServiceCreationWithJsonTest {
 	        System.out.println("testCreateItemWithUnitAndVendor: ");
 	        JSONObject params = new JSONObject(jStringWithUnitAndVendor);
 	        //JSONObject params = new JSONObject(jStringWithNewVendorSystem);
-	        String id = imsService.createProduct(params);
+	        String id = imsService.createItem(params);
 	        assertNotNull(id);
-	        Item item = imsService.getProductById(id);
+	        Ims item = imsService.getItemByItemCode(id);
 	        assertEquals("SHT", item.getUnits().getBaseunit());
 	        assertEquals(Character.valueOf('Y'), item.getUnits().getBaseisstdsell());
 	        assertEquals(Character.valueOf('Y'), item.getUnits().getBaseisstdord());
@@ -473,10 +474,10 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithNewNotesJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithNewNotes: ");
 	        JSONObject params = new JSONObject(jStringWithNewNotes);
-	        String id = imsService.createProduct(params);
+	        String id = imsService.createItem(params);
 	        assertNotNull(id);
 	        System.out.println("newly created Item id  = " + id);
-	        Item item = imsService.getProductById(id);
+	        Ims item = imsService.getItemByItemCode(id);
 	        //for(Note note :)
 	        //assertEquals("First", item.getNewNoteSystem());
 	 }
@@ -485,10 +486,10 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithNewIconJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithNewIcon: ");
 	        JSONObject params = new JSONObject(jStringWithNewIcons);
-	        String id = imsService.createProduct(params);
+	        String id = imsService.createItem(params);
 	        assertNotNull(id);
 	        System.out.println("newly created Item id  = " + id);
-	        Item item = imsService.getProductById(id);
+	        Ims item = imsService.getItemByItemCode(id);
 	        IconCollection icon = item.getIconDescription();
 	        assertEquals("USA", icon.getMadeInCountry().getDescription());
 	        assertEquals(true, icon.getExteriorProduct());
@@ -535,10 +536,10 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithLagecyIconJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithNewIcon: ");
 	        JSONObject params = new JSONObject(jStringWithLagecyIcon);
-	        String id = imsService.createProduct(params);
+	        String id = imsService.createItem(params);
 	        assertNotNull(id);
 	        System.out.println("newly created Item id  = " + id);
-	        Item item = imsService.getProductById(id);
+	        Ims item = imsService.getItemByItemCode(id);
 	        
 	        IconCollection icon = item.getIconDescription();
 	        
@@ -587,10 +588,10 @@ public class ProductServiceCreationWithJsonTest {
 	 public void testCreateItemWithAllImsAndAssociationsByJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringFullItemAndAssociationInfo);
-	        String id = imsService.createProduct(params);
+	        String id = imsService.createItem(params);
 	        assertNotNull(id);
 	        
-	        Item item = imsService.getProductById(id);
+	        Ims item = imsService.getItemByItemCode(id);
 	        
 	        //series
 	        assertEquals("Athena", item.getSeries().getSeriesname());
@@ -623,8 +624,8 @@ public class ProductServiceCreationWithJsonTest {
 	        assertEquals(Character.valueOf('N'), item.getUnits().getBaseisfractqty());
 	        assertEquals(Character.valueOf('Y'), item.getUnits().getBaseispackunit());
 	        assertEquals(Long.valueOf("0"), item.getUnits().getBaseupc());
-	        assertEquals(new BigDecimal("0.000000"), item.getUnits().getBasevolperunit());
-	        assertEquals(new BigDecimal("4.200000"), item.getUnits().getBasewgtperunit());
+	        assertEquals(new BigDecimal("0.0000"), item.getUnits().getBasevolperunit());
+	        assertEquals(new BigDecimal("4.2000"), item.getUnits().getBasewgtperunit());
 	           
 	        assertEquals("CTN", item.getUnits().getUnit1unit());
 	        assertEquals(Float.valueOf("4.0"), item.getUnits().getUnit1ratio());
@@ -633,7 +634,7 @@ public class ProductServiceCreationWithJsonTest {
 	        assertEquals(Character.valueOf('N'), item.getUnits().getUnit1isfractqty());
 	        assertEquals(Character.valueOf('Y'), item.getUnits().getUnit1ispackunit());
 	        assertEquals(Long.valueOf("0"), item.getUnits().getUnit1upc());
-	        assertEquals(new BigDecimal("17.400000"), item.getUnits().getUnit1wgtperunit());
+	        assertEquals(new BigDecimal("17.4000"), item.getUnits().getUnit1wgtperunit());
 	        
 	        assertEquals("PLT", item.getUnits().getUnit2unit());
 	        assertEquals(Float.valueOf("240.0"), item.getUnits().getUnit2ratio());
@@ -642,7 +643,7 @@ public class ProductServiceCreationWithJsonTest {
 	        assertEquals(Character.valueOf('N'), item.getUnits().getUnit2isfractqty());
 	        assertEquals(Character.valueOf('N'), item.getUnits().getUnit2ispackunit());
 	        assertEquals(Long.valueOf("0"), item.getUnits().getUnit2upc());
-	        assertEquals(new BigDecimal("1070.000000"), item.getUnits().getUnit2wgtperunit());
+	        assertEquals(new BigDecimal("1070.0000"), item.getUnits().getUnit2wgtperunit());
 	        
 	        assertEquals("", item.getUnits().getUnit3unit());
 	        assertEquals(Float.valueOf("0"), item.getUnits().getUnit3ratio());
@@ -680,12 +681,15 @@ public class ProductServiceCreationWithJsonTest {
 	        assertEquals("Italy", item.getCountryorigin());
 	        assertEquals("N", item.getInactivecode());
 	        assertEquals("2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)", item.getItemdesc().getFulldesc());    
-		    assertEquals("[BEIGE, YELLOW]", item.getColorhues().toString());
-		    assertEquals("BEIGE:YELLOW", item.getColorcategory());
+		    //assertEquals("[BEIGE, YELLOW]", item.getColorhues().toString());
+		    for(ColorHue ch : item.getColorhues()){
+		    	assertTrue(ch.getColorHue().contains("BEIGE") || ch.getColorHue().contains("YELLOW"));
+		    }
+	        assertEquals("BEIGE:YELLOW", item.getColorcategory());
 		    //assertTrue(item.getColorhues().contains("BEIGE"));
-		    assertEquals("F", item.getItemtypecd());
+		    assertEquals("F", item.getItemtypecode());
 		    //assertEquals("test", item.getType());
-		    assertEquals("C", item.getAbccd());
+		    assertEquals("C", item.getAbccode());
 		    assertEquals("T", item.getTaxclass());
 		    assertEquals("ALICIAB", item.getPurchasers().getPurchaser());
 		    assertEquals("GFIL", item.getPurchasers().getPurchaser2());
@@ -699,19 +703,19 @@ public class ProductServiceCreationWithJsonTest {
 			//	System.out.println("hue.getColorDescription() = " + hue.getColorDescription());
 			//	assertEquals("red".toUpperCase(), hue.getColorDescription().getDescription().toUpperCase());
 	        //item new features
-	        assertEquals("First", item.getImsNewFeature().getGrade().getDescription());
-	        assertEquals("Good", item.getImsNewFeature().getStatus().getDescription());
-	        assertEquals("Red Body", item.getImsNewFeature().getBody().getDescription());
-	        assertEquals("Tumbled", item.getImsNewFeature().getEdge().getDescription());
-	        assertEquals("Drop", item.getImsNewFeature().getMpsCode().getDescription());
-	        assertEquals("Wood", item.getImsNewFeature().getDesignLook().getDescription());
-	        assertEquals("Modern", item.getImsNewFeature().getDesignStyle().getDescription());
-	        assertEquals("Silk", item.getImsNewFeature().getSurfaceApplication().getDescription());
-	        assertEquals("Cross Cut", item.getImsNewFeature().getSurfaceType().getDescription());
-	        assertEquals("Antiquated", item.getImsNewFeature().getSurfaceFinish().getDescription());
-	        assertEquals(new Integer("3"), item.getImsNewFeature().getWarranty());
-	        assertEquals("1", item.getImsNewFeature().getRecommendedGroutJointMin());
-	        assertEquals("2", item.getImsNewFeature().getRecommendedGroutJointMax());
+	        assertEquals("First", item.getNewFeature().getGrade().getDescription());
+	        assertEquals("Good", item.getNewFeature().getStatus().getDescription());
+	        assertEquals("Red Body", item.getNewFeature().getBody().getDescription());
+	        assertEquals("Tumbled", item.getNewFeature().getEdge().getDescription());
+	        assertEquals("Drop", item.getNewFeature().getMpsCode().getDescription());
+	        assertEquals("Wood", item.getNewFeature().getDesignLook().getDescription());
+	        assertEquals("Modern", item.getNewFeature().getDesignStyle().getDescription());
+	        assertEquals("Silk", item.getNewFeature().getSurfaceApplication().getDescription());
+	        assertEquals("Cross Cut", item.getNewFeature().getSurfaceType().getDescription());
+	        assertEquals("Antiquated", item.getNewFeature().getSurfaceFinish().getDescription());
+	        assertEquals(new Integer("3"), item.getNewFeature().getWarranty());
+	        assertEquals("1", item.getNewFeature().getRecommendedGroutJointMin());
+	        assertEquals("2", item.getNewFeature().getRecommendedGroutJointMax());
 	        //colorhue
 //	        for(ColorHue colorHue : item.getColorhues()){
 //	            assertTrue("BEIGE".equals(colorHue.getColorHue()) || "YELLOW".equals(colorHue.getColorHue()));
@@ -744,21 +748,21 @@ public class ProductServiceCreationWithJsonTest {
 	 
 	 
 	 String jStringWithBasicInfo = 
-			     "{\"itemcode\":\"newItemcode8\","
+			     "{\"itemcode\":\"newItemcode10\","
 			    + "\"itemcategory\":\"ATHENA\","
 	 		    + "\"countryorigin\":\"Italy\","
 	 		    + "\"inactivecode\":\"N\","
 	 			+ "\"showonwebsite\":\"Y\","
-	 			+ "\"itemtypecd\":\"F\","
-	 			+ "\"abccd\":\"C\","
-	 			+ "\"itemcd2\":\"\","
+	 			+ "\"itemtypecode\":\"F\","
+	 			+ "\"abccode\":\"C\","
+	 			+ "\"itemcode2\":\"\","
 	 			//+ "\"inventoryitemcd\":\"F\","
 	 			+ "\"showonalysedwards\":\"N\","
 	 			+ "\"offshade\":\"N\","
 	 			+ "\"printlabel\":\" \","
 	 			+ "\"taxclass\":\"T\","
 	 			+ "\"lottype\":\"\","
-	 			+ "\"updatecd\":\"CERA-CRD\",\"directship\":\" \",\"dropdate\":null,\"itemgroupnbr\":0,"
+	 			+ "\"updatecode\":\"CERA-CRD\",\"directship\":\" \",\"dropdate\":null,\"itemgroupnbr\":0,"
 	 			+ "\"priorlastupdated\":\"2014-03-31\","
 	 	      	+ "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\"},"
 	    		+ "\"series\":{\"seriesname\":\"Athena\",\"seriescolor\":\"Ash\"},"
@@ -784,16 +788,16 @@ public class ProductServiceCreationWithJsonTest {
  		    + "\"countryorigin\":\"Italy\","
  		    + "\"inactivecode\":\"N\","
  			+ "\"showonwebsite\":\"Y\","
- 			+ "\"itemtypecd\":\"F\","
- 			+ "\"abccd\":\"C\","
- 			+ "\"itemcd2\":\"\","
+ 			+ "\"itemtypecode\":\"F\","
+ 			+ "\"abccode\":\"C\","
+ 			+ "\"itemcode2\":\"\","
  			//+ "\"inventoryitemcd\":\"F\","
  			+ "\"showonalysedwards\":\"N\","
  			+ "\"offshade\":\"N\","
  			+ "\"printlabel\":\" \","
  			+ "\"taxclass\":\"T\","
  			+ "\"lottype\":\"\","
- 			+ "\"updatecd\":\"CERA-CRD\",\"directship\":\" \",\"dropdate\":null,\"itemgroupnbr\":0,"
+ 			+ "\"updatecode\":\"CERA-CRD\",\"directship\":\" \",\"dropdate\":null,\"itemgroupnbr\":0,"
  			+ "\"priorlastupdated\":\"2014-03-31\","
  	      	+ "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\"},"
     		+ "\"series\":{\"seriesname\":\"Athena\",\"seriescolor\":\"Ash\"},"
@@ -813,15 +817,15 @@ public class ProductServiceCreationWithJsonTest {
  
 	 
 	 String jStringWithColorHues = 
-		     "{\"itemcode\":\"newItemcode10\","
+		     "{\"itemcode\":\"newItemcode1101\","
 		    + "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\"},"
 		    + "\"itemcategory\":\"ATHENA\","
  		    + "\"countryorigin\":\"Italy\","
  		    + "\"inactivecode\":\"N\","
  			+ "\"showonwebsite\":\"Y\","
- 			+ "\"itemtypecd\":\"#\","
- 			+ "\"abccd\":\"C\","
- 			+ "\"itemcd2\":\"\","
+ 			+ "\"itemtypecode\":\"#\","
+ 			+ "\"abccode\":\"C\","
+ 			+ "\"itemcode2\":\"\","
  			+ "\"colorhues\":[\"BEIGE\"],"
     		+ "}";
  
@@ -832,29 +836,29 @@ public class ProductServiceCreationWithJsonTest {
  		    + "\"countryorigin\":\"Italy\","
  		    + "\"inactivecode\":\"N\","
  			+ "\"showonwebsite\":\"Y\","
- 			+ "\"itemtypecd\":\"#\","
- 			+ "\"abccd\":\"C\","
- 			+ "\"itemcd2\":\"\","
+ 			+ "\"itemtypecode\":\"#\","
+ 			+ "\"abccode\":\"C\","
+ 			+ "\"itemcode2\":\"\","
  			+ "\"colorhues\":[\"BEIGE\", \"RED\"],"
     		+ "}";
  
 	 
 	 String jStringWithColorCategory = 
-		     "{\"itemcode\":\"newItemcode4\","
+		     "{\"itemcode\":\"newItemcode8\","
 		    + "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\"},"
 		    + "\"itemcategory\":\"ATHENA\","
  		    + "\"countryorigin\":\"Italy\","
  		    + "\"inactivecode\":\"N\","
  			+ "\"showonwebsite\":\"Y\","
- 			+ "\"itemtypecd\":\"#\","
- 			+ "\"abccd\":\"C\","
- 			+ "\"itemcd2\":\"\","
+ 			+ "\"itemtypecode\":\"#\","
+ 			+ "\"abccode\":\"C\","
+ 			+ "\"itemcode2\":\"\","
  			+ "\"colorcategory\":\"BLACK:WHITE\","
     		+ "}";
  
 	 
 	 String jStringWithDimensions = 
-			    "{\"itemcode\":\"newItemcode3\","
+			    "{\"itemcode\":\"newItemcode7\","
 			    + "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\"},"
 			    + "\"itemcategory\":\"ATHENA\","
 	 		    + "\"countryorigin\":\"Italy\","
@@ -961,16 +965,16 @@ public class ProductServiceCreationWithJsonTest {
 	    		+ "\"series\":{\"seriesname\":\"Athena\",\"seriescolor\":\"Ash\"},"
 	    		+ "\"material\":{\"materialtype\":\"Porcelain\",\"materialcategory\":\"Trim\",\"materialclass\":\"CTSRC\",\"materialstyle\":\"FW\",\"materialfeature\":\"\"},"
 	    		+ "\"showonwebsite\":\"Y\","
-	    		+ "\"itemtypecd\":\"F\","
-	    		+ "\"abccd\":\"C\","
-	    		+ "\"itemcd2\":\"testcd2\","
+	    		+ "\"itemtypecode\":\"F\","
+	    		+ "\"abccode\":\"C\","
+	    		+ "\"itemcode2\":\"testcd2\","
 	    		+ "\"inventoryitemcd\":\"UPC7078425\","
 	    		+ "\"showonalysedwards\":\"N\","
 	    		+ "\"offshade\":\"N\","
 	    		+ "\"printlabel\":\"Y\","
 	    		+ "\"taxclass\":\"T\","
 	    		+ "\"lottype\":\"Y\","
-	    		+ "\"updatecd\":\"CERA-CRD\","
+	    		+ "\"updatecode\":\"CERA-CRD\","
 	    		+ "\"directship\":\"Y\","
 	    		+ "\"dropdate\":2014-03-31,"
 	    		+ "\"itemgroupnbr\":5,"
@@ -1021,20 +1025,20 @@ public class ProductServiceCreationWithJsonTest {
 	 
 	 String jStringFullItemAndAssociationInfo = 
 			    //basic info
-			     "{\"itemcode\":\"newItemcode1\","
+			     "{\"itemcode\":\"newItemcode6\","
 			    + "\"itemcategory\":\"ATHENA\","
 			    + "\"countryorigin\":\"Italy\","
 			    + "\"inactivecode\":\"N\","
 			    + "\"showonwebsite\":\"Y\","
-			    + "\"itemtypecd\":\"F\","
-			    + "\"abccd\":\"C\","
-			    + "\"itemcd2\":\"test\","
-			    + "\"inventoryitemcd\":\"\","
+			    + "\"itemtypecode\":\"F\","
+			    + "\"abccode\":\"C\","
+			    + "\"itemcode2\":\"test\","
+			    + "\"inventoryitemcode\":\"\","
 			    + "\"showonalysedwards\":\"N\",\"offshade\":\"N\","
 			    + "\"printlabel\":\" \","
 			    + "\"taxclass\":\"T\","
 			    + "\"lottype\":\"\","
-			    + "\"updatecd\":\"CERA-CRD\","
+			    + "\"updatecode\":\"CERA-CRD\","
 			    + "\"directship\":\" \","
 			    + "\"dropdate\":null,"
 			    + "\"itemgroupnbr\":0,"
@@ -1074,6 +1078,7 @@ public class ProductServiceCreationWithJsonTest {
 	    		           + "\"unit3unit\":\"\",\"unit3ratio\":0.0,\"unit3isstdsell\":\"N\",\"unit3isstdord\":\"N\",\"unit3isfractqty\":\"N\",\"unit3ispackunit\":\"N\",\"unit3upc\":0,\"unit3upcdesc\":\"\",\"unit3wgtperunit\":0.0000,"
 	    		           + "\"unit4unit\":\"\",\"unit4ratio\":0.0,\"unit4isstdsell\":\"N\",\"unit4isstdord\":\"N\",\"unit4isfractqty\":\"N\",\"unit4ispackunit\":\"N\",\"unit4upc\":0,\"unit4upcdesc\":\"\",\"unit4wgtperunit\":0.0000},"
 	    		//+ "\"notes\":{\"ponotes\":\"test po note\",\"notes1\":\"test notes1\",\"notes2\":\"test note2\",\"notes3\":\"test notes3\"},"
+	    		+ "\"notes\":{\"ponotes\":\"test po note\",\"buyernotes\":\"test notes1\",\"internalnotes\":\"test note2\",\"invoicenotes\":\"test notes3\"},"           
 	    		//------ associations ------//
 	    		+ "\"colorhues\":[\"BEIGE\",\"YELLOW\"],"
 		    	+ "\"vendors\":"
@@ -1099,7 +1104,7 @@ public class ProductServiceCreationWithJsonTest {
 	    		//+ "                     {\"vendorOrder\":2,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorNetPrice\":4.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"vendorId\":134586},"
 	    		//+ "                     {\"vendorOrder\":3,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorNetPrice\":4.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"vendorId\":134587},"
  		        //+ "                     ],"
-	    		+ "\"imsNewFeature\":{\"grade\":\"First\",\"status\":\"Good\",\"body\":\"Red_Body\",\"edge\":\"Tumbled\",\"mpsCode\":\"Drop\",\"designLook\":\"Wood\",\"designStyle\":\"Modern\",\"surfaceApplication\":\"Silk\",\"surfaceType\":\"Cross_Cut\",\"surfaceFinish\":\"Antiquated\",\"warranty\":3,\"recommendedGroutJointMin\":\"1\",\"recommendedGroutJointMax\":\"2\",\"createdDate\":\"2014-05-14\",\"launchedDate\":null,\"droppedDate\":null,\"lastModifiedDate\":null},"
+	    		+ "\"newFeature\":{\"grade\":\"First\",\"status\":\"Good\",\"body\":\"Red_Body\",\"edge\":\"Tumbled\",\"mpsCode\":\"Drop\",\"designLook\":\"Wood\",\"designStyle\":\"Modern\",\"surfaceApplication\":\"Silk\",\"surfaceType\":\"Cross_Cut\",\"surfaceFinish\":\"Antiquated\",\"warranty\":3,\"recommendedGroutJointMin\":\"1\",\"recommendedGroutJointMax\":\"2\",\"createdDate\":\"2014-05-14\",\"launchedDate\":null,\"droppedDate\":null,\"lastModifiedDate\":null},"
 	    		//+ "\"newNoteSystem\":[{\"noteType\":\"po\",\"text\":\"test Po note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"buyer\",\"text\":\"test buyer note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"invoice\",\"text\":\"test invoice note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"additional\",\"text\":\"test additional note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"internal\",\"text\":\"test internal note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null}],"
 	    		+ "\"iconDescription\":{\"madeInCountry\":\"USA\",\"exteriorProduct\":true,\"adaAccessibility\":true,\"throughColor\":false,\"colorBody\":true,\"inkJet\":false,\"glazed\":true,\"unglazed\":false,\"rectifiedEdge\":true,\"chiseledEdge\":false,\"versaillesPattern\":true,\"recycled\":false,\"postRecycled\":true,\"preRecycled\":false,\"leadPointIcon\":true,\"greenFriendlyIcon\":false,\"coefficientOfFriction\":true},"
 		        + "}";

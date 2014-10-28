@@ -72,5 +72,4 @@ public class Material implements java.io.Serializable {
 	public void setMaterialfeature(String materialfeature) {
 		this.materialfeature = materialfeature;
 	}
-
 }

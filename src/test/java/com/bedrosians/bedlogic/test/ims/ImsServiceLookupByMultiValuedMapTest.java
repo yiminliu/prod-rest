@@ -1,4 +1,4 @@
-package com.bedrosians.bedlogic.test.product;
+package com.bedrosians.bedlogic.test.ims;
 
 import java.io.StringWriter;
 import java.io.Writer;
@@ -23,6 +23,7 @@ import com.bedrosians.bedlogic.domain.ims.Vendor;
 import com.bedrosians.bedlogic.domain.ims.enums.Grade;
 import com.bedrosians.bedlogic.domain.ims.enums.MpsCode;
 import com.bedrosians.bedlogic.domain.ims.enums.Status;
+import com.bedrosians.bedlogic.domain.ims.ColorHue;
 import com.bedrosians.bedlogic.models.Products;
 import com.bedrosians.bedlogic.service.ims.ImsService;
 import com.bedrosians.bedlogic.util.JsonWrapper.ItemListWrapper;
@@ -34,7 +35,7 @@ import static org.junit.Assert.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/application_context/bedlogic-context.xml", "/application_context/bedlogic-persistence.xml"})
 @TransactionConfiguration(defaultRollback = false)
-public class ProductServiceLookupByMultiValuedMapTest {
+public class ImsServiceLookupByMultiValuedMapTest {
 		
 	//@Mock
 	//ItemDao ItemDaoMock;
@@ -45,7 +46,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	@Autowired
 	private ImsService imsService;
 	@Autowired
-	private IndexUtil indexUtil;
+	//private IndexUtil indexUtil;
 	
 	
 	private static String testItemId = null;
@@ -96,9 +97,9 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	    testFullDescription2 = "test";
 	    //testColor = "Beige";
 	    testColor = "White";
-	    testColorCategory = "CLEAR";
-	    testColorHue = "ALMOND";
-	    testColorHue2 = "RED";
+	    testColorCategory = "RED";
+	    testColorHue = "RED";
+	    testColorHue2 = "CLEAR";
 	    testColorHue3 = "GREEN";
 	    testColorHue4 = "YELLOW";
 	    testColorHue5 = "BEIGE";
@@ -132,7 +133,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	}
 	
 @Test
-//@Ignore
+@Ignore
 	public void testGetAllactiveAndShownOnWebItemsByLucene(){
 		List<Ims> items = null;
 		try{
@@ -148,7 +149,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	}
 	
 	@Test
-	public void testGetItemById(){
+	public void testGetItemByItemCode(){
 		
 		System.out.println("test if the Item is returned by searching its ID...");
 		Ims item = null;
@@ -204,7 +205,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
     }
 	
 	@Test
-	public void testGetItemByIdWithEaxctMatch(){	
+	public void testGetItemByItemCodeWithEaxctMatch(){	
 		System.out.println("test if the Item is returned by searching its ID...");
 		MultivaluedMap<String,String> params = new MultivaluedMapImpl();
         params.put("itemcode", Arrays.asList(new String[]{"TCRD"}));
@@ -232,39 +233,8 @@ public class ProductServiceLookupByMultiValuedMapTest {
        // System.out.println("items   = " + jsonStr);
     }
 	
-	@Test
-	public void testGetItemByMultipleIds(){
-		
-		System.out.println("test if the Item is returned by searching its ID...");
-		MultivaluedMap<String,String> params = new MultivaluedMapImpl();
-		params.put("itemcode", Arrays.asList(new String[]{testItemId, testItemId2}));
-		List<Ims> items = null;
-        try{
-           items = imsService.getWrappedItems(params);
-        }
-		catch(Exception e){
-			e.printStackTrace();
-		}
-        assertTrue("should not be null", items != null && !items.isEmpty());
-        System.out.println("Number od items   = " + items.size());
-        
-        for(Ims item : items){
-	    	System.out.println("item code   = " + item.getItemcode());
-	    	assertTrue(testItemId.equalsIgnoreCase(item.getItemcode()) || testItemId2.equalsIgnoreCase(item.getItemcode()));
-	    }
-	    
-		String jsonStr = null;
-        Products result = new Products(items);
-	    try{
-	        jsonStr = result.toJSONStringWithJackson();
-	    }
-	    catch(Exception e){
-	      	e.printStackTrace();
-	    }
-	    
-	}
 	
-	@Test
+	//@Test
 	public void testGetAllActiveItems(){
 		
 		System.out.println("test if the Item is returned by searching its ID...");
@@ -473,208 +443,6 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	}
 	
 	@Test
-    public void testGetItemByMultiDesciptions() throws Exception {
-	        System.out.println("testGetItemByDescription: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
-	        params.put("fulldesc", Arrays.asList(new String[]{testFullDescription, testFullDescription2}));
-	        List<Ims> items = imsService.getItems(params);
-	        assertTrue("should not be null", items != null && !items.isEmpty());
-	        String jsonStr = null;
-	        System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
-	        for(Ims prod : items){
-	       	    System.out.printf("item code = %s, and description = %s;  ", prod.getItemcode(), prod.getItemdesc().getFulldesc());
-	       	    System.out.println();
-	           	assertTrue(prod.getItemdesc().getFulldesc().contains(testFullDescription) || prod.getItemdesc().getFulldesc().contains(testFullDescription2));
-	        }
-	        Products result = new Products(new ItemListWrapper(items));
-	        try{
-	            jsonStr = result.toJSONStringWithJackson();
-	        }
-	        catch(Exception e){
-	        	e.printStackTrace();
-	        }
-	        //System.out.println("items   = " + jsonStr);
-	}
-	
-	@Test
-    public void testGetItemByItemDesc1() throws Exception {
-	        System.out.println("testGetItemBytestDescription1: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
-	        //params.put(" exactMatch", Arrays.asList(new String[]{"true"}));
-	        params.put("itemdesc1", Arrays.asList(new String[]{testDescription1}));
-	        List<Ims> items = imsService.getItems(params);
-	        assertTrue("should not be null", items != null && !items.isEmpty());
-	        String jsonStr = null;
-	        System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
-	        for(Ims prod : items){
-	       	    System.out.printf("item code = %s, and color = %s;  ", prod.getItemcode(), prod.getItemdesc().getItemdesc1());
-	       	    System.out.println();
-	           	assertTrue(prod.getItemdesc().getItemdesc1().contains(testDescription1));
-	        }
-	       // ListWraper lWraper = new ListWraper();
-	        //lWraper.setList(items);
-	        Products result = new Products(new ListWrapper(items));
-	        try{
-	            jsonStr = result.toJSONStringWithJackson();
-	        }
-	        catch(Exception e){
-	        	e.printStackTrace();
-	        }
-	        //System.out.println("items   = " + jsonStr);
-	        
-	}
-	
-	@Test
-    public void testGetItemByColor() throws Exception {
-	        System.out.println("testGetItemByColor: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
-	        params.put("color", Arrays.asList(new String[]{"Red"}));
-	        List<Ims> items = imsService.getItems(params);
-	        assertTrue("should not be null", items != null && !items.isEmpty());
-	        String jsonStr = null;
-	       // System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
-	        for(Ims prod : items){
-	       	    System.out.printf("item code = %s, and color = %s;  ", prod.getItemcode(), prod.getSeries().getSeriescolor());
-	       	    System.out.println();
-	           	assertTrue("Red".equalsIgnoreCase(prod.getSeries().getSeriescolor().trim()) || prod.getSeries().getSeriescolor().contains("Red") || prod.getSeries().getSeriescolor().contains("RED"));
-	        }
-	        Products result = new Products(new ListWrapper(items));
-	        try{
-	            jsonStr = result.toJSONStringWithJackson();
-	        }
-	        catch(Exception e){
-	        	e.printStackTrace();
-	        }
-	        System.out.println("items   = " + jsonStr);    
-	}
-	
-	@Test
-    public void testGetItemByMultiColors() throws Exception {
-	        System.out.println("testGetItemByColor: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
-	        params.put("color", Arrays.asList(new String[]{"Red", "White"}));
-	        List<Ims> items = imsService.getItems(params);
-	        assertTrue("should not be null", items != null && !items.isEmpty());
-	        String jsonStr = null;
-	        System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
-	        for(Ims prod : items){
-	       	    System.out.printf("item code = %s, and color = %s;  ", prod.getItemcode(), prod.getSeries().getSeriescolor());
-	       	    System.out.println();
-	           	assertTrue("Red".equalsIgnoreCase(prod.getSeries().getSeriescolor().trim()) || "White".equalsIgnoreCase(prod.getSeries().getSeriescolor().trim()));
-	        }
-	        Products result = new Products(new ListWrapper(items));
-	        try{
-	            jsonStr = result.toJSONStringWithJackson();
-	        }
-	        catch(Exception e){
-	        	e.printStackTrace();
-	        }
-	        //System.out.println("items   = " + jsonStr);        
-	}
-	
-	@Test
-    public void testGetItemByColorCategory() throws Exception {
-	        System.out.println("testGetItemByColorCategory: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
-	        //params.put(" exactMatch", Arrays.asList(new String[]{"true"}));
-	        params.put("colorcategory", Arrays.asList(new String[]{testColorCategory}));
-	        List<Ims> items = imsService.getItems(params);
-	        assertTrue("should not be null", items != null && !items.isEmpty());
-	        String jsonStr = null;
-	        System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
-	        for(Ims prod : items){
-	//       	    System.out.printf("item code = %s, and colorcategory = %s;  ", prod.getItemcode(), prod.getColorhues());
-	//       	    System.out.println();
-	           	//assertTrue(prod.getColorhues().trim().startsWith(testColorCategory));
-	       	    assertTrue(prod.getColorhues().contains(testColorCategory));
-	        }
-	        Products result = new Products(new ListWrapper(items));
-	        try{
-	            jsonStr = result.toJSONStringWithJackson();
-	        }
-	        catch(Exception e){
-	        	e.printStackTrace();
-	        }
-	        //System.out.println("items   = " + jsonStr);
-	}
-	
-	@Test
-    public void testGetItemByMultipleColorCategory() throws Exception {
-	        System.out.println("testGetItemByColorCategory: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
-	        //params.put(" exactMatch", Arrays.asList(new String[]{"true"}));
-	        params.put("colorcategory", Arrays.asList(new String[]{testColorCategory, "Red"}));
-	        List<Ims> items = imsService.getItems(params);
-	        assertTrue("should not be null", items != null && !items.isEmpty());
-	        String jsonStr = null;
-	        System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
-	        for(Ims prod : items){
-	 //      	    System.out.printf("item code = %s, and colorcategory = %s;  ", prod.getItemcode(), prod.getColorhues());
-	       	    System.out.println();
-	           	assertTrue(prod.getColorhues().contains(testColorCategory) || prod.getColorhues().contains("RED"));
-	        }
-	        Products result = new Products(new ListWrapper(items));
-	        try{
-	            jsonStr = result.toJSONStringWithJackson();
-	        }
-	        catch(Exception e){
-	        	e.printStackTrace();
-	        }
-	        //System.out.println("items   = " + jsonStr);
-	}
-	
-	@Test
-    public void testGetItemByOrigin() throws Exception {
-	        System.out.println("testGetItemByOrigin: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
-	        //params.put(" exactMatch", Arrays.asList(new String[]{"true"}));
-	        params.put("countryorigin", Arrays.asList(new String[]{testOrigin}));
-	        List<Ims> items = imsService.getItems(params);
-	        assertTrue("should not be null", items != null && !items.isEmpty());
-	        String jsonStr = null;
-	        System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
-	        for(Ims prod : items){
-	       	    System.out.printf("item code = %s, and origin = %s;  ", prod.getItemcode(), prod.getCountryorigin());
-	       	    System.out.println();
-	           	assertTrue(testOrigin.equalsIgnoreCase(prod.getCountryorigin().trim()));
-	        }
-	        Products result = new Products(new ListWrapper(items));
-	        try{
-	            jsonStr = result.toJSONStringWithJackson();
-	        }
-	        catch(Exception e){
-	        	e.printStackTrace();
-	        }
-	        //System.out.println("items   = " + jsonStr);
-	}
-	
-	@Test
-    public void testGetItemByMultiOrigins() throws Exception {
-	        System.out.println("testGetItemByColor: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
-	        //params.put(" exactMatch", Arrays.asList(new String[]{"true"}));
-	        params.put("countryorigin", Arrays.asList(new String[]{testOrigin, testOrigin2}));
-	        List<Ims> items = imsService.getItems(params);
-	        assertTrue("should not be null", items != null && !items.isEmpty());
-	        String jsonStr = null;
-	        System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
-	        for(Ims prod : items){
-	       	    System.out.printf("item code = %s, and origin = %s;  ", prod.getItemcode(), prod.getCountryorigin());
-	       	    System.out.println();
-	           	assertTrue(testOrigin.equalsIgnoreCase(prod.getCountryorigin().trim()) || testOrigin2.equalsIgnoreCase(prod.getCountryorigin().trim()));
-	        }
-	        Products result = new Products(new ListWrapper(items));
-	        try{
-	            jsonStr = result.toJSONStringWithJackson();
-	        }
-	        catch(Exception e){
-	        	e.printStackTrace();
-	        }
-	       // System.out.println("items   = " + jsonStr);
-	}
-	
-	
-	@Test
     public void testGetItemByCategory() throws Exception {
 	        System.out.println("testGetItemByCategory: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -685,7 +453,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        String jsonStr = null;
 	        System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
 	        for(Ims prod : items){
-	       	    System.out.printf("item code = %s, and Category = %s. ", prod.getItemcode(), prod.getItemcategory());
+	       	   // System.out.printf("item code = %s, and Category = %s. ", prod.getItemcode(), prod.getItemcategory());
 	           	assertEquals("The category should be " + testCategory, testCategory, prod.getItemcategory().trim());
 	        }
             Products result = new Products(items);
@@ -695,7 +463,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        catch(Exception e){
 	        	e.printStackTrace();
 	        }
-	       // System.out.println("items   = " + jsonStr);
+	        System.out.println("items   = " + jsonStr);
 	}
 	
 	@Test
@@ -922,80 +690,6 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	 }
 	
 	@Test
-    public void testGetItemByMaterialFeature() throws Exception {
-	        System.out.println("testGetItemBytestMaterialFeature: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
-	        params.put("materialfeature", Arrays.asList(new String[]{testMaterialFeature}));
-	        List<Ims> items = imsService.getItems(params); 
-	        String jsonStr = null;
-	        System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
-	        assertTrue("should not be null", items != null && !items.isEmpty());
-	        for(Ims prod : items){
-	       	    //System.out.printf("item code = %s, and material feaature = %s. ", prod.getItemcode(), prod.getMaterial().getMaterialfeature());
-	       	    //System.out.println();
-	           	assertEquals(testMaterialFeature, prod.getMaterial().getMaterialfeature().trim());
-	        }
-	        Products result = new Products(new ListWrapper(items));
-	        try{
-	            jsonStr = result.toJSONStringWithJackson();
-	        }
-	        catch(Exception e){
-	        	e.printStackTrace();
-	        }
-	        //System.out.println("items   = " + jsonStr);
-	 }
-	
-	@Test
-    public void testGetItemByMaterialFeature2() throws Exception {
-	        System.out.println("testGetItemBytestMaterialFeature: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
-	        params.put("materialfeature", Arrays.asList(new String[]{testMaterialFeature2}));
-	        List<Ims> items = imsService.getItems(params); 
-	        assertTrue("should not be null", items != null && !items.isEmpty());
-	        String jsonStr = null;
-	        System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
-	        assertNotNull(items);
-	        for(Ims prod : items){
-	       	    //System.out.printf("item code = %s, and material feaature = %s. ", prod.getItemcode(), prod.getMaterial().getMaterialfeature());
-	       	    //System.out.println();
-	           	assertEquals(testMaterialFeature2, prod.getMaterial().getMaterialfeature().trim());
-	        }
-	        Products result = new Products(new ListWrapper(items));
-	        try{
-	            jsonStr = result.toJSONStringWithJackson();
-	        }
-	        catch(Exception e){
-	        	e.printStackTrace();
-	        }
-	        //System.out.println("items   = " + jsonStr);
-	 }
-	
-	@Test
-    public void testGetItemByMultipleMaterialFeatures() throws Exception {
-	        System.out.println("testGetItemBytestMaterialFeature: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
-	        params.put("materialfeature", Arrays.asList(new String[]{testMaterialFeature, testMaterialFeature2}));
-	        List<Ims> items = imsService.getItems(params); 
-	        assertTrue("should not be null", items != null && !items.isEmpty());
-	        String jsonStr = null;
-	        System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
-	        assertNotNull(items);
-	        for(Ims prod : items){
-	       	    //System.out.printf("item code = %s, and material feaature = %s. ", prod.getItemcode(), prod.getMaterial().getMaterialfeature());
-	       	    System.out.println();
-	           	assertTrue(testMaterialFeature.equals(prod.getMaterial().getMaterialfeature().trim()) || testMaterialFeature2.equals(prod.getMaterial().getMaterialfeature().trim()));
-	        }
-	        Products result = new Products(new ListWrapper(items));
-	        try{
-	            jsonStr = result.toJSONStringWithJackson();
-	        }
-	        catch(Exception e){
-	        	e.printStackTrace();
-	        }
-	        //System.out.println("items   = " + jsonStr);
-	 }
-	
-	@Test
     public void testGetItemByMaterialType() throws Exception {
 	        System.out.println("testGetItemBytestMaterialType: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
@@ -1009,7 +703,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	       	    System.out.println();
 	           	assertEquals(testMaterialType, prod.getMaterial().getMaterialtype().trim());
 	        }
-	        Products result = new Products(new ListWrapper(items));
+	        Products result = new Products(items);
 	        try{
 	            jsonStr = result.toJSONStringWithJackson();
 	        }
@@ -1033,7 +727,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	       	    System.out.println();
 	           	assertEquals(testMaterialType2, prod.getMaterial().getMaterialtype().trim());
 	        }
-	        Products result = new Products(new ListWrapper(items));
+	        Products result = new Products(items);
 	        try{
 	            jsonStr = result.toJSONStringWithJackson();
 	        }
@@ -1057,7 +751,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	       	    //System.out.println();
 	           	assertTrue(testMaterialType.equals(prod.getMaterial().getMaterialtype().trim()) || testMaterialType2.equals(prod.getMaterial().getMaterialtype().trim()));
 	        }
-	        Products result = new Products(new ListWrapper(items));
+	        Products result = new Products(items);
 	        try{
 	            jsonStr = result.toJSONStringWithJackson();
 	        }
@@ -1066,6 +760,7 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        }
 	        //System.out.println("items   = " + jsonStr);
 	 }
+	
 	
 	@Test
     public void testGetItemBySeriesName() throws Exception {
@@ -1290,8 +985,186 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	        }
 	        //System.out.println("items   = " + jsonStr);
 	    }
-	 
 	
+	 @Test
+     public void testGetItemByColor() throws Exception {
+	        System.out.println("testGetItemByColor: ");
+	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        params.put("color", Arrays.asList(new String[]{testColor}));
+	        List<Ims> items = imsService.getItems(params);
+	        assertTrue("should not be null", items != null && !items.isEmpty());
+	        String jsonStr = null;
+	        System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
+	        for(Ims prod : items){
+	        	 System.out.println("item code = " + prod.getItemcode());
+	        	 System.out.println("color = " + prod.getSeries().getSeriescolor());
+	         	 //assertEquals(testColorHue, prod.getColorhues().contains(prod));
+	        }
+	        Products result = new Products(items);
+	        try{
+	            jsonStr = result.toJSONStringWithJackson();
+	        }
+	        catch(Exception e){
+	        	e.printStackTrace();
+	        }
+	       // System.out.println("items   = " + jsonStr);
+	    }
+	 
+	 @Test
+     public void testGetItemByColor_multiple() throws Exception {
+	        System.out.println("testGetItemByColor: ");
+	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        params.put("color", Arrays.asList(new String[]{testColor, "YELLOW"}));
+	        List<Ims> items = imsService.getItems(params);
+	        assertTrue("should not be null", items != null && !items.isEmpty());
+	        String jsonStr = null;
+	        System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
+	        for(Ims prod : items){
+	        	 System.out.println("item code = " + prod.getItemcode());
+	        	 System.out.println("color = " + prod.getSeries().getSeriescolor());
+	         	 //assertEquals(testColorHue, prod.getColorhues().contains(prod));
+	        }
+	        Products result = new Products(items);
+	        try{
+	            jsonStr = result.toJSONStringWithJackson();
+	        }
+	        catch(Exception e){
+	        	e.printStackTrace();
+	        }
+	       // System.out.println("items   = " + jsonStr);
+	    }
+	 @Test
+     public void testGetItemByColorCategory() throws Exception {
+	        System.out.println("testGetItemByColorcategory: ");
+	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        params.put("colorcategory", Arrays.asList(new String[]{testColorCategory}));
+	        List<Ims> items = imsService.getItems(params);
+	        assertTrue("should not be null", items != null && !items.isEmpty());
+	        String jsonStr = null;
+	        System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
+	        for(Ims prod : items){
+	        	 System.out.println("item code = " + prod.getItemcode());
+	        	 System.out.println("color category = " + prod.getColorcategory());
+	        	 System.out.println("color hues = " + prod.getColorhues());
+		       	    System.out.println();
+		           	//assertTrue(prod.getColorhues().trim().startsWith(testColorCategory));
+		       	    assertTrue(prod.getColorcategory().trim().contains(testColorCategory));
+	        }
+	        Products result = new Products(items);
+	        try{
+	            jsonStr = result.toJSONStringWithJackson();
+	        }
+	        catch(Exception e){
+	        	e.printStackTrace();
+	        }
+	       // System.out.println("items   = " + jsonStr);
+	    }
+	
+	 @Test
+     public void testGetItemByColorHue() throws Exception {
+	        System.out.println("testGetItemByColorHue: ");
+	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        params.put("colorhues", Arrays.asList(new String[]{testColorHue}));
+	        List<Ims> items = imsService.getItems(params);
+	        assertTrue("should not be null", items != null && !items.isEmpty());
+	        String jsonStr = null;
+	        System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
+	        for(Ims prod : items){
+	        	 System.out.println("item code = " + prod.getItemcode());
+	        	 System.out.println("color category = " + prod.getColorcategory());
+	        	 System.out.println("color hues = " + prod.getColorhues());
+	        	//ColorHue colorHue = new ColorHue(testColorHue, prod);
+		            //assertTrue(prod.getColorhues().contains(colorHue));
+	//	           	for(ColorHue ch : prod.getColorhues()){
+	//	            	System.out.println("item code = " + prod.getItemcode() + ". and color hue  = " + ch.getColorHue());
+	//	            	assertTrue(prod.getColorhues().contains(ch));
+	//	            	//if this is valid, it means that the migratted colorCategory data from ims table to the new ims_item_color is correct
+	//	            	assertTrue(prod.getColorcategory().contains(ch.getColorHue()));
+		           	    //assertTrue(ch.getColorHue().contains(testColorHue));
+	//		        	//assertTrue(ch.getColorHue().equalsIgnoreCase(testColorHue) || ch.getColorHue().contains(testColorHue.toLowerCase()));
+	//	        	}
+	        }
+	        Products result = new Products(items);
+	        try{
+	            jsonStr = result.toJSONStringWithJackson();
+	        }
+	        catch(Exception e){
+	        	e.printStackTrace();
+	        }
+	       // System.out.println("items   = " + jsonStr);
+	    }
+	
+	 @Test
+	 public void testGetItemByStatus() throws Exception {
+	        System.out.println("testGetItemBynewFeature: ");
+	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	      	params.put("status", Arrays.asList(new String[]{"Good"}));
+	        List<Ims> items = imsService.getItems(params);
+	        
+	        String jsonStr = null;
+	        System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
+	        for(Ims prod : items){
+	        	 //System.out.println("item = " + prod);
+	        	 //System.out.println("item new feature = " + prod.getImsNewFeature());
+	           	 assertEquals(prod.getNewFeature().getStatus(), Status.Good);
+	        }
+	        Products result = new Products(items);
+	        try{
+	            jsonStr = result.toJSONStringWithJackson();
+	        }
+	        catch(Exception e){
+	        	e.printStackTrace();
+	        }
+	        //System.out.println("items   = " + jsonStr);
+	  }
+
+	 @Test
+	 public void testGetItemByGrade() throws Exception {
+	        System.out.println("testGetItemBynewFeature: ");
+	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	       	params.put("grade", Arrays.asList(new String[]{"First"}));
+	        List<Ims> items = imsService.getItems(params);
+	        //assertTrue("should not be null", items != null && !items.isEmpty());
+	        String jsonStr = null;
+	        System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
+	        for(Ims prod : items){
+	        	 //System.out.println("item = " + prod);
+	        	 //System.out.println("item new feature = " + prod.getImsNewFeature());
+	        	 assertEquals(prod.getNewFeature().getGrade(), Grade.First);
+	        }
+	        Products result = new Products(items);
+	        try{
+	            jsonStr = result.toJSONStringWithJackson();
+	        }
+	        catch(Exception e){
+	        	e.printStackTrace();
+	        }
+	        //System.out.println("items   = " + jsonStr);
+	  }
+	 
+	 @Test
+	 public void testGetItemByMpsCode() throws Exception {
+	        System.out.println("testGetItemBynewFeature: ");
+	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	      	params.put("mpsCode", Arrays.asList(new String[]{"Active_Product"}));
+	        List<Ims> items = imsService.getItems(params);
+	        String jsonStr = null;
+	        System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
+	        for(Ims prod : items){
+	        	 //System.out.println("item = " + prod);
+	        	 System.out.println("item new feature getMpsCode() = " + prod.getNewFeature().getMpsCode());
+	           	 assertEquals(prod.getNewFeature().getMpsCode(), MpsCode.Active_Product);
+	        }
+	        Products result = new Products(items);
+	        try{
+	            jsonStr = result.toJSONStringWithJackson();
+	        }
+	        catch(Exception e){
+	        	e.printStackTrace();
+	        }
+	        //System.out.println("items   = " + jsonStr);
+	  }
+	 
 	 @Test
      public void testGetItemByMultiPrameters() throws Exception {
 	        System.out.println("testGetItemByMultivaluedMap: ");
@@ -1326,227 +1199,6 @@ public class ProductServiceLookupByMultiValuedMapTest {
 	    }
 	
 	 
-	 @Test
-	 public void testGetItemByGrade() throws Exception {
-	        System.out.println("testGetItemBynewFeature: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
-	       	params.put("grade", Arrays.asList(new String[]{"First"}));
-	        List<Ims> items = imsService.getItems(params);
-	        assertTrue("should not be null", items != null && !items.isEmpty());
-	        String jsonStr = null;
-	        System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
-	        for(Ims prod : items){
-	        	 //System.out.println("item = " + prod);
-	        	 //System.out.println("item new feature = " + prod.getImsNewFeature());
-	        	 assertEquals(prod.getImsNewFeature().getGrade(), Grade.First);
-	        }
-	        Products result = new Products(items);
-	        try{
-	            jsonStr = result.toJSONStringWithJackson();
-	        }
-	        catch(Exception e){
-	        	e.printStackTrace();
-	        }
-	        //System.out.println("items   = " + jsonStr);
-	  }
-	 
-	 @Test
-	 public void testGetItemByStatus() throws Exception {
-	        System.out.println("testGetItemBynewFeature: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
-	      	params.put("status", Arrays.asList(new String[]{"Good"}));
-	        List<Ims> items = imsService.getItems(params);
-	        
-	        String jsonStr = null;
-	        System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
-	        for(Ims prod : items){
-	        	 //System.out.println("item = " + prod);
-	        	 //System.out.println("item new feature = " + prod.getImsNewFeature());
-	           	 assertEquals(prod.getImsNewFeature().getStatus(), Status.Good);
-	        }
-	        Products result = new Products(items);
-	        try{
-	            jsonStr = result.toJSONStringWithJackson();
-	        }
-	        catch(Exception e){
-	        	e.printStackTrace();
-	        }
-	        //System.out.println("items   = " + jsonStr);
-	  }
-	 
-	 @Test
-	 public void testGetItemByMpsCode() throws Exception {
-	        System.out.println("testGetItemBynewFeature: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
-	      	params.put("mpsCode", Arrays.asList(new String[]{"Active_Product"}));
-	        List<Ims> items = imsService.getItems(params);
-	        String jsonStr = null;
-	        System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
-	        for(Ims prod : items){
-	        	 //System.out.println("item = " + prod);
-	        	 System.out.println("item new feature getMpsCode() = " + prod.getImsNewFeature().getMpsCode());
-	           	 assertEquals(prod.getImsNewFeature().getMpsCode(), MpsCode.Active_Product);
-	        }
-	        Products result = new Products(items);
-	        try{
-	            jsonStr = result.toJSONStringWithJackson();
-	        }
-	        catch(Exception e){
-	        	e.printStackTrace();
-	        }
-	        //System.out.println("items   = " + jsonStr);
-	  }
-	 
-	 @Test
-	 public void testGetItemByColorHue() throws Exception {
-	        System.out.println("testGetItemByColorHue: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
-	       	params.put("colorhues", Arrays.asList(new String[]{testColorHue2}));
-	        List<Ims> items = imsService.getItems(params);
-	        assertTrue("should not be null", items != null && !items.isEmpty());
-	        String jsonStr = null;
-	        System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
-	        assertTrue(items.size() > 0);
-	        for(Ims prod : items){
-	        	//ColorHue colorHue = new ColorHue(testColorHue, prod);
-	            assertTrue(prod.getColorhues().contains(testColorHue2));
-	            assertTrue(prod.getColorcategory().contains(testColorHue2));
-	       //    	for(ColorHue ch : prod.getColorhues()){
-	            for(String ch : prod.getColorhues()){
-	            	//System.out.println("item code = " + prod.getItemcode() + ". and color hue  = " + ch.getColorHue());
-	       //     	assertTrue(prod.getColorhues().contains(ch));
-	            	//if this is valid, it means that the migratted colorCategory data from ims table to the new ims_item_color is correct
-	           	//assertTrue(prod.getColorcategory().contains(ch.getColorHue()));
-	            	assertTrue(prod.getColorcategory().contains(ch));
-	           	    //assertTrue(ch.getColorHue().contains(testColorHue));
-		        	//assertTrue(ch.getColorHue().equalsIgnoreCase(testColorHue) || ch.getColorHue().contains(testColorHue.toLowerCase()));
-	        	}
-	        }
-	        Products result = new Products(new ListWrapper(items));
-	        try{
-	            jsonStr = result.toJSONStringWithJackson();
-	        }
-	        catch(Exception e){
-	        	e.printStackTrace();
-	  
-	        }
-	       // System.out.println("items   = " + jsonStr);
-	  }
-	 
-	 @Test
-	 public void testGetItemByMultipleColorHues() throws Exception {
-	        System.out.println("testGetItemByColorHue: ");      
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
-	    	params.put("inactivecd", Arrays.asList(new String[]{"N"}));
-	       	params.put("colorhues", Arrays.asList(new String[]{testColorHue, testColorHue2, testColorHue3, testColorHue4, testColorHue5}));
-	        List<Ims> items = imsService.getItems(params);
-	        assertTrue("should not be null", items != null && !items.isEmpty());
-	        String jsonStr = null;
-	        System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
-	        for(Ims prod : items){
-	     //   	for(ColorHue ch : prod.getColorhues()){
-	            	//System.out.println("item code = " + prod.getItemcode() + ". and color hue  = " + ch.getColorHue());
-	       //     	assertTrue(prod.getColorhues().contains(ch));
-	           	   // assertTrue(ch.getColorHue().contains(testColorHue) || ch.getColorHue().contains(testColorHue2) || ch.getColorHue().contains(testColorHue3) || ch.getColorHue().contains(testColorHue4) || ch.getColorHue().contains(testColorHue5));
-		        	//assertTrue(ch.getColorHue().equalsIgnoreCase(testColorHue) || ch.getColorHue().contains(testColorHue.toLowerCase()));
-	      //  	}
-	        }
-	        Products result = new Products(new ListWrapper(items));
-	        try{
-	            jsonStr = result.toJSONStringWithJackson();
-	        }
-	        catch(Exception e){
-	        	e.printStackTrace();
-	        }
-	        //System.out.println("items   = " + jsonStr);
-	  }
-
-	 @Test
-	 public void testGetItemByPurchaser() throws Exception {
-	    System.out.println("testGetItemByPurchaser: ");
-	    MultivaluedMap<String,String> params = new MultivaluedMapImpl();
-	   	params.put("purchaser", Arrays.asList(new String[]{testPurchaser}));
-	   	//params.put("status", Arrays.asList(new String[]{"Good"}));
-        List<Ims> items = imsService.getItems(params);
-        assertTrue("should not be null", items != null && !items.isEmpty());
-	    String jsonStr = null;
-	    System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
-	    for(Ims prod : items){
-	      	 System.out.println("item = " + prod);
-	      	 assertEquals(testPurchaser, prod.getPurchasers().getPurchaser());
-	    }
-	    Products result = new Products(new ListWrapper(items));
-	    try{
-	        jsonStr = result.toJSONStringWithJackson();
-	    }
-	    catch(Exception e){
-	      	e.printStackTrace();
-	    }
-	    //System.out.println("items   = " + jsonStr);
-	  }
-	 
-	 //test the equality between the vendor id in the new vendor table and the vendornb1/vendornbr2 in the ims table.
-	 //if they match, it means the migratted vendor info from ims table to the new ims_vendors table valid
-	 @Test
-	 public void testGetItemByVendorId() throws Exception {
-	        System.out.println("testGetItemByVendorId: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
-	       	params.put("vendorId", Arrays.asList(new String[]{testVendorId}));		
-	        List<Ims> items = imsService.getItems(params);
-	       
-	        System.out.println("number of Items retrieved: "+items.size());
-	        for(Ims prod : items){
-	           	 //System.out.println("vendor = " + prod.getNewVendorSystem());
-	        	 for( ItemVendor vendor: prod.getNewVendorSystem()){
-	        		 System.out.printf("item code =%s, vendorId = %s, vendrnbr1 =%s ", prod.getItemcode(), prod.getVendors().getVendornbr1(), vendor.getVendorId());
-	        	     assertTrue(prod.getNewVendorSystem().contains(vendor));
-	        	     assertTrue(vendor.getVendorId().equals(prod.getVendors().getVendornbr1()) || vendor.getVendorId().equals(prod.getVendors().getVendornbr2())); 
-	        	 }    
-	        }
-	       
-            ObjectMapper mapper = new ObjectMapper();
-            Writer strWriter = new StringWriter();
-            mapper.writeValue(strWriter, items);
-            String jsonStr = strWriter.toString();
-            
-            // Return json reponse
-            //String     jsonStr = result.toJSONString();
-	        
-	        System.out.println("number of Items retrieved: "+items.size());
-	       // System.out.println("Output json string = " + jsonStr);
-	        
-	    }
-	 
-		
-		/* //@Test
-		 public void testGetItemByNote() throws Exception {
-		        System.out.println("testGetItemByNote: ");
-		        String noteType = "additional";
-		        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
-		       	params.put("noteType", Arrays.asList(new String[]{noteType}));
-		        List<Ims> items = imsService.getItems(params);
-		        String jsonStr = null;
-		        //System.out.println("size of notes = "+ items.get(0).getNewNoteSystem().size());
-		       
-		        System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
-		        for(Ims prod : items){
-		        	 //System.out.println("item = " + prod);
-		        	for(Note note : prod.getNewNoteSystem()) {
-		        		System.out.println("noteType = " + note.getNoteType());
-		        	     //assertEquals(noteType, note.getNoteType());
-		        	 }    
-		        }
-		        Products result = new Products(items);
-		        try{
-		            jsonStr = result.toJSONStringWithJackson();
-		        }
-		        catch(Exception e){
-		        	e.printStackTrace();
-		        }
-		 //       System.out.println(jsonStr);
-		  }
-		 */
-	
 	 @Test
 		public void testNothing(){
 	}

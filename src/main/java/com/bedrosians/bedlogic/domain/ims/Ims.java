@@ -26,7 +26,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Analyzer;
+//import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Boost;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
@@ -76,7 +76,7 @@ public class Ims implements java.io.Serializable {
 	private String inactivecode;
 	private String shadevariation;
 	private String colorcategory;
-	private List<String> colorhues =  new ArrayList<>();
+	//private List<String> colorhues =  new ArrayList<>();
 	private String showonwebsite;
   	private String iconsystem;
 	private String itemtypecode;
@@ -119,7 +119,7 @@ public class Ims implements java.io.Serializable {
   	private List<Vendor> newVendorSystem = new ArrayList<>();
   	private ImsNewFeature newFeature;
     private IconCollection iconDescription;
-	//private List<ColorHue> colorhues =  new ArrayList<>();
+	private List<ColorHue> colorhues =  new ArrayList<>();
   	//private List<Note> newNoteSystem = new ArrayList<>();
      	
 	@Id
@@ -399,7 +399,7 @@ public class Ims implements java.io.Serializable {
 
 	//@JsonIgnore
 	@Field(index=Index.YES, analyze=Analyze.YES, store=Store.YES)
-	@Analyzer(definition="colorCategoryAnalyzer")
+	//@Analyzer(definition="colorCategoryAnalyzer")
 	@Boost(2.0f)
     @Column(name = "colorcategory", length = 30)
 	public String getColorcategory() {
@@ -409,6 +409,7 @@ public class Ims implements java.io.Serializable {
 		this.colorcategory = colorcategory;
 	}
 	
+	/*
 	@Transient
 	public List<String> getColorhues() {
 		if(colorhues == null || colorhues.isEmpty())
@@ -418,6 +419,7 @@ public class Ims implements java.io.Serializable {
 	public void setColorhues(List<String> colorhues) {
 		this.colorhues = colorhues;
 	}
+	*/
 	
 	@Column(name = "showonalysedwards", length = 1)
 	public String getShowonalysedwards() {
@@ -527,11 +529,11 @@ public class Ims implements java.io.Serializable {
 		}
 	}
 
-	/*	
+	
 	//@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "ims", cascade = CascadeType.ALL)
 	//@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-	//@Fetch(FetchMode.SUBSELECT)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "ims", cascade = CascadeType.ALL, orphanRemoval = true)
+	@Fetch(FetchMode.SUBSELECT)
 	public List<ColorHue> getColorhues() {
 		return this.colorhues;
 	}
@@ -541,10 +543,11 @@ public class Ims implements java.io.Serializable {
 	}
    
 	public void addColorhue(ColorHue colorhue){
-		colorhue.setItem(this);
-		getColorhues().add(colorhue);
+		colorhue.setIms(this);
+		colorhues.add(colorhue);
 	}
-
+   
+	/*
 	//@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "ims", cascade = CascadeType.ALL)
 	public List<Note> getNewNoteSystem() {
@@ -608,7 +611,8 @@ public class Ims implements java.io.Serializable {
 	
 	public Ims(String itemcode, String itemcategory, String countryorigin,
 			String inactivecode, String shadevariation, String colorcategory,
-			List<String> colorhues, String showonwebsite, String iconsystem,
+			//List<String> colorhues, 
+			String showonwebsite, String iconsystem,
 			String itemtypecode, String abccode, String itemcode2,
 			String inventoryitemcode, String showonalysedwards,
 			String offshade, String printlabel, String taxclass,
@@ -629,7 +633,7 @@ public class Ims implements java.io.Serializable {
 		this.inactivecode = inactivecode;
 		this.shadevariation = shadevariation;
 		this.colorcategory = colorcategory;
-		this.colorhues = colorhues;
+		//this.colorhues = colorhues;
 		this.showonwebsite = showonwebsite;
 		this.iconsystem = iconsystem;
 		this.itemtypecode = itemtypecode;

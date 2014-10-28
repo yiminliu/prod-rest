@@ -107,8 +107,10 @@
            memoryStoreEvictionPolicy="LRU"/>
                       
     <cache name="com.bedrosians.bedlogic.domain.user.KeymarkUcUser"
-           maxElementsInMemory="1000"
-           eternal="true"
+           maxElementsInMemory="2000"
+           eternal="false"
+           timeToIdleSeconds="10000"
+           timeToLiveSeconds="100000"
            overflowToDisk="true"
            diskPersistent="false"
            diskExpiryThreadIntervalSeconds="2000"
