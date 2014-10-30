@@ -111,8 +111,8 @@ public class Ims implements java.io.Serializable {
 	private List<String> usage;
   	private Units units;
   	private Cost cost;
-  	private VendorInfo vendors = new VendorInfo();
   	private SimilarItemCode relateditemcodes;
+  	private VendorInfo vendors = new VendorInfo();
   	//private PriorVendor priorVendor;
   	
 	//------- Associations --------//
@@ -544,6 +544,8 @@ public class Ims implements java.io.Serializable {
    
 	public void addColorhue(ColorHue colorhue){
 		colorhue.setIms(this);
+		if(colorhues == null)
+			colorhues = new ArrayList<ColorHue>();
 		colorhues.add(colorhue);
 	}
    

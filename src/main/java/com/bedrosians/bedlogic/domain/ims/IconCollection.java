@@ -38,7 +38,7 @@ public class IconCollection implements java.io.Serializable {
 	
 	private String itemCode;
 	private OriginCountry madeInCountry;
-    //The should be either "true" of "false when insert or update the following properties
+    //The possible values should be either "true" of "false when insert or update the following properties
 	private Boolean exteriorProduct;
 	private Boolean adaAccessibility;
 	private Boolean throughColor;

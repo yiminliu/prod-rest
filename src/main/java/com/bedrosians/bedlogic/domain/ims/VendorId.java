@@ -23,7 +23,7 @@ public class VendorId implements Serializable{
 
 	public VendorId() {
 	}
-
+	
 	public VendorId(String itemCode, Integer id) {
 		this.itemCode = itemCode;
 		this.id = id;

@@ -65,7 +65,7 @@ public class Vendor implements java.io.Serializable {
 	@EmbeddedId
 	@AttributeOverrides({
 		@AttributeOverride(name = "itemCode", column = @Column(name = "item_code", nullable = false, length = 20)),
-		@AttributeOverride(name = "vendorId", column = @Column(name = "vendor_id", nullable = false, precision = 10, scale = 0)) })
+		@AttributeOverride(name = "id", column = @Column(name = "vendor_id", nullable = false, precision = 10, scale = 0)) })
     public VendorId getVendorId() {
 		return this.vendorId;
 	}
