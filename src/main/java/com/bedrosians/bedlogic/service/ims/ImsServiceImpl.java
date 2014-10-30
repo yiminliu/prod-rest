@@ -3,6 +3,7 @@ package com.bedrosians.bedlogic.service.ims;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import javax.ws.rs.core.MultivaluedMap;
 
@@ -19,7 +20,9 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bedrosians.bedlogic.dao.ims.ColorHueDao;
 import com.bedrosians.bedlogic.dao.ims.ImsDao;
+import com.bedrosians.bedlogic.domain.ims.ColorHue;
 import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
@@ -36,7 +39,10 @@ import com.bedrosians.bedlogic.util.logger.aspect.Loggable;
 public class ImsServiceImpl implements ImsService {
 
     @Autowired
-	private ImsDao imsDao;  
+	private ImsDao imsDao;
+    
+    @Autowired
+	private ColorHueDao colorHueDao; 
     
     @Autowired
 	private SessionFactory sessionFactory;
@@ -188,6 +194,16 @@ public class ImsServiceImpl implements ImsService {
 		Ims itemFromInput = (Ims)JsonUtil.jsonObjectToPOJO(jsonObj, new Ims());
 		Ims itemToUpdate = null;
 		Session session = getSession();
+		//if((itemFromInput.getColorhues() != null && !itemFromInput.getColorhues().isEmpty()) || 
+		//  		   (itemFromInput.getColorcategory() != null && !itemFromInput.getColorcategory().isEmpty())){ //existing colorhues
+		//   Set<ColorHue> colorhues = colorHueDao.getItemColorHues(itemCode);
+		//   if(colorhues != null && !colorhues.isEmpty()) {
+		//	   for(ColorHue colorHue : colorhues){
+		//		   colorHueDao.delete(session, colorHue);
+		//	   }
+		//   }
+		//}
+	
 		try{
 			itemToUpdate = imsDao.getItemByItemCode(session, itemCode.trim());
 		}
@@ -202,7 +218,8 @@ public class ImsServiceImpl implements ImsService {
 		  	   throw new BedDAOException("Error occured during updateItem(), due to: " +  e.getMessage());	
 		}
 		if(itemToUpdate == null)
-	       throw new BedDAOException("No data found for the given item code");	 
+	       throw new BedDAOException("No data found for the given item code: " + itemCode);	 
+		
 		itemToUpdate = ImsDataUtil.transformItem(itemToUpdate, itemFromInput, DBOperation.UPDATE);
   	    ImsValidator.validateNewItem(itemToUpdate);
     	try{
@@ -230,7 +247,7 @@ public class ImsServiceImpl implements ImsService {
 	@Override
 	synchronized public void deleteItemByItemCode(String itemCode) throws BedDAOBadParamException, BedDAOException{
 	    if(itemCode == null || itemCode.length() == 0)
-	    	 throw new BedDAOBadParamException("Product code should not be empty");		
+	    	 throw new BedDAOBadParamException("Item code should not be empty");		
 		Ims ims = new Ims(itemCode);
 		try{
 			imsDao.deleteItem(ims);
