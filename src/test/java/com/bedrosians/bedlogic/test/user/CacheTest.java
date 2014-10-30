@@ -1,9 +1,7 @@
 package com.bedrosians.bedlogic.test.user;
 
-import java.util.Arrays;
 import java.util.List;
 
-import javax.ws.rs.core.MultivaluedMap;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -18,7 +16,6 @@ import com.bedrosians.bedlogic.dao.ims.ImsDao;
 import com.bedrosians.bedlogic.domain.user.KeymarkUcUser;
 import com.bedrosians.bedlogic.service.ims.ImsService;
 import com.bedrosians.bedlogic.service.user.KeymarkUcUserService;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/application_context/bedlogic-context.xml", "/application_context/bedlogic-persistence.xml"})
