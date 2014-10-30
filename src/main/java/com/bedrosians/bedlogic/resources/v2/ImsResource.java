@@ -275,7 +275,8 @@ public class ImsResource
              * @exception BedDAOBadParamException, BedDAOBadException and BedResException on input error and server side condition errors as well.
              */
              @DELETE
-             @Path("{itemCode}")
+             @Path("{itemcode}")
+             //@Path("/")
              @Produces({MediaType.APPLICATION_JSON})
              public Response deleteItemByItemCode(@Context HttpHeaders requestHeaders, @PathParam("itemcode") final String itemCode)
              {
@@ -290,7 +291,8 @@ public class ImsResource
                    imsService.deleteItemByItemCode(itemCode);
 
                    //Return json reponse
-                   response = Response.ok(MediaType.APPLICATION_JSON).build();
+                   //response = Response.ok(MediaType.APPLICATION_JSON).build();
+                   response = Response.noContent().build();
                 }
                 catch (BedDAOBadParamException e)
                 {
