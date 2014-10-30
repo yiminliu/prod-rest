@@ -16,7 +16,6 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
-import com.sun.jersey.api.client.filter.LoggingFilter;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 public class JerseyWSTestClient {
@@ -68,11 +67,14 @@ public class JerseyWSTestClient {
 	   System.out.println("Done test. Total time = " + totalTime + " ms.");
  	}
 	
+	/*********************** static initiation *********************/
 	private static void init(){
 	   ClientConfig config = new DefaultClientConfig();
 	   config.getClasses().add(JacksonJsonProvider.class);
 	   client = Client.create(config);
 	}
+	
+	/*********************** Individual test cases ****************************/
 	
 	private static void testGetItemByItemCode(String itemCode){
 	   System.out.println("testGetItemByItemCode");
@@ -275,14 +277,14 @@ public class JerseyWSTestClient {
 		System.out.println("Resource URL = " + service.getURI().toASCIIString());
 		
 		
-		   //ClientResponse response = service.header("Authorization", "Basic " + "base64encoded_userid:password").type("application/json").accept("application/json").post(ClientResponse.class, input);
-		   ClientResponse response = service.type("application/json").accept("application/json").post(ClientResponse.class, jStringWithBasicInfo);
-		   System.out.println("Response status : "+ response.getStatus());
-		   System.out.println("Response type : "+ response.getType());
-		   System.out.println("Response data : "+ response.toString());
+		 //ClientResponse response = service.header("Authorization", "Basic " + "base64encoded_userid:password").type("application/json").accept("application/json").post(ClientResponse.class, input);
+		 ClientResponse response = service.type("application/json").accept("application/json").post(ClientResponse.class, jStringWithBasicInfo);
+		 System.out.println("Response status : "+ response.getStatus());
+		 System.out.println("Response type : "+ response.getType());
+		 System.out.println("Response data : "+ response.toString());
 		   
-		   String s = response.getEntity(String.class);
-		   System.out.println("Output = " + s);
+		 String s = response.getEntity(String.class);
+		 System.out.println("Output = " + s);
     }	
 	
     private static void testUpdateItemWithJsonString(){
