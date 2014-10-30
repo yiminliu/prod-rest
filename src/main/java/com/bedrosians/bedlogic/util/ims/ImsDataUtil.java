@@ -596,8 +596,8 @@ public class ImsDataUtil {
 		}
 		//---------------ColorHue data---------------//
 		if(inputColorHues != null && !inputColorHues.isEmpty()){
-			if(operation.equals(DBOperation.CREATE) || //Brand new Product
-			  (operation.equals(DBOperation.UPDATE) && (itemToDB.getColorhues() == null || itemToDB.getColorhues().isEmpty()))){ //existing item, but brand new ItemColorHue
+			if(operation.equals(DBOperation.CREATE) || //Brand new item
+			  (operation.equals(DBOperation.UPDATE) && (itemToDB.getColorhues() == null || itemToDB.getColorhues().isEmpty()))){ //existing item, but brand new ColorHue
 			   for(ColorHue color : inputColorHues){	
 	  		       if(color != null && color.getColorHue() != null && !color.getColorHue().isEmpty())
 			          itemToDB.addColorhue(color);	
@@ -613,6 +613,7 @@ public class ImsDataUtil {
 			   }	   
 			}
 		}
+		
 	    //---------- vendors data ----------//
 		if(inputItemVendors != null && !inputItemVendors.isEmpty()){
 		   if(operation.equals(DBOperation.CREATE)|| //brand new Product
