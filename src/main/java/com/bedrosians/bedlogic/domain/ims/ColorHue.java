@@ -100,7 +100,7 @@ public class ColorHue implements java.io.Serializable {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
+		int result = id;
 		result = prime * result
 				+ ((colorHue == null) ? 0 : colorHue.hashCode());
 		result = prime * result + ((ims == null) ? 0 : ims.getItemcode().hashCode());
@@ -126,7 +126,7 @@ public class ColorHue implements java.io.Serializable {
 				return false;
 		} else if (!ims.getItemcode().equals(other.ims.getItemcode()))
 			return false;
-		return true;
+		return this.getId() == other.getId();
 	}
 
 }
