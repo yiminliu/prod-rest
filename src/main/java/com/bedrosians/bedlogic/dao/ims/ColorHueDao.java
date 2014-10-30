@@ -12,6 +12,7 @@ import com.bedrosians.bedlogic.domain.ims.ColorHue;
 public interface ColorHueDao extends GenericDao<ColorHue, String>{
   
    public Set<ColorHue> getAllColorHues(); 
+   public Set<ColorHue> getItemColorHues(String itemCode); 
    public String createColorHue(Session session, ColorHue colorHue);
    public void createColorHues(Set<ColorHue> colorHues);
    public void updateColorHue(ColorHue colorHue);
