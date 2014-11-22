@@ -57,16 +57,16 @@ public class ImsNewFeature implements java.io.Serializable {
 	private static final long serialVersionUID = -11135822658657L;
 	
 	private String itemCode;
-	private Grade grade;
-	private Status status;
-	private Body body;
-	private Edge edge;
-	private MpsCode mpsCode;
-	private DesignLook designLook;
-	private DesignStyle designStyle;
-	private SurfaceApplication surfaceApplication;
-	private SurfaceType surfaceType;
-	private SurfaceFinish surfaceFinish;
+	private Grade grade = null;
+	private Status status = null;
+	private Body body = null;
+	private Edge edge = null;
+	private MpsCode mpsCode = null;
+	private DesignLook designLook = null;
+	private DesignStyle designStyle = null;
+	private SurfaceApplication surfaceApplication = null;
+	private SurfaceType surfaceType = null;
+	private SurfaceFinish surfaceFinish = null;
 	private Integer warranty;
 	private String recommendedGroutJointMin;
 	private String recommendedGroutJointMax;
@@ -75,11 +75,11 @@ public class ImsNewFeature implements java.io.Serializable {
 	private Date droppedDate;
 	private Date lastModifiedDate;
 	private Integer version;
-	private Ims ims;
+	private Ims item;
 	
 	
 	@JsonIgnore
-	@GenericGenerator(name = "generator", strategy = "foreign", parameters = @Parameter(name = "property", value = "ims"))
+	@GenericGenerator(name = "generator", strategy = "foreign", parameters = @Parameter(name = "property", value = "item"))
 	@Id
 	@GeneratedValue(generator = "generator")
 	@Column(name = "item_code", unique = true, nullable = false)
@@ -95,12 +95,12 @@ public class ImsNewFeature implements java.io.Serializable {
 	@OneToOne(fetch = FetchType.LAZY)
 	@PrimaryKeyJoinColumn
 	@ContainedIn
-	public Ims getIms() {
-		return this.ims;
+	public Ims getItem() {
+		return this.item;
 	}
 
-	public void setIms(Ims ims) {
-		this.ims = ims;
+	public void setItem(Ims item) {
+		this.item = item;
 	}
 	
 	@JsonIgnore
@@ -288,7 +288,8 @@ public class ImsNewFeature implements java.io.Serializable {
 	@Transient
 	public boolean isEmpty(){
 		return (grade == null && status == null && mpsCode == null && designLook == null && designStyle == null && body == null && 
-				edge == null && surfaceApplication == null && surfaceType == null && surfaceFinish == null);
+				edge == null && surfaceApplication == null && surfaceType == null && surfaceFinish == null && warranty == null && 
+				recommendedGroutJointMin == null && recommendedGroutJointMax == null);
 		
 	}
 

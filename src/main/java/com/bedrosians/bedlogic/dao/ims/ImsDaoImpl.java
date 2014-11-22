@@ -3,6 +3,7 @@ package com.bedrosians.bedlogic.dao.ims;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -213,6 +214,149 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
         return ims;	
     }
 
+	
+	@Override
+	@Transactional(readOnly=true, propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED)
+	@SuppressWarnings("unchecked")
+	public List<Ims> getItems(LinkedHashMap<String,List<String>> queryParams){
+	   if(queryParams == null) 
+		  return null;
+	   List<Ims> ims = null;
+	   boolean exactMatch = queryParams.containsKey("exactmatch")? true : queryParams.containsKey("exactMatch")? true : false;
+	   //maxResults = ImsQueryUtil.getMaxResults(queryParams);
+	   Set<Map.Entry<String, List<String>>> entrySet = queryParams.entrySet();
+	   Iterator<Map.Entry<String, List<String>>> it = entrySet.iterator();
+	   DetachedCriteria newFeatureCriteria = null;
+	   DetachedCriteria vendorCriteria = null;
+	   DetachedCriteria colorHueCriteria = null;
+	   DetachedCriteria itemCriteria = DetachedCriteria.forClass(Ims.class);
+	   String key, value = null;
+	   List<String> values = null;
+	   String stringValue = null;
+    		
+	   while(it.hasNext()) {
+		    //--------------- Process the input data --------------//
+	     	Entry<String, List<String>> entry = (Entry<String, List<String>>)it.next();
+	 	    key = normalizeKey((String)entry.getKey());
+	 	   if(key == null || key.isEmpty())
+	           continue;
+	 	    Object obj = entry.getValue();
+	 	    if(obj instanceof String)
+	 	    	value = (String)obj;
+	 	    else
+	   	   	   values = (List<String>)entry.getValue();
+	  	   	if((values == null || values.isEmpty()) && value == null)
+	 	   	   continue;
+	 	   	else if(values != null && values.size() == 1 && values.toString().contains(",")) { //the input contains multiple values for a key, but in String format
+	 	   		stringValue = values.toString();
+	 	   		stringValue =stringValue.substring(stringValue.indexOf("[")+1);
+	 	     	stringValue =stringValue.substring(0, stringValue.lastIndexOf("]"));
+	 	   		values = Arrays.asList(stringValue.split(","));  
+	 	   	}
+	  	    if((values != null && !values.isEmpty()) && value == null)
+	        value = values.get(0) == null? values.get(0) : values.get(0).trim();
+	        if(value == null || value.isEmpty())
+	           continue;	
+	        //----------- Compose hibernate criteria -------------//
+	 		//------ conditional pattern match -------//
+    		if(!exactMatch && ("itemcode".equalsIgnoreCase(key) || ("material.materialcategory".equalsIgnoreCase(key)))){
+    		   if(values != null && values.size() > 1)	
+    			   itemCriteria = generateWildcardDisjunctionCriteria(itemCriteria, key, values);
+    		   else
+    			   itemCriteria.add(Restrictions.ilike(key, value.toUpperCase(), MatchMode.START));
+	           continue;
+            }
+    		//------ unconditional pattern match -------//
+   	        if("colorHue".equalsIgnoreCase(key)){
+   	         	colorHueCriteria = itemCriteria.createCriteria("colorhues");
+	        	if(values != null && values.size() > 1)	
+	        		colorHueCriteria = generateEqualsDisjunctionCriteria(colorHueCriteria, key, values);
+	        	else
+	        		//colorHueCriteria.add(Restrictions.ilike(key, value, MatchMode.ANYWHERE));
+	        		colorHueCriteria.add(Restrictions.eq(key, value));
+		        continue;
+		    }  
+		    if("itemdesc.fulldesc".equalsIgnoreCase(key) || "itemdesc.itemdesc1".equalsIgnoreCase(key) || "colorcategory".equalsIgnoreCase(key)){
+		      	if(values != null && values.size() > 1)	
+	     		   itemCriteria = generateWildcardDisjunctionCriteria(itemCriteria, key, values);
+	     		else
+			       itemCriteria.add(Restrictions.ilike(key, value, MatchMode.ANYWHERE));
+			    continue;
+		    }  	
+	        //----- take care of multiple values case other than "size" ------//
+	 	   	if(!"size".equals(key) && (values != null && values.size() > 1)){
+	 	   	    itemCriteria =  generateEqualsDisjunctionCriteria(itemCriteria, key, values); //Case insensitive
+	 		    continue;
+	 	   	}  
+    		//------- add association criteria --------//
+	 	   	if(ImsNewFeature.allProperties().contains(key)) {	
+	   		   if(newFeatureCriteria == null)
+	     	      newFeatureCriteria = itemCriteria.createCriteria("newFeature", JoinType.LEFT_OUTER_JOIN);
+	   	       newFeatureCriteria = addNewFeatureRestrictions(newFeatureCriteria, key, value);
+	       	   continue;
+		    }
+	 	  
+	 	   	switch(key) {
+	   	   	   case "vendorid": case "vendorId": case "vendorNumber":
+	   	           if(vendorCriteria == null)
+	 		          vendorCriteria = itemCriteria.createCriteria("newVendorSystem", JoinType.LEFT_OUTER_JOIN);
+			       vendorCriteria.add(Restrictions.eq("vendorId.vendorId", Integer.parseInt(value)));
+			       break;
+	 	       case "size": case "sizes":
+   	   		       itemCriteria = parseSize(itemCriteria, values);
+	 	   		   break;    
+	  	   	   case "lengthmin": case "lengthMin":
+	 	   		   itemCriteria.add(Restrictions.ge("dimensions.nominallength", Float.parseFloat(value))); 
+	 	   		   break;
+	 	   	   case "widthmin": case "widthMin":
+	 	   		   itemCriteria.add(Restrictions.ge("dimensions.nominalwidth", Float.parseFloat(value))); 
+	 	   		   break;
+	 	   	   case "lengthmax": case "lengthMax":
+	 	   		   itemCriteria.add(Restrictions.le("dimensions.nominallength", Float.parseFloat(value)));
+		    	   itemCriteria.add(Restrictions.gt("dimensions.nominallength", 0F)); 	
+		    	   break;
+	 	   	   case "widthmax": case "widthMax":
+	 	   		   itemCriteria.add(Restrictions.le("dimensions.nominalwidth", Float.parseFloat(value))); 
+		    	   itemCriteria.add(Restrictions.gt("dimensions.nominalwidth", 0F));
+		    	   break;
+	 	   	   case "nominallength": case "nominalLength": case "nominalwidth": case "nominalWidth":	
+	 	   		   itemCriteria.add(Restrictions.eq("dimensions" + "." +key, Float.parseFloat(value)));
+	 	   		   break;
+	  	   	   case "pricemax": case "priceMax":
+	 	   		   itemCriteria.add(Restrictions.le("price.sellprice", new BigDecimal(value))); 
+	 	   		   itemCriteria.add(Restrictions.gt("price.sellprice", new BigDecimal(0))); 
+	 	           break;
+	 	   	   case "price.sellprice": case "price.listprice": case "cost.cost":  case "cost.cost1":
+                   itemCriteria.add(Restrictions.eq(key, new BigDecimal(value))); 
+                   break;
+	 	   	   case "waterabsorption": case "waterAbsorption": case "peiabrasion": case "peiAbrasion": case "moh":
+	 	   	   case "dcof": case "scof": case  "scratchresistance": case "scratchResistance":   
+	 	   	       itemCriteria.add(Restrictions.eq(key, Float.parseFloat(value)));
+	 	   	       break;
+	 	   	   case "exactMatch": case "exactmatch": case "maxresults": case "maxResults":
+ 	   		       break;    
+	 	   	   default:     
+	 	   		   itemCriteria.add(Restrictions.eq(key, value).ignoreCase());
+	 	   		   break;
+	 	   	}	      	    	
+	    }
+        itemCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        //itemCriteria.addOrder(Order.asc("itemcode"));
+        System.out.println("getItemsByQueryParameters() using criteria = " +itemCriteria.toString());
+  
+		try {
+			if(maxResults > 0)
+		       ims =  (List<Ims>)itemCriteria.getExecutableCriteria(getSession()).setLockMode(LockMode.NONE).setFlushMode(FlushMode.COMMIT).setMaxResults(maxResults).setCacheable(true).list();//executeCriteria(itemCriteria);//(List<Product>)itemCriteria.list();			
+			else
+			   ims =  (List<Ims>)itemCriteria.getExecutableCriteria(getSession()).setLockMode(LockMode.NONE).setFlushMode(FlushMode.COMMIT).setCacheable(true).list();	
+		}
+		catch(Exception e){
+		     throw e;	
+		}
+		System.out.println(ims == null? 0 : ims.size() + " items returned");       
+        return ims;	
+    }
+	
 	//The purpose of this method is to compare the performance of Hibernate Search and regular Hibernate query 
 	@Override
 	@Transactional(readOnly=true, propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED)
@@ -275,7 +419,10 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 		  case "colorhues": case "colorHues": case "colorhue": case "colorHue": 
    		     key = "colorHue";
    		     break;
-		  case "seriesname": case "seriesName":
+		  case "_colorhues":
+	   	     key = "";
+	   		 break;
+	  	  case "seriesname": case "seriesName":
    		     key = "series.seriesname";
    		     break;
    		  case "color": case "seriescolor": case "seriesColor":
@@ -334,7 +481,37 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 			 break;	 
 	      case "cost1": 
 		   	 key = "cost.cost1";
-			 break;		 
+			 break;	
+	      case "newFeature.status": 
+		   	 key = "grade";
+			 break;	 
+		  case "newFeature.grade": 
+		   	 key = "grade";
+			 break;	 
+		  case "newFeature.mpsCode": 
+			 key = "mpsCode";
+			 break;	 
+		  case "newFeature.designLook": 
+				 key = "designLook";
+				 break;
+		  case "newFeature.designStyle": 
+				 key = "designStyle";
+				 break;
+		  case "newFeature.body": 
+				 key = "body";
+				 break;
+		  case "newFeature.edge": 
+				 key = "edge";
+				 break;
+		  case "newFeature.surfaceApplication": 
+				 key = "surfaceApplication";
+				 break;
+		  case "newFeature.surfaceType": 
+				 key = "surfaceType";
+				 break;
+		  case "newFeature.surfaceFinish": 
+				 key = "surfaceFinish";
+				 break;	
        }
         return key;
 	}    

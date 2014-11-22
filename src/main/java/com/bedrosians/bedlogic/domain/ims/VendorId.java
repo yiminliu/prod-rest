@@ -71,7 +71,7 @@ public class VendorId implements Serializable{
 
 		result = 37 * result
 				+ (getItemCode() == null ? 0 : this.getItemCode().hashCode());
-		result = 37 * result + getId().intValue();
+		result = 37 * result + (getId()==null? 1 : getId().intValue());
 		return result;
 	}
 

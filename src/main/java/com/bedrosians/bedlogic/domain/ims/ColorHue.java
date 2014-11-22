@@ -25,7 +25,7 @@ public class ColorHue implements java.io.Serializable {
 	
 	private Integer id;
 	private String colorHue;
-	private Ims ims;
+	private Ims item;
 	private Integer version;
 	
 	public ColorHue() {
@@ -39,18 +39,18 @@ public class ColorHue implements java.io.Serializable {
 		this.colorHue = colorHue;
 	}
 
-	public ColorHue(String colorHue, Ims ims) {
+	public ColorHue(String colorHue, Ims item) {
 		super();
 		this.colorHue = colorHue;
-		this.ims = ims;
+		this.item = item;
 	}
 
 	
-	public ColorHue(Integer id, String colorHue, Ims ims) {
+	public ColorHue(Integer id, String colorHue, Ims item) {
 		super();
 		this.id = id;
 		this.colorHue = colorHue;
-		this.ims = ims;
+		this.item = item;
 	}
 	
 	@JsonIgnore
@@ -69,12 +69,12 @@ public class ColorHue implements java.io.Serializable {
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "item_code")
-	public Ims getIms() {
-		return this.ims;
+	public Ims getItem() {
+		return this.item;
 	}
 
-	public void setIms(Ims ims) {
-		this.ims = ims;
+	public void setItem(Ims item) {
+		this.item = item;
 	}
 
 	@Column(name = "color_hue", length = 120)
@@ -100,10 +100,10 @@ public class ColorHue implements java.io.Serializable {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = id;
-		result = prime * result
+		int result = 7;
+		result = prime * (result == 0? 1 : result)
 				+ ((colorHue == null) ? 0 : colorHue.hashCode());
-		result = prime * result + ((ims == null) ? 0 : ims.getItemcode().hashCode());
+		result = prime * result + ((item == null) ? 0 : item.getItemcode().hashCode());
 		return result;
 	}
 
@@ -121,10 +121,10 @@ public class ColorHue implements java.io.Serializable {
 				return false;
 		} else if (!colorHue.equals(other.colorHue))
 			return false;
-		if (ims == null) {
-			if (other.ims != null)
+		if (item == null) {
+			if (other.item != null)
 				return false;
-		} else if (!ims.getItemcode().equals(other.ims.getItemcode()))
+		} else if (item.getItemcode() != null && other.item != null && !item.getItemcode().equals(other.item.getItemcode()))
 			return false;
 		return this.getId() == other.getId();
 	}

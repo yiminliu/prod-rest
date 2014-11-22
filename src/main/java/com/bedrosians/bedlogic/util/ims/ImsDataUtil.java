@@ -301,7 +301,7 @@ public class ImsDataUtil {
 		   for(String color : product.getColorcategory().trim().split(":")){
 			   if(color != null && !color.isEmpty()){
   			      colorHue = new ColorHue(color);
-			      colorHue.setIms(product);
+			      colorHue.setItem(product);
 			      colorHues.add(colorHue);
 			   }
 		   }	   

@@ -1,0 +1,33 @@
+<%@ include file="/WEB-INF/includes/taglibs.jsp"%>
+<%@ include file="/WEB-INF/includes/doctype.jsp"%>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Item Management System</title>
+</head>
+<body>
+
+<div class="container">
+<div id="main-content">
+<div class="span-18 colborder">
+<h3 style="margin-bottom: 10px; padding-bottom: 0px;">Enter Item Information</h3>
+
+<form:form method="GET" action="updateItem" modelAttribute="item">
+   <table>
+    <tr>
+        <td><form:label path="itemcode">Enter Item Code:</form:label></td>
+        <td><form:input path="itemcode" /></td>
+        <!--<td><form:errors path="itemcode" cssStyle="color: #ff0000;"/></td>-->
+    </tr>
+    <tr>
+        <td colspan="2">
+            <input type="submit" value="Submit"/>
+        </td>
+    </tr>
+</table>  
+</form:form>
+
+</div><!-- border -->
+</div><!-- content -->
+</div><!-- container -->
+</body>
+</html>

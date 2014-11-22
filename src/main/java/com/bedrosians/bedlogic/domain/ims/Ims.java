@@ -18,6 +18,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.Version;
+//import javax.validation.constraints.Size;
+
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -109,7 +112,7 @@ public class Ims implements java.io.Serializable {
 	private Notes notes;
 	private Applications applications;
 	private List<String> usage;
-  	private Units units;
+  	private Units units = new Units();
   	private Cost cost;
   	private SimilarItemCode relateditemcodes;
   	private VendorInfo vendors = new VendorInfo();
@@ -125,6 +128,7 @@ public class Ims implements java.io.Serializable {
 	@Id
 	@DocumentId
 	@Column(name = "itemcd", unique = true, nullable = false, length = 18)
+	@Size(min=1, max=18)
 	public String getItemcode() {
 		return itemcode;
 	}
@@ -469,7 +473,7 @@ public class Ims implements java.io.Serializable {
 		this.taxclass = taxclass;
 	}
 	
-	@OneToOne(fetch = FetchType.EAGER, mappedBy = "ims", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Fetch(FetchMode.JOIN)
 	@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	@IndexedEmbedded
@@ -481,9 +485,11 @@ public class Ims implements java.io.Serializable {
 	}
 	
 	public void addNewFeature(ImsNewFeature newFeature ){
-		if(this.getNewFeature() != null)
+		if(getNewFeature() != null)
 			setNewFeature(null);
-		newFeature.setIms(this);
+		if(newFeature.getItemCode() == null)
+			newFeature.setItemCode(this.itemcode);
+		newFeature.setItem(this);
 		this.newFeature = newFeature;
 	}
 	
@@ -498,6 +504,8 @@ public class Ims implements java.io.Serializable {
 	}
 	
 	public void addIconDescription(IconCollection iconDescription){
+		if(getIconDescription() != null)
+		   setIconDescription(null);	
 		iconDescription.setIms(this);
 		this.iconDescription = iconDescription;
 	}
@@ -519,7 +527,7 @@ public class Ims implements java.io.Serializable {
 		vendor.setIms(this);
 		if(getNewVendorSystem() == null)
 		   setNewVendorSystem(new ArrayList<Vendor>());	
-		vendor.setVendorOrder(getNewVendorSystem().size() +1);
+		//vendor.setVendorOrder(getNewVendorSystem().size() +1);
 		getNewVendorSystem().add(vendor);
 	}
 	
@@ -532,7 +540,7 @@ public class Ims implements java.io.Serializable {
 	
 	//@LazyCollection(LazyCollectionOption.FALSE)
 	//@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "ims", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Fetch(FetchMode.SUBSELECT)
 	public List<ColorHue> getColorhues() {
 		return this.colorhues;
@@ -543,7 +551,7 @@ public class Ims implements java.io.Serializable {
 	}
    
 	public void addColorhue(ColorHue colorhue){
-		colorhue.setIms(this);
+		colorhue.setItem(this);
 		if(colorhues == null)
 			colorhues = new ArrayList<ColorHue>();
 		colorhues.add(colorhue);
@@ -604,6 +612,11 @@ public class Ims implements java.io.Serializable {
 		return ImsDataUtil.getStandardPurchaseUnit(this);
 	}
 
+	@JsonIgnore
+	@Transient
+	public String getColorHuesAsStrng(){
+		return ImsDataUtil.convertColorHuesToColorCategory(colorhues);
+	}
 	public Ims() {
 	}
 

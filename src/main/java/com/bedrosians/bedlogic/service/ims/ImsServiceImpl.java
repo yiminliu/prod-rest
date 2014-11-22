@@ -172,7 +172,7 @@ public class ImsServiceImpl implements ImsService {
 	    }	
    	    catch(Exception e){
 		  e.printStackTrace();
-		  if(e != null && e.getMessage().contains("constraint [ims_id]"))
+		  if(e != null && e.getMessage().contains("constraint [item_code]"))
 			  throw new BedDAOBadParamException("Invalid item code, since it is already existing in the database");
 		  else if(e.getMessage().contains("constraint [vendor_apv_fkey]"))
 			  throw new BedDAOBadParamException("Invalid vendor number (ID), since it cannot be found in the vendor table");

@@ -35,6 +35,7 @@
        <jackson.version>2.2.2</jackson.version>
        <jaxb-api.version>2.2.4</jaxb-api.version>
        <junit.version>4.11</junit.version>
+       <apache-commons-lang.version>2.6</apache-commons-lang.version>
        <apache-commons-logging.version>1.1.1</apache-commons-logging.version>
        <servlet.version>3.0.1</servlet.version>
        <slf4j.version>1.7.5</slf4j.version>
@@ -115,7 +116,12 @@
         </plugins>
     </build>
         
-	<dependencies>        	
+	<dependencies>      
+	  <dependency>
+	    <groupId>javax.validation</groupId>
+	    <artifactId>validation-api</artifactId>
+	    <version>1.0.0.GA</version>
+       </dependency>  	
 	  <!-- Spring Framework -->
  		<dependency>
 			<groupId>org.springframework</groupId>
@@ -304,6 +310,19 @@
            <version>${hibernate-search.version}</version>
         </dependency>
 
+        <!-- jstl -->
+        <dependency>
+	       <groupId>javax.servlet</groupId>
+	       <artifactId>jstl</artifactId>
+	       <version>1.2</version>
+        </dependency>
+        
+        <dependency>
+	       <groupId>taglibs</groupId>
+	       <artifactId>standard</artifactId>
+	       <version>1.1.2</version>
+        </dependency>
+        
         <!-- Hibernate EhCache -->
         <dependency>
            <groupId>org.hibernate</groupId>
@@ -354,7 +373,7 @@
         <dependency>
 	       <groupId>commons-lang</groupId>
 	       <artifactId>commons-lang</artifactId>
-	       <version>2.3</version>
+	       <version>${apache-commons-lang.version}</version>
         </dependency>
         
         <!--  this will load slf4j 1.7.5 and logback-core 1.0.13 -->
