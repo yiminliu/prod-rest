@@ -11,6 +11,8 @@ import java.util.Set;
 
 
 
+
+
 import javax.ws.rs.core.MultivaluedMap;
 
 import com.sun.jersey.core.util.MultivaluedMapImpl;
@@ -32,6 +34,7 @@ import com.bedrosians.bedlogic.domain.ims.IconCollection;
 import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.domain.ims.ImsNewFeature;
 import com.bedrosians.bedlogic.domain.ims.Vendor;
+import com.bedrosians.bedlogic.domain.ims.embeddable.Applications;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.util.FormatUtil;
@@ -164,7 +167,9 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
      	//take care of associations
      	ImsNewFeature newFeature = item.getNewFeature();
      	if(newFeature != null && !newFeature.isEmpty())
-     	  item.addNewFeature(newFeature);
+     	   item.addNewFeature(newFeature);
+     	else
+     	   item.setNewFeature(null);
      	List<ColorHue> colorhues = item.getColorhues();
      	if(colorhues != null && !colorhues.isEmpty()){
      	   item.setColorhues(null);
@@ -184,6 +189,7 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
            		  item.addNewVendorSystem(vendor);
      		}	
      	}
+     	item = processApplications(item);
      	try{
 		   id = imsDao.createItem(item);
 		}
@@ -349,4 +355,23 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 		item.initVendors(3);
 		return item.getNewVendorSystem();
 	}
+	
+	private Ims processApplications(Ims item){
+		Applications app = item.getApplications();
+     	if(app != null){
+     	   String residential = app.getResidential();
+    	   String lightCommercial = app.getLightcommercial();
+    	   String commercial = app.getCommercial();
+    	
+    	   if(residential != null)
+    		  app.setResidential(residential.replace(",", ":"));
+    	   if(lightCommercial != null)
+    		  app.setLightcommercial(lightCommercial.replace(",", ":"));
+    	   if(commercial != null)
+    		  app.setCommercial(commercial.replace(",", ":"));
+     	}   
+    	item.setApplications(app);
+    	return item;
+	} 	
+	
 }

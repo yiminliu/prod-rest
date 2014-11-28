@@ -1,5 +1,7 @@
 <%@ include file="/WEB-INF/includes/taglibs.jsp"%>
 <%@ include file="/WEB-INF/includes/doctype.jsp"%>
+<%@ include file="/WEB-INF/includes/styles.jsp"%>
+
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <title>Item Management System</title>
@@ -7,36 +9,34 @@
 <body>
 
 <div class="container">
-<div id="main-content">
-<div class="span-18 colborder">
+
 <spring:url var="action" value="/ims/createItem_vendor" />
 <form:form method="POST" action="${action}" modelAttribute="aItem">
-<table>
-  <div class="container" style="color:BLUE"> <h3>Enter Package Units Information</h3></div>
+  <div style="color:GREEN"> <h3>Package Units</h3></div>
     <table>
        <tr>
-          <td><label for="stdunitOptions">stdunit: </label>
+          <td><label for="stdunitOptions">Standard Unit: </label>
               <c:forEach var="stdunit" items="${packageUnitList}" varStatus="status">
                  <form:radiobutton path="units.stdunit" value="${stdunit}"/>${stdunit}
               </c:forEach>
           </td>
        </tr>
        <tr>
-          <td><label for="ordunitOptions">ordunit: </label>
+          <td><label for="ordunitOptions">Order Unit: </label>
               <c:forEach var="ordunit" items="${packageUnitList}" varStatus="status">
                  <form:radiobutton path="units.ordunit" value="${ordunit}"/>${ordunit}
               </c:forEach>
            </td>
        </tr>
        <tr>
-          <td>stdratio: <form:input path="units.stdratio"></form:input></td>
+          <td>Starndard Ratio: <form:input path="units.stdratio"></form:input></td>
        </tr>
        <tr>
-          <td>ordratio: <form:input path="units.ordratio"></form:input></td>
+          <td>Order Ratio: <form:input path="units.ordratio"></form:input></td>
        </tr>
      </table>  
      
-     <div style="color:Green"> <h3>Base Unit</h3></div>
+     <div style="color:66CCCC"> <h3>Base Unit</h3></div>
      <table>
        <tr>   
           <td><label for="baseunitOptions">baseunit: </label>
@@ -83,7 +83,7 @@
 	   </tr>
 	</table>   
           
-    <div style="color:Green"> <h3>Unit1</h3></div>       
+    <div style="color:66CCCC"> <h3>Unit1</h3></div>       
     <table>
        <tr>  
           <td><label for="unit1unitOptions">Unit1 Unit: </label>
@@ -130,7 +130,7 @@
 	      <td>Unit1 Weight: <form:input path="units.unit1wgtperunit"></form:input></td>
 	     </tr>
 	 </table>    
-	<div style="color:Green"> <h3>Unit2</h3></div>       
+	<div style="color:66CCCC"> <h3>Unit2</h3></div>       
     <table>
        <tr>  
           <td><label for="unit2unitOptions">Unit2 Unit: </label>
@@ -177,7 +177,7 @@
 	      <td>Unit2 Weight: <form:input path="units.unit2wgtperunit"></form:input></td>
 	     </tr>
 	 </table>
-	 <div style="color:Green"> <h3>Unit3</h3></div>       
+	 <div style="color:66CCCC"> <h3>Unit3</h3></div>       
     <table>
        <tr>  
           <td><label for="unit3unitOptions">Unit3 Unit: </label>
@@ -224,12 +224,12 @@
 	      <td>Unit3 Weight: <form:input path="units.unit3wgtperunit"></form:input></td>
 	     </tr>
 	 </table>
-	 <div style="color:Green"> <h3>Unit4</h3></div>       
+	 <div style="color:66CCCC"> <h3>Unit4</h3></div>       
     <table>
        <tr>  
           <td><label for="unit4unitOptions">Unit4 Unit: </label>
               <c:forEach var="unit4unit" items="${packageUnitList}" varStatus="status">
-                <form:radiobutton  path="units.unit4unit" value="${unit4unit}"/>${unit1unit}
+                <form:radiobutton  path="units.unit4unit" value="${unit4unit}"/>${unit4unit}
               </c:forEach>
           </td>
        </tr>
@@ -245,7 +245,7 @@
        <tr>  
             <td><label for="unit4isstdordOptions">Unit4 Is Standard Order?: </label>
                <form:radiobutton path="units.unit4isstdord" value="Y" />Yes
-               <form:radiobutton path="units.unit1isstdord" value="N" />No
+               <form:radiobutton path="units.unit4isstdord" value="N" />No
             </td>
         </tr>
        <tr>  
@@ -279,11 +279,8 @@
         </td>
       </tr>
     </table> 
-</table>  
 </form:form>
 
-</div><!-- border -->
-</div><!-- content -->
 </div><!-- container -->
 </body>
 </html>

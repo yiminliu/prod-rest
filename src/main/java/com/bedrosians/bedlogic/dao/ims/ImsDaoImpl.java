@@ -268,7 +268,8 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
             }
     		//------ unconditional pattern match -------//
    	        if("colorHue".equalsIgnoreCase(key)){
-   	         	colorHueCriteria = itemCriteria.createCriteria("colorhues");
+   	        	if(colorHueCriteria == null)
+   	         	   colorHueCriteria = itemCriteria.createCriteria("colorhues");
 	        	if(values != null && values.size() > 1)	
 	        		colorHueCriteria = generateEqualsDisjunctionCriteria(colorHueCriteria, key, values);
 	        	else
@@ -289,7 +290,7 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 	 		    continue;
 	 	   	}  
     		//------- add association criteria --------//
-	 	   	if(ImsNewFeature.allProperties().contains(key)) {	
+	 	   	if(ImsNewFeature.allProperties().contains(key) && value != null && !value.isEmpty()) {	
 	   		   if(newFeatureCriteria == null)
 	     	      newFeatureCriteria = itemCriteria.createCriteria("newFeature", JoinType.LEFT_OUTER_JOIN);
 	   	       newFeatureCriteria = addNewFeatureRestrictions(newFeatureCriteria, key, value);
@@ -419,7 +420,7 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 		  case "colorhues": case "colorHues": case "colorhue": case "colorHue": 
    		     key = "colorHue";
    		     break;
-		  case "_colorhues":
+		  case "_colorhues": case "_material":
 	   	     key = "";
 	   		 break;
 	  	  case "seriesname": case "seriesName":
@@ -483,7 +484,7 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 		   	 key = "cost.cost1";
 			 break;	
 	      case "newFeature.status": 
-		   	 key = "grade";
+		   	 key = "status";
 			 break;	 
 		  case "newFeature.grade": 
 		   	 key = "grade";
@@ -513,6 +514,12 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 				 key = "surfaceFinish";
 				 break;	
        }
+       if(key.endsWith("_colorHue")){
+    	   if(!key.endsWith("_colorhues"))
+    	       key ="colorHue";
+    	   else
+    		   key = "";
+       }	   
         return key;
 	}    
 		

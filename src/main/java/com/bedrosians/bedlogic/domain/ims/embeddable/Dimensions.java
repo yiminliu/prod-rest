@@ -17,9 +17,9 @@ public class Dimensions implements java.io.Serializable {
 	
 	private Float nominallength;
 	private Float nominalwidth;
-	private String sizeunits;
+	private String sizeunits = "E";
 	private String thickness;
-	private String thicknessunit;
+	private String thicknessunit = "E";
 	private String length;
 	private String width;
 	private Float nominalthickness;

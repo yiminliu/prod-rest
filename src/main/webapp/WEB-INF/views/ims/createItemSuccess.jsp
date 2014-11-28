@@ -40,7 +40,7 @@
      <td><a id="viewItem" href="<spring:url value="/ims/getItemDetail/${item.itemcode}" />" class="button-m"><span>View The Item</span></a><td>
      <td><a id="modifyItem" href="<spring:url value="/ims/updateItem/${item.itemcode}" />" class="button-m"><span>Modify The Item</span></a></td>
      <td><a id="deleteItem" href="<spring:url value="/ims/deleteItem/${item.itemcode}" />" class="button-m"><span>Delete The Item</span></a></td>
-     <td><a id="CreateItem" href="<spring:url value="/ims/createItem" />" class="button-m"><span>Create Another Item</span></a></td>
+     <td><a id="CreateItem" href="<spring:url value="/ims/createItem_begin" />" class="button-m"><span>Create Another Item</span></a></td>
      <td><a id="imsHome" href="<spring:url value="/ims/index" />" class="button-m"><span>Home</span></a></td>
   </tr>
   </table>

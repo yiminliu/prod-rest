@@ -101,19 +101,19 @@ public class ImsDataUtil {
 		    country = OriginCountry.Mexico;
 		icon.setMadeInCountry(country);
 	
-        icon.setExteriorProduct(icons.length() < 2? false : icons.charAt(1) == 'Y');
-        icon.setAdaAccessibility(icons.length() < 4? false : icons.charAt(3) == 'Y');
-        icon.setThroughColor(icons.length() < 5? false : icons.charAt(4) == 'Y');
-        icon.setInkJet(icons.length() < 6? false : icons.charAt(5) == 'Y');
-        icon.setRecycled(icons.length() < 7? false : icons.charAt(6) == 'Y');
-        icon.setColorBody(icons.length() < 8? false : icons.charAt(7) == 'Y');
-        icon.setGlazed(icons.length() < 9? false : icons.charAt(8) == 'Y');
-        icon.setRectifiedEdge(icons.length() < 10? false : icons.charAt(9) == 'Y');
-        icon.setUnglazed(icons.length() < 11? false : icons.charAt(10) == 'Y');
-        icon.setPostRecycled(icons.length() < 12? false : icons.charAt(11) == 'Y');
-        icon.setPreRecycled(icons.length() < 13? false : icons.charAt(12) == 'Y');
-        icon.setCoefficientOfFriction(icons.length() < 17? false : icons.charAt(16) == 'Y');
-        icon.setChiseledEdge(icons.length() < 18? false : icons.charAt(17) == 'Y');		
+        icon.setExteriorProduct(icons.length() < 2? "No" : icons.charAt(1) == 'Y'? "Yes" : "No");
+        icon.setAdaAccessibility(icons.length() < 4? "No" : icons.charAt(3) == 'Y'? "Yes" : "No");
+        icon.setThroughColor(icons.length() < 5? "No" : icons.charAt(4) == 'Y'? "Yes" : "No");
+        icon.setInkJet(icons.length() < 6? "No" : icons.charAt(5) == 'Y'? "Yes" : "No");
+        icon.setRecycled(icons.length() < 7? "No" : icons.charAt(6) == 'Y'? "Yes" : "No");
+        icon.setColorBody(icons.length() < 8? "No" : icons.charAt(7) == 'Y'? "Yes" : "No");
+        icon.setGlazed(icons.length() < 9? "No" : icons.charAt(8) == 'Y'? "Yes" : "No");
+        icon.setRectifiedEdge(icons.length() < 10? "No" : icons.charAt(9) == 'Y'? "Yes" : "No");
+        icon.setUnglazed(icons.length() < 11? "No" : icons.charAt(10) == 'Y'? "Yes" : "No");
+        icon.setPostRecycled(icons.length() < 12? "No" : icons.charAt(11) == 'Y'? "Yes" : "No");
+        icon.setPreRecycled(icons.length() < 13? "No" : icons.charAt(12) == 'Y'? "Yes" : "No");
+        icon.setCoefficientOfFriction(icons.length() < 17? "No" : icons.charAt(16) == 'Y'? "Yes" : "No");
+        icon.setChiseledEdge(icons.length() < 18? "No" : icons.charAt(17) == 'Y'? "Yes" : "No");		
         
         return icon;
 	}
@@ -122,23 +122,23 @@ public class ImsDataUtil {
     	char[] legacyIcons = new char[20];
     	
     	legacyIcons[0] = OriginCountry.Italy.equals(iconCollection.getMadeInCountry()) ? 'Y' : 'N'; 
-    	legacyIcons[1] = (iconCollection.getExteriorProduct() != null && iconCollection.getExteriorProduct() == true) ? 'Y' : 'N'; 
+    	legacyIcons[1] = (iconCollection.getExteriorProduct() != null && iconCollection.getExteriorProduct().equalsIgnoreCase("yes")) ? 'Y' : 'N'; 
     	legacyIcons[2] = OriginCountry.USA.equals(iconCollection.getMadeInCountry()) ? 'Y' : 'N'; 
-    	legacyIcons[3] = (iconCollection.getAdaAccessibility() != null && iconCollection.getAdaAccessibility() == true) ? 'Y' : 'N'; 
-    	legacyIcons[4] = (iconCollection.getThroughColor() != null && iconCollection.getThroughColor() == true) ? 'Y' : 'N'; 
-    	legacyIcons[5] = (iconCollection.getInkJet() != null && iconCollection.getInkJet() == true) ? 'Y' : 'N'; 
-    	legacyIcons[6] = (iconCollection.getRecycled() != null && iconCollection.getRecycled() == true) ? 'Y' : 'N'; 
-    	legacyIcons[7] = (iconCollection.getColorBody() != null && iconCollection.getColorBody() == true) ? 'Y' : 'N'; 
-    	legacyIcons[8] = (iconCollection.getGlazed() != null && iconCollection.getGlazed() == true) ? 'Y' : 'N'; 
-    	legacyIcons[9] = (iconCollection.getRectifiedEdge() != null && iconCollection.getRectifiedEdge() == true) ? 'Y' : 'N'; 
-    	legacyIcons[10] = (iconCollection.getUnglazed() != null && iconCollection.getUnglazed() == true) ? 'Y' : 'N'; 
-    	legacyIcons[11] = (iconCollection.getPostRecycled() != null && iconCollection.getPostRecycled() == true) ? 'Y' : 'N'; 
-    	legacyIcons[12] = (iconCollection.getPreRecycled() != null && iconCollection.getPreRecycled() == true) ? 'Y' : 'N'; 
+    	legacyIcons[3] = (iconCollection.getAdaAccessibility() != null && iconCollection.getAdaAccessibility().equalsIgnoreCase("yes")) ? 'Y' : 'N'; 
+    	legacyIcons[4] = (iconCollection.getThroughColor() != null && iconCollection.getThroughColor().equalsIgnoreCase("yes")) ? 'Y' : 'N'; 
+    	legacyIcons[5] = (iconCollection.getInkJet() != null && iconCollection.getInkJet().equalsIgnoreCase("yes")) ? 'Y' : 'N'; 
+    	legacyIcons[6] = (iconCollection.getRecycled() != null && iconCollection.getRecycled().equalsIgnoreCase("yes")) ? 'Y' : 'N'; 
+    	legacyIcons[7] = (iconCollection.getColorBody() != null && iconCollection.getColorBody().equalsIgnoreCase("yes")) ? 'Y' : 'N'; 
+    	legacyIcons[8] = (iconCollection.getGlazed() != null && iconCollection.getGlazed().equalsIgnoreCase("yes")) ? 'Y' : 'N'; 
+    	legacyIcons[9] = (iconCollection.getRectifiedEdge() != null && iconCollection.getRectifiedEdge().equalsIgnoreCase("yes")) ? 'Y' : 'N'; 
+    	legacyIcons[10] = (iconCollection.getUnglazed() != null && iconCollection.getUnglazed().equalsIgnoreCase("yes")) ? 'Y' : 'N'; 
+    	legacyIcons[11] = (iconCollection.getPostRecycled() != null && iconCollection.getPostRecycled().equalsIgnoreCase("yes")) ? 'Y' : 'N'; 
+    	legacyIcons[12] = (iconCollection.getPreRecycled() != null && iconCollection.getPreRecycled().equalsIgnoreCase("yes")) ? 'Y' : 'N'; 
     	legacyIcons[13] = OriginCountry.China.equals(iconCollection.getMadeInCountry()) ? 'Y' : 'N'; 
     	legacyIcons[14] = OriginCountry.Turkey.equals(iconCollection.getMadeInCountry()) ? 'Y' : 'N'; 
     	legacyIcons[15] = OriginCountry.Mexico.equals(iconCollection.getMadeInCountry()) ? 'Y' : 'N'; 
-    	legacyIcons[16] = (iconCollection.getCoefficientOfFriction() != null && iconCollection.getCoefficientOfFriction() == true) ? 'Y' : 'N'; 
-    	legacyIcons[17] = (iconCollection.getChiseledEdge() != null && iconCollection.getChiseledEdge() == true) ? 'Y' : 'N'; 
+    	legacyIcons[16] = (iconCollection.getCoefficientOfFriction() != null && iconCollection.getCoefficientOfFriction().equalsIgnoreCase("yes")) ? 'Y' : 'N'; 
+    	legacyIcons[17] = (iconCollection.getChiseledEdge() != null && iconCollection.getChiseledEdge().equalsIgnoreCase("yes")) ? 'Y' : 'N'; 
     	legacyIcons[18] = 'N'; 
     	legacyIcons[19] = 'N'; 
     	    

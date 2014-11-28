@@ -1,114 +1,110 @@
 <%@ include file="/WEB-INF/includes/taglibs.jsp"%>
 <%@ include file="/WEB-INF/includes/doctype.jsp"%>
+<%@ include file="/WEB-INF/includes/styles.jsp"%>
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <title>Item Management System</title>
-
-  <style type="text/css"> 
-    table.category { 
-        border-bottom: dotted 1px  blue;
-     }
-	td.narrow 
-     { 
-        width:10px;
-     }
-  </style>
 </head>
 <body>
 
 <div class="container">
-<div id="main-content">
-<div class="span-18 colborder">
 <spring:url var="action" value="/ims/createItem_note" />
 <form:form method="POST" action="${action}" modelAttribute="aItem">
-   <div class="container" style="color:Green"> <h3>Test specifications</h3></div>
+   <div style="color:Green"> <h3>Test specifications</h3></div>
       <table>
           <tr>
-              <td>Water Absorption (<=.5): <form:input path="testSpecification.waterabsorption"></form:input></td>
-          </tr>
-          <tr>
-              <td>Scratch Resistance: <form:input path="testSpecification.scratchresistance"></form:input></td>
-          </tr>
-          <tr>
-              <td>Frost Resistance: <form:input path="testSpecification.frostresistance"></form:input></td>
-          </tr>
-          <tr>
-              <td>Chemical Resistance: <form:input path="testSpecification.chemicalresistance"></form:input></td>
-          </tr>
-          <tr>
-              <td><label for="peiabrasion">Pei Abrasion: </label>
-               <form:select id="peiabrasion" path="testSpecification.peiabrasion" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:100px;">
-               <form:option value="0" selected="selected">Select one</form:option>
-               <form:option value="1">1</form:option>
-               <form:option value="2">2</form:option>
-               <form:option value="3">3</form:option>
-               <form:option value="4">4</form:option>
-               <form:option value="5">5</form:option>
-               </form:select>
+              <td>Warpage:
+                  <form:checkbox path="testSpecification.warpage" value="P" />Passed
                </td>
           </tr>
-          <tr>
-              <td>Scof Wet (>=0.6): <form:input path="testSpecification.scofwet"></form:input></td>
-          </tr>
-          <tr>
-              <td>Scof Dry (>=0.6): <form:input path="testSpecification.scofdry"></form:input></td>
-          </tr>
-          <tr>
-              <td>Breaking Strength (>=250): <form:input path="testSpecification.breakingstrength"></form:input></td>
-          </tr>
-          <tr>
-              <td>Scratch Standard: <form:input path="testSpecification.scratchstandard"></form:input></td>
-          </tr>
-          <tr>
-              <td>Breaking Standard: <form:input path="testSpecification.breakingstandard"></form:input></td>
-          </tr>
-          <tr>
-              <td>Warpage: <form:input path="testSpecification.warpage"></form:input></td>
-          </tr>
           <tr>           
-              <td>Wedging: <form:input path="testSpecification.wedging"></form:input></td>
+              <td>Wedging: 
+                  <form:checkbox path="testSpecification.wedging" value="P" />Passed
+              </td>
+           </tr>
+           <tr>
+              <td>Thermal Shock:
+                 <form:checkbox path="testSpecification.thermalshock" value="P" />Passed
+              </td>
           </tr>
           <tr>
-              <td>DCOF: <form:input path="testSpecification.dcof"></form:input></td>
+              <td>Frost Resistance:
+                   <form:checkbox path="testSpecification.frostresistance" value="P" />Passed
+              </td>
           </tr>
           <tr>
-              <td>Thermal Shock: <form:input path="testSpecification.thermalshock"></form:input></td>
+              <td>Chemical Resistance: 
+                  <form:checkbox path="testSpecification.chemicalresistance" value="P" />Passed
+              </td>
           </tr>
           <tr>
-              <td>Bond Strength: <form:input path="testSpecification.bondstrength"></form:input></td>
+              <td>Green Friendly:
+                  <form:checkbox path="testSpecification.greenfriendly" value="" />Yes
+                  <form:input path="testSpecification.greenfriendly" type="hidden" value="N" />
+                </td>
           </tr>
           <tr>
-              <td>Green Friendly: <form:input path="testSpecification.greenfriendly"></form:input></td>
+              <td> Pei Abrasion: 
+                <form:radiobutton path="testSpecification.peiabrasion" value="1"/>1
+                <form:radiobutton path="testSpecification.peiabrasion" value="2"/>2
+                <form:radiobutton path="testSpecification.peiabrasion" value="3"/>3
+                <form:radiobutton path="testSpecification.peiabrasion" value="4"/>4
+                <form:radiobutton path="testSpecification.peiabrasion" value="5"/>5
+              </td>
           </tr>
           <tr>
-              <td><label for="moh">MOH: </label>
-               <form:select id="moh" path="testSpecification.moh" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:100px;">
-               <form:option value="0" selected="selected">Select one</form:option>
-               <form:option value="1">1</form:option>
-               <form:option value="2">2</form:option>
-               <form:option value="3">3</form:option>
-               <form:option value="4">4</form:option>
-               <form:option value="5">5</form:option>
-               <form:option value="6">6</form:option>
-               <form:option value="7">7</form:option>
-               <form:option value="8">8</form:option>
-               <form:option value="9">9</form:option>
-               <form:option value="10">10</form:option>
-               </form:select>
-              </td> 
+              <td> MOH:
+                  <form:radiobutton  path="testSpecification.moh" value="1"/>1
+                  <form:radiobutton  path="testSpecification.moh" value="2"/>2
+                  <form:radiobutton  path="testSpecification.moh" value="3"/>3
+                  <form:radiobutton  path="testSpecification.moh" value="4"/>4
+                  <form:radiobutton  path="testSpecification.moh" value="5"/>5
+                  <form:radiobutton  path="testSpecification.moh" value="6"/>6
+                  <form:radiobutton  path="testSpecification.moh" value="7"/>7
+                  <form:radiobutton  path="testSpecification.moh" value="8"/>8
+                  <form:radiobutton  path="testSpecification.moh" value="9"/>9
+                  <form:radiobutton  path="testSpecification.moh" value="10"/>10
+               </td> 
           </tr>
           <tr>
-              <td>Lead Point: <form:input path="testSpecification.leadpoint"></form:input></td>
+              <td><label>Water Absorption (<=.5):</label> <form:input path="testSpecification.waterabsorption"></form:input></td>
           </tr>
           <tr>
-              <td>Pre-Consummer: <form:input path="testSpecification.preconsummer"></form:input></td>
+              <td><label>Scratch Resistance:</label> <form:input path="testSpecification.scratchresistance"></form:input></td>
+          </tr>
+          
+          <tr>
+              <td><label>Scof Wet (>=0.6): </label><form:input path="testSpecification.scofwet"></form:input></td>
           </tr>
           <tr>
-              <td>Pos-Consummer: <form:input path="testSpecification.posconsummer"></form:input></td>
+              <td><label>Scof Dry (>=0.6): </label><form:input path="testSpecification.scofdry"></form:input></td>
           </tr>
-    </table>
-    <table></table>
+          <tr>
+              <td><label>Breaking Strength (>=250):</label> <form:input path="testSpecification.breakingstrength"></form:input></td>
+          </tr>
+          <tr>
+              <td><label>Scratch Standard: </label><form:input path="testSpecification.scratchstandard"></form:input></td>
+          </tr>
+          <tr>
+              <td><label>Breaking Standard:</label> <form:input path="testSpecification.breakingstandard"></form:input></td>
+          </tr>
+          <tr>
+              <td><label>DCOF (<1.0): </label><form:input path="testSpecification.dcof"></form:input></td>
+          </tr>
+          <tr>
+              <td><label>Bond Strength: </label><form:input path="testSpecification.bondstrength"></form:input></td>
+          </tr>
+          <tr>
+              <td><label>Lead Point: </label><form:input path="testSpecification.leadpoint"></form:input></td>
+          </tr>
+          <tr>
+              <td><label>Pre-Consummer: </label><form:input path="testSpecification.preconsummer"></form:input></td>
+          </tr>
+          <tr>
+              <td><label>Pos-Consummer: </label><form:input path="testSpecification.posconsummer"></form:input></td>
+          </tr>
+   </table>
     <table> 
       <tr style="float:middle;"> 
         <td colspan="2">
@@ -119,9 +115,6 @@
     </table> 
  
 </form:form>
-
-</div><!-- border -->
-</div><!-- content -->
 </div><!-- container -->
 </body>
 </html>

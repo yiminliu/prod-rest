@@ -1,22 +1,10 @@
 <%@ include file="/WEB-INF/includes/taglibs.jsp"%>
 <%@ include file="/WEB-INF/includes/doctype.jsp"%>
+<%@ include file="/WEB-INF/includes/styles.jsp"%>
+<%@ include file="/WEB-INF/includes/popups.jsp"%>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <title>Show Item</title>
- <style type="text/css"> 
-     table.category { 
-        border-bottom: dotted 1px blue;
-     }
-     .container {
-        color:#0076BF;
-        margin: 30px auto; 
-        padding: 30px;
-        border-spacing: 10px;
-        empty-cells:show;
-        width:90%;
-        text-align:left;
-      } 
-    </style>
 </head>
 <body>
 
@@ -28,21 +16,41 @@
 <spring:url var="action" value="/ims/getItems" />
 <form:form method="POST" action="${action}" modelAttribute="item">
 
-   <table>
-    <tr>
-       <td>Item Code: <form:input path="itemcode"></form:input></td>
-        <!--<td><form:errors path="itemcode" cssStyle="color: #ff0000;"/></td>-->
-    </tr>
-    <tr>
-        <td>Item Description: <form:input path="itemdesc.itemdesc1"></form:input></td>
-    </tr>
-    <tr>
-       <td>Category: <form:input path="itemcategory"></form:input></td>
-    </tr>
-    <tr>
-        <td>Series Name: <form:input path="series.seriesname"></form:input></td>
-    </tr>
-    <tr>  
+  <table>
+     <tr>
+       <td><label>Item Code: </label><form:input path="itemcode"></form:input></td>
+     </tr>
+     <tr>
+        <td><label>Item Description:</label> <form:input path="itemdesc.itemdesc1"></form:input></td>
+     </tr>
+     <tr>
+        <td><label>Category:</label> <form:input path="itemcategory"></form:input></td>
+     </tr>
+     <tr>
+        <td><label>Series Name:</label> <form:input path="series.seriesname"></form:input></td>
+     </tr>
+     <tr> 
+        <td><label for="itemStatusOptions">Status: </label>
+              <c:forEach var="itemStatus" items="${statusList}" varStatus="status">
+                 <form:radiobutton path="newFeature.status" value="${itemStatus}"/>${itemStatus}
+              </c:forEach>
+        </td>
+     </tr>
+     <tr>
+         <td><label for="gradeOptions">Grade: </label>
+              <c:forEach var="grade" items="${gradeList}" varStatus="status">
+                 <form:radiobutton path="newFeature.grade" value="${grade}"/>${grade}
+              </c:forEach>
+         </td> 
+     </tr>
+     <tr>   
+        <td><label for="MPSOptions">MPS: </label>
+              <c:forEach var="mps" items="${mpsList}" varStatus="status">
+                 <form:radiobutton path="newFeature.mpsCode" value="${mps}"/>${mps}
+              </c:forEach>
+        </td>
+     </tr>
+     <tr>  
          <td><label for="materialType">Material Type:</label>
             <form:select id="materialType" path="material.materialtype" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;">
                <form:option value="" selected="selected">Select one</form:option>
@@ -51,8 +59,8 @@
               </c:forEach>
             </form:select>
          </td> 
-       </tr>
-       <tr>    
+     </tr>
+     <tr>    
          <td><label for="materialCategory">Material Category:</label>
             <form:select id="materialCategory" path="material.materialcategory" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;">
                <form:option value="" selected="selected">Select one</form:option>
@@ -61,8 +69,8 @@
               </c:forEach>
             </form:select>
          </td>   
-       </tr>
-       <tr>  
+     </tr>
+     <tr>  
          <td><label for="materialClass">Material Class:</label>
             <form:select id="materialClass" path="material.materialclass" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;">
                <form:option value="" selected="selected">Select one</form:option>
@@ -71,57 +79,28 @@
               </c:forEach>
             </form:select>
          </td>
-       </tr>
-       <tr>   
-         <td><label for="materialStyle">Material Style:</label>
+      </tr>
+      <tr>   
+          <td><label for="materialStyle">Material Style:</label>
             <form:select id="materialStyle" path="material.materialstyle" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;">
                <form:option value="" selected="selected">Select one</form:option>
                <c:forEach var="materialStyle" items="${materialStyleList}" varStatus="status">
                  <form:option value="${materialStyle}">${materialStyle.getDescription()}</form:option>
               </c:forEach>
             </form:select>
-         </td> 
-       </tr>
-       <tr>   
-        <td><label for="MPSOptions">MPS: </label>
-            <form:select id="mps" path="newFeature.mpsCode" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:100px;">
-               <form:option value="" selected="selected">Select one</form:option>
-               <c:forEach var="mps" items="${mpsList}" varStatus="status">
-                 <form:option value="${mps}">${mps}</form:option>
-              </c:forEach>
-           </form:select>
-        </td>
-      </tr>
-      <tr> 
-        <td calss="narrow"><label for="itemStatusOptions">Status: </label>
-            <form:select id="itemStatus" path="newFeature.status" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:100px;">
-               <form:option value="" selected="selected">Select one</form:option>
-               <c:forEach var="itemStatus" items="${statusList}" varStatus="status">
-                 <form:option value="${itemStatus}">${itemStatus}</form:option>
-              </c:forEach>
-           </form:select>
-        </td>
-      </tr>
-      <tr>
-         <td><label for="gradeOptions">Grade: </label>
-            <form:select id="grade" path="newFeature.grade" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:100px;">
-               <form:option value="" selected="selected">Select one</form:option>
-               <c:forEach var="grade" items="${gradeList}" varStatus="status">
-                 <form:option value="${grade}">${grade}</form:option>
-              </c:forEach>
-           </form:select>
-         </td> 
+          </td> 
       </tr>
       <tr>  
-       <td><label for="colorOptions">Colors Category: </label>
-           <span style="padding-left: 5px;padding-bottom:3px; font-size: 12px;">
-            <c:forEach var="colorHue" items="${colorList}" varStatus="status">
-                 <form:checkbox path="colorhues" value="${colorHue}" />${colorHue}
-            </c:forEach>
-            </span>                  
-        </td> 
+          <td><label for="colorOptions">Colors Category: </label>
+              <span style="padding-left: 5px;padding-bottom:3px; font-size: 12px;">
+                 <c:forEach var="colorHue" items="${colorList}" varStatus="loop">
+                   <form:radiobutton path="colorhues" value="${colorHue}" />${colorHue}
+                    <!--<form:checkbox path="colorhues[${loop.index}].colorHue" value="${colorHue}" />${colorHue}-->
+                 </c:forEach>
+              </span>                  
+          </td> 
      </tr>
-    <tr>
+     <tr>
         <td colspan="2">
             <input type="submit" value="Submit"/>
         </td>

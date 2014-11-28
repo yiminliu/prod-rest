@@ -1,42 +1,25 @@
 <%@ include file="/WEB-INF/includes/taglibs.jsp"%>
 <%@ include file="/WEB-INF/includes/doctype.jsp"%>
+<%@ include file="/WEB-INF/includes/styles.jsp"%>
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <title>Item Management System</title>
-
-  <style type="text/css"> 
-    table.category { 
-        border-bottom: dotted 1px  blue;
-     }
-	td.narrow 
-     { 
-        width:10px;
-     }
-  </style>
 </head>
 <body>
 
 <div class="container">
-<div id="main-content">
-<div class="span-18 colborder">
 <spring:url var="action" value="/ims/createItem_icon" />
 <form:form method="POST" action="${action}" modelAttribute="aItem">
-<table>
-   
-    <div class="container" style="color:Green"> <h3>Enter Vendors Information</h3></div>
+    <div style="color:Green"> <h3>Vendors</h3></div>
     <table class="category">
      <c:forEach items="${newVendorSystem}" varStatus="loop">
        <tr>
-          <!--<td style="width:20">Order#: <form:input path="newVendorSystem[${loop.index}].vendorOrder"></form:input></td>-->  
-          <td style="width:20"><label for="vendorOrder">Order#: </label>
-            <form:select id="vendorOrder" path="newVendorSystem[${loop.index}].vendorOrder" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:80px;">
-               <form:option value="0" selected="selected">Select one</form:option>
-               <form:option value="1">1</form:option>
-               <form:option value="2">2</form:option>
-               <form:option value="3">3</form:option>
-            </form:select>   
-          <td>Vendor Number: <form:input path="newVendorSystem[${loop.index}].vendorId.id"></form:input></td>
+          <!--<td style="width:20">Order#: <form:input path="newVendorSystem[${loop.index + 1}].vendorOrder"></form:input></td>-->  
+          <td style="width:20"><label for="vendorOrder"> </label>
+                 <form:hidden path="newVendorSystem[${loop.index}].vendorOrder" value="${loop.index + 1}"/>${loop.index + 1}. 
+          </td>        
+          <td>Vendor Number: <form:input path="newVendorSystem[${loop.index}].vendorId.id"></form:input></td>    
           <td>Vendor Name: <form:input path="newVendorSystem[${loop.index}].vendorName"></form:input></td>
           <td>Vendor Name2: <form:input path="newVendorSystem[${loop.index}].vendorName2"></form:input></td>
           <td>Vendor XrefId: <form:input path="newVendorSystem[${loop.index}].vendorXrefId"></form:input></td>
@@ -68,11 +51,8 @@
         </td>
       </tr>
     </table> 
-</table>  
 </form:form>
 
-</div><!-- border -->
-</div><!-- content -->
 </div><!-- container -->
 </body>
 </html>

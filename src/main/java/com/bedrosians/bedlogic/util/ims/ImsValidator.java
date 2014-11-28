@@ -98,15 +98,17 @@ public class ImsValidator {
 	
 	public static void validateCharacter(String name, Character value) throws BedDAOBadParamException {
 		if(value != null && !(value instanceof Character))
-		   throw new BedDAOBadParamException(name + " should be Charactor type.");
+		   throw new BedDAOBadParamException(name + " should be Character type.");
 	}
 	
 	public static void validateCharacter(String name, String value) throws BedDAOBadParamException {
 		if(value != null && value.length() > 1)
-		   throw new BedDAOBadParamException(name + " is " + value + ". It should be one charactor.");
+		   throw new BedDAOBadParamException(name + " is " + value + ". It should be one character.");
 	}	
 
 	public static void validateDates(Date startDate, Date endDate) throws BedDAOBadParamException{
+		if(startDate == null && endDate != null)
+			throw new BedDAOBadParamException("Start date is missing.");
 		if (startDate != null && endDate != null && startDate.after(endDate))
 			throw new BedDAOBadParamException("End date should not be earlier than start date.");
 	}
@@ -117,7 +119,7 @@ public class ImsValidator {
 	       return;
 	
 	    validateStandardOrderUnit(item);
-	    validateStandardOrderUnit(item);
+	    validateStandardSellUnit(item);
 	        
 		if(item.getUnits().getBaseunit() == null || item.getUnits().getBaseunit().trim().length() < 1)
 		  // throw new BedDAOBadParamException("BaseUnit cannot be null.");

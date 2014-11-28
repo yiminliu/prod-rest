@@ -1,22 +1,14 @@
 package com.bedrosians.bedlogic.web.controller;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.annotation.PostConstruct;
 import javax.validation.Valid;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriInfo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
-import com.bedrosians.bedlogic.domain.ims.ColorHue;
 import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.domain.ims.enums.MaterialCategory;
 import com.bedrosians.bedlogic.domain.ims.enums.MaterialClass;
@@ -50,10 +41,12 @@ import com.bedrosians.bedlogic.domain.ims.enums.SurfaceType;
 import com.bedrosians.bedlogic.domain.ims.enums.TaxClass;
 import com.bedrosians.bedlogic.domain.ims.enums.Edge;
 import com.bedrosians.bedlogic.domain.ims.enums.PackageUnit;
+import com.bedrosians.bedlogic.domain.ims.enums.Usage;
 import com.bedrosians.bedlogic.service.mvc.ims.ImsServiceMVC;
-import com.bedrosians.bedlogic.util.JsonUtil;
+import com.bedrosians.bedlogic.web.validator.ImsValidator;
 
 @Controller
+@Scope("session")
 @RequestMapping("/ims")
 @SessionAttributes({"aItem", "item"})
 
@@ -64,7 +57,7 @@ public class ImsController {
        
    @Autowired
    @Qualifier("imsValidator")
-   private Validator validator;
+   private ImsValidator validator;
    /**
    * This method is used to show ims main page
    *
@@ -101,7 +94,7 @@ public class ImsController {
     }
     
    @RequestMapping(value="/getItems", method = RequestMethod.POST)
-   public String getItems(@RequestParam LinkedHashMap<String, List<String>> allRequestParams, @ModelAttribute("item") Ims item, Model model, BindingResult result) {
+   public String getItems(@RequestParam LinkedHashMap<String, List<String>> allRequestParams, @ModelAttribute("item") Ims item, Model model, BindingResult result, SessionStatus status) {
 	   List<Ims> items = null;
 	   try{
 		   items = imsServiceMVC.getItems(allRequestParams);
@@ -110,6 +103,7 @@ public class ImsController {
 		   e.printStackTrace();
 	   }
 	   model.addAttribute("itemList", items);
+	   status.setComplete(); //finished the "aItem" SessionAttribute
 	   return "ims/getItemsSuccess";
    }
    
@@ -149,9 +143,11 @@ public class ImsController {
       return null;
    }
 */
+   //handle general Info
    @RequestMapping(value = "/createItem_material", method = RequestMethod.POST)
    public String itemMaterialForm(@ModelAttribute("aItem") @Valid Ims item, Model model, BindingResult bindingResult, SessionStatus status) {
-	   validator.validate(item, bindingResult);
+	   //validator.validate(item, bindingResult);
+	 //  validator.validateGeneralInfo(item, bindingResult);
 	   if (bindingResult.hasErrors()) {
            //logger.info("Returning custSave.jsp page");
            return "ims/createItem_general";
@@ -183,9 +179,15 @@ public class ImsController {
       return null;
    }
   
+   //handle material and dimension
    @RequestMapping(value = "/createItem_price", method = RequestMethod.POST)
-   public String itemPriceForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult result) {
+   public String itemPriceForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult bindingResult) {
       if (item != null) {
+    	//  validator.validate(item, bindingResult);
+   	   //if (bindingResult.hasErrors()) {
+              //logger.info("Returning custSave.jsp page");
+       //       return "ims/createItem_price";
+       //   }
     	   try {
              model.addAttribute("aItem", item);
          }
@@ -197,10 +199,15 @@ public class ImsController {
       return null;
    }
    
-
+   //handle price
    @RequestMapping(value = "/createItem_application", method = RequestMethod.POST)
-   public String itemApplicationForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult result) {
+   public String itemApplicationForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult bindingResult) {
       if (item != null) {
+    	  validator.validatePrice(item, bindingResult);
+      	   if (bindingResult.hasErrors()) {
+                 //logger.info("Returning custSave.jsp page");
+                 return "ims/createItem_price";
+             }
     	   try {
              model.addAttribute("aItem", item);
          }
@@ -212,6 +219,7 @@ public class ImsController {
       return null;
    }
    
+   //handle application
    @RequestMapping(value = "/createItem_packageUnits", method = RequestMethod.POST)
    public String itemPackageUnitForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult result) {
       if (item != null) {
@@ -240,10 +248,16 @@ public class ImsController {
       return null;
    }
    
+   //handle vendor
    @RequestMapping(value = "/createItem_icon", method = RequestMethod.POST)
-   public String itemIconForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult result) {
+   public String itemIconForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult bindingResult) {
       if (item != null) {
-    	   try {
+    	  validator.validateVendorInfo(item, bindingResult);
+     	   if (bindingResult.hasErrors()) {
+                //logger.info("Returning custSave.jsp page");
+                return "ims/createItem_vendor";
+           }
+     	   try {
              model.addAttribute("aItem", item);
          }
     	   catch (Exception te) {
@@ -274,9 +288,14 @@ public class ImsController {
      }
      
      @RequestMapping(value = "/createItem_note", method = RequestMethod.POST)
-     public String itemNoteForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult result) {
+     public String itemNoteForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult bindingResult) {
         if (item != null) {
-      	   try {
+        	 validator.validateTestSpecification(item, bindingResult);
+       	   if (bindingResult.hasErrors()) {
+                  //logger.info("Returning custSave.jsp page");
+                  return "ims/createItem_test";
+             }
+       	   try {
                model.addAttribute("aItem", item);
            }
       	   catch (Exception te) {
@@ -500,6 +519,11 @@ public class ImsController {
     	 model.addAttribute("surfaceTypeList", Arrays.asList(SurfaceType.values()));
     	 model.addAttribute("surfaceFinishList", Arrays.asList(SurfaceFinish.values()));
     	 model.addAttribute("taxClassList", Arrays.asList(TaxClass.values()));    	
+     }
+     
+     @ModelAttribute("usageList")
+     public void usageList(Model model) {
+    	 model.addAttribute("usageList", Arrays.asList(Usage.values()));
      }
      
      @ModelAttribute

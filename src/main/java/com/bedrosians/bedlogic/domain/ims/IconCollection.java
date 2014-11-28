@@ -38,23 +38,23 @@ public class IconCollection implements java.io.Serializable {
 	
 	private String itemCode;
 	private OriginCountry madeInCountry;
-    //The possible values should be either "true" of "false when insert or update the following properties
-	private Boolean exteriorProduct;
-	private Boolean adaAccessibility;
-	private Boolean throughColor;
-	private Boolean colorBody;
-	private Boolean inkJet;
-	private Boolean glazed;
-	private Boolean unglazed;
-	private Boolean rectifiedEdge;
-	private Boolean chiseledEdge;
-	private Boolean versaillesPattern;
-	private Boolean recycled;
-	private Boolean postRecycled;
-	private Boolean preRecycled;
-	private Boolean leadPointIcon;
-	private Boolean greenFriendlyIcon;
-	private Boolean coefficientOfFriction;
+    //The possible values should be either "Yes" of "No" when insert or update the following properties
+	private String exteriorProduct = "No";
+	private String adaAccessibility = "No";
+	private String throughColor = "No";
+	private String colorBody = "No";
+	private String inkJet = "No";
+	private String glazed = "No";
+	private String unglazed = "No";
+	private String rectifiedEdge = "No";
+	private String chiseledEdge = "No";
+	private String versaillesPattern = "No";
+	private String recycled = "No";
+	private String postRecycled = "No";
+	private String preRecycled = "No";
+	private String leadPointIcon = "No";
+	private String greenFriendlyIcon = "No";
+	private String coefficientOfFriction = "No";
 	private Integer version;
 	private Ims ims;
 
@@ -94,146 +94,146 @@ public class IconCollection implements java.io.Serializable {
 	}
 
 	@Column(name = "exterior_product")
-	public Boolean getExteriorProduct() {
+	public String getExteriorProduct() {
 		return this.exteriorProduct;
 	}
 
-	public void setExteriorProduct(Boolean exteriorProduct) {
+	public void setExteriorProduct(String exteriorProduct) {
 		this.exteriorProduct = exteriorProduct;
 	}
 
 	@Column(name = "ada_accessibility")
-	public Boolean getAdaAccessibility() {
+	public String getAdaAccessibility() {
 		return this.adaAccessibility;
 	}
 
-	public void setAdaAccessibility(Boolean adaAccessibility) {
+	public void setAdaAccessibility(String adaAccessibility) {
 		this.adaAccessibility = adaAccessibility;
 	}
 
 	@Column(name = "through_color")
-	public Boolean getThroughColor() {
+	public String getThroughColor() {
 		return this.throughColor;
 	}
 
-	public void setThroughColor(Boolean throughColor) {
+	public void setThroughColor(String throughColor) {
 		this.throughColor = throughColor;
 	}
 
 	@Column(name = "color_body")
-	public Boolean getColorBody() {
+	public String getColorBody() {
 		return this.colorBody;
 	}
 
-	public void setColorBody(Boolean colorBody) {
+	public void setColorBody(String colorBody) {
 		this.colorBody = colorBody;
 	}
 
 	@Column(name = "ink_jet")
-	public Boolean getInkJet() {
+	public String getInkJet() {
 		return this.inkJet;
 	}
 
-	public void setInkJet(Boolean inkJet) {
+	public void setInkJet(String inkJet) {
 		this.inkJet = inkJet;
 	}
 
 	@Column(name = "glazed")
-	public Boolean getGlazed() {
+	public String getGlazed() {
 		return this.glazed;
 	}
 
-	public void setGlazed(Boolean glazed) {
+	public void setGlazed(String glazed) {
 		this.glazed = glazed;
 	}
 
 	@Column(name = "unglazed")
-	public Boolean getUnglazed() {
+	public String getUnglazed() {
 		return this.unglazed;
 	}
 
-	public void setUnglazed(Boolean unglazed) {
+	public void setUnglazed(String unglazed) {
 		this.unglazed = unglazed;
 	}
 
 	@Column(name = "rectified_edge")
-	public Boolean getRectifiedEdge() {
+	public String getRectifiedEdge() {
 		return this.rectifiedEdge;
 	}
 
-	public void setRectifiedEdge(Boolean rectifiedEdge) {
+	public void setRectifiedEdge(String rectifiedEdge) {
 		this.rectifiedEdge = rectifiedEdge;
 	}
 
 	@Column(name = "chiseled_edge")
-	public Boolean getChiseledEdge() {
+	public String getChiseledEdge() {
 		return this.chiseledEdge;
 	}
 
-	public void setChiseledEdge(Boolean chiseledEdge) {
+	public void setChiseledEdge(String chiseledEdge) {
 		this.chiseledEdge = chiseledEdge;
 	}
 
 	@Column(name = "versailles_pattern")
-	public Boolean getVersaillesPattern() {
+	public String getVersaillesPattern() {
 		return this.versaillesPattern;
 	}
 
-	public void setVersaillesPattern(Boolean versaillesPattern) {
+	public void setVersaillesPattern(String versaillesPattern) {
 		this.versaillesPattern = versaillesPattern;
 	}
 
 	@Column(name = "recycled")
-	public Boolean getRecycled() {
+	public String getRecycled() {
 		return this.recycled;
 	}
 
-	public void setRecycled(Boolean recycled) {
+	public void setRecycled(String recycled) {
 		this.recycled = recycled;
 	}
 
 	@Column(name = "post_recycled")
-	public Boolean getPostRecycled() {
+	public String getPostRecycled() {
 		return this.postRecycled;
 	}
 
-	public void setPostRecycled(Boolean postRecycled) {
+	public void setPostRecycled(String postRecycled) {
 		this.postRecycled = postRecycled;
 	}
 
 	@Column(name = "pre_recycled")
-	public Boolean getPreRecycled() {
+	public String getPreRecycled() {
 		return this.preRecycled;
 	}
 
-	public void setPreRecycled(Boolean preRecycled) {
+	public void setPreRecycled(String preRecycled) {
 		this.preRecycled = preRecycled;
 	}
 
 	@Column(name = "lead_point")
-	public Boolean getLeadPointIcon() {
+	public String getLeadPointIcon() {
 		return this.leadPointIcon;
 	}
 
-	public void setLeadPointIcon(Boolean leadPointIcon) {
+	public void setLeadPointIcon(String leadPointIcon) {
 		this.leadPointIcon = leadPointIcon;
 	}
 
 	@Column(name = "green_friendly")
-	public Boolean getGreenFriendlyIcon() {
+	public String getGreenFriendlyIcon() {
 		return this.greenFriendlyIcon;
 	}
 
-	public void setGreenFriendlyIcon(Boolean greenFriendlyIcon) {
+	public void setGreenFriendlyIcon(String greenFriendlyIcon) {
 		this.greenFriendlyIcon = greenFriendlyIcon;
 	}
 
 	@Column(name = "coefficient_of_friction")
-	public Boolean getCoefficientOfFriction() {
+	public String getCoefficientOfFriction() {
 		return this.coefficientOfFriction;
 	}
 
-	public void setCoefficientOfFriction(Boolean coefficientOfFriction) {
+	public void setCoefficientOfFriction(String coefficientOfFriction) {
 		this.coefficientOfFriction = coefficientOfFriction;
 	}
 	
@@ -256,12 +256,12 @@ public class IconCollection implements java.io.Serializable {
 	}
 
 	public IconCollection(String itemCode, OriginCountry madeInCountry,
-			Boolean exteriorProduct, Boolean adaAccessibility,
-			Boolean throughColor, Boolean colorBody, Boolean inkJet,
-			Boolean glazed, Boolean unglazed, Boolean rectifiedEdge,
-			Boolean chiseledEdge, Boolean versaillesPattern, Boolean recycled,
-			Boolean postRecycled, Boolean preRecycled, Boolean leadPointIcon,
-			Boolean greenFriendlyIcon, Boolean coefficientOfFriction,
+			String exteriorProduct, String adaAccessibility,
+			String throughColor, String colorBody, String inkJet,
+			String glazed, String unglazed, String rectifiedEdge,
+			String chiseledEdge, String versaillesPattern, String recycled,
+			String postRecycled, String preRecycled, String leadPointIcon,
+			String greenFriendlyIcon, String coefficientOfFriction,
 			Integer version, Ims ims) {
 		super();
 		this.itemCode = itemCode;
@@ -314,23 +314,23 @@ public class IconCollection implements java.io.Serializable {
 		* 19 - Unused
 		*/
     	legacyIcons[0] = OriginCountry.Italy.equals(madeInCountry) ? 'Y' : 'N'; 
-    	legacyIcons[1] = (exteriorProduct != null && exteriorProduct == true) ? 'Y' : 'N'; 
+    	legacyIcons[1] = (exteriorProduct != null && exteriorProduct.equalsIgnoreCase("yes")) ? 'Y' : 'N'; 
     	legacyIcons[2] = OriginCountry.USA.equals(madeInCountry) ? 'Y' : 'N'; 
-    	legacyIcons[3] = (adaAccessibility != null && adaAccessibility == true) ? 'Y' : 'N'; 
-    	legacyIcons[4] = (throughColor != null && throughColor == true) ? 'Y' : 'N'; 
-    	legacyIcons[5] = (inkJet != null && inkJet == true) ? 'Y' : 'N'; 
-    	legacyIcons[6] = (recycled != null && recycled == true) ? 'Y' : 'N'; 
-    	legacyIcons[7] = (colorBody != null && colorBody == true) ? 'Y' : 'N'; 
-    	legacyIcons[8] = (glazed != null && glazed == true) ? 'Y' : 'N'; 
-    	legacyIcons[9] = (rectifiedEdge != null && rectifiedEdge == true) ? 'Y' : 'N'; 
-    	legacyIcons[10] = (unglazed != null && unglazed == true) ? 'Y' : 'N'; 
-    	legacyIcons[11] = (postRecycled != null && postRecycled == true) ? 'Y' : 'N'; 
-    	legacyIcons[12] = (preRecycled != null && preRecycled == true) ? 'Y' : 'N'; 
+    	legacyIcons[3] = (adaAccessibility != null && adaAccessibility.equalsIgnoreCase("yes")) ? 'Y' : 'N'; 
+    	legacyIcons[4] = (throughColor != null && throughColor.equalsIgnoreCase("yes")) ? 'Y' : 'N'; 
+    	legacyIcons[5] = (inkJet != null && inkJet.equalsIgnoreCase("yes")) ? 'Y' : 'N'; 
+    	legacyIcons[6] = (recycled != null && recycled.equalsIgnoreCase("yes")) ? 'Y' : 'N'; 
+    	legacyIcons[7] = (colorBody != null && colorBody.equalsIgnoreCase("yes")) ? 'Y' : 'N'; 
+    	legacyIcons[8] = (glazed != null && glazed.equalsIgnoreCase("yes")) ? 'Y' : 'N'; 
+    	legacyIcons[9] = (rectifiedEdge != null && rectifiedEdge.equalsIgnoreCase("yes")) ? 'Y' : 'N'; 
+    	legacyIcons[10] = (unglazed != null && unglazed.equalsIgnoreCase("yes")) ? 'Y' : 'N'; 
+    	legacyIcons[11] = (postRecycled != null && postRecycled.equalsIgnoreCase("yes")) ? 'Y' : 'N'; 
+    	legacyIcons[12] = (preRecycled != null && preRecycled.equalsIgnoreCase("yes")) ? 'Y' : 'N'; 
     	legacyIcons[13] = OriginCountry.China.equals(madeInCountry) ? 'Y' : 'N'; 
     	legacyIcons[14] = OriginCountry.Turkey.equals(madeInCountry) ? 'Y' : 'N'; 
     	legacyIcons[15] = OriginCountry.Mexico.equals(madeInCountry) ? 'Y' : 'N'; 
-    	legacyIcons[16] = (coefficientOfFriction != null && coefficientOfFriction == true) ? 'Y' : 'N'; 
-    	legacyIcons[17] = (chiseledEdge != null && chiseledEdge == true) ? 'Y' : 'N'; 
+    	legacyIcons[16] = (coefficientOfFriction != null && coefficientOfFriction.equalsIgnoreCase("yes")) ? 'Y' : 'N'; 
+    	legacyIcons[17] = (chiseledEdge != null && chiseledEdge.equalsIgnoreCase("yes")) ? 'Y' : 'N'; 
     	legacyIcons[18] = 'N'; 
     	legacyIcons[19] = 'N'; 
     	    
