@@ -1,0 +1,65 @@
+/***********************************************
+Form definition
+***********************************************/
+
+ .container {
+     color:#0076BF;
+     margin: -20px auto; 
+     padding: 30px;
+     border-spacing: 10px;
+     empty-cells:show;
+     width:90%;
+     text-align:left;
+  } 
+  .error {
+     color: red;
+  } 
+  #main-content{
+     float:middle;
+  }
+  table.center {
+     margin-left:auto; 
+     margin-right:auto;
+  }
+  .center {
+     text-align:center;
+  } 
+  .page_title {
+     color:GREEN; 
+     text-align: center;
+     font-size: 200%;
+  }        
+      
+  label{
+     display: table-cell;
+     text-align: right;
+  }
+  input {
+     display: table-cell;
+  }
+  
+  div.row{
+     display:table-row;
+  } 
+  .input-container {
+        width: 500px;
+        clear: both;
+   }
+   .input-container input {
+        width: 100%;
+        clear: both;
+  table.category { 
+        border-bottom: dotted 1px blue;
+  }
+    
+  .table tr {
+         height:20px;
+         white-space:nowrap;
+         text-align:left;
+  }
+  
+  td.narrow 
+  { 
+      width:10px;
+  } 
+     
