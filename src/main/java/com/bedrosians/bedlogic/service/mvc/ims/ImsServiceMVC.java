@@ -12,6 +12,8 @@ import com.bedrosians.bedlogic.exception.BedDAOException;
 
 public interface ImsServiceMVC {	
 	public Ims getItemByItemCode(String itemCode) throws BedDAOBadParamException, BedDAOException;	
+	public boolean itemCodeIsTaken(String itemCode) throws BedDAOException;	
+	
 	public List<Ims> getActiveAndShownOnWebsiteItems() throws BedDAOBadParamException, BedDAOException;
 	public List<Ims> getItems(MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException, BedDAOException;	
 	
@@ -23,4 +25,5 @@ public interface ImsServiceMVC {
 	public void deleteItem(Ims ims) throws BedDAOBadParamException, BedDAOException;
 	public void initVendors(int n);
 	public List<Vendor> getNewVendorSystem();
+	public boolean validateVendorId(Integer vendorId);
 }

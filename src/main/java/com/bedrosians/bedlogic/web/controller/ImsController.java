@@ -13,11 +13,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
@@ -42,6 +44,7 @@ import com.bedrosians.bedlogic.domain.ims.enums.TaxClass;
 import com.bedrosians.bedlogic.domain.ims.enums.Edge;
 import com.bedrosians.bedlogic.domain.ims.enums.PackageUnit;
 import com.bedrosians.bedlogic.domain.ims.enums.Usage;
+import com.bedrosians.bedlogic.exception.DataNotFoundException;
 import com.bedrosians.bedlogic.service.mvc.ims.ImsServiceMVC;
 import com.bedrosians.bedlogic.web.validator.ImsValidator;
 
@@ -69,7 +72,8 @@ public class ImsController {
    }
    
    @RequestMapping(value="getItemDetail/{itemCode}", method = RequestMethod.GET)
-   public String getItemByItemCode(@PathVariable("itemCode") String itemCode, Model model){
+   //@ExceptionHandler(DataNotFoundException.class)
+   public String getItemDetail(@PathVariable("itemCode") String itemCode, Model model){
 	   Ims item = null;
 	   try{
 		   item = imsServiceMVC.getItemByItemCode(itemCode);
@@ -77,6 +81,8 @@ public class ImsController {
 	   catch(Exception e){
 		   e.printStackTrace();
 	   }
+	   if(item == null)
+		  throw new DataNotFoundException(itemCode);
 	   model.addAttribute("item", item);
 	   return "ims/getItemDetailSuccess";
    }
@@ -102,6 +108,8 @@ public class ImsController {
 	   catch(Exception e){
 		   e.printStackTrace();
 	   }
+	   if(items == null && item.getItemcode() != null)
+		  throw new DataNotFoundException(item.getItemcode());
 	   model.addAttribute("itemList", items);
 	   status.setComplete(); //finished the "aItem" SessionAttribute
 	   return "ims/getItemsSuccess";
@@ -147,7 +155,7 @@ public class ImsController {
    @RequestMapping(value = "/createItem_material", method = RequestMethod.POST)
    public String itemMaterialForm(@ModelAttribute("aItem") @Valid Ims item, Model model, BindingResult bindingResult, SessionStatus status) {
 	   //validator.validate(item, bindingResult);
-	 //  validator.validateGeneralInfo(item, bindingResult);
+	   validator.validateGeneralInfo(item, bindingResult);
 	   if (bindingResult.hasErrors()) {
            //logger.info("Returning custSave.jsp page");
            return "ims/createItem_general";
@@ -234,6 +242,7 @@ public class ImsController {
       return null;
    }
    
+   //handle packageUnits
    @RequestMapping(value = "/createItem_vendor", method = RequestMethod.POST)
    public String itemVendorForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult result) {
       if (item != null) {
@@ -254,8 +263,7 @@ public class ImsController {
       if (item != null) {
     	  validator.validateVendorInfo(item, bindingResult);
      	   if (bindingResult.hasErrors()) {
-                //logger.info("Returning custSave.jsp page");
-                return "ims/createItem_vendor";
+               return "ims/createItem_vendor";
            }
      	   try {
              model.addAttribute("aItem", item);
@@ -464,6 +472,16 @@ public class ImsController {
   	   model.addAttribute("operation", "Deactvated");
    	   return "ims/success";
      }
+     
+   //  @RequestMapping(value="/availability", method=RequestMethod.GET)
+   //  public @ResponseBody AvailabilityStatus checkItemCodeAvailability(@RequestParam String itemCode) {
+    //     for (Account a : accounts.values()) {
+     //        if (a.getName().equals(name)) {
+   //              return AvailabilityStatus.notAvailable(name);
+   //          }
+    //     }
+   //      return AvailabilityStatus.available();
+   //  }
      
      //------------------- ModelAttributes Initiation ------------------//
      

@@ -19,9 +19,15 @@
           <td style="width:20"><label for="vendorOrder"> </label>
                  <form:hidden path="newVendorSystem[${loop.index}].vendorOrder" value="${loop.index + 1}"/>${loop.index + 1}. 
           </td>        
-          <td>Vendor Number: <form:input path="newVendorSystem[${loop.index}].vendorId.id"></form:input></td>    
-          <td>Vendor Name: <form:input path="newVendorSystem[${loop.index}].vendorName"></form:input></td>
-          <td>Vendor Name2: <form:input path="newVendorSystem[${loop.index}].vendorName2"></form:input></td>
+          <td>Vendor Number: <form:input path="newVendorSystem[${loop.index}].vendorId.id"></form:input>
+              <table>
+                 <tr>
+                      <td><form:errors path="newVendorSystem[${loop.index}].vendorId.id" cssClass="error" /></td>               
+                 </tr>
+              </table>
+          </td>    
+          <!-- <td>Vendor Name: <form:input path="newVendorSystem[${loop.index}].vendorName"></form:input></td>
+          <td>Vendor Name2: <form:input path="newVendorSystem[${loop.index}].vendorName2"></form:input></td>-->
           <td>Vendor XrefId: <form:input path="newVendorSystem[${loop.index}].vendorXrefId"></form:input></td>
           <td>List Price: <form:input path="newVendorSystem[${loop.index}].vendorListPrice" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:80px;"></form:input></td>
           <td>Net Price: <form:input path="newVendorSystem[${loop.index}].vendorNetPrice" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:80px;"></form:input></td>

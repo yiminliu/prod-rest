@@ -45,6 +45,7 @@ import com.bedrosians.bedlogic.domain.ims.enums.Status;
 import com.bedrosians.bedlogic.domain.ims.enums.SurfaceApplication;
 import com.bedrosians.bedlogic.domain.ims.enums.SurfaceFinish;
 import com.bedrosians.bedlogic.domain.ims.enums.SurfaceType;
+import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.util.ims.ImsQueryUtil;
 
 
@@ -67,6 +68,13 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
     	Query query = session.createQuery("From Ims where itemcode = :itemCode");
 		query.setString("itemCode", itemCode);
 		return (Ims)query.setCacheable(true).uniqueResult();
+	}
+	
+	@Override
+	@Transactional(readOnly=true)
+	public List<String> getItemCodeList() throws BedDAOException{
+		Query query = getSession().createQuery("Select itemcode From Ims");
+		return (List<String>)query.setCacheable(true).list();
 	}
 	
 	/*This method only gets a proxy of the persistent entity, without hitting the database
@@ -597,6 +605,9 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
    }	
 
    private synchronized Session getSession(){
-    	return sessionFactory.getCurrentSession();
+	   Session session = sessionFactory.getCurrentSession();
+	   if (session == null)
+		   session = sessionFactory.openSession();
+       return session;
    }
 }

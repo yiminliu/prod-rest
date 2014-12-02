@@ -352,6 +352,15 @@ public class IconCollection implements java.io.Serializable {
 			   chiseledEdge == null && versaillesPattern == null && recycled == null && postRecycled == null && 
 			   preRecycled == null && leadPointIcon == null && greenFriendlyIcon == null && coefficientOfFriction == null;
 	}
+	
+	@JsonIgnore
+	@Transient
+	public boolean isDefault(){
+		return exteriorProduct.equals("No") && adaAccessibility.equals("No") && throughColor.equals("No") && colorBody.equals("No") && 
+			   inkJet.equals("No") && glazed.equals("No") && unglazed.equals("No") && rectifiedEdge.equals("No") &&
+			   chiseledEdge.equals("No") && versaillesPattern.equals("No") && recycled.equals("No") && postRecycled.equals("No") && 
+			   preRecycled.equals("No") && leadPointIcon.equals("No") && greenFriendlyIcon.equals("No") && coefficientOfFriction.equals("No");
+	}
 
 	@Override
 	public int hashCode() {

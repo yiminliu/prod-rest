@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.math.NumberUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -18,11 +19,16 @@ import com.bedrosians.bedlogic.domain.ims.Vendor;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Price;
 import com.bedrosians.bedlogic.domain.ims.embeddable.TestSpecification;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
+import com.bedrosians.bedlogic.exception.BedDAOException;
+import com.bedrosians.bedlogic.service.ims.ImsService;
+import com.bedrosians.bedlogic.service.mvc.ims.ImsServiceMVC;
 
 
 @Component
 public class ImsValidator implements Validator {
 	
+	@Autowired
+	private ImsServiceMVC imsService;
 	
 	@Override
 	public boolean supports(Class<?> myClass) {
@@ -52,29 +58,39 @@ public class ImsValidator implements Validator {
 		   checkItemCode(item.getItemcode(), errors);
 		   checkItemDescription(item.getItemdesc().getItemdesc1(), errors);
 		   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "itemcode", "required.item.itemcode", "Item code is required.");
-		   // ValidationUtils.rejectIfEmptyOrWhitespace(errors, "itemcategory", "required.item.category", "Category is required.");
-		   // ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description",	"required.item.description", "Description is required.");
-		   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "inactivecode", "required.item.inactivecode", "Please enter a active status.");
+		   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "itemcategory", "required.item.category", "Category is required.");
+		   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "inactivecode", "required.item.inactivecode", "Active status is required.");
 		   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "showonwebsite", "required.item.showonwebsite", "Please enter a valid value.");
-		   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newFeature.grade", "required.item.grade", "Please enter a valid grade.");
-		   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newFeature.status", "required.item.status", "Please enter a valid status.");
-		   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newFeature.mpsCode", "required.item.mpsCode", "Please enter a valid mps code.");
-		   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "countryorigin", "required.item.countryorigin", "Please enter a valid origin country.");
+		   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newFeature.grade", "required.item.grade", "Grade is required.");
+		   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newFeature.status", "required.item.status", "Status is required.");
+		   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newFeature.mpsCode", "required.item.mpsCode", "MPS code is required.");
+		   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "countryorigin", "required.item.countryorigin", "Please enter a valid origin country.");
 
 	 }
 	 
 	 private void checkItemCode(String itemCode, Errors errors) {
 		 if (itemCode == null || itemCode.length() < 1) {
-		    errors.rejectValue("itemcode", "item.itemcode.null", "Item code cannot be null");
+		    errors.rejectValue("itemcode", "item.itemcode.null", "Item code is required.");
 		 }
 		 else if (itemCode.length() > 18) {
 			    errors.rejectValue("itemcode", "item.itemcode.invalid", "Item code cannot be longer than 18 charactors");
+		 }
+		 else checkItemCodeAvailability(itemCode, errors);
+	 }
+	 
+	 private void checkItemCodeAvailability(String itemCode, Errors errors) {
+		 try{
+		    if(imsService.itemCodeIsTaken(itemCode)){
+		       errors.rejectValue("itemcode", "item.itemcode.taken", "Item code is taken, please use a different item code");
+		    }
+		 }catch(BedDAOException e){
+			 e.printStackTrace();
 		 }
 	 }
 	 
 	 private void checkItemDescription(String data, Errors errors) {
 		 if (data == null || data.length() < 1) {
-		    errors.rejectValue("itemdesc.itemdesc1", "item.description.null", "Item description cannot be null");
+		    errors.rejectValue("itemdesc.itemdesc1", "item.description.null", "Item description is required.");
 		 }
 		 else if (data.length() > 35) {
 		    errors.rejectValue("itemdesc.itemdesc1", "item.description.invalid", "Item description cannot be longer than 35 charactors");
@@ -119,10 +135,18 @@ public class ImsValidator implements Validator {
 	 public void validateVendorInfo(Ims item, Errors errors) {
 		 List<Vendor> data = item.getNewVendorSystem();
 		 if (data != null && !data.isEmpty()) {
-			 if(data.get(0) != null && data.get(0).getVendorId().getId() == null)
-				 System.out.println("item.newVendorSystem[0] =" + data.get(0));
+			 if(data.get(0) != null && data.get(0).getVendorId() != null)
+			    validateVendorId(data.get(0).getVendorId().getId(), errors);
+			 //if(data.get(0) != null && data.get(0).getVendorId().getId() == null)
+				 
+				// System.out.println("item.newVendorSystem[0] =" + data.get(0));
 		      //  errors.rejectValue("vendor.newVendorSystem[0].vendirId.id", "item.newVendorSystem[0].vendirId.id.null", "Please enter a valid number number");
 		 }
+	 }
+	 
+	 public void validateVendorId(Integer id, Errors errors) {
+		 if(id != null && !imsService.validateVendorId(id))
+			 errors.rejectValue("newVendorSystem[\"0\"].vendorId.id", "item.newVendorSystem[0].vendorId.id.invalid", "Vendor id does not match vender number in keymark apv table."); 
 	 }
 	 
 	 private void compareDates(Date startDate, Date endDate, Errors errors) {

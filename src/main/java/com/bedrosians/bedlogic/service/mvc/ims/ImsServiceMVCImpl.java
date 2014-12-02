@@ -13,6 +13,9 @@ import java.util.Set;
 
 
 
+
+
+
 import javax.ws.rs.core.MultivaluedMap;
 
 import com.sun.jersey.core.util.MultivaluedMapImpl;
@@ -29,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bedrosians.bedlogic.dao.ims.ColorHueDao;
 import com.bedrosians.bedlogic.dao.ims.ImsDao;
+import com.bedrosians.bedlogic.dao.ims.KeymarkVendorDao;
 import com.bedrosians.bedlogic.domain.ims.ColorHue;
 import com.bedrosians.bedlogic.domain.ims.IconCollection;
 import com.bedrosians.bedlogic.domain.ims.Ims;
@@ -53,6 +57,9 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
     
     @Autowired
 	private ColorHueDao colorHueDao; 
+    
+    @Autowired
+   	private KeymarkVendorDao keymarkVendorDao;
     
     @Autowired
 	private SessionFactory sessionFactory;
@@ -87,6 +94,15 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 		return FormatUtil.process(ims);
 	}
 
+    public boolean itemCodeIsTaken(String itemCode) throws BedDAOException{
+    	List<String> itemCodeList = imsDao.getItemCodeList();
+    	for(String s : itemCodeList){
+    		if(s.trim().equalsIgnoreCase(itemCode))
+    			return true;
+    	}
+    	return false;
+    }
+	
     @Loggable(value = LogLevel.INFO)
     @Override
     @Transactional(readOnly = true)
@@ -178,9 +194,10 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
      	   }
      	}
      	IconCollection icons = item.getIconDescription();
-     	if(icons != null && !icons.isEmpty()){
+     	if(icons != null && !icons.isEmpty())
      	   item.addIconDescription(icons);	
-     	}
+     	else
+     	   item.setIconDescription(null);	
      	List<Vendor> vendors = item.getNewVendorSystem();
      	item.setNewVendorSystem(null);
      	if(vendors != null && !vendors.isEmpty()){
@@ -374,4 +391,19 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
     	return item;
 	} 	
 	
+	public boolean validateVendorId(Integer vendorId){
+		List<Integer> keymarkVedorIdList = null;
+		try{
+			keymarkVedorIdList = keymarkVendorDao.getKeymarkVedorIdList();
+		}
+		catch(BedDAOException e){
+			e.printStackTrace();
+		}
+    	for(Integer id : keymarkVedorIdList){
+    		id = Integer.valueOf(String.valueOf(id).trim());
+    		if(id.equals(vendorId))
+    		   return true;
+    	}
+    	return false;
+	}
 }
