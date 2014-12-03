@@ -1,5 +1,6 @@
 package com.bedrosians.bedlogic.domain.user;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -34,8 +35,9 @@ import com.bedrosians.bedlogic.domain.authority.Role;
 @Entity
 @Table(name = "users")
 //@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-public class User {
-	private static final long serialVersionUID = 1L;
+public class User implements Serializable {
+
+    private static final long serialVersionUID = -321397721787L;
 	private Integer userId;
 	private String username;
 	private String password;

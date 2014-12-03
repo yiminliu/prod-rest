@@ -28,7 +28,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 	   UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
 	   String userName = token.getName();
 	   User user = null;
-	   if(userName != null) {
+	   if(userName != null && !userName.isEmpty()) {
 		//1. Use the username to load the data for the user, including authorities and password. 
 		  try { 
 		      user = userService.getUserByName(userName);

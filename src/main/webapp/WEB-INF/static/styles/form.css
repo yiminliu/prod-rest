@@ -11,6 +11,15 @@ Form definition
      width:90%;
      text-align:left;
   } 
+  .home-container {
+     color:#0076BF;
+     margin: 100px auto; 
+     padding: 30px;
+     border-spacing: 10px;
+     empty-cells:show;
+     width:90%;
+     text-align:left;
+  } 
   .error {
      color: red;
   } 
@@ -29,7 +38,14 @@ Form definition
      text-align: center;
      font-size: 200%;
   }        
-      
+ .menu {
+    list-style-type: none;
+    list-style-position: outside;
+    list-style-image: none;
+  }    
+  .menu li { 
+	 list-style-type:square; 
+   }  
   label{
      display: table-cell;
      text-align: right;

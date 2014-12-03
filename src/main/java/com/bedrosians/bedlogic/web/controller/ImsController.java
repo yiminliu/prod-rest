@@ -9,17 +9,16 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 
@@ -66,7 +65,7 @@ public class ImsController {
    *
    * @return String
    */
-   @RequestMapping(value = { "", "/", "/imsHome", "/index", "/overview" }, method = RequestMethod.GET)
+   @RequestMapping(value = {"/index", "/overview" }, method = RequestMethod.GET)
    public String showHomePage() {
       return "ims/index";
    }
@@ -120,7 +119,7 @@ public class ImsController {
    *
    * @return String
    */
-   // @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')")
+   @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
    @RequestMapping(value = "/createItem_begin", method = RequestMethod.GET)
    public String createItem(Model model) {
       model.addAttribute("aItem", new Ims());
@@ -152,6 +151,7 @@ public class ImsController {
    }
 */
    //handle general Info
+   @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
    @RequestMapping(value = "/createItem_material", method = RequestMethod.POST)
    public String itemMaterialForm(@ModelAttribute("aItem") @Valid Ims item, Model model, BindingResult bindingResult, SessionStatus status) {
 	   //validator.validate(item, bindingResult);
@@ -172,7 +172,7 @@ public class ImsController {
       return null;
    }
    
-   
+   @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
    @RequestMapping(value = "/createItem_dimension", method = RequestMethod.POST)
    public String itemDimensionForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult result) {
       if (item != null) {
@@ -188,6 +188,7 @@ public class ImsController {
    }
   
    //handle material and dimension
+   @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
    @RequestMapping(value = "/createItem_price", method = RequestMethod.POST)
    public String itemPriceForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult bindingResult) {
       if (item != null) {
@@ -208,6 +209,7 @@ public class ImsController {
    }
    
    //handle price
+   @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
    @RequestMapping(value = "/createItem_application", method = RequestMethod.POST)
    public String itemApplicationForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult bindingResult) {
       if (item != null) {
@@ -228,6 +230,7 @@ public class ImsController {
    }
    
    //handle application
+   @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
    @RequestMapping(value = "/createItem_packageUnits", method = RequestMethod.POST)
    public String itemPackageUnitForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult result) {
       if (item != null) {
@@ -243,6 +246,7 @@ public class ImsController {
    }
    
    //handle packageUnits
+   @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
    @RequestMapping(value = "/createItem_vendor", method = RequestMethod.POST)
    public String itemVendorForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult result) {
       if (item != null) {
@@ -258,6 +262,7 @@ public class ImsController {
    }
    
    //handle vendor
+   @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
    @RequestMapping(value = "/createItem_icon", method = RequestMethod.POST)
    public String itemIconForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult bindingResult) {
       if (item != null) {
@@ -280,7 +285,7 @@ public class ImsController {
      *
      * @return ModelAndView
      */
-     //@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')")
+     @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
      @RequestMapping(value = "/createItem_test", method = RequestMethod.POST)
      public String itemTestingForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult result) {
         if (item != null) {
@@ -295,6 +300,7 @@ public class ImsController {
         return null;
      }
      
+     @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
      @RequestMapping(value = "/createItem_note", method = RequestMethod.POST)
      public String itemNoteForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult bindingResult) {
         if (item != null) {
@@ -319,7 +325,7 @@ public class ImsController {
       *
       * @return ModelAndView
       */
-      //@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')")
+      @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
       @RequestMapping(value = "/createItem_final", method = RequestMethod.POST)
       public String createItemIcons(@ModelAttribute("aItem") @Valid Ims item, Model model, BindingResult bindingResult, SessionStatus status) {
           String itemCode = null;
@@ -347,7 +353,7 @@ public class ImsController {
       *
       * @return ModelAndView
       */
-      //@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')")
+      @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
       @RequestMapping(value = "/createItemFinalPage", method = RequestMethod.POST)
       public String createItemFinal(@ModelAttribute("item") Ims item, Model model, BindingResult result) {
           String itemCode = null;
@@ -370,7 +376,7 @@ public class ImsController {
     *
     * @return String
     */
-    // @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')")
+      @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
     @RequestMapping(value = "/updateItem/{itemcode}", method = RequestMethod.GET)
     public String updateItem(@PathVariable("itemcode") String itemCode, Model model){
        Ims item = null;
@@ -384,6 +390,7 @@ public class ImsController {
        return "ims/updateItem";
     }
    
+    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
     @RequestMapping(value = "/updateItemInitForm", method = RequestMethod.GET)
     public String updateItem(Model model){
        model.addAttribute("item", new Ims());
@@ -409,6 +416,7 @@ public class ImsController {
          return "ims/updateItem";
      }  
      
+     @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
      @RequestMapping(value = "/updateItem", method = RequestMethod.POST)
      public String PostupdateItem(@ModelAttribute("item") Ims item, Model model, BindingResult result) {
       	 try {
@@ -421,9 +429,9 @@ public class ImsController {
          return "ims/updateItemSuccess";
      }  
      
+     @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
      @RequestMapping(value="deleteItem/{itemCode}", method = RequestMethod.GET)
      public String deleteItem(@PathVariable("itemCode") String itemCode, Model model){
-  	   Ims item = null;
   	   try{
   		   imsServiceMVC.deleteItemByItemCode(itemCode);
   	   }

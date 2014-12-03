@@ -21,15 +21,27 @@
      <beans:property name="permissionEvaluator" ref="permissionEvaluator" />
   </beans:bean>
   
-   <beans:bean id="permissionEvaluator" class="com.bedrosians.bedlogic.service.security.MyPermissionEvaluator"/>
+  <beans:bean id="permissionEvaluator" class="com.bedrosians.bedlogic.service.security.MyPermissionEvaluator"/>
+  
+  <http pattern="/static/**" security="none" />
   
   <http auto-config="true" use-expressions="true">
+    <!--<intercept-url pattern="/" access="permitAll" />
+    <intercept-url pattern="/login/**" access="permitAll" />
+    <intercept-url pattern="/home" access="permitAll" />-->
     <intercept-url pattern="/admin/**" access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')" />
-    <intercept-url pattern="/products/**" method="GET" access="permitAll" /> 
-    <intercept-url pattern="/products/**" method="POST" access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')" /> 
-    <intercept-url pattern="/products/**" method="PUT" access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')" /> 
+    <intercept-url pattern="/ims/**" method="GET" access="permitAll" /> 
+    <intercept-url pattern="/ims/**" method="POST" access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')" /> 
+    <intercept-url pattern="/ims/**" method="PUT" access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')" /> 
+    <form-login 
+		login-page="/login.jsp" 
+	    default-target-url="/ims/index" 
+		authentication-failure-url="/login.jsp?failed=true" 
+		username-parameter="username"
+		password-parameter="password" />
+	  <logout logout-success-url="/login.jsp?logout" />
   </http>
- 
+
   <authentication-manager alias="authenticationManager">
      <authentication-provider ref="userAuthenticationProvider"/>
   </authentication-manager>

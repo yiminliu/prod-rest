@@ -506,8 +506,8 @@ public class Ims implements java.io.Serializable {
 	public void addIconDescription(IconCollection iconDescription){
 		if(getIconDescription() != null)
 		   setIconDescription(null);	
-		if(iconDescription.getItemCode() == null)
-			iconDescription.setItemCode(this.itemcode);
+		//if(iconDescription.getItemCode() == null)
+		//	iconDescription.setItemCode(this.itemcode);
 		iconDescription.setIms(this);
 		this.iconDescription = iconDescription;
 	}
