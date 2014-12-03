@@ -1,0 +1,21 @@
+DROP TABLE IF EXISTS ims_item_color_hue;
+
+CREATE TABLE ims_item_color_hue
+(
+   id                    SERIAL PRIMARY KEY,
+   item_code             char(18), 
+   color_hue             varchar(30),
+   version               numeric(15),
+        
+   CONSTRAINT item_color_hue_ims_fkey FOREIGN KEY (item_code)
+      REFERENCES ims (itemcd) MATCH SIMPLE,
+   
+   CONSTRAINT item_color_hue_color_fkey FOREIGN KEY (color_hue)
+      REFERENCES ims_color_hue (color_hue) MATCH SIMPLE
+);
+
+ CREATE INDEX ims_item_color_hue_itemcd_idx ON ims_item_color_hue USING btree (item_code);
+ CREATE INDEX ims_item_color_hue_color_idx ON ims_item_color_hue USING btree (color_hue);
+ 
+ COMMIT; 
+ 

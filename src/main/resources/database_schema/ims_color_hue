@@ -1,0 +1,34 @@
+DROP TABLE IF EXISTS ims_item_color_hue;
+DROP TABLE IF EXISTS ims_color_hue;
+CREATE TABLE ims_color_hue
+(
+   color_hue  varchar(30)   PRIMARY KEY
+     
+);
+
+INSERT INTO ims_color_hue (color_hue)
+VALUES ('ALMOND'),
+	('BEIGE'),
+	('BLACK'),
+	('BLUE'),
+	('BROWN'),
+	('CLEAR'),
+	('CREAM'),
+	('GOLD'),
+	('GREEN'),
+	('GRAY'),
+	('ORANGE'),
+	('PEACH'),
+	('PINK'),
+	('PURPLE'),
+	('RED'),
+	('RUST'),
+	('SALMON'),
+	('SILVER'),
+	('TAN'),
+	('TAUPE'),
+	('WALNUT'),
+	('WHITE'),
+	('YELLOW');
+
+COMMIT;   
