@@ -21,7 +21,7 @@
              <div class="container">No Item Found</div>
          </c:when>
          <c:otherwise>
-             <div class="container"><h2>Item Information for Item Code: <span style="color : red">${item.itemcode}</span></h2></div>
+             <div class="container" style="text-align: middle;"><h2>Item Information for Item Code: <span style="color : red">${item.itemcode}</span></h2></div>
          </c:otherwise>
       </c:choose>
       <br/>

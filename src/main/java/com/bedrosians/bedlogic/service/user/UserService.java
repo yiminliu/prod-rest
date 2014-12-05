@@ -15,7 +15,7 @@ public interface UserService {
 	
 	public User getUserById(String id) throws BedDAOException;
 		
-	public User getUserByName(String userName) throws BedDAOException;
+	public User getUserByName(String userName);
 	
 	public User getUserByEmail(String email);
 	

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.domain.ims.enums.MaterialCategory;
@@ -44,6 +45,8 @@ import com.bedrosians.bedlogic.domain.ims.enums.Edge;
 import com.bedrosians.bedlogic.domain.ims.enums.PackageUnit;
 import com.bedrosians.bedlogic.domain.ims.enums.Usage;
 import com.bedrosians.bedlogic.exception.DataNotFoundException;
+import com.bedrosians.bedlogic.exception.DataOperationException;
+import com.bedrosians.bedlogic.exception.InputParamException;
 import com.bedrosians.bedlogic.service.mvc.ims.ImsServiceMVC;
 import com.bedrosians.bedlogic.web.validator.ImsValidator;
 
@@ -105,7 +108,7 @@ public class ImsController {
 		   items = imsServiceMVC.getItems(allRequestParams);
 	   }
 	   catch(Exception e){
-		   e.printStackTrace();
+    	   throw e;
 	   }
 	   if(items == null && item.getItemcode() != null)
 		  throw new DataNotFoundException(item.getItemcode());
@@ -154,58 +157,38 @@ public class ImsController {
    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
    @RequestMapping(value = "/createItem_material", method = RequestMethod.POST)
    public String itemMaterialForm(@ModelAttribute("aItem") @Valid Ims item, Model model, BindingResult bindingResult, SessionStatus status) {
-	   //validator.validate(item, bindingResult);
-	   validator.validateGeneralInfo(item, bindingResult);
-	   if (bindingResult.hasErrors()) {
-           //logger.info("Returning custSave.jsp page");
+ 	   validator.validateGeneralInfo(item, bindingResult);
+	   if (bindingResult.hasErrors()) 
            return "ims/createItem_general";
-       }
-      if (item != null) {
-    	   try {
-             model.addAttribute("aItem", item);
-         }
-    	   catch (Exception te) {
-             return te.getMessage();
-         }
-     	   return "ims/createItem_material";
-      }
-      return null;
+       if (item != null) 
+           model.addAttribute("aItem", item);
+   	   return "ims/createItem_material";
+   
    }
    
    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
    @RequestMapping(value = "/createItem_dimension", method = RequestMethod.POST)
-   public String itemDimensionForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult result) {
-      if (item != null) {
-    	   try {
-             model.addAttribute("aItem", item);
-         }
-    	   catch (Exception te) {
-             return te.getMessage();
-         }
-     	   return "ims/createItem_dimension";
-      }
-      return null;
+   public String itemDimensionForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult bindingResult) {
+	   validator.validateMaterialInfo(item, bindingResult);
+	   if (bindingResult.hasErrors()) 
+           return "ims/createItem_general"; 
+      if (item != null) 
+         model.addAttribute("aItem", item); 
+       return "ims/createItem_dimension";
    }
   
    //handle material and dimension
    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
    @RequestMapping(value = "/createItem_price", method = RequestMethod.POST)
    public String itemPriceForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult bindingResult) {
-      if (item != null) {
+      if (item != null) 
     	//  validator.validate(item, bindingResult);
    	   //if (bindingResult.hasErrors()) {
               //logger.info("Returning custSave.jsp page");
        //       return "ims/createItem_price";
        //   }
-    	   try {
-             model.addAttribute("aItem", item);
-         }
-    	   catch (Exception te) {
-             return te.getMessage();
-         }
-     	   return "ims/createItem_price";
-      }
-      return null;
+          model.addAttribute("aItem", item);
+     	  return "ims/createItem_price";
    }
    
    //handle price
@@ -214,17 +197,10 @@ public class ImsController {
    public String itemApplicationForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult bindingResult) {
       if (item != null) {
     	  validator.validatePrice(item, bindingResult);
-      	   if (bindingResult.hasErrors()) {
-                 //logger.info("Returning custSave.jsp page");
-                 return "ims/createItem_price";
-             }
-    	   try {
-             model.addAttribute("aItem", item);
-         }
-    	   catch (Exception te) {
-             return te.getMessage();
-         }
-     	   return "ims/createItem_application";
+          if (bindingResult.hasErrors()) 
+               return "ims/createItem_price";
+          model.addAttribute("aItem", item);
+     	  return "ims/createItem_application";
       }
       return null;
    }
@@ -233,32 +209,18 @@ public class ImsController {
    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
    @RequestMapping(value = "/createItem_packageUnits", method = RequestMethod.POST)
    public String itemPackageUnitForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult result) {
-      if (item != null) {
-    	   try {
-             model.addAttribute("aItem", item);
-         }
-    	   catch (Exception te) {
-             return te.getMessage();
-         }
-     	   return "ims/createItem_packageUnits";
-      }
-      return null;
+      if (item != null) 
+          model.addAttribute("aItem", item);
+      return "ims/createItem_packageUnits";
    }
    
    //handle packageUnits
    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
    @RequestMapping(value = "/createItem_vendor", method = RequestMethod.POST)
    public String itemVendorForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult result) {
-      if (item != null) {
-    	   try {
-             model.addAttribute("aItem", item);
-         }
-    	   catch (Exception te) {
-             return te.getMessage();
-         }
-     	   return "ims/createItem_vendor";
-      }
-      return null;
+      if (item != null) 
+          model.addAttribute("aItem", item);
+      return "ims/createItem_vendor";
    }
    
    //handle vendor
@@ -270,12 +232,7 @@ public class ImsController {
      	   if (bindingResult.hasErrors()) {
                return "ims/createItem_vendor";
            }
-     	   try {
-             model.addAttribute("aItem", item);
-         }
-    	   catch (Exception te) {
-             return te.getMessage();
-         }
+           model.addAttribute("aItem", item);
      	   return "ims/createItem_icon";
       }
       return null;
@@ -288,33 +245,20 @@ public class ImsController {
      @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
      @RequestMapping(value = "/createItem_test", method = RequestMethod.POST)
      public String itemTestingForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult result) {
-        if (item != null) {
-      	   try {
-               model.addAttribute("aItem", item);
-           }
-      	   catch (Exception te) {
-               return te.getMessage();
-           }
-       	   return "ims/createItem_test";
-        }
-        return null;
+        if (item != null)
+             model.addAttribute("aItem", item);
+       	 return "ims/createItem_test";
      }
      
      @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
      @RequestMapping(value = "/createItem_note", method = RequestMethod.POST)
      public String itemNoteForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult bindingResult) {
         if (item != null) {
-        	 validator.validateTestSpecification(item, bindingResult);
-       	   if (bindingResult.hasErrors()) {
-                  //logger.info("Returning custSave.jsp page");
-                  return "ims/createItem_test";
-             }
-       	   try {
-               model.addAttribute("aItem", item);
-           }
-      	   catch (Exception te) {
-               return te.getMessage();
-           }
+            validator.validateTestSpecification(item, bindingResult);
+       	    if (bindingResult.hasErrors()) {
+                return "ims/createItem_test";
+            }
+            model.addAttribute("aItem", item);
        	   return "ims/createItem_note";
         }
         return null;
@@ -327,10 +271,9 @@ public class ImsController {
       */
       @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
       @RequestMapping(value = "/createItem_final", method = RequestMethod.POST)
-      public String createItemIcons(@ModelAttribute("aItem") @Valid Ims item, Model model, BindingResult bindingResult, SessionStatus status) {
+      public String createItem(@ModelAttribute("aItem") @Valid Ims item, Model model, BindingResult bindingResult, SessionStatus status) {
           String itemCode = null;
           if (bindingResult.hasErrors()) {
-              //logger.info("Returning custSave.jsp page");
               return "createItem";
           }
    	      if (item != null) {
@@ -340,8 +283,8 @@ public class ImsController {
                 model.addAttribute("itemCode", itemCode);
                 status.setComplete(); //finished the "aItem" SessionAttribute
              }
-       	     catch (Exception te) {
-                 return te.getMessage();
+       	     catch (Exception e) {
+                 throw e;
              }
              return "ims/createItemSuccess";
          }
@@ -558,5 +501,27 @@ public class ImsController {
     	 //imsServiceMVC.initVendors(3);
     	 model.addAttribute("newVendorSystem", imsServiceMVC.getNewVendorSystem());
      }
+     
+     @ExceptionHandler(InputParamException.class)
+     public ModelAndView handleInputParamException(InputParamException ex) {
+   
+  		ModelAndView model = new ModelAndView("/exception/exception");
+  		model.addObject("errorCode", ex.getErrorCode());
+  		model.addObject("errorMessage", ex.getErrorMessage());
+  		model.addObject("error", ex.getError());
+   
+  		return model;
+   	}
+     
+    @ExceptionHandler(DataOperationException.class)
+ 	public ModelAndView handleDataOperationException(DataOperationException ex) {
+  
+ 		ModelAndView model = new ModelAndView("/exception/exception");
+ 		model.addObject("errorCode", ex.getErrorCode());
+ 		model.addObject("errorMessage", ex.getErrorMessage());
+ 		model.addObject("error", ex.getError());
+  
+ 		return model;
+  	}
     
 }

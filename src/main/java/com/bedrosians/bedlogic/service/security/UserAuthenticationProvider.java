@@ -16,6 +16,8 @@ import org.springframework.stereotype.Component;
 
 import com.bedrosians.bedlogic.dao.user.UserDao;
 import com.bedrosians.bedlogic.domain.user.User;
+import com.bedrosians.bedlogic.exception.DataOperationException;
+import com.bedrosians.bedlogic.exception.UnauthenticatedException;
 import com.bedrosians.bedlogic.service.user.UserService;
 
 @Component
@@ -33,9 +35,15 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 		  try { 
 		      user = userService.getUserByName(userName);
 		  }
-		  catch(Exception e){
+		  catch(DataOperationException e){
 			  e.printStackTrace();
-			  throw new RuntimeException("Error occured during retrieving user: " + e.getMessage());
+			  throw new DataOperationException("DB Error occured during retrieving user: " + e.getMessage(), e);
+		  }
+		  catch(Exception e){
+			 if(e instanceof AuthenticationException)
+			   throw e;
+			 else
+				 throw new UnauthenticatedException("Error occured during retrieving user: " + e.getMessage(), e);	 
 		  }
 	   }
 	   if(user == null) {

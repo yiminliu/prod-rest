@@ -10,7 +10,7 @@
    <div class="container">
       <c:choose>
          <c:when test="${empty itemList}">
-             <div class="page_title">No Item Found</div>
+             <div class="page_title">No Item Found!</div>
          </c:when>
          <c:otherwise>
            <div class="page_title">Search Result(${fn:length(itemList)} items)</div>
@@ -67,11 +67,11 @@
                 </c:if>
              </div>
                
-             <table  class="center" style="cellspacing: 100px; border-spacing: 20px;">
+             <table  class="center" style="cellspacing: 30px; cellpadding: 20px; border-spacing: 50px;">
                 <tr>
-                   <td style="padding: 20px;">
-                      <a id="imsSearch" href="<spring:url value="/ims/getItem" />" class="button action-m"><span>Item Search Page</span></a>
-                      <a id="imsHome" href="<spring:url value="/ims/index" />" class="button action-m"><span>Ims Management Home</span></a>
+                   <td style="cellspacing: 30px; cellpadding: 30px;">
+                      <a id="imsSearch" href="<spring:url value="/ims/getItem" />" class="button action-m"><span style="cellspacing: 30px; cellpadding: 30px;">Item Search Page</span></a>
+                      <a id="imsHome" href="<spring:url value="/ims/index" />" class="button action-m"><span style="cellspacing: 30px; cellpadding: 30px;">Ims Management Home</span></a>
                    </td>
                 </tr>
              </table>

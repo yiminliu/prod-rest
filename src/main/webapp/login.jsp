@@ -41,7 +41,7 @@
     <c:url var="loginUrl" value="/spring_security_login" />
     <c:url var="logoutUrl" value="/j_spring_security_logout" /> 
 
-	<h1><center>Welcome to IMS</center></h1>
+	<div class="page_title">Item Management System</div>
  
 	<div id="login-box" class="container">
  

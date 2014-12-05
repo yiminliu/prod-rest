@@ -11,6 +11,7 @@ import com.bedrosians.bedlogic.dao.user.UserDao;
 import com.bedrosians.bedlogic.domain.user.User;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
+import com.bedrosians.bedlogic.exception.DataOperationException;
 
 @Service("userService")
 public class UserServiceImpl implements UserService{
@@ -23,8 +24,15 @@ public class UserServiceImpl implements UserService{
      
 	@Override
 	public User getUserByName(String userName){
+		User user = null;
 		Session session = sessionFactory.openSession();
-	    return userDao.getUserByName(session, userName);
+	    try{
+	    	user = userDao.getUserByName(session, userName);
+	    }
+	    catch(Exception e){
+	    	throw new DataOperationException("Error occured while retrieve user from database. Reason: " + e.getMessage(), e);
+	    }
+	    return user;
 	}
 	
 	@Override

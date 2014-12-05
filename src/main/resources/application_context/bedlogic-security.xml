@@ -31,6 +31,7 @@
     <intercept-url pattern="/home" access="permitAll" />-->
     <intercept-url pattern="/admin/**" access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')" />
     <intercept-url pattern="/ims/**" method="GET" access="permitAll" /> 
+    <intercept-url pattern="/ims/getItems" method="POST" access="permitAll" /> 
     <intercept-url pattern="/ims/**" method="POST" access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')" /> 
     <intercept-url pattern="/ims/**" method="PUT" access="hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')" /> 
     <form-login 

@@ -7,6 +7,8 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
+import com.bedrosians.bedlogic.exception.DataOperationException;
+import com.bedrosians.bedlogic.exception.InputParamException;
 
 
 public class ImsValidator {
@@ -21,7 +23,7 @@ public class ImsValidator {
 	
 	public static void validateNewItem(Ims item) throws BedDAOBadParamException{
 		if(item == null)
-		   throw new BedDAOBadParamException("Item should not be null.");
+		   throw new InputParamException("Item should not be null.");
 		validateItemCode(item);
 		validateRequiredProperties(item);
 		validateFieldLength(item);
@@ -31,19 +33,19 @@ public class ImsValidator {
 		}
 	}
 
-	public static void validateItemCode(Ims item) throws BedDAOBadParamException{
+	public static void validateItemCode(Ims item){
 		if(item.getItemcode() == null || item.getItemcode().length() < 1 || item.getItemcode().length() > 18)
-		   throw new BedDAOBadParamException("Item code cannot be empty and should be less than 18 characters");
+		   throw new InputParamException("Item code cannot be empty and should be less than 18 characters"         );
 		item.setItemcode(item.getItemcode().toUpperCase());
 		//if(!product.getItemcode().matches("^[a-zA-Z0-9-]*$"))
 		//   throw new BedDAOBadParamException("Product code cannot contain any special characters, other than letters, numbers and dashes");
 	}
 	
-	public static void validateRequiredProperties(Ims item) throws BedDAOBadParamException{
+	public static void validateRequiredProperties(Ims item){
 		if(item.getItemdesc() == null || item.getItemdesc().getItemdesc1() == null || item.getItemdesc().getItemdesc1().length() < 1)
-		   throw new BedDAOBadParamException("Missing Item Description!");
+		   throw new InputParamException("Missing Item Description!");
 		if(item.getItemcategory() == null || item.getItemcategory().length() < 1)
-		   throw new BedDAOBadParamException("Missing ItemCategory!");
+		   throw new InputParamException("Missing ItemCategory!");
 	}
 		 
 	private static void validateForNullParams(MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException{

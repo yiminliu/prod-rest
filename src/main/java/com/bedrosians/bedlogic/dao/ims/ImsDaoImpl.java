@@ -72,7 +72,7 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 	
 	@Override
 	@Transactional(readOnly=true)
-	public List<String> getItemCodeList() throws BedDAOException{
+	public List<String> getItemCodeList(){
 		Query query = getSession().createQuery("Select itemcode From Ims");
 		return (List<String>)query.setCacheable(true).list();
 	}
@@ -331,6 +331,9 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 	 	   	   case "nominallength": case "nominalLength": case "nominalwidth": case "nominalWidth":	
 	 	   		   itemCriteria.add(Restrictions.eq("dimensions" + "." +key, Float.parseFloat(value)));
 	 	   		   break;
+	 	   	   case "dimensions.nominallength": case "dimensions.nominalLength": case "dimensions.nominalwidth": case "dimensions..nominalWidth":	
+	 	   		   itemCriteria.add(Restrictions.eq(key, Float.parseFloat(value)));
+	 	   		   break;	   
 	  	   	   case "pricemax": case "priceMax":
 	 	   		   itemCriteria.add(Restrictions.le("price.sellprice", new BigDecimal(value))); 
 	 	   		   itemCriteria.add(Restrictions.gt("price.sellprice", new BigDecimal(0))); 

@@ -1,8 +1,11 @@
+<%@ include file="/WEB-INF/includes/taglibs.jsp"%>
+<%@ include file="/WEB-INF/includes/doctype.jsp"%>
+<%@ include file="/WEB-INF/includes/styles.jsp"%>
 <div id="curtain" style="display: none;"></div>
 <div id="centerPopup" style="display: none;">
 <div id="popupWrapper">
 <div id="centerPopupContent">
-One moment please...<br/>
+<div class="title">Item Management System</div>
 </div>
 </div>
 </div>

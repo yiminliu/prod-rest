@@ -9,6 +9,7 @@
 <body>
 
 <div class="container">
+
 <div id="main-content">
 <div class="span-18 colborder">
 <h3 style="margin-bottom: 10px; padding-bottom: 0px; color: GREEN">Enter Item Search Criteria</h3>
@@ -29,7 +30,53 @@
      <tr>
         <td><label>Series Name:</label> <form:input path="series.seriesname"></form:input></td>
      </tr>
-     <tr> 
+     <tr>  
+         <td><label for="materialType">Material Type:</label>
+            <form:select id="materialType" path="material.materialtype" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:150px;">
+               <form:option value="" selected="selected">Select one</form:option>
+               <c:forEach var="materialType" items="${materialTypeList}" varStatus="status">
+                 <form:option value="${materialType}">${materialType.getDescription()}</form:option>
+              </c:forEach>
+            </form:select>
+         </td> 
+     </tr>
+     <tr>    
+         <td><label for="materialCategory">Material Category:</label>
+            <form:select id="materialCategory" path="material.materialcategory" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:150px;">
+               <form:option value="" selected="selected">Select one</form:option>
+               <c:forEach var="materialCategory" items="${materialCategoryList}" varStatus="status">
+                 <form:option value="${materialCategory}">${materialCategory.getDescription()}</form:option>
+              </c:forEach>
+            </form:select>
+         </td>   
+     </tr>
+     <tr>  
+         <td><label for="materialClass">Material Class:</label>
+            <form:select id="materialClass" path="material.materialclass" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:150px;">
+               <form:option value="" selected="selected">Select one</form:option>
+               <c:forEach var="materialClass" items="${materialClassList}" varStatus="status">
+                 <form:option value="${materialClass}">${materialClass.getDescription()}</form:option>
+              </c:forEach>
+            </form:select>
+         </td>
+      </tr>
+      <tr>   
+          <td><label for="materialStyle">Material Style:</label>
+            <form:select id="materialStyle" path="material.materialstyle" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:150px;">
+               <form:option value="" selected="selected">Select one</form:option>
+               <c:forEach var="materialStyle" items="${materialStyleList}" varStatus="status">
+                 <form:option value="${materialStyle}">${materialStyle.getDescription()}</form:option>
+              </c:forEach>
+            </form:select>
+          </td> 
+      </tr>
+      <tr>
+       <td>Length: <form:input path="dimensions.nominallength" cssStyle="width:90px;"></form:input></td>
+     </tr>
+      <tr>
+       <td>Width : <form:input path="dimensions.nominalwidth" cssStyle="width:90px;"></form:input></td>
+     </tr>
+      <tr> 
         <td><label for="itemStatusOptions">Status: </label>
               <c:forEach var="itemStatus" items="${statusList}" varStatus="status">
                  <form:radiobutton path="newFeature.status" value="${itemStatus}"/>${itemStatus}
@@ -51,46 +98,6 @@
         </td>
      </tr>
      <tr>  
-         <td><label for="materialType">Material Type:</label>
-            <form:select id="materialType" path="material.materialtype" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;">
-               <form:option value="" selected="selected">Select one</form:option>
-               <c:forEach var="materialType" items="${materialTypeList}" varStatus="status">
-                 <form:option value="${materialType}">${materialType.getDescription()}</form:option>
-              </c:forEach>
-            </form:select>
-         </td> 
-     </tr>
-     <tr>    
-         <td><label for="materialCategory">Material Category:</label>
-            <form:select id="materialCategory" path="material.materialcategory" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;">
-               <form:option value="" selected="selected">Select one</form:option>
-               <c:forEach var="materialCategory" items="${materialCategoryList}" varStatus="status">
-                 <form:option value="${materialCategory}">${materialCategory.getDescription()}</form:option>
-              </c:forEach>
-            </form:select>
-         </td>   
-     </tr>
-     <tr>  
-         <td><label for="materialClass">Material Class:</label>
-            <form:select id="materialClass" path="material.materialclass" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;">
-               <form:option value="" selected="selected">Select one</form:option>
-               <c:forEach var="materialClass" items="${materialClassList}" varStatus="status">
-                 <form:option value="${materialClass}">${materialClass.getDescription()}</form:option>
-              </c:forEach>
-            </form:select>
-         </td>
-      </tr>
-      <tr>   
-          <td><label for="materialStyle">Material Style:</label>
-            <form:select id="materialStyle" path="material.materialstyle" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;">
-               <form:option value="" selected="selected">Select one</form:option>
-               <c:forEach var="materialStyle" items="${materialStyleList}" varStatus="status">
-                 <form:option value="${materialStyle}">${materialStyle.getDescription()}</form:option>
-              </c:forEach>
-            </form:select>
-          </td> 
-      </tr>
-      <tr>  
           <td><label for="colorOptions">Colors Category: </label>
               <span style="padding-left: 5px;padding-bottom:3px; font-size: 12px;">
                  <c:forEach var="colorHue" items="${colorList}" varStatus="loop">

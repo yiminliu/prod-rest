@@ -1,9 +1,12 @@
 package com.bedrosians.bedlogic.web.controller;
 
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.bedrosians.bedlogic.exception.DataOperationException;
 
 public class HomeController {
 
@@ -38,6 +41,27 @@ public class HomeController {
 			model.addObject("msg", "You've been logged out successfully.");
 		}
 		model.setViewName("ims/index");
+ 
+		return model;
+ 
+	}
+	
+	@ExceptionHandler(DataOperationException.class)
+	public ModelAndView handleDataOperationException(DataOperationException ex) {
+ 
+		ModelAndView model = new ModelAndView("/exception/exception");
+		model.addObject("errorCode", ex.getErrorCode());
+		model.addObject("errorMessage", ex.getErrorMessage());
+		model.addObject("error", ex.getError());
+ 
+		return model;
+ 	}
+ 
+	@ExceptionHandler(Exception.class)
+	public ModelAndView handleAllException(Exception ex) {
+ 
+		ModelAndView model = new ModelAndView("error/generic_error");
+		model.addObject("errMsg", "this is Exception.class");
  
 		return model;
  

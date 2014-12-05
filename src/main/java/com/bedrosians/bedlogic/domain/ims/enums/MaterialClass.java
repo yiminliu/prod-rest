@@ -2,9 +2,9 @@ package com.bedrosians.bedlogic.domain.ims.enums;
 
 public enum MaterialClass {
 
-	Ceramic_Tile_Manufactured("Ceramic Tile / Manufactured"),
-	Ceramic_Tile_Sourced("Ceramic Tile Sourced"),
-	Decorative_Products("Decorative Products"),
+	CTMNF("Ceramic Tile / Manufactured"),
+	CTSRC("Ceramic Tile Sourced"),
+	DECOR("Decorative Products"),
 	SAMPL("SAMPL");
 	
 	private String description;

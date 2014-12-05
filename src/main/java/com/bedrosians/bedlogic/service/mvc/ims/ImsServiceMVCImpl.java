@@ -16,6 +16,8 @@ import java.util.Set;
 
 
 
+
+
 import javax.ws.rs.core.MultivaluedMap;
 
 import com.sun.jersey.core.util.MultivaluedMapImpl;
@@ -41,6 +43,8 @@ import com.bedrosians.bedlogic.domain.ims.Vendor;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Applications;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
+import com.bedrosians.bedlogic.exception.DataOperationException;
+import com.bedrosians.bedlogic.exception.InputParamException;
 import com.bedrosians.bedlogic.util.FormatUtil;
 import com.bedrosians.bedlogic.util.JsonWrapper.ItemWrapper;
 import com.bedrosians.bedlogic.util.enums.DBOperation;
@@ -94,11 +98,17 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 		return FormatUtil.process(ims);
 	}
 
-    public boolean itemCodeIsTaken(String itemCode) throws BedDAOException{
-    	List<String> itemCodeList = imsDao.getItemCodeList();
+    public boolean itemCodeIsTaken(String itemCode){
+    	List<String> itemCodeList = null;
+    	try{
+     	  itemCodeList = imsDao.getItemCodeList();
+    	}
+    	catch(Exception e){
+    		 throw new DataOperationException("Error occured while retriving item code. " + e);
+    	}
     	for(String s : itemCodeList){
     		if(s.trim().equalsIgnoreCase(itemCode))
-    			return true;
+    		   return true;
     	}
     	return false;
     }
@@ -143,7 +153,7 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 	
 	@Loggable(value = LogLevel.INFO)
 	@Override
-	public List<Ims> getItems(LinkedHashMap<String, List<String>> queryParams) throws BedDAOBadParamException, BedDAOException{
+	public List<Ims> getItems(LinkedHashMap<String, List<String>> queryParams){
 		if(queryParams == null || queryParams.isEmpty()){
 			//queryParams = new MultivaluedMapImpl();
 			//queryParams.put("inactivecode", Arrays.asList(new String[]{"N"}));
@@ -153,17 +163,16 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 			itemList = imsDao.getItems(queryParams);
 		}
 		catch(HibernateException hbe){
-			hbe.printStackTrace();
-			if(hbe.getCause() != null)
-		       throw new BedDAOException("Error occured during getItems(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+	    	if(hbe.getCause() != null)
+		       throw new DataOperationException("Error occured during getItems(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
 		  	else
-		  	   throw new BedDAOException("Error occured during getItems(), due to: " +  hbe.getMessage());
+		  	   throw new DataOperationException("Error occured during getItems(), due to: " +  hbe.getMessage());
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-		  	   throw new BedDAOException("Error occured during getItems(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+		  	   throw new DataOperationException("Error occured during getItems(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
 		  	else
-		  	   throw new BedDAOException("Error occured during getItems(), due to: " +  e.getMessage());	
+		  	   throw new DataOperationException("Error occured during getItems(), due to: " +  e.getMessage(), e);	
 		}
 		List<Ims> processedItems = new ArrayList<>();
 		for(Ims ims : itemList){
@@ -177,10 +186,15 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 	
 	@Loggable(value = LogLevel.INFO)
 	@Override
-	public String createItem(Ims item) throws BedDAOBadParamException, BedDAOException{  	
+	public String createItem(Ims item){  	
 		String id = "";
-     	ImsValidator.validateNewItem(item);
-     	//take care of associations
+		try{
+     	   ImsValidator.validateNewItem(item);
+		}
+		catch(Exception e){
+			throw new InputParamException("Input valiation error: "+e.getMessage(), e);
+		}
+		//take care of associations
      	ImsNewFeature newFeature = item.getNewFeature();
      	if(newFeature != null && !newFeature.isEmpty())
      	   item.addNewFeature(newFeature);
@@ -213,24 +227,24 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 		catch(HibernateException hbe){
 		   hbe.printStackTrace();
 		   if(hbe.getCause() != null)
-		      throw new BedDAOException("Error occured during createItem(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+		      throw new DataOperationException("Error occured during createItem(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
 		   else
-		  	  throw new BedDAOException("Error occured during createItem(), due to: " +  hbe.getMessage());	
+		  	  throw new DataOperationException("Error occured during createItem(), due to: " +  hbe.getMessage());	
 	    }	
    	    catch(Exception e){
 		  e.printStackTrace();
 		  if(e != null && e.getMessage() != null){
 			  if(e.getMessage().contains("constraint [item_code]"))
-				  throw new BedDAOBadParamException("Invalid item code, since it is already existing in the database");
+				  throw new InputParamException("Invalid item code, since it is already existing in the database", e);
 		      else if(e.getMessage().contains("constraint [vendor_apv_fkey]"))
-			      throw new BedDAOBadParamException("Invalid vendor number (ID), since it cannot be found in the vendor table");
+			      throw new InputParamException("Invalid vendor number (ID), since it cannot be found in the vendor table", e);
 		      else
-		    	  throw new BedDAOException("Error occured during createItem(), due to: " + e.getMessage());
+		    	  throw new DataOperationException("Error occured during createItem(), due to: " + e.getMessage());
 		  }
 		  else if(e.getCause() != null)
-	  	     throw new BedDAOException("Error occured during createItem(), due to: " +  " Root cause: " + e.getCause().getMessage());	
+	  	     throw new DataOperationException("Error occured during createItem(), due to: " +  " Root cause: " + e.getCause().getMessage());	
 	  	  else
-	  	     throw new BedDAOException("Error occured during createItem().");	
+	  	     throw new DataOperationException("Error occured during createItem().");	
       }
 	  return id;		 	
     }

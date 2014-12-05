@@ -3,19 +3,19 @@ package com.bedrosians.bedlogic.domain.ims.enums;
 public enum MaterialStyle {
 
 	Beak("Beak"),
-	Cove_Base("Cove Base"),
-	Cove_Base_Inside_Corner("Cove Base Inside Corner"),
-	Cove_Base_Outside_Corner("Cove Base Outside Corner"),
+	CB("Cove Base"),
+	CBCI("Cove Base Inside Corner"),
+	CBCO("Cove Base Outside Corner"),
 	Cane("Cane"),
-	Chair_Rail("Chair Rail"),
-	Quarter_Round("Quarter Round"),
-	Surface("Surface"),
-	Surface_Corner("Surface Corner"),
-	Surface_Corner_Right("Surface Corner Right"),
-	Surface_Corner_Left("Surface Corner Left"),
-	V_Cap("V-Cap"),
-	V_Cap_Corner("V-Cap Corner"),
-	Wall("Wall");
+	CR("Chair Rail"),
+	QR("Quarter Round"),
+	SF("Surface"),
+	SFC("Surface Corner"),
+	SFCR("Surface Corner Right"),
+	SFCL("Surface Corner Left"),
+	VC("V-Cap"),
+	VCC("V-Cap Corner"),
+	WL("Wall");
 	
 	private String description;
 		 

@@ -9,20 +9,24 @@
 <div class="home-container">
    <div id="main-content">
           <div class="page_title">Item Management System</div>
-          <br/>
-          <div class="center">
-            <ul class="menue"> 
-               <li><a id="searchItem" href="<spring:url value="/ims/getItem"/>"><span>Search Item</span></a></li>
-             
-               <li><a id="createItem" href="<spring:url value="/ims/createItem_begin"/>"><span>Create Item</span></a></li>
-          
-               <li><a id="updateItem" href="<spring:url value="/ims/updateItemInitForm"/>"><span>Update Item</span></a></li>
-           
-               <li><a id="deleteItem" href="<spring:url value="/ims/deleteItem"/>"><span>Delete Item</span></a></li>
-          
-               <li><a id="deactivateItem" href="<spring:url value="/ims/deactivateItem"/>"><span>Deactivate Item</span></a></li>
-            </ul>
-         </div>
+          <br/><br/>
+          <table class="center" style="cellspacing: 35px;">
+            <tr style="float:middle;"> 
+               <td><a id="searchItem" href="<spring:url value="/ims/getItem"/>"><span>Search Item</span></a></td>
+            </tr>
+            <tr style="float:middle;">   
+                <td><a id="createItem" href="<spring:url value="/ims/createItem_begin"/>"><span>Create Item</span></a></td>
+            </tr>
+            <tr style="float:middle;"> 
+                <td><a id="updateItem" href="<spring:url value="/ims/updateItemInitForm"/>"><span>Update Item</span></a></td>
+            </tr>  
+            <tr style="float:middle;"> 
+                 <td><a id="deleteItem" href="<spring:url value="/ims/deleteItem"/>"><span>Delete Item</span></a></td>
+            </tr>
+            <tr style="float:middle;"> 
+                <td><a id="deactivateItem" href="<spring:url value="/ims/deactivateItem"/>"><span>Deactivate Item</span></a></td>
+            </tr>
+         </table>
   </div><!-- close main-content -->
 </div> <!-- Close container -->
 </body>

@@ -14,7 +14,7 @@ import com.bedrosians.bedlogic.exception.BedDAOException;
 public interface ImsDao extends GenericDao<Ims, String>{
    public Ims getItemByItemCode(Session session, String itemCode);
    public Ims loadItemByItemCode(Session session, String itemCode);
-   public List<String> getItemCodeList() throws BedDAOException;	
+   public List<String> getItemCodeList();	
 	
    public List<Ims> getActiveAndShownOnWebsiteItems();
    public List<Ims> getItemsByQueryParameters(MultivaluedMap<String, String> queryParams);

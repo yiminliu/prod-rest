@@ -16,6 +16,7 @@ import org.springframework.validation.Validator;
 
 import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.domain.ims.Vendor;
+import com.bedrosians.bedlogic.domain.ims.embeddable.Material;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Price;
 import com.bedrosians.bedlogic.domain.ims.embeddable.TestSpecification;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
@@ -79,13 +80,8 @@ public class ImsValidator implements Validator {
 	 }
 	 
 	 private void checkItemCodeAvailability(String itemCode, Errors errors) {
-		 try{
-		    if(imsService.itemCodeIsTaken(itemCode)){
-		       errors.rejectValue("itemcode", "item.itemcode.taken", "Item code is taken, please use a different item code");
-		    }
-		 }catch(BedDAOException e){
-			 e.printStackTrace();
-		 }
+	    if(imsService.itemCodeIsTaken(itemCode))
+	       errors.rejectValue("itemcode", "item.itemcode.taken", "Item code is taken, please use a different item code");
 	 }
 	 
 	 private void checkItemDescription(String data, Errors errors) {
@@ -97,6 +93,14 @@ public class ImsValidator implements Validator {
 		 }
 	 }
 
+	 public void validateMaterialInfo(Ims item, Errors errors) {
+		 Material data = item.getMaterial();
+		 if (data.getMaterialstyle() != null && data.getMaterialstyle().length() > 7) 
+		    errors.rejectValue("material.materialstyle", "item.material.materialstyle.too.long", "Mmaterial style length cannot longer than 7");
+		 if (data.getMaterialclass() != null && data.getMaterialclass().length() > 5) 
+			    errors.rejectValue("material.materialstyle", "item.material.materialstyle.too.long", "Mmaterial style length cannot longer than 7");
+	 }
+	 
 	 public void validatePrice(Ims item, Errors errors) {
 		 Price data = item.getPrice();
 		 //if (data == null || data.getSellprice() == null) {

@@ -34,12 +34,12 @@
    <table class="category"> 
      <tr>
         <td><label>Product Manager: </label>
-            <form:input path="purchasers.purchaser"></form:input>
+            <form:input path="purchasers.purchaser" cssStyle="width:155px;"></form:input>
         </td>
      </tr>
      <tr>
         <td><label>Buyer: </label>
-        <form:input path="purchasers.purchaser2"></form:input></td>
+        <form:input path="purchasers.purchaser2" cssStyle="width:155px;"></form:input></td>
      </tr>     
    </table>
     <div style="color:Green"> <h3>Notes</h3></div>
