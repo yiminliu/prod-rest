@@ -18,13 +18,17 @@
           <!--<td style="width:20">Order#: <form:input path="newVendorSystem[${loop.index + 1}].vendorOrder"></form:input></td>-->  
           <td style="width:20"><label for="vendorOrder"> </label>
                  <form:hidden path="newVendorSystem[${loop.index}].vendorOrder" value="${loop.index + 1}"/>${loop.index + 1}. 
-          </td>        
-          <td>Vendor Number: <form:input path="newVendorSystem[${loop.index}].vendorId.id"></form:input>
-              <table>
-                 <tr>
-                      <td><form:errors path="newVendorSystem[${loop.index}].vendorId.id" cssClass="error" /></td>               
-                 </tr>
-              </table>
+          </td> 
+          <td>
+            <c:choose>
+             <c:when test="${loop.index == 0}">       
+                Vendor Number*: <form:input path="newVendorSystem[${loop.index}].vendorId.id"></form:input>
+             </c:when>
+             <c:otherwise>
+                 Vendor Number: <form:input path="newVendorSystem[${loop.index}].vendorId.id"></form:input>
+             </c:otherwise> 
+            </c:choose>    
+            <form:errors path="newVendorSystem[${loop.index}].vendorId.id" cssClass="error" />  
           </td>    
           <!-- <td>Vendor Name: <form:input path="newVendorSystem[${loop.index}].vendorName"></form:input></td>
           <td>Vendor Name2: <form:input path="newVendorSystem[${loop.index}].vendorName2"></form:input></td>-->

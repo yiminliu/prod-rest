@@ -13,7 +13,7 @@
 <form:form method="POST" action="${action}" modelAttribute="aItem">
 <table>
   <div class="container" style="color:BLUE"> <h3>Enter Package Units Information</h3></div>
-    <table>
+    <!--<table>
        <tr>
           <td><label for="stdunitOptions">stdunit: </label>
               <c:forEach var="stdunit" items="${packageUnitList}" varStatus="status">
@@ -34,19 +34,19 @@
        <tr>
           <td>ordratio: <form:input path="units.ordratio"></form:input></td>
        </tr>
-     </table>  
+     </table>-->  
      
      <div style="color:Green"> <h3>Base Unit</h3></div>
      <table>
        <tr>   
-          <td><label for="baseunitOptions">baseunit: </label>
+          <td><label for="baseunitOptions">Base Unit: </label>
               <c:forEach var="baseunit" items="${packageUnitList}" varStatus="status">
                  <form:radiobutton  path="units.baseunit" value="${baseunit}"/>${baseunit}
               </c:forEach>
           </td> 
        </tr>
        <tr>          
-          <td><label for="baseisstdsellOptons">baseisstdsell: </label>
+          <td><label for="baseisstdsellOptons">Base Is Standard Sell?: </label>
               <form:radiobutton path="units.baseisstdsell" value="Y" />Yes
               <form:radiobutton path="units.baseisstdsell" value="N" />No
            </td>

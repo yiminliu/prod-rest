@@ -33,7 +33,7 @@
    <div style="color:GREEN"> <h3>Buyers</h3></div>
    <table class="category"> 
      <tr>
-        <td><label>Product Manager: </label>
+        <td><label>Product Manager*: </label>
             <form:input path="purchasers.purchaser" cssStyle="width:155px;"></form:input>
         </td>
      </tr>

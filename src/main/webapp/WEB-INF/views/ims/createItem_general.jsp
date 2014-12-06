@@ -20,19 +20,25 @@
          <td><form:errors path="itemcode" cssClass="error" /></td>               
       </tr>
       <tr>   
-         <td><label>Category*: </label>  <form:input path="itemcategory"></form:input></td>
+         <td><label>Category*: </label>  <form:input path="itemcategory"></form:input><small>(maximum 8 characters)</small></td>
       </tr>
       <tr>
          <td><form:errors path="itemcategory" cssClass="error" /></td>               
       </tr>
       <tr>  
-         <td><label>Series Name: </label>  <form:input path="series.seriesname"></form:input></td>
+         <td><label>Series Name*: </label>  <form:input path="series.seriesname"></form:input><small>(maximum 40 characters)</small></td>
+      </tr>
+      <tr>
+         <td><form:errors path="series.seriesname" cssClass="error" /></td>               
       </tr>
       <tr>  
-         <td><label>Series Color: </label>  <form:input path="series.seriescolor"></form:input></td>
+         <td><label>Series Color*: </label>  <form:input path="series.seriescolor"></form:input><small>(maximum 30 characters)</small></td>
+      </tr>
+      <tr>
+         <td><form:errors path="series.seriescolor" cssClass="error" /></td>               
       </tr>
       <tr>    
-         <td><label>Item Description*: </label><form:input path="itemdesc.itemdesc1" size="50"></form:input><small>()maximum 35 characters)</small></td>
+         <td><label>Item Description*: </label><form:input path="itemdesc.itemdesc1" size="50"></form:input><small>(maximum 35 characters)</small></td>
       </tr>
        <tr>
          <td><form:errors path="itemdesc.itemdesc1" cssClass="error" /></td>               

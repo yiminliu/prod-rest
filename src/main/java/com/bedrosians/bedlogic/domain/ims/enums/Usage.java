@@ -4,10 +4,10 @@ public enum Usage {
 
 	 F("Floor"),
      W("Wall"),
-     S("S"),
-	 P("P"),
-	 X("X"),
-	 C("C");
+     S("Shower"),
+	 P("Pool/Spa"),
+	 X("Exterior"),
+	 C("Counter Top");
 		 
 	 private String description;
 		 

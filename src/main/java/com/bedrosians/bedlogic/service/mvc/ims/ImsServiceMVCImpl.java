@@ -73,10 +73,10 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
     @Loggable(value = LogLevel.INFO)
     @Override
     @Transactional(readOnly = true, isolation=Isolation.READ_COMMITTED)
-	public Ims getItemByItemCode(String itemCode) throws BedDAOBadParamException, BedDAOException{
+	public Ims getItemByItemCode(String itemCode){
     	Ims ims = null;
     	if(itemCode == null || itemCode.length() < 1)
-    	   throw new BedDAOBadParamException("Please enter valid product code !");	
+    	   throw new InputParamException("Please enter valid Item Code !");	
 		try{
 			Session session = getSession();
 			session.setCacheMode(CacheMode.NORMAL);
@@ -85,15 +85,15 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 		catch(HibernateException hbe){
 			hbe.printStackTrace();
 			if(hbe.getCause() != null)
-		  	   throw new BedDAOException("Error occured during getItemByItemCode, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
 		  	else
-		  	   throw new BedDAOException("Error occured during getItemByItemCode, due to: " +  hbe.getMessage());	
+		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  hbe.getMessage());	
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-		  	   throw new BedDAOException("Error occured during getItemByItemCode, due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
 		  	else
-		  	   throw new BedDAOException("Error occured during getItemByItemCode, due to: " +  e.getMessage());	
+		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  e.getMessage());	
 		}
 		return FormatUtil.process(ims);
 	}
@@ -254,7 +254,7 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 	@Loggable(value = LogLevel.INFO)
 	@Override
 	@Transactional(readOnly = false, propagation=Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ) 
-	public synchronized void updateItem(Ims itemFromInput) throws BedDAOBadParamException, BedDAOException{
+	public synchronized void updateItem(Ims itemFromInput){
 		Ims itemToUpdate = null;
 		Session session = getSession();
 		try{
@@ -262,35 +262,39 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 		}
 	    catch(HibernateException hbe){
 		    hbe.printStackTrace();
-		    throw new BedDAOException("Error occured during updateProduct() due to: " + hbe.getMessage(), hbe);
+		    throw new DataOperationException("Error occured during updateProduct() due to: " + hbe.getMessage(), hbe);
 	    }
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-		  	   throw new BedDAOException("Error occured during updateItem(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+		  	   throw new DataOperationException("Error occured during updateItem(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
 		  	else
-		  	   throw new BedDAOException("Error occured during updateItem(), due to: " +  e.getMessage());	
+		  	   throw new DataOperationException("Error occured during updateItem(), due to: " +  e.getMessage());	
 		}
 		if(itemToUpdate == null)
-	       throw new BedDAOException("No data found for the given item code: " + itemFromInput.getItemcode());	 
-		
-		itemToUpdate = ImsDataUtil.transformItem(itemToUpdate, itemFromInput, DBOperation.UPDATE);
-  	    ImsValidator.validateNewItem(itemToUpdate);
-    	try{
-		      imsDao.updateItem(session,itemToUpdate);
+	       throw new DataOperationException("No data found for the given item code: " + itemFromInput.getItemcode());	 
+		try {
+			itemToUpdate = ImsDataUtil.transformItem(itemToUpdate, itemFromInput, DBOperation.UPDATE);
+  	        ImsValidator.validateNewItem(itemToUpdate);
+		}
+		catch(Exception e){
+		   throw new InputParamException("Error in input parameters.", e);
+		}
+		try{
+		   imsDao.updateItem(session,itemToUpdate);
 	 	}
     	catch(HibernateException hbe){
      	      if(hbe.getCause() != null)
- 		         throw new BedDAOException("Error occured during updateItem, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+ 		         throw new InputParamException("Error occured during updateItem, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
  		      else
- 		  	     throw new BedDAOException("Error occured during updateItem, due to: " +  hbe.getMessage());	
+ 		  	     throw new InputParamException("Error occured during updateItem, due to: " +  hbe.getMessage());	
  	    }	
     	catch(Exception e){
 			  if(e.getMessage().contains("constraint [vendor_apv_fkey]"))
-			     throw new BedDAOBadParamException("Invalid vendor number (ID), since it cannot be found in the vendor table");
+			     throw new InputParamException("Invalid vendor number (ID), since it cannot be found in the vendor table");
 			  if(e.getCause() != null)
-		         throw new BedDAOException("Error occured during updateItem(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+		         throw new InputParamException("Error occured during updateItem(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
 		  	  else
-			     throw new BedDAOException("Error occured during updateItem(), due to: " +  e.getMessage());	
+			     throw new InputParamException("Error occured during updateItem(), due to: " +  e.getMessage());	
 		   }	   
 	}
 	

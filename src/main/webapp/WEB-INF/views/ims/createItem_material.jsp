@@ -15,45 +15,57 @@
 <form:form method="POST" action="${action}" modelAttribute="aItem">
     <div style="color:GREEN"> <h3>Material Information</h3></div>
     <table class="category">
-       <tr>  
-         <td><label for="materialType">Material Type:</label>
-            <form:select id="materialType" path="material.materialtype" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;">
-               <form:option value="0" selected="selected">Select one</form:option>
-               <c:forEach var="materialType" items="${materialTypeList}" varStatus="status">
-                 <form:option value="${materialType}">${materialType.getDescription()}</form:option>
-              </c:forEach>
-            </form:select>
-         </td> 
-       </tr>
        <tr>    
-         <td><label for="materialCategory">Material Category:</label>
+         <td><label for="materialCategory">Material Category*:</label>
             <form:select id="materialCategory" path="material.materialcategory" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;">
-               <form:option value="0" selected="selected">Select one</form:option>
+               <form:option value="" selected="selected">Select one</form:option>
                <c:forEach var="materialCategory" items="${materialCategoryList}" varStatus="status">
                  <form:option value="${materialCategory}">${materialCategory.getDescription()}</form:option>
               </c:forEach>
             </form:select>
          </td>   
        </tr>
+       <tr>
+         <td><form:errors path="material.materialcategory" cssClass="error" /></td>               
+       </tr>
        <tr>  
-         <td><label for="materialClass">Material Class:</label>
+         <td><label for="materialType">Material Type*:</label>
+            <form:select id="materialType" path="material.materialtype" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;">
+               <form:option value="" selected="selected">Select one</form:option>
+               <c:forEach var="materialType" items="${materialTypeList}" varStatus="status">
+                 <form:option value="${materialType}">${materialType.getDescription()}</form:option>
+              </c:forEach>
+            </form:select>
+         </td> 
+       </tr>
+       <tr>
+         <td><form:errors path="material.materialtype" cssClass="error" /></td>               
+       </tr>
+       <tr>  
+         <td><label for="materialClass">Material Class*:</label>
             <form:select id="materialClass" path="material.materialclass" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;">
-               <form:option value="0" selected="selected">Select one</form:option>
+               <form:option value="" selected="selected">Select one</form:option>
                <c:forEach var="materialClass" items="${materialClassList}" varStatus="status">
                  <form:option value="${materialClass}">${materialClass.getDescription()}</form:option>
               </c:forEach>
             </form:select>
          </td>
        </tr>
+       <tr>
+         <td><form:errors path="material.materialclass" cssClass="error" /></td>               
+       </tr>
        <tr>   
-         <td><label for="materialStyle">Material Style:</label>
+         <td><label for="materialStyle">Material Style*:</label>
             <form:select id="materialStyle" path="material.materialstyle" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;">
-               <form:option value="0" selected="selected">Select one</form:option>
+               <form:option value="" selected="selected">Select one</form:option>
                <c:forEach var="materialStyle" items="${materialStyleList}" varStatus="status">
                  <form:option value="${materialStyle}">${materialStyle.getDescription()}</form:option>
               </c:forEach>
             </form:select>
          </td> 
+       </tr>
+        <tr>
+         <td><form:errors path="material.materialstyle" cssClass="error" /></td>               
        </tr>
        <tr>    
          <td><label for="materialFeature">Material Feature:</label>
@@ -61,7 +73,7 @@
          </td>
         </tr>
     </table> 
-    <div style="color:GREEN"> <h3>Dimension</h3></div>
+    <div style="color:GREEN"> <h3>Dimensions</h3></div>
     <table class="category">
       <tr>
         <td><label for="length">Length: </label>
@@ -94,13 +106,13 @@
         </td>
       </tr>
       <tr>
-        <td>Size Unit :
+        <td><span class="input">Size Unit :</span>
             <form:radiobutton path="dimensions.sizeunits" value="E" />E
             <form:radiobutton path="dimensions.sizeunits" value="M" />M
         </td>
          </tr>
       <tr>
-        <td>Thickness Unit:
+        <td><span class="input">Thickness Unit:</span>
             <form:radiobutton path="dimensions.thicknessunit" value="E" />E
             <form:radiobutton path="dimensions.thicknessunit" value="M" />M
         </td>

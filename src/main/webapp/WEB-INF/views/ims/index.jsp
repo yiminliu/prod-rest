@@ -20,12 +20,12 @@
             <tr style="float:middle;"> 
                 <td><a id="updateItem" href="<spring:url value="/ims/updateItemInitForm"/>"><span>Update Item</span></a></td>
             </tr>  
-            <tr style="float:middle;"> 
+            <!-- <tr style="float:middle;"> 
                  <td><a id="deleteItem" href="<spring:url value="/ims/deleteItem"/>"><span>Delete Item</span></a></td>
             </tr>
             <tr style="float:middle;"> 
                 <td><a id="deactivateItem" href="<spring:url value="/ims/deactivateItem"/>"><span>Deactivate Item</span></a></td>
-            </tr>
+            </tr>-->
          </table>
   </div><!-- close main-content -->
 </div> <!-- Close container -->

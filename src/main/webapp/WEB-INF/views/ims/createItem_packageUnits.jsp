@@ -13,7 +13,7 @@
 <spring:url var="action" value="/ims/createItem_vendor" />
 <form:form method="POST" action="${action}" modelAttribute="aItem">
   <div style="color:GREEN"> <h3>Package Units</h3></div>
-    <table>
+    <!--<table>
        <tr>
           <td><label for="stdunitOptions">Standard Unit: </label>
               <c:forEach var="stdunit" items="${packageUnitList}" varStatus="status">
@@ -34,59 +34,55 @@
        <tr>
           <td>Order Ratio: <form:input path="units.ordratio"></form:input></td>
        </tr>
-     </table>  
+     </table>-->  
      
      <div style="color:66CCCC"> <h3>Base Unit</h3></div>
      <table>
        <tr>   
-          <td><label for="baseunitOptions">baseunit: </label>
+          <td><label_same_row for="baseunitOptions">Base Unit: </label>
               <c:forEach var="baseunit" items="${packageUnitList}" varStatus="status">
-                 <form:radiobutton  path="units.baseunit" value="${baseunit}"/>${baseunit}
+                 <form:radiobutton cssStyle="input" path="units.baseunit" value="${baseunit}"/>${baseunit}
               </c:forEach>
           </td> 
        </tr>
        <tr>          
-          <td><label for="baseisstdsellOptons">baseisstdsell: </label>
-              <form:radiobutton path="units.baseisstdsell" value="Y" />Yes
-              <form:radiobutton path="units.baseisstdsell" value="N" />No
-           </td>
+          <td><label_same_row for="baseisstdsellOptons">Base Is Standard Sell?: </label>
+              <form:checkbox path="units.baseisstdsell" value="Y" />Yes
+          </td>
          </tr>
        <tr>     
-            <td><label for="baseisstdordOptions">baseisstdord: </label>
-              <form:radiobutton path="units.baseisstdord" value="Y" />Yes
-              <form:radiobutton path="units.baseisstdord" value="N" />No
+            <td><label_same_row for="baseisstdordOptions">Basei Is Standard Order: </label>
+              <form:checkbox path="units.baseisstdord" value="Y" />Yes
             </td>
         </tr>
        <tr>       
-            <td><label for="baseisfractqtyOptions">baseisfractqty: </label>
-              <form:radiobutton path="units.baseisfractqty" value="Y" />Yes
-              <form:radiobutton path="units.baseisfractqty" value="N" />No
+            <td><label_same_row for="baseisfractqtyOptions">Base Is Fractq Qty: </label>
+              <form:checkbox path="units.baseisfractqty" value="Y" />Yes
             </td>
        </tr>
        <tr>      
-            <td><label for="baseispackunitOptions">baseispackunit: </label>
-              <form:radiobutton path="units.baseispackunit" value="Y" />Yes
-              <form:radiobutton path="units.baseispackunit" value="N" />No
-           </td>
+            <td><label_same_row for="baseispackunitOptions">Base Is Pack Unit: </label>
+              <form:checkbox path="units.baseispackunit" value="Y" />Yes
+            </td>
        </tr>
        <tr>  
-           <td>baseupc: <form:input path="units.baseupc"></form:input></td>
+           <td>Base UPC: <form:input path="units.baseupc"></form:input></td>
 	    </tr>
        <tr>  
-         <td>baseupcdesc: <form:input path="units.baseupcdesc"></form:input></td>   
+         <td>Baseu UPC Desc: <form:input path="units.baseupcdesc"></form:input></td>   
         </tr>
        <tr>  
-          <td>basevolperunit: <form:input path="units.basevolperunit"></form:input></td>
+          <td>Base Volumn: <form:input path="units.basevolperunit"></form:input></td>
 	    </tr>
        <tr>  
-          <td>basewgtperunit: <form:input path="units.basewgtperunit"></form:input></td>
+          <td>Base Weight: <form:input path="units.basewgtperunit"></form:input></td>
 	   </tr>
 	</table>   
           
     <div style="color:66CCCC"> <h3>Unit1</h3></div>       
     <table>
        <tr>  
-          <td><label for="unit1unitOptions">Unit1 Unit: </label>
+          <td><label_same_row for="unit1unitOptions">Unit1 Unit: </label>
               <c:forEach var="unit1unit" items="${packageUnitList}" varStatus="status">
                 <form:radiobutton  path="units.unit1unit" value="${unit1unit}"/>${unit1unit}
               </c:forEach>
@@ -96,29 +92,24 @@
           <td>Unit1 Ratio: <form:input path="units.unit1ratio"></form:input></td>
        </tr>
        <tr>  
-           <td><label for="unit1isstdsellOptions">Unit1 Is Standard Sell?: </label>
-              <form:radiobutton path="units.unit1isstdsell" value="Y" />Yes
-              <form:radiobutton path="units.unit1isstdsell" value="N" />No
+           <td><label_same_row for="unit1isstdsellOptions">Unit1 Is Standard Sell?: </label>
+              <form:checkbox path="units.unit1isstdsell" value="Y" />Yes
+           </td>
+        </tr>
+       <tr>  
+            <td><label_same_row for="unit1isstdordOptions">unit1 Is Standard Order?: </label>
+               <form:checkbox path="units.unit1isstdord" value="Y" />Yes
             </td>
         </tr>
        <tr>  
-            <td><label for="unit1isstdordOptions">unit1 Is Standard Order?: </label>
-               <form:radiobutton path="units.unit1isstdord" value="Y" />Yes
-               <form:radiobutton path="units.unit1isstdord" value="N" />No
+            <td><label_same_row for="unit1isfractqtyOptions">Unit1 Is Fract Qty?: </label>
+               <form:checkbox path="units.unit1isfractqty" value="Y" />Yes
             </td>
         </tr>
        <tr>  
-            <td><label for="unit1isfractqtyOptions">Unit1 Is Fract Qty?: </label>
-               <form:radiobutton path="units.unit1isfractqty" value="Y" />Yes
-               <form:radiobutton path="units.unit1isfractqty" value="N" />No
-          </td>
-        </tr>
-       <tr>  
-           <td><label for="unit1ispackunitOptions">Unit1 Is Pack Unit?: </label>
-               <form:radiobutton path="units.unit1ispackunit" value="Y" />Yes
-               <form:radiobutton path="units.unit1ispackunit" value="N" />No
-    
-          </td>
+           <td><label_same_row for="unit1ispackunitOptions">Unit1 Is Pack Unit?: </label>
+               <form:checkbox path="units.unit1ispackunit" value="Y" />Yes
+           </td>
         </tr>
        <tr>  
            <td>Unit1 UPC: <form:input path="units.unit1upc"></form:input></td>
@@ -133,7 +124,7 @@
 	<div style="color:66CCCC"> <h3>Unit2</h3></div>       
     <table>
        <tr>  
-          <td><label for="unit2unitOptions">Unit2 Unit: </label>
+          <td><label_same_row for="unit2unitOptions">Unit2 Unit: </label>
               <c:forEach var="unit2unit" items="${packageUnitList}" varStatus="status">
                 <form:radiobutton  path="units.unit2unit" value="${unit2unit}"/>${unit2unit}
               </c:forEach>
@@ -143,29 +134,25 @@
           <td>Unit2 Ratio: <form:input path="units.unit2ratio"></form:input></td>
        </tr>
        <tr>  
-           <td><label for="unit2isstdsellOptions">Unit2 Is Standard Sell?: </label>
+           <td><label_same_row for="unit2isstdsellOptions">Unit2 Is Standard Sell?: </label>
               <form:radiobutton path="units.unit2isstdsell" value="Y" />Yes
               <form:radiobutton path="units.unit2isstdsell" value="N" />No
             </td>
         </tr>
        <tr>  
-            <td><label for="unit2isstdordOptions">unit2 Is Standard Order?: </label>
-               <form:radiobutton path="units.unit2isstdord" value="Y" />Yes
-               <form:radiobutton path="units.unit2isstdord" value="N" />No
+            <td><label_same_row for="unit2isstdordOptions">unit2 Is Standard Order?: </label>
+               <form:checkbox path="units.unit2isstdord" value="Y" />Yes
             </td>
         </tr>
        <tr>  
-            <td><label for="unit2isfractqtyOptions">Unit2 Is Fract Qty?: </label>
-               <form:radiobutton path="units.unit2isfractqty" value="Y" />Yes
-               <form:radiobutton path="units.unit2isfractqty" value="N" />No
-          </td>
+            <td><label_same_row for="unit2isfractqtyOptions">Unit2 Is Fract Qty?: </label>
+               <form:checkbox path="units.unit2isfractqty" value="Y" />Yes
+            </td>
         </tr>
        <tr>  
-           <td><label for="unit2ispackunitOptions">Unit2 Is Pack Unit?: </label>
-               <form:radiobutton path="units.unit2ispackunit" value="Y" />Yes
-               <form:radiobutton path="units.unit2ispackunit" value="N" />No
-    
-          </td>
+           <td><label_same_row for="unit2ispackunitOptions">Unit2 Is Pack Unit?: </label>
+               <form:checkbox path="units.unit2ispackunit" value="Y" />Yes
+           </td>
         </tr>
        <tr>  
            <td>Unit2 UPC: <form:input path="units.unit2upc"></form:input></td>
@@ -180,7 +167,7 @@
 	 <div style="color:66CCCC"> <h3>Unit3</h3></div>       
     <table>
        <tr>  
-          <td><label for="unit3unitOptions">Unit3 Unit: </label>
+          <td><label_same_row for="unit3unitOptions">Unit3 Unit: </label>
               <c:forEach var="unit3unit" items="${packageUnitList}" varStatus="status">
                 <form:radiobutton  path="units.unit1unit" value="${unit3unit}"/>${unit3unit}
               </c:forEach>
@@ -190,29 +177,24 @@
           <td>Unit3 Ratio: <form:input path="units.unit3ratio"></form:input></td>
        </tr>
        <tr>  
-           <td><label for="unit3isstdsellOptions">Unit3 Is Standard Sell?: </label>
-              <form:radiobutton path="units.unit3isstdsell" value="Y" />Yes
-              <form:radiobutton path="units.unit3isstdsell" value="N" />No
-            </td>
+           <td><label_same_row for="unit3isstdsellOptions">Unit3 Is Standard Sell?: </label>
+              <form:checkbox path="units.unit3isstdsell" value="Y" />Yes
+           </td>
         </tr>
        <tr>  
-            <td><label for="unit3isstdordOptions">unit3 Is Standard Order?: </label>
-               <form:radiobutton path="units.unit3isstdord" value="Y" />Yes
-               <form:radiobutton path="units.unit3isstdord" value="N" />No
-            </td>
+           <td><label_same_row for="unit3isstdordOptions">unit3 Is Standard Order?: </label>
+               <form:checkbox path="units.unit3isstdord" value="Y" />Yes
+           </td>
         </tr>
        <tr>  
-            <td><label for="unit3isfractqtyOptions">Unit3 Is Fract Qty?: </label>
-               <form:radiobutton path="units.unit3isfractqty" value="Y" />Yes
-               <form:radiobutton path="units.unit3isfractqty" value="N" />No
-          </td>
+           <td><label_same_row for="unit3isfractqtyOptions">Unit3 Is Fract Qty?: </label>
+               <form:checkbox path="units.unit3isfractqty" value="Y" />Yes
+           </td>
         </tr>
        <tr>  
-           <td><label for="unit3ispackunitOptions">Unit3 Is Pack Unit?: </label>
-               <form:radiobutton path="units.unit3ispackunit" value="Y" />Yes
-               <form:radiobutton path="units.unit3ispackunit" value="N" />No
-    
-          </td>
+           <td><label_same_row for="unit3ispackunitOptions">Unit3 Is Pack Unit?: </label>
+               <form:checkbox path="units.unit3ispackunit" value="Y" />Yes
+           </td>
         </tr>
        <tr>  
            <td>Unit3 UPC: <form:input path="units.unit3upc"></form:input></td>
@@ -227,7 +209,7 @@
 	 <div style="color:66CCCC"> <h3>Unit4</h3></div>       
     <table>
        <tr>  
-          <td><label for="unit4unitOptions">Unit4 Unit: </label>
+          <td><label_same_row for="unit4unitOptions">Unit4 Unit: </label>
               <c:forEach var="unit4unit" items="${packageUnitList}" varStatus="status">
                 <form:radiobutton  path="units.unit4unit" value="${unit4unit}"/>${unit4unit}
               </c:forEach>
@@ -237,29 +219,24 @@
           <td>Unit4 Ratio: <form:input path="units.unit4ratio"></form:input></td>
        </tr>
        <tr>  
-           <td><label for="unit4isstdsellOptions">Unit4 Is Standard Sell?: </label>
-              <form:radiobutton path="units.unit4isstdsell" value="Y" />Yes
-              <form:radiobutton path="units.unit4isstdsell" value="N" />No
+           <td><label_same_row for="unit4isstdsellOptions">Unit4 Is Standard Sell?: </label>
+              <form:checkbox path="units.unit4isstdsell" value="Y" />Yes
+           </td>
+        </tr>
+       <tr>  
+            <td><label_same_row for="unit4isstdordOptions">Unit4 Is Standard Order?: </label>
+               <form:checkbox path="units.unit4isstdord" value="Y" />Yes
             </td>
         </tr>
        <tr>  
-            <td><label for="unit4isstdordOptions">Unit4 Is Standard Order?: </label>
-               <form:radiobutton path="units.unit4isstdord" value="Y" />Yes
-               <form:radiobutton path="units.unit4isstdord" value="N" />No
+            <td><label_same_row for="unit4isfractqtyOptions">Unit4 Is Fract Qty?: </label>
+               <form:checkbox path="units.unit4isfractqty" value="Y" />Yes
             </td>
         </tr>
        <tr>  
-            <td><label for="unit4isfractqtyOptions">Unit4 Is Fract Qty?: </label>
-               <form:radiobutton path="units.unit4isfractqty" value="Y" />Yes
-               <form:radiobutton path="units.unit4isfractqty" value="N" />No
-          </td>
-        </tr>
-       <tr>  
-           <td><label for="unit4ispackunitOptions">Unit4 Is Pack Unit?: </label>
-               <form:radiobutton path="units.unit4ispackunit" value="Y" />Yes
-               <form:radiobutton path="units.unit4ispackunit" value="N" />No
-    
-          </td>
+           <td><label_same_row for="unit4ispackunitOptions">Unit4 Is Pack Unit?: </label>
+               <form:checkbox path="units.unit4ispackunit" value="Y" />Yes
+           </td>
         </tr>
        <tr>  
            <td>Unit4 UPC: <form:input path="units.unit4upc"></form:input></td>

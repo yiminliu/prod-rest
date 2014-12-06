@@ -39,33 +39,34 @@ public class ImsValidator implements Validator {
 	@Override
 	public void validate(Object target, Errors errors) {
 	   Ims item  = (Ims)target;
-	   checkItemCode(item.getItemcode(), errors);
-	   checkItemDescription(item.getItemdesc().getItemdesc1(), errors);
+	   //checkItemCode(item.getItemcode(), errors);
+	   //checkItemDescription(item.getItemdesc().getItemdesc1(), errors);
 	  // if(item.getPrice() != null && !item.getPrice().isDefault())
 	  //   checkPrice(item.getPrice(), errors);
 	   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "itemcode", "required.item.itemcode", "Item code is required.");
 	  // ValidationUtils.rejectIfEmptyOrWhitespace(errors, "itemcategory", "required.item.category", "Category is required.");
 	  // ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description",	"required.item.description", "Description is required.");
-	   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "inactivecode", "required.item.inactivecode", "Please enter a active status.");
+	   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "inactivecode", "required.item.inactivecode", "Please enter a active status.");
 	   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "showonwebsite", "required.item.showonwebsite", "Please enter a valid value.");
-	   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newFeature.grade", "required.item.grade", "Please enter a valid grade.");
-	   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newFeature.status", "required.item.status", "Please enter a valid status.");
-	   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newFeature.mpsCode", "required.item.mpsCode", "Please enter a valid mps code.");
-	   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "countryorigin", "required.item.countryorigin", "Please enter a valid origin country.");
+	   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newFeature.grade", "required.item.grade", "Please enter a valid grade.");
+	   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newFeature.status", "required.item.status", "Please enter a valid status.");
+	   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newFeature.mpsCode", "required.item.mpsCode", "Please enter a valid mps code.");
+	   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "countryorigin", "required.item.countryorigin", "Please enter a valid origin country.");
 	
 	}
 	
 	 public void validateGeneralInfo(Ims item, Errors errors) {
 		   checkItemCode(item.getItemcode(), errors);
 		   checkItemDescription(item.getItemdesc().getItemdesc1(), errors);
-		   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "itemcode", "required.item.itemcode", "Item code is required.");
 		   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "itemcategory", "required.item.category", "Category is required.");
-		   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "inactivecode", "required.item.inactivecode", "Active status is required.");
-		   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "showonwebsite", "required.item.showonwebsite", "Please enter a valid value.");
-		   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newFeature.grade", "required.item.grade", "Grade is required.");
-		   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newFeature.status", "required.item.status", "Status is required.");
-		   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newFeature.mpsCode", "required.item.mpsCode", "MPS code is required.");
-		   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "countryorigin", "required.item.countryorigin", "Please enter a valid origin country.");
+		   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "series.seriesname", "required.item.series.seriesname", "Series Name is required.");
+		   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "series.seriescolor", "required.item.series.seriescolor", "Series Color is required.");
+		   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "countryorigin", "required.item.countryorigin", "Origin Country is required.");
+		   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "inactivecode", "required.item.inactivecode", "Active status is required.");
+		   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newFeature.grade", "required.item.grade", "Grade is required.");
+		   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newFeature.status", "required.item.status", "Status is required.");
+		   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newFeature.mpsCode", "required.item.mpsCode", "MPS code is required.");
+		   //
 
 	 }
 	 
@@ -94,6 +95,11 @@ public class ImsValidator implements Validator {
 	 }
 
 	 public void validateMaterialInfo(Ims item, Errors errors) {
+		 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "material.materialcategory", "required.item.material.materialcategory", "Material Category is required.");
+		 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "material.materialstyle", "required.item.material.materialstyle", "Material Style is required.");
+		 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "material.materialclass", "required.item.material.materialclass", "Material Class is required.");
+		 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "material.materialtype", "required.item.material.materialtype", "Material Type is required.");
+		 
 		 Material data = item.getMaterial();
 		 if (data.getMaterialstyle() != null && data.getMaterialstyle().length() > 7) 
 		    errors.rejectValue("material.materialstyle", "item.material.materialstyle.too.long", "Mmaterial style length cannot longer than 7");
@@ -103,9 +109,9 @@ public class ImsValidator implements Validator {
 	 
 	 public void validatePrice(Ims item, Errors errors) {
 		 Price data = item.getPrice();
-		 //if (data == null || data.getSellprice() == null) {
-		 //   errors.rejectValue("price.sellprice", "item.price.sellprice.null", "Please enter a price");
-		 //}
+		 if (data == null || data.getSellprice() == null) {
+		    errors.rejectValue("price.sellprice", "item.price.sellprice.null", "MSRP is required.");
+		 }
 		 if (data.getSellprice() != null && data.getSellprice().intValue() < 0) {
 		    errors.rejectValue("price.sellprice", "item.sellprice.invalid", "Please enter a valid price");
 		 }
@@ -149,8 +155,9 @@ public class ImsValidator implements Validator {
 	 }
 	 
 	 public void validateVendorId(Integer id, Errors errors) {
+		 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorId.id", "required.item.newVendorSystem[\"0\"].vendorId.id", "Required.");
 		 if(id != null && !imsService.validateVendorId(id))
-			 errors.rejectValue("newVendorSystem[\"0\"].vendorId.id", "item.newVendorSystem[0].vendorId.id.invalid", "Vendor id does not match vender number in keymark apv table."); 
+			 errors.rejectValue("newVendorSystem[\"0\"].vendorId.id", "item.newVendorSystem[0].vendorId.id.invalid", "Invalid Vendor number."); 
 	 }
 	 
 	 private void compareDates(Date startDate, Date endDate, Errors errors) {

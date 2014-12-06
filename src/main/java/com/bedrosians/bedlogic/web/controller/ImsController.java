@@ -166,6 +166,7 @@ public class ImsController {
    
    }
    
+  /* //handle material info
    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
    @RequestMapping(value = "/createItem_dimension", method = RequestMethod.POST)
    public String itemDimensionForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult bindingResult) {
@@ -176,18 +177,17 @@ public class ImsController {
          model.addAttribute("aItem", item); 
        return "ims/createItem_dimension";
    }
-  
+  */
    //handle material and dimension
    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
    @RequestMapping(value = "/createItem_price", method = RequestMethod.POST)
    public String itemPriceForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult bindingResult) {
-      if (item != null) 
-    	//  validator.validate(item, bindingResult);
-   	   //if (bindingResult.hasErrors()) {
-              //logger.info("Returning custSave.jsp page");
-       //       return "ims/createItem_price";
-       //   }
-          model.addAttribute("aItem", item);
+      	  validator.validateMaterialInfo(item, bindingResult);
+   	      if (bindingResult.hasErrors()) {
+              return "ims/createItem_material";
+          }
+   	      if (item != null) 
+              model.addAttribute("aItem", item);
      	  return "ims/createItem_price";
    }
    
@@ -199,7 +199,8 @@ public class ImsController {
     	  validator.validatePrice(item, bindingResult);
           if (bindingResult.hasErrors()) 
                return "ims/createItem_price";
-          model.addAttribute("aItem", item);
+          if (item != null) 
+        	  model.addAttribute("aItem", item);
      	  return "ims/createItem_application";
       }
       return null;
@@ -232,8 +233,9 @@ public class ImsController {
      	   if (bindingResult.hasErrors()) {
                return "ims/createItem_vendor";
            }
-           model.addAttribute("aItem", item);
-     	   return "ims/createItem_icon";
+     	  if (item != null) 
+             model.addAttribute("aItem", item);
+     	     return "ims/createItem_icon";
       }
       return null;
    }
@@ -327,7 +329,7 @@ public class ImsController {
     	   item = imsServiceMVC.getItemByItemCode(itemCode);
        }
        catch (Exception te) {
-           return te.getMessage();
+          throw te;
        }
        model.addAttribute("item", item);
        return "ims/updateItem";
@@ -351,11 +353,12 @@ public class ImsController {
       	 Ims retrievedItem = null;
     	 try {
     		 retrievedItem = imsServiceMVC.getItemByItemCode(item.getItemcode());
-             model.addAttribute("item", retrievedItem);
          }
       	 catch (Exception te) {
-             return te.getMessage();
+             throw te;
          }
+    	 if (retrievedItem != null)
+    	     model.addAttribute("item", retrievedItem);
          return "ims/updateItem";
      }  
      
@@ -364,11 +367,12 @@ public class ImsController {
      public String PostupdateItem(@ModelAttribute("item") Ims item, Model model, BindingResult result) {
       	 try {
               imsServiceMVC.updateItem(item);
-              model.addAttribute("Item", item);
          }
       	 catch (Exception te) {
-             return te.getMessage();
+             throw te;
          }
+      	 if(item != null)
+      		model.addAttribute("Item", item);
          return "ims/updateItemSuccess";
      }  
      
