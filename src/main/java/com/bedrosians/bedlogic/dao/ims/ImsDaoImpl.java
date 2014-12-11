@@ -411,6 +411,11 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 	public void deleteItem(Ims ims){
 		delete(sessionFactory.getCurrentSession(), ims); 
 	}
+	
+	@Override
+	public void deleteItem(Session session, Ims ims){
+		delete(session, ims); 
+	}
 
 	//------------------- internal helper methods ------------------//
 	

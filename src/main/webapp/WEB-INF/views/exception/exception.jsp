@@ -37,6 +37,11 @@
              </tr>  
             </c:if>    
            </table>
+           <table>
+             <tr>
+               <td><a id="imsHome" href="<spring:url value="/ims/index" />" class="button-m"><span>Home</span></a></td>
+             </tr>
+           </table>
       </div><!-- Close container -->
  </body>
 </html>

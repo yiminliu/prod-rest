@@ -22,19 +22,19 @@
           <td>
             <c:choose>
              <c:when test="${loop.index == 0}">       
-                Vendor Number*: <form:input path="newVendorSystem[${loop.index}].vendorId.id"></form:input>
+                <label>Vendor Number<span style="color:red;">*</span>:</label> <form:input path="newVendorSystem[${loop.index}].vendorId.id"></form:input>
              </c:when>
              <c:otherwise>
-                 Vendor Number: <form:input path="newVendorSystem[${loop.index}].vendorId.id"></form:input>
+                 <label>Vendor Number:</label> <form:input path="newVendorSystem[${loop.index}].vendorId.id"></form:input>
              </c:otherwise> 
             </c:choose>    
             <form:errors path="newVendorSystem[${loop.index}].vendorId.id" cssClass="error" />  
           </td>    
           <!-- <td>Vendor Name: <form:input path="newVendorSystem[${loop.index}].vendorName"></form:input></td>
           <td>Vendor Name2: <form:input path="newVendorSystem[${loop.index}].vendorName2"></form:input></td>-->
-          <td>Vendor XrefId: <form:input path="newVendorSystem[${loop.index}].vendorXrefId"></form:input></td>
-          <td>List Price: <form:input path="newVendorSystem[${loop.index}].vendorListPrice" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:80px;"></form:input></td>
-          <td>Net Price: <form:input path="newVendorSystem[${loop.index}].vendorNetPrice" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:80px;"></form:input></td>
+          <td> <label>Vendor XrefId:</label> <form:input path="newVendorSystem[${loop.index}].vendorXrefId"></form:input></td>
+          <td><label>List Price:</label> <form:input path="newVendorSystem[${loop.index}].vendorListPrice" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:80px;"></form:input></td>
+          <td><label>Net Price:</label> <form:input path="newVendorSystem[${loop.index}].vendorNetPrice" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:80px;"></form:input></td>
           <td><label for="stdunitOptions">Price Unit: </label>
             <form:select id="vendorPriceUnit" path="newVendorSystem[${loop.index}].vendorPriceUnit" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:80px;">
                <form:option value="0" selected="selected">Select one</form:option>
@@ -43,10 +43,10 @@
               </c:forEach>
             </form:select>
           </td>
-          <td>Price Round Accuracy: <form:input path="newVendorSystem[${loop.index}].vendorPriceRoundAccuracy" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:160px;"></form:input></td>
-          <td>Freight Rate Cwt: <form:input path="newVendorSystem[${loop.index}].vendorFreightRateCwt" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:80px;"></form:input></td>
-          <td>Lead Time: <form:input path="newVendorSystem[${loop.index}].leadTime" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:80px;"></form:input></td>
-          <td>Duty Pct: <form:input path="newVendorSystem[${loop.index}].dutyPct" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:80px;"></form:input></td>
+          <td><label>Price Round Accuracy:</label> <form:input path="newVendorSystem[${loop.index}].vendorPriceRoundAccuracy" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:160px;"></form:input></td>
+          <td><label>Freight Rate Cwt:</label> <form:input path="newVendorSystem[${loop.index}].vendorFreightRateCwt" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:80px;"></form:input></td>
+          <td><label>Lead Time:</label> <form:input path="newVendorSystem[${loop.index}].leadTime" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:80px;"></form:input></td>
+          <td><label>Duty Pct:</label> <form:input path="newVendorSystem[${loop.index}].dutyPct" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:80px;"></form:input></td>
        </tr>
      </c:forEach>  
      </table>

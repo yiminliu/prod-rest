@@ -17,7 +17,7 @@
               <td><label for="residentialOptions">Residential:</label>
                  <c:forEach var="usage" items="${usageList}" varStatus="status">
                    <form:checkbox path="applications.residential" value="${usage}R" />${usage.getDescription()}
-             </c:forEach>
+                 </c:forEach>
               </td>
          </tr>
          <tr>
@@ -28,7 +28,7 @@
               </td>
          </tr>
          <tr>
-            <td><label for="commercialOptions">Commercial            :</label>
+            <td><label for="commercialOptions">Commercial:</label>
                 <c:forEach var="usage" items="${usageList}" varStatus="status">
                    <form:checkbox path="applications.commercial" value="${usage}C" />${usage.getDescription()}
                 </c:forEach>

@@ -1,7 +1,7 @@
 <%@ include file="/WEB-INF/includes/taglibs.jsp"%>
 <%@ include file="/WEB-INF/includes/doctype.jsp"%>
 <%@ include file="/WEB-INF/includes/styles.jsp"%>
-<%@ include file="/WEB-INF/includes/styles.jsp"%>
+
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <title>Ims Menu</title>
@@ -36,7 +36,6 @@
                          <th>Status</th>
                          <th>Inventory Item Code</th>
                          <th>Edit</th>
-                         <th>Delete</th>
                        </tr>
                        <c:forEach var="item" items="${itemList}" varStatus="status">  
                        <tr>
@@ -59,19 +58,19 @@
                           <td>${item.newFeature.grade}</td>
                           <td>${item.newFeature.status}</td>
                           <td>${item.inventoryitemcode}</td>
-                          <td><a id="modifyItem" href="<spring:url value="/ims/updateItem/${item.itemcode}" />" class="button-m"><span>Edit</span></a></td>
-                          <td><a id="deleteItem" href="<spring:url value="/ims/deleteItem/${item.itemcode}" />" class="button-m"><span>Delete</span></a></td>
+                          <td><a id="modifyItem" href="<spring:url value="/ims/updateItem/${item.itemcode}" />"><span>Edit</span></a></td>
+                          <!-- <td><a id="deleteItem" href="<spring:url value="/ims/deleteItem/${item.itemcode}" />" class="button-m"><span>Delete</span></a></td>-->
                        </tr>
                      </c:forEach> 
                    </table> 
                 </c:if>
              </div>
                
-             <table  class="center" style="cellspacing: 30px; cellpadding: 20px; border-spacing: 50px;">
+             <table  class="center" style="margin: 0 auto; cellspacing: 30px; cellpadding: 30px; border-spacing: 50px;">
                 <tr>
                    <td style="cellspacing: 30px; cellpadding: 30px;">
-                      <a id="imsSearch" href="<spring:url value="/ims/getItem" />" class="button action-m"><span style="cellspacing: 30px; cellpadding: 30px;">Item Search Page</span></a>
-                      <a id="imsHome" href="<spring:url value="/ims/index" />" class="button action-m"><span style="cellspacing: 30px; cellpadding: 30px;">Ims Management Home</span></a>
+                      <a id="imsSearch" href="<spring:url value="/ims/getItem" />" class="button-mn"><span style="cellspacing: 30px; cellpadding: 30px;">Item Search Page</span></a>
+                      <a id="imsHome" href="<spring:url value="/ims/index" />" class="button-mn"><span style="cellspacing: 30px; cellpadding: 30px;">Ims Management Home</span></a>
                    </td>
                 </tr>
              </table>

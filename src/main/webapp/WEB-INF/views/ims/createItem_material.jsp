@@ -16,8 +16,8 @@
     <div style="color:GREEN"> <h3>Material Information</h3></div>
     <table class="category">
        <tr>    
-         <td><label for="materialCategory">Material Category*:</label>
-            <form:select id="materialCategory" path="material.materialcategory" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;">
+         <td><label for="materialCategory">Material Category<span style="color:red;">*</span>:</label>
+            <form:select id="materialCategory" path="material.materialcategory" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;color:#0076BF;">
                <form:option value="" selected="selected">Select one</form:option>
                <c:forEach var="materialCategory" items="${materialCategoryList}" varStatus="status">
                  <form:option value="${materialCategory}">${materialCategory.getDescription()}</form:option>
@@ -29,8 +29,8 @@
          <td><form:errors path="material.materialcategory" cssClass="error" /></td>               
        </tr>
        <tr>  
-         <td><label for="materialType">Material Type*:</label>
-            <form:select id="materialType" path="material.materialtype" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;">
+         <td><label for="materialType">Material Type<span style="color:red;">*</span>:</label>
+            <form:select id="materialType" path="material.materialtype" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;color:#0076BF;">
                <form:option value="" selected="selected">Select one</form:option>
                <c:forEach var="materialType" items="${materialTypeList}" varStatus="status">
                  <form:option value="${materialType}">${materialType.getDescription()}</form:option>
@@ -42,8 +42,8 @@
          <td><form:errors path="material.materialtype" cssClass="error" /></td>               
        </tr>
        <tr>  
-         <td><label for="materialClass">Material Class*:</label>
-            <form:select id="materialClass" path="material.materialclass" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;">
+         <td><label for="materialClass">Material Class<span style="color:red;">*</span>:</label>
+            <form:select id="materialClass" path="material.materialclass" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;color:#0076BF;">
                <form:option value="" selected="selected">Select one</form:option>
                <c:forEach var="materialClass" items="${materialClassList}" varStatus="status">
                  <form:option value="${materialClass}">${materialClass.getDescription()}</form:option>
@@ -55,8 +55,8 @@
          <td><form:errors path="material.materialclass" cssClass="error" /></td>               
        </tr>
        <tr>   
-         <td><label for="materialStyle">Material Style*:</label>
-            <form:select id="materialStyle" path="material.materialstyle" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;">
+         <td><label for="materialStyle">Material Style<span style="color:red;">*</span>:</label>
+            <form:select id="materialStyle" path="material.materialstyle" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;color:#0076BF;">
                <form:option value="" selected="selected">Select one</form:option>
                <c:forEach var="materialStyle" items="${materialStyleList}" varStatus="status">
                  <form:option value="${materialStyle}">${materialStyle.getDescription()}</form:option>
@@ -69,7 +69,7 @@
        </tr>
        <tr>    
          <td><label for="materialFeature">Material Feature:</label>
-             <form:input path="material.materialfeature" cssStyle="width:175px;"></form:input>
+             <form:input path="material.materialfeature" cssStyle="width:175px; color:#0076BF;"></form:input>
          </td>
         </tr>
     </table> 
@@ -77,42 +77,42 @@
     <table class="category">
       <tr>
         <td><label for="length">Length: </label>
-            <form:input path="dimensions.length" cssErrorClass="span-8 validationFailed" cssStyle="width:175px;"></form:input>
+            <form:input path="dimensions.length" cssErrorClass="span-8 validationFailed" cssStyle="width:175px;color:#0076BF;"></form:input>
         </td>
       </tr>
       <tr>
         <td><label for="nominallength">Nominal Length: </label> 
-            <form:input path="dimensions.nominallength" cssErrorClass="span-8 validationFailed" cssStyle="width:175px;"></form:input>
+            <form:input path="dimensions.nominallength" cssErrorClass="span-8 validationFailed" cssStyle="width:175px;color:#0076BF;"></form:input>
         </td>
       </tr>
       <tr>
         <td><label for="width">Width: </label>
-            <form:input path="dimensions.width" cssErrorClass="span-8 validationFailed" cssStyle="width:175px;"></form:input>
+            <form:input path="dimensions.width" cssErrorClass="span-8 validationFailed" cssStyle="width:175px;color:#0076BF;"></form:input>
         </td>
       </tr>
       <tr>
          <td><label for="nominalwidth">Nominal Width: </label>
-            <form:input path="dimensions.nominalwidth" cssErrorClass="span-8 validationFailed" cssStyle="width:175px;"></form:input>
+            <form:input path="dimensions.nominalwidth" cssErrorClass="span-8 validationFailed" cssStyle="width:175px;color:#0076BF;"></form:input>
          </td>
       </tr>
       <tr>
         <td><label for="thickness">Thickness: </label>
-            <form:input path="dimensions.thickness" cssErrorClass="span-8 validationFailed" cssStyle="width:175px;"></form:input>
+            <form:input path="dimensions.thickness" cssErrorClass="span-8 validationFailed" cssStyle="width:175px;color:#0076BF;"></form:input>
         </td>
       </tr>
       <tr>
         <td><label for="nominalthickness">Nominal Thickness: </label>
-            <form:input path="dimensions.nominalthickness" cssErrorClass="span-8 validationFailed" cssStyle="width:175px;"></form:input>
+            <form:input path="dimensions.nominalthickness" cssErrorClass="span-8 validationFailed" cssStyle="width:175px;color:#0076BF;"></form:input>
         </td>
       </tr>
       <tr>
-        <td><span class="input">Size Unit :</span>
+        <td><span style="color:black;">Size Unit :</span>
             <form:radiobutton path="dimensions.sizeunits" value="E" />E
             <form:radiobutton path="dimensions.sizeunits" value="M" />M
         </td>
          </tr>
       <tr>
-        <td><span class="input">Thickness Unit:</span>
+        <td><span style="color:black;">Thickness Unit:</span>
             <form:radiobutton path="dimensions.thicknessunit" value="E" />E
             <form:radiobutton path="dimensions.thicknessunit" value="M" />M
         </td>

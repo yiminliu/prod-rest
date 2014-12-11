@@ -14,87 +14,83 @@
    <div style="color:Green"> <h3>Icons</h3></div>
    <table class="category">
       <tr>       
-           <td>Ink Jet:
+           <td><label_same_row>Ink Jet:</label_same_row>
                <form:checkbox path="iconDescription.inkJet" value="Yes" />Yes
            </td>
       </tr>      
       <tr>
-           <td>Glazed:
+           <td><label_same_row>Glazed:</label_same_row>
                <form:checkbox path="iconDescription.glazed" value="Yes" />Yes
            </td>
       </tr>      
       <tr>
-           <td>Unglazed:
+           <td><label_same_row>Unglazed:</label_same_row>
                <form:checkbox path="iconDescription.unglazed" value="Yes" />Yes
            </td>
       </tr> 
       <tr>
-           <td>Recycled:
+           <td><label_same_row>Recycled:</label_same_row>
               <form:checkbox path="iconDescription.recycled" value="Yes" />Yes
            </td>
       </tr>      
       <tr>
-            <td>Post-Recycled:
+            <td><label_same_row>Post-Recycled:</label_same_row>
                <form:checkbox path="iconDescription.postRecycled" value="Yes" />Yes
            </td>
       </tr>      
       <tr>
-           <td>Pre-Recycled:
+           <td><label_same_row>Pre-Recycled:</label_same_row>
               <form:checkbox path="iconDescription.preRecycled" value="Yes" />Yes
            </td>
       </tr>  
       <tr>
-           <td>Lead Point:
+           <td><label_same_row>Lead Point:</label_same_row>
              <form:checkbox path="iconDescription.leadPointIcon" value="Yes" />Yes
           </td>
-      </tr>       
+      </tr> 
+       <tr>      
+           <td><label_same_row>Color Body:</label_same_row>
+               <form:checkbox path="iconDescription.colorBody" value="Yes" />Yes
+           </td>
+      </tr>         
       <tr>  
-           <td>Through Color:
+           <td><label_same_row>Through Color:</label_same_row>
                <form:checkbox path="iconDescription.throughColor" value="Yes" />Yes
            </td>
       </tr>      
-      <tr>      
-           <td>Color Body:
-               <form:checkbox path="iconDescription.colorBody" value="Yes" />Yes
-           </td>
-      </tr>      
-          
       <tr>
-            <td>Chiseled Edge:
+            <td><label_same_row>Chiseled Edge:</label_same_row>
                <form:checkbox path="iconDescription.chiseledEdge" value="Yes" />Yes
             </td>
       </tr>      
       <tr>   
-            <td>Rectified Edge:
+            <td><label_same_row>Rectified Edge:</label_same_row>
                <form:checkbox path="iconDescription.rectifiedEdge" value="Yes" />Yes
             </td>
       </tr> 
-      
-      <tr>    
-          <td>Exterior Product:
-              <form:checkbox path="iconDescription.exteriorProduct" value="Yes" />Yes
-          </td>
-      </tr> 
-      
       <tr>
-          <td>Green Friendly:
+          <td><label_same_row>Green Friendly:</label_same_row>
              <form:checkbox path="iconDescription.greenFriendlyIcon" value="Yes" />Yes
           </td>
       </tr> 
-           
+      <tr>    
+          <td><label_same_row>Exterior Product:</label_same_row>
+              <form:checkbox path="iconDescription.exteriorProduct" value="Yes" />Yes
+          </td>
+      </tr> 
       <tr>
-            <td>Versailles Pattern:
+            <td><label_same_row>Versailles Pattern:</label_same_row>
                <form:checkbox path="iconDescription.versaillesPattern" value="Yes" />Yes
            </td>
       </tr>
            
       <tr>     
-           <td>Ada Accessibility: 
+           <td><label_same_row>Ada Accessibility</label_same_row>: 
                <form:checkbox path="iconDescription.adaAccessibility" value="Yes" />Yes
            </td>
       </tr>      
       <tr>
-          <td>Coefficient of Friction:
+          <td><label_same_row>Coefficient of Friction:</label_same_row>
              <form:checkbox path="iconDescription.coefficientOfFriction" value="Yes" />Yes
           </td>
       </tr>

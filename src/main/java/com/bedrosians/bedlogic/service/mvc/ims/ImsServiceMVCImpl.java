@@ -18,6 +18,9 @@ import java.util.Set;
 
 
 
+
+
+
 import javax.ws.rs.core.MultivaluedMap;
 
 import com.sun.jersey.core.util.MultivaluedMapImpl;
@@ -41,8 +44,10 @@ import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.domain.ims.ImsNewFeature;
 import com.bedrosians.bedlogic.domain.ims.Vendor;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Applications;
+import com.bedrosians.bedlogic.domain.ims.embeddable.Units;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
+import com.bedrosians.bedlogic.exception.DataNotFoundException;
 import com.bedrosians.bedlogic.exception.DataOperationException;
 import com.bedrosians.bedlogic.exception.InputParamException;
 import com.bedrosians.bedlogic.util.FormatUtil;
@@ -80,7 +85,7 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 		try{
 			Session session = getSession();
 			session.setCacheMode(CacheMode.NORMAL);
-	  	    ims = imsDao.getItemByItemCode(session, itemCode);
+	  	    ims = imsDao.getItemByItemCode(session, itemCode.toUpperCase());
 		}
 		catch(HibernateException hbe){
 			hbe.printStackTrace();
@@ -97,6 +102,41 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 		}
 		return FormatUtil.process(ims);
 	}
+    
+    @Loggable(value = LogLevel.INFO)
+    @Override
+    @Transactional(readOnly = true, isolation=Isolation.READ_COMMITTED)
+	public Ims getItemByItemCodeForClone(String itemCode){
+    	Ims item = null;
+    	if(itemCode == null || itemCode.length() < 1)
+    	   throw new InputParamException("Please enter valid Item Code!");	
+		try{
+			Session session = getSession();
+	  	    item = imsDao.getItemByItemCode(session, itemCode.toUpperCase());
+	  	    if(item == null)
+	  	       throw new DataNotFoundException();
+	  	    session.evict(item);
+	  	    session.clear();
+		}
+		catch(DataNotFoundException dnfe){
+			throw dnfe;
+		}
+		catch(HibernateException hbe){
+			hbe.printStackTrace();
+			if(hbe.getCause() != null)
+		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+		  	else
+		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  hbe.getMessage());	
+		}
+		catch(RuntimeException e){
+			if(e.getCause() != null)
+		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+		  	else
+		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  e.getMessage());	
+		}
+		return FormatUtil.process(item);
+	}
+
 
     public boolean itemCodeIsTaken(String itemCode){
     	List<String> itemCodeList = null;
@@ -188,12 +228,6 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 	@Override
 	public String createItem(Ims item){  	
 		String id = "";
-		try{
-     	   ImsValidator.validateNewItem(item);
-		}
-		catch(Exception e){
-			throw new InputParamException("Input valiation error: "+e.getMessage(), e);
-		}
 		//take care of associations
      	ImsNewFeature newFeature = item.getNewFeature();
      	if(newFeature != null && !newFeature.isEmpty())
@@ -206,6 +240,7 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
      	   for(ColorHue colorhue : colorhues){
      		   item.addColorhue(colorhue);
      	   }
+     	   item.setColorcategory(ImsDataUtil.convertColorHuesToColorCategory(colorhues));
      	}
      	IconCollection icons = item.getIconDescription();
      	if(icons != null && !icons.isEmpty())
@@ -221,6 +256,13 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
      		}	
      	}
      	item = processApplications(item);
+     	item = processPackgeUnits(item);
+     	try{
+      	   ImsValidator.validateNewItem(item);
+ 		}
+ 		catch(Exception e){
+ 			throw new InputParamException("Input valiation error: "+e.getMessage(), e);
+ 		}
      	try{
 		   id = imsDao.createItem(item);
 		}
@@ -234,17 +276,86 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
    	    catch(Exception e){
 		  e.printStackTrace();
 		  if(e != null && e.getMessage() != null){
-			  if(e.getMessage().contains("constraint [item_code]"))
+			  if(e.getMessage().contains("constraint [item_code]") || e.getMessage().contains("constraint [ims_code]"))
 				  throw new InputParamException("Invalid item code, since it is already existing in the database", e);
 		      else if(e.getMessage().contains("constraint [vendor_apv_fkey]"))
 			      throw new InputParamException("Invalid vendor number (ID), since it cannot be found in the vendor table", e);
 		      else
-		    	  throw new DataOperationException("Error occured during createItem(), due to: " + e.getMessage());
+		    	  throw new DataOperationException("Error occured during createItem(), due to: " + e.getMessage(), e);
 		  }
 		  else if(e.getCause() != null)
-	  	     throw new DataOperationException("Error occured during createItem(), due to: " +  " Root cause: " + e.getCause().getMessage());	
+	  	     throw new DataOperationException("Error occured during createItem(), due to: " +  " Root cause: " + e.getCause().getMessage(), e);	
 	  	  else
-	  	     throw new DataOperationException("Error occured during createItem().");	
+	  	     throw new DataOperationException("Error occured during createItem().", e);	
+      }
+	  return id;		 	
+    }
+	
+	@Loggable(value = LogLevel.INFO)
+	@Override
+	public String cloneItem(Ims item){  	
+		String id = "";
+		//take care of associations
+     	ImsNewFeature newFeature = item.getNewFeature();
+     	if(newFeature != null && !newFeature.isEmpty()){
+           item.setNewFeature(null);	
+     	   item.addNewFeature(newFeature);
+     	}
+     	else
+     	   item.setNewFeature(null);
+     	List<ColorHue> colorhues = item.getColorhues();
+     	if(colorhues != null && !colorhues.isEmpty()){
+     	   item.setColorhues(null);
+     	   for(ColorHue colorhue : colorhues){
+     		   item.addColorhue(colorhue);
+     	   }
+     	   item.setColorcategory(ImsDataUtil.convertColorHuesToColorCategory(colorhues));
+     	}
+     	IconCollection icons = item.getIconDescription();
+     	if(icons != null && !icons.isEmpty())
+     	   item.addIconDescription(icons);	
+     	else
+     	   item.setIconDescription(null);	
+     	List<Vendor> vendors = item.getNewVendorSystem();
+     	item.setNewVendorSystem(null);
+     	if(vendors != null && !vendors.isEmpty()){
+     		for(Vendor vendor : vendors){
+     			if(vendor.getId() != null)
+           		  item.addNewVendorSystem(vendor);
+     		}	
+     	}
+     	item = processApplications(item);
+     	item = processPackgeUnits(item);
+     	try{
+      	   ImsValidator.validateNewItem(item);
+ 		}
+ 		catch(Exception e){
+ 			throw new InputParamException("Input valiation error: "+e.getMessage(), e);
+ 		}
+     	try{
+		   id = imsDao.createItem(item);
+		}
+		catch(HibernateException hbe){
+		   hbe.printStackTrace();
+		   if(hbe.getCause() != null)
+		      throw new DataOperationException("Error occured during createItem(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+		   else
+		  	  throw new DataOperationException("Error occured during createItem(), due to: " +  hbe.getMessage());	
+	    }	
+   	    catch(Exception e){
+		  e.printStackTrace();
+		  if(e != null && e.getMessage() != null){
+			  if(e.getMessage().contains("constraint [item_code]") || e.getMessage().contains("constraint [ims_code]"))
+				  throw new InputParamException("Invalid item code, since it is already existing in the database", e);
+		      else if(e.getMessage().contains("constraint [vendor_apv_fkey]"))
+			      throw new InputParamException("Invalid vendor number (ID), since it cannot be found in the vendor table", e);
+		      else
+		    	  throw new DataOperationException("Error occured during createItem(), due to: " + e.getMessage(), e);
+		  }
+		  else if(e.getCause() != null)
+	  	     throw new DataOperationException("Error occured during createItem(), due to: " +  " Root cause: " + e.getCause().getMessage(), e);	
+	  	  else
+	  	     throw new DataOperationException("Error occured during createItem().", e);	
       }
 	  return id;		 	
     }
@@ -268,7 +379,7 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 			if(e.getCause() != null)
 		  	   throw new DataOperationException("Error occured during updateItem(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
 		  	else
-		  	   throw new DataOperationException("Error occured during updateItem(), due to: " +  e.getMessage());	
+		  	   throw new DataOperationException("Error occured during updateItem(), due to: " +  e.getMessage(), e);	
 		}
 		if(itemToUpdate == null)
 	       throw new DataOperationException("No data found for the given item code: " + itemFromInput.getItemcode());	 
@@ -346,26 +457,27 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 	
 	@Loggable(value = LogLevel.INFO)
 	@Override
-	synchronized public void deleteItemByItemCode(String itemCode) throws BedDAOBadParamException, BedDAOException{
+	@Transactional(readOnly=false, propagation=Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
+	synchronized public void deleteItemByItemCode(String itemCode){
 	    if(itemCode == null || itemCode.length() == 0)
-	    	 throw new BedDAOBadParamException("Item code should not be empty");		
-		Ims ims = new Ims(itemCode);
+	    	 throw new InputParamException("Item code should not be empty");		
 		try{
+			Ims ims = imsDao.loadItemByItemCode(getSession(), itemCode);
 			imsDao.deleteItem(ims);
 		}
 		catch(HibernateException hbe){
 			hbe.printStackTrace();
 			if(hbe.getCause() != null)
-		       throw new BedDAOException("Error occured during deleteItemByItemCode(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+		       throw new DataOperationException("Error occured during deleteItemByItemCode(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
 		  	else
-		  	   throw new BedDAOException("Error occured during deleteItemByItemCode(), due to: " +  hbe.getMessage());
+		  	   throw new DataOperationException("Error occured during deleteItemByItemCode(), due to: " +  hbe.getMessage(), hbe);
 		
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-		  	   throw new BedDAOException("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+		  	   throw new DataOperationException("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
 		  	else
-		  	   throw new BedDAOException("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage());	
+		  	   throw new DataOperationException("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage(), e);	
 		}
 	}
 	
@@ -406,6 +518,18 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
     		  app.setCommercial(commercial.replace(",", ":"));
      	}   
     	item.setApplications(app);
+    	return item;
+	} 	
+	
+	private Ims processPackgeUnits(Ims item){
+		Units units = item.getUnits();
+     	if(units != null){
+     	   units.setOrdunit(ImsDataUtil.getStandardOrderUnit(item));
+     	   units.setOrdratio(ImsDataUtil.getBaseToOrderRatio(item));
+     	   units.setStdunit(ImsDataUtil.getStandardSellUnit(item));
+     	   units.setStdratio(ImsDataUtil.getBaseToSellRatio(item));
+      	   item.setUnits(units);
+     	}
     	return item;
 	} 	
 	

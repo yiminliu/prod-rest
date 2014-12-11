@@ -23,5 +23,6 @@ public interface ImsDao extends GenericDao<Ims, String>{
    public String createItem(Ims ims);
    public void updateItem(Session session, Ims ims);
    public void deleteItem(Ims ims);	
+   public void deleteItem(Session session, Ims ims);	
 
 }

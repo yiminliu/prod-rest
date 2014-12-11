@@ -19,6 +19,7 @@ import com.bedrosians.bedlogic.domain.ims.Vendor;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Material;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Price;
 import com.bedrosians.bedlogic.domain.ims.embeddable.TestSpecification;
+import com.bedrosians.bedlogic.domain.ims.embeddable.Units;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.service.ims.ImsService;
@@ -56,7 +57,7 @@ public class ImsValidator implements Validator {
 	}
 	
 	 public void validateGeneralInfo(Ims item, Errors errors) {
-		   checkItemCode(item.getItemcode(), errors);
+		   validateItemCode(item.getItemcode(), errors);
 		   checkItemDescription(item.getItemdesc().getItemdesc1(), errors);
 		   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "itemcategory", "required.item.category", "Category is required.");
 		   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "series.seriesname", "required.item.series.seriesname", "Series Name is required.");
@@ -70,7 +71,7 @@ public class ImsValidator implements Validator {
 
 	 }
 	 
-	 private void checkItemCode(String itemCode, Errors errors) {
+	 public void validateItemCode(String itemCode, Errors errors) {
 		 if (itemCode == null || itemCode.length() < 1) {
 		    errors.rejectValue("itemcode", "item.itemcode.null", "Item code is required.");
 		 }
@@ -129,12 +130,18 @@ public class ImsValidator implements Validator {
 		 		 
 	 }
 	 
+	 public void validatePackageUnits(Ims item, Errors errors) {
+		 Units data = item.getUnits();
+		 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "units.baseunit", "required.units.baseunit", "units.baseunit is required.");
+
+	 }
+	 
 	 public void validateTestSpecification(Ims item, Errors errors) {
 		 TestSpecification data = item.getTestSpecification();
 		 //if (data == null || data.getSellprice() == null) {
 		 //   errors.rejectValue("price.sellprice", "item.price.sellprice.null", "Please enter a price");
 		 //}
-		 if (data == null) {
+		 if (data != null) {
 			 if(data.getDcof() != null && data.getDcof() > 1)
 		        errors.rejectValue("test.dcof", "item.testspecification.dcofinvalid", "DCOF should < 1.0");
 			 if(data.getLeadpoint() != null && data.getLeadpoint().length() > 1)
@@ -160,6 +167,10 @@ public class ImsValidator implements Validator {
 			 errors.rejectValue("newVendorSystem[\"0\"].vendorId.id", "item.newVendorSystem[0].vendorId.id.invalid", "Invalid Vendor number."); 
 	 }
 	 
+	 public void validateBuyer(Ims item, Errors errors) {
+		 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "purchasers.purchaser", "required.item.purchasers.purchaser", "Product manager is required.");
+	 }
+		 
 	 private void compareDates(Date startDate, Date endDate, Errors errors) {
 		 if (startDate != null && endDate != null && startDate.after(endDate))
 			errors.rejectValue("price.tempdatethru", "item.tempdatethru.invalid_endTtempdate", "End date should not be earlyer than start date");		

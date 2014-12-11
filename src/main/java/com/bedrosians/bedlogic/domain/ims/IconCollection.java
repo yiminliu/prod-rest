@@ -56,10 +56,10 @@ public class IconCollection implements java.io.Serializable {
 	private String greenFriendlyIcon = "No";
 	private String coefficientOfFriction = "No";
 	private Integer version;
-	private Ims ims;
+	private Ims item;
 
 	@JsonIgnore
-	@GenericGenerator(name = "generator", strategy = "foreign", parameters = @Parameter(name = "property", value = "ims"))
+	@GenericGenerator(name = "generator", strategy = "foreign", parameters = @Parameter(name = "property", value = "item"))
 	@Id
 	@GeneratedValue(generator = "generator")
 	@Column(name = "item_code", unique = true, nullable = false)
@@ -75,12 +75,12 @@ public class IconCollection implements java.io.Serializable {
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="item_code")
 	@ContainedIn
-	public Ims getIms() {
-		return this.ims;
+	public Ims getItem() {
+		return this.item;
 	}
 
-	public void setIms(Ims ims) {
-		this.ims = ims;
+	public void setItem(Ims item) {
+		this.item = item;
 	}
     
 	@Column(name = "made_in_country", length = 20)
@@ -283,7 +283,7 @@ public class IconCollection implements java.io.Serializable {
 		this.greenFriendlyIcon = greenFriendlyIcon;
 		this.coefficientOfFriction = coefficientOfFriction;
 		this.version = version;
-		this.ims = ims;
+		this.item = item;
 	}
 	
     @Transient

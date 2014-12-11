@@ -379,17 +379,17 @@ public class ImsDataUtil {
         return standardUnit;
     }
 	
-	public static String getStandardPurchaseUnit(Ims ims) {
+	public static String getStandardOrderUnit(Ims ims) {
 		if(ims.getUnits() == null)
 		   return null;	
 		String standardUnit = ims.getUnits().getBaseunit();
-		if (ims.getUnits().getUnit1isstdsell() != null && ims.getUnits().getUnit1isstdord() == 'Y')
+		if (ims.getUnits().getUnit1isstdord() != null && ims.getUnits().getUnit1isstdord() == 'Y')
         	standardUnit = ims.getUnits().getUnit1unit();
-        else if (ims.getUnits().getUnit2isstdsell() != null && ims.getUnits().getUnit2isstdord() == 'Y')
+        else if (ims.getUnits().getUnit2isstdord() != null && ims.getUnits().getUnit2isstdord() == 'Y')
         	standardUnit = ims.getUnits().getUnit2unit();
-        else if (ims.getUnits().getUnit3isstdsell() != null && ims.getUnits().getUnit3isstdord() == 'Y')
+        else if (ims.getUnits().getUnit3isstdord() != null && ims.getUnits().getUnit3isstdord() == 'Y')
         	standardUnit = ims.getUnits().getUnit3unit();
-        else if (ims.getUnits().getUnit4isstdsell() != null && ims.getUnits().getUnit4isstdord() == 'Y')
+        else if (ims.getUnits().getUnit4isstdord() != null && ims.getUnits().getUnit4isstdord() == 'Y')
         	standardUnit = ims.getUnits().getUnit4unit();
         return standardUnit;
     }
@@ -444,24 +444,41 @@ public class ImsDataUtil {
         return packagingInfo;
     }
    
-	public static float getBaseToSellRatio(Ims ims) {
-		float baseToSellRatio = 1f;
- 
-        if(ims.getUnits().getUnit1isstdsell() != null && "Y".equalsIgnoreCase(ims.getUnits().getUnit1isstdsell().toString().trim()))
-            baseToSellRatio = ims.getUnits().getUnit1ratio();
-        else if(ims.getUnits().getUnit2isstdsell() != null && "Y".equalsIgnoreCase(ims.getUnits().getUnit2isstdsell().toString().trim()))
-            baseToSellRatio = ims.getUnits().getUnit2ratio();
-        else if(ims.getUnits().getUnit3isstdsell() != null && "Y".equalsIgnoreCase(ims.getUnits().getUnit3isstdsell().toString().trim()))
-            baseToSellRatio = ims.getUnits().getUnit3ratio();
-        else if(ims.getUnits().getUnit4isstdsell() != null && "Y".equalsIgnoreCase(ims.getUnits().getUnit4isstdsell().toString().trim()));
-            baseToSellRatio = ims.getUnits().getUnit4ratio();
-       
+	public static Float getBaseToSellRatio(Ims ims) {
+		Float baseToSellRatio = 1f;
+		Units units = ims.getUnits();
+	    if(units != null){
+           if(units.getUnit1isstdsell() != null && "Y".equalsIgnoreCase(units.getUnit1isstdsell().toString().trim()))
+              baseToSellRatio = units.getUnit1ratio();
+           else if(units.getUnit2isstdsell() != null && "Y".equalsIgnoreCase(units.getUnit2isstdsell().toString().trim()))
+              baseToSellRatio = units.getUnit2ratio();
+           else if(units.getUnit3isstdsell() != null && "Y".equalsIgnoreCase(units.getUnit3isstdsell().toString().trim()))
+              baseToSellRatio = units.getUnit3ratio();
+           else if(units.getUnit4isstdsell() != null && "Y".equalsIgnoreCase(units.getUnit4isstdsell().toString().trim()))
+              baseToSellRatio = units.getUnit4ratio();
+	    }
         if(baseToSellRatio == 0)
-        	baseToSellRatio = 1;
-     
+        	baseToSellRatio = 1f;
         return baseToSellRatio;
     }
 	
+	public static Float getBaseToOrderRatio(Ims ims) {
+		Float baseToOrderRatio = 1f;
+        Units units = ims.getUnits();
+        if(units != null){
+           if(units.getUnit1isstdord() != null && "Y".equalsIgnoreCase(units.getUnit1isstdord().toString().trim()))
+              baseToOrderRatio = units.getUnit1ratio();
+           else if(units.getUnit2isstdord() != null && "Y".equalsIgnoreCase(units.getUnit2isstdord().toString().trim()))
+              baseToOrderRatio = units.getUnit2ratio();
+           else if(units.getUnit3isstdord() != null && "Y".equalsIgnoreCase(units.getUnit3isstdord().toString().trim()))
+              baseToOrderRatio = units.getUnit3ratio();
+           else if(units.getUnit4isstdord() != null && "Y".equalsIgnoreCase(units.getUnit4isstdord().toString().trim()))
+              baseToOrderRatio = units.getUnit4ratio();
+        }
+        if(baseToOrderRatio == 0)
+           baseToOrderRatio = 1f;
+        return baseToOrderRatio;
+    }
 	
 	public static String getPackUnit(Ims ims)
     {

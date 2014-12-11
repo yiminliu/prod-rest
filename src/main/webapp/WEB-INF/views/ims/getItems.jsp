@@ -76,6 +76,13 @@
       <tr>
        <td>Width : <form:input path="dimensions.nominalwidth" cssStyle="width:90px;"></form:input></td>
      </tr>
+     <tr>  
+        <td><label for="countryOptions">Origin: </label>
+            <c:forEach var="countryName" items="${countryList}" varStatus="status">
+                 <form:radiobutton path="countryorigin" value="${countryName}" />${countryName}
+              </c:forEach>
+        </td> 
+      </tr>
       <tr> 
         <td><label for="itemStatusOptions">Status: </label>
               <c:forEach var="itemStatus" items="${statusList}" varStatus="status">
@@ -97,6 +104,55 @@
               </c:forEach>
         </td>
      </tr>
+     <tr>
+          <td><label for="edgeOptions">Edge: </label>
+              <c:forEach var="edge" items="${edgeList}" varStatus="status">
+                 <form:radiobutton path="newFeature.edge" value="${edge}"/>${edge.getDescription()}
+              </c:forEach>
+         </td>                  
+       </tr>
+       <tr>
+         <td><label for="bodyOptions">Body: </label>
+              <c:forEach var="body" items="${bodyList}" varStatus="status">
+                 <form:radiobutton path="newFeature.body" value="${body}"/>${body.getDescription()}
+              </c:forEach>
+         </td>
+       </tr>
+       <tr>
+         <td><label for="designLookOptions">Design Look: </label>
+              <c:forEach var="designLook" items="${designLookList}" varStatus="status">
+                 <form:radiobutton path="newFeature.designLook" value="${designLook}" />${designLook.getDescription()}
+              </c:forEach>
+          </td>  
+       </tr>
+       <tr>
+        <td><label for="designStyleOptions">Design Styles: </label>
+              <c:forEach var="designStyle" items="${designStyleList}" varStatus="status">
+                 <form:radiobutton  path="newFeature.designStyle" value="${designStyle}"/>${designStyle.getDescription()}
+              </c:forEach>
+         </td>  
+      </tr>
+      <tr>
+        <td><label for="surfaceTypeOptions">Surface Type: </label>
+              <c:forEach var="surfaceType" items="${surfaceTypeList}" varStatus="status">
+                 <form:radiobutton path="newFeature.surfaceType" value="${surfaceType}"/>${surfaceType.getDescription()}
+              </c:forEach>
+         </td>  
+       </tr>
+       <tr>
+          <td><label for="surfaceFinishOptions">Surface Finish: </label>
+              <c:forEach var="surfaceFinish" items="${surfaceFinishList}" varStatus="status">
+                 <form:radiobutton path="newFeature.surfaceFinish" value="${surfaceFinish}"/>${surfaceFinish.getDescription()}
+              </c:forEach>
+          </td>         
+       </tr>
+       <tr>
+         <td><label for="surfaceApplicationOptions">Surface Application: </label>
+              <c:forEach var="surfaceApplication" items="${surfaceApplicationList}" varStatus="status">
+                 <form:radiobutton path="newFeature.surfaceApplication" value="${surfaceApplication}" />${surfaceApplication.getDescription()}
+              </c:forEach>
+         </td>
+       </tr>
      <tr>  
           <td><label for="colorOptions">Colors Category: </label>
               <span style="padding-left: 5px;padding-bottom:3px; font-size: 12px;">

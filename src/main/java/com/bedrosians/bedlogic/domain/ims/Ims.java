@@ -487,28 +487,28 @@ public class Ims implements java.io.Serializable {
 	public void addNewFeature(ImsNewFeature newFeature ){
 		if(getNewFeature() != null)
 			setNewFeature(null);
-		if(newFeature.getItemCode() == null)
-			newFeature.setItemCode(this.itemcode);
+		if(newFeature.getItemCode() == null || !newFeature.getItemCode().equalsIgnoreCase(getItemcode()))
+			newFeature.setItemCode(getItemcode());
 		newFeature.setItem(this);
 		this.newFeature = newFeature;
 	}
 	
-	@OneToOne(fetch = FetchType.EAGER, mappedBy = "ims", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Fetch(FetchMode.JOIN)
 	@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	public IconCollection getIconDescription() {	
-	    return iconDescription;// != null//? iconCollection : ImsDataUtil.parseIcons(getIconsystem());
+	    return this.iconDescription;// != null//? iconCollection : ImsDataUtil.parseIcons(getIconsystem());
 	}
 	public void setIconDescription(IconCollection iconDescription) {
 		this.iconDescription = iconDescription;
 	}
 	
 	public void addIconDescription(IconCollection iconDescription){
-		if(getIconDescription() != null)
-		   setIconDescription(null);	
-		//if(iconDescription.getItemCode() == null)
-		//	iconDescription.setItemCode(this.itemcode);
-		iconDescription.setIms(this);
+		//if(getIconDescription() != null)
+		  // setIconDescription(null);	
+		//if(iconDescription.getItemCode() == null || !iconDescription.getItemCode().equalsIgnoreCase(this.getItemcode()))
+		//   iconDescription.setItemCode(getItemcode());
+		iconDescription.setItem(this);
 		this.iconDescription = iconDescription;
 	}
 
@@ -524,8 +524,8 @@ public class Ims implements java.io.Serializable {
 	}
 
 	public void addNewVendorSystem(Vendor vendor){
-		if(vendor.getVendorId().getItemCode() == null)
-		   vendor.getVendorId().setItemCode(this.getItemcode());	
+		if(vendor.getVendorId().getItemCode() == null || !vendor.getVendorId().getItemCode().equalsIgnoreCase(getItemcode()))
+		   vendor.getVendorId().setItemCode(getItemcode());	
 		vendor.setIms(this);
 		if(getNewVendorSystem() == null)
 		   setNewVendorSystem(new ArrayList<Vendor>());	
@@ -611,7 +611,7 @@ public class Ims implements java.io.Serializable {
 	@JsonIgnore
 	@Transient
 	public String getStandardOrderUnit(){
-		return ImsDataUtil.getStandardPurchaseUnit(this);
+		return ImsDataUtil.getStandardOrderUnit(this);
 	}
 
 	@JsonIgnore

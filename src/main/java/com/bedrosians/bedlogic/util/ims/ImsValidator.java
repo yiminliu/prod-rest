@@ -6,6 +6,7 @@ import java.util.Date;
 import javax.ws.rs.core.MultivaluedMap;
 
 import com.bedrosians.bedlogic.domain.ims.Ims;
+import com.bedrosians.bedlogic.domain.ims.embeddable.Units;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.DataOperationException;
 import com.bedrosians.bedlogic.exception.InputParamException;
@@ -122,40 +123,40 @@ public class ImsValidator {
 	
 	    validateStandardOrderUnit(item);
 	    validateStandardSellUnit(item);
-	        
-		if(item.getUnits().getBaseunit() == null || item.getUnits().getBaseunit().trim().length() < 1)
+	    Units units = item.getUnits();
+	 	if(item.getUnits().getBaseunit() == null || item.getUnits().getBaseunit().trim().length() < 1)
 		  // throw new BedDAOBadParamException("BaseUnit cannot be null.");
 			item.getUnits().setBaseunit("PCS");
 		
-		if((item.getUnits().getBaseunit() != null && item.getUnits().getBaseunit().length() > 4) || 
-		   (item.getUnits().getUnit1unit() != null && item.getUnits().getUnit1unit().length() > 4) ||
-		   (item.getUnits().getUnit2unit() != null && item.getUnits().getUnit2unit().length() > 4) ||
-		   (item.getUnits().getUnit3unit() != null && item.getUnits().getUnit3unit().length() > 4) ||
-		   (item.getUnits().getUnit4unit() != null && item.getUnits().getUnit4unit().length() > 4))
+		if((units.getBaseunit() != null && units.getBaseunit().length() > 4) || 
+		   (units.getUnit1unit() != null && units.getUnit1unit().length() > 4) ||
+		   (units.getUnit2unit() != null && units.getUnit2unit().length() > 4) ||
+		   (units.getUnit3unit() != null && units.getUnit3unit().length() > 4) ||
+		   (units.getUnit4unit() != null && units.getUnit4unit().length() > 4))
 			throw new BedDAOBadParamException("Unit cannot be longer than four characters.");
 		//db constraint ims_check 1
-		if((item.getUnits().getUnit1unit() == null || item.getUnits().getUnit1unit().trim().length() == 0) && (item.getUnits().getUnit1ratio() != null && item.getUnits().getUnit1ratio() > 0))
+		if((units.getUnit1unit() == null || units.getUnit1unit().trim().length() == 0) && (units.getUnit1ratio() != null && units.getUnit1ratio() > 0))
 			throw new BedDAOBadParamException("Unit1 ratio should be 0, since unit1 unit is empty.");
-		if((item.getUnits().getUnit1unit() != null && item.getUnits().getUnit1unit().length() > 0) && item.getUnits().getUnit1ratio() <= 0)
-			throw new BedDAOBadParamException("Please privide Unit1 ratio.");
+		if((units.getUnit1unit() != null && units.getUnit1unit().length() > 0) && units.getUnit1ratio() <= 0)
+			throw new BedDAOBadParamException("Please provide Unit1 ratio.");
 		
 		//db constraint ims_check 2
-		if((item.getUnits().getUnit2unit() == null || item.getUnits().getUnit2unit().trim().length() == 0) && (item.getUnits().getUnit2ratio() != null && item.getUnits().getUnit2ratio() > 0))
+		if((units.getUnit2unit() == null || units.getUnit2unit().trim().length() == 0) && (units.getUnit2ratio() != null && units.getUnit2ratio() > 0))
 			throw new BedDAOBadParamException("Unit2 ratio should be 0, since unit2 unit is empty.");
-		if((item.getUnits().getUnit2unit() != null && item.getUnits().getUnit2unit().length() > 0) && item.getUnits().getUnit2ratio() <= 0)
-			throw new BedDAOBadParamException("Please privide Unit2 ratio.");
+		if((units.getUnit2unit() != null && units.getUnit2unit().length() > 0) && units.getUnit2ratio() <= 0)
+			throw new BedDAOBadParamException("Please provide Unit2 ratio.");
 	
 		//db constraint ims_check 3
-		if((item.getUnits().getUnit3unit() == null || item.getUnits().getUnit3unit().trim().length() == 0) && (item.getUnits().getUnit3ratio()  != null && item.getUnits().getUnit3ratio() > 0))
+		if((units.getUnit3unit() == null || units.getUnit3unit().trim().length() == 0) && (units.getUnit3ratio()  != null && units.getUnit3ratio() > 0))
 			throw new BedDAOBadParamException("Unit3 ratio should be 0, since unit3 unit is empty.");
-		if((item.getUnits().getUnit3unit() != null && item.getUnits().getUnit3unit().trim().length() > 0) && item.getUnits().getUnit3ratio() <= 0)
-			throw new BedDAOBadParamException("Please privide Unit3 ratio.");
+		if((units.getUnit3unit() != null && units.getUnit3unit().trim().length() > 0) && units.getUnit3ratio() <= 0)
+			throw new BedDAOBadParamException("Please provide Unit3 ratio.");
 				
 		//db constraint ims_check 4
-		if((item.getUnits().getUnit4unit() == null || item.getUnits().getUnit4unit().trim().length() == 0) && (item.getUnits().getUnit4ratio() != null && item.getUnits().getUnit4ratio() > 0))
+		if((units.getUnit4unit() == null || units.getUnit4unit().trim().length() == 0) && (units.getUnit4ratio() != null && units.getUnit4ratio() > 0))
 			throw new BedDAOBadParamException("Unit4 ratio should be 0, since unit4 unit is empty.");
-		if((item.getUnits().getUnit4unit() != null && item.getUnits().getUnit4unit().trim().length() > 0) && item.getUnits().getUnit4ratio() <= 0)
-			throw new BedDAOBadParamException("Please privide Unit4 ratio.");		   
+		if((units.getUnit4unit() != null && units.getUnit4unit().trim().length() > 0) && units.getUnit4ratio() <= 0)
+			throw new BedDAOBadParamException("Please provide Unit4 ratio.");		   
 		
 	 	//db constraint ims_check 5
 		  /*CONSTRAINT ims_check5 CHECK (((((((((((((((((((
@@ -244,28 +245,38 @@ public class ImsValidator {
 	public static void validateStandardOrderUnit(Ims item) throws BedDAOBadParamException{
 	    int count = 0;
 	    if(item.getUnits() != null){
-		   if(item.getUnits().getBaseisstdord() != null && (item.getUnits().getBaseisstdord() == 'Y' || item.getUnits().getBaseisstdord() == 'y')) count++;
-		   if(item.getUnits().getUnit1isstdord() != null && (item.getUnits().getUnit1isstdord() == 'Y' || item.getUnits().getUnit1isstdord() == 'y')) count++;
-		   if(item.getUnits().getUnit2isstdord() != null && (item.getUnits().getUnit2isstdord() == 'Y' || item.getUnits().getUnit2isstdord() == 'y')) count++;
-		   if(item.getUnits().getUnit3isstdord() != null && (item.getUnits().getUnit3isstdord() == 'Y' || item.getUnits().getUnit3isstdord() == 'y')) count++;
-		   if(item.getUnits().getUnit4isstdord() != null && (item.getUnits().getUnit4isstdord() == 'Y' || item.getUnits().getUnit4isstdord() == 'y')) count++;
+		   if(item.getUnits().getBaseisstdord() != null && (item.getUnits().getBaseisstdord() == 'Y' || item.getUnits().getBaseisstdord() == 'y')) 
+			   count++;
+		   if(item.getUnits().getUnit1isstdord() != null && (item.getUnits().getUnit1isstdord() == 'Y' || item.getUnits().getUnit1isstdord() == 'y')) 
+			   count++;
+		   if(item.getUnits().getUnit2isstdord() != null && (item.getUnits().getUnit2isstdord() == 'Y' || item.getUnits().getUnit2isstdord() == 'y')) 
+			   count++;
+		   if(item.getUnits().getUnit3isstdord() != null && (item.getUnits().getUnit3isstdord() == 'Y' || item.getUnits().getUnit3isstdord() == 'y')) 
+			   count++;
+		   if(item.getUnits().getUnit4isstdord() != null && (item.getUnits().getUnit4isstdord() == 'Y' || item.getUnits().getUnit4isstdord() == 'y')) 
+			   count++;
 		   if(count < 1)
 		      throw new BedDAOBadParamException("ERROR: Missing Std Order Unit!.");	
 		   if(count > 1)
-			  throw new BedDAOBadParamException("ERROR: Multiple Std Sell Unit!!.");	
+			  throw new BedDAOBadParamException("ERROR: Multiple Std Order Unit!!.");	
 	    }   
 	}    	
 	
 	public static void validateStandardSellUnit(Ims item) throws BedDAOBadParamException{
 	    int count = 0;
 	    if(item.getUnits() != null){
-		   if(item.getUnits().getBaseisstdsell() != null && (item.getUnits().getBaseisstdsell() == 'Y' || item.getUnits().getBaseisstdsell() == 'y')) count++;
-		   if(item.getUnits().getUnit1isstdsell() != null && (item.getUnits().getUnit1isstdsell() == 'y')) count++;
-		   if(item.getUnits().getUnit2isstdsell() != null && (item.getUnits().getUnit2isstdsell() == 'y')) count++;
-		   if(item.getUnits().getUnit3isstdsell() != null && (item.getUnits().getUnit3isstdsell() == 'y')) count++;
-		   if(item.getUnits().getUnit4isstdsell() != null && (item.getUnits().getUnit4isstdsell() == 'y')) count++;
+		   if(item.getUnits().getBaseisstdsell() != null && (item.getUnits().getBaseisstdsell() == 'Y' || item.getUnits().getBaseisstdsell() == 'y')) 
+			  count++;
+		   if(item.getUnits().getUnit1isstdsell() != null && (item.getUnits().getUnit1isstdsell() == 'Y' || item.getUnits().getUnit1isstdsell() == 'y')) 
+			  count++;
+		   if(item.getUnits().getUnit2isstdsell() != null && (item.getUnits().getUnit2isstdsell() == 'Y' || item.getUnits().getUnit2isstdsell() == 'y'))
+			  count++;
+		   if(item.getUnits().getUnit3isstdsell() != null && (item.getUnits().getUnit3isstdsell() == 'Y' || item.getUnits().getUnit3isstdsell() == 'y'))
+			  count++;
+		   if(item.getUnits().getUnit4isstdsell() != null && (item.getUnits().getUnit4isstdsell() == 'Y' || item.getUnits().getUnit4isstdsell() == 'y')) 
+			   count++;
 		   if(count < 1)
-			 throw new BedDAOBadParamException("ERROR: Missing Std Order Unit!.");	
+			 throw new BedDAOBadParamException("ERROR: Missing Std Sell Unit!.");	
 		   if(count > 1)
 			 throw new BedDAOBadParamException("ERROR: Multiple Std Sell Unit!!.");
 	    }   

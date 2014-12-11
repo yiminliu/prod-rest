@@ -14,7 +14,7 @@
     <div style="color:GREEN"> <h3>Pricing</h3></div>
     <table class="category">
        <tr>
-          <td><label> MSRP($)*: </label><form:input path="price.sellprice"></form:input></td> 
+          <td><label> MSRP($)<span style="color:red;">*</span>: </label><form:input path="price.sellprice"></form:input></td> 
        </tr>
        <tr>
           <td><form:errors path="price.sellprice" cssClass="error" /></td>

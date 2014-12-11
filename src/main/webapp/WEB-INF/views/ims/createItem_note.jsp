@@ -15,7 +15,7 @@
     <div style="color:Green"> <h3>Web</h3></div>
     <table class="category"> 
         <tr>
-           <td style="width: 100%; clear: both;">Show on Bedrosians:
+           <td style="width: 100%; clear: both;"><label>Show on Bedrosians:</label>
               <form:radiobutton path="showonwebsite" value="Y" />Yes
               <form:radiobutton path="showonwebsite" value="N" />No
            </td>
@@ -24,7 +24,7 @@
            <td style="width: 100%; clear: both;"><form:errors path="showonwebsite" cssClass="error" /></td>               
       </tr>
         <tr>   
-           <td>Show on AlysEdwards:
+           <td><label>Show on AlysEdwards:</label>
               <form:radiobutton path="showonalysedwards" value="Y" />Yes
               <form:radiobutton path="showonalysedwards" value="N" />No
            </td>
@@ -33,9 +33,12 @@
    <div style="color:GREEN"> <h3>Buyers</h3></div>
    <table class="category"> 
      <tr>
-        <td><label>Product Manager*: </label>
+        <td><label>Product Manager<span style="color:red;">*</span>: </label>
             <form:input path="purchasers.purchaser" cssStyle="width:155px;"></form:input>
         </td>
+     </tr>
+     <tr>
+          <td><form:errors path="purchasers.purchaser" cssClass="error" /></td>
      </tr>
      <tr>
         <td><label>Buyer: </label>

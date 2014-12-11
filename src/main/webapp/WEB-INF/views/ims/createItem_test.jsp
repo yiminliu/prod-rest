@@ -14,38 +14,38 @@
    <div style="color:Green"> <h3>Test specifications</h3></div>
       <table>
           <tr>
-              <td>Warpage:
+              <td><span style="color:black;">Warpage:</span>
                   <form:checkbox path="testSpecification.warpage" value="P" />Passed
                </td>
           </tr>
           <tr>           
-              <td>Wedging: 
+              <td><span style="color:black;">Wedging: </span>
                   <form:checkbox path="testSpecification.wedging" value="P" />Passed
               </td>
            </tr>
            <tr>
-              <td>Thermal Shock:
+              <td><span style="color:black;">Thermal Shock:</span>
                  <form:checkbox path="testSpecification.thermalshock" value="P" />Passed
               </td>
           </tr>
           <tr>
-              <td>Frost Resistance:
+              <td><span style="color:black;">Frost Resistance:</span>
                    <form:checkbox path="testSpecification.frostresistance" value="P" />Passed
               </td>
           </tr>
           <tr>
-              <td>Chemical Resistance: 
+              <td><span style="color:black;">Chemical Resistance:</span> 
                   <form:checkbox path="testSpecification.chemicalresistance" value="P" />Passed
               </td>
           </tr>
           <tr>
-              <td>Green Friendly:
+              <td><span style="color:black;">Green Friendly:</span>
                   <form:checkbox path="testSpecification.greenfriendly" value="" />Yes
                   <form:input path="testSpecification.greenfriendly" type="hidden" value="N" />
                 </td>
           </tr>
           <tr>
-              <td> Pei Abrasion: 
+              <td><label> Pei Abrasion: </label>
                 <form:radiobutton path="testSpecification.peiabrasion" value="1"/>1
                 <form:radiobutton path="testSpecification.peiabrasion" value="2"/>2
                 <form:radiobutton path="testSpecification.peiabrasion" value="3"/>3
@@ -54,7 +54,7 @@
               </td>
           </tr>
           <tr>
-              <td> MOH:
+              <td><label> MOH:</label>
                   <form:radiobutton  path="testSpecification.moh" value="1"/>1
                   <form:radiobutton  path="testSpecification.moh" value="2"/>2
                   <form:radiobutton  path="testSpecification.moh" value="3"/>3

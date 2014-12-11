@@ -84,15 +84,23 @@
                           <td >${item.material.materialfeature}</td>
                        </tr>
                     </table>
+                    <div class="container" style="color:GREEN"> <h3>Color Hues</h3></div>
+                    <table border="1" cellspacing="2">
+                      <tr>
+                        <c:forEach var="color" items="${item.colorhues}" varStatus="status">
+                          <td>${color.colorHue}</td>
+                       </c:forEach>
+                       </tr>
+                    </table>
                     <div class="container" style="color:GREEN"> <h3>Color Category</h3></div>
                     <table border="1" cellspacing="2">
-                       <c:forEach var="color" items="${item.colorhues}" varStatus="status">
-                         
-                              <td>${color.colorHue}</td>
-                         
-                       </c:forEach>
+                        <tr>
+                          <th>Color Category</th>
+                        </tr>
+                        <tr>
+                          <td>${item.colorcategory}</td>
+                        </tr>  
                     </table>
-                    
                     <div class="container" style="color:Green"> <h3>Applications</h3></div>
                     <table border="1" cellspacing="2">
                        <tr>
@@ -188,7 +196,7 @@
                            </c:if>   
                        </tr>
                     </table>
-                     <div class="container" style="color:Green"> <h3>Buyer Information</h3></div>
+                     <div class="container" style="color:Green"> <h3>Buyers</h3></div>
                      <table border="1" cellspacing="2">
                        <tr>
                          <th>Buyer1</th>
@@ -216,7 +224,7 @@
                         </tr>
                     </table>
     
-                    <div class="container" style="color:Green"> <h3>Usage Information</h3></div>
+                    <div class="container" style="color:Green"> <h3>Usage</h3></div>
                     <table border="1" cellspacing="2">
                        <tr>
                          <th>Residential</th>
@@ -231,7 +239,7 @@
                     </table>
                     
                     
-	                <div class="container" style="color:Green"> <h3>Test specifications</h3></div>
+	                <div class="container" style="color:Green"> <h3>Test Specifications</h3></div>
                     <table border="1" cellspacing="2">
                        <tr>
                          <th>waterabsorption</th>
@@ -278,7 +286,7 @@
                          <td>${item.testSpecification.posconsummer}</td>
                        </tr>
                     </table>
-                    <div class="container" style="color:Green"> <h3>Vendors Information</h3></div>
+                    <div class="container" style="color:Green"> <h3>Vendors</h3></div>
                     <table border="1" cellspacing="2">
                       <tr>
                          <th>#</th>
@@ -314,7 +322,7 @@
                     </c:forEach>   
                     </table>
 	
-                    <div class="container" style="color:Green"> <h3>Icon Information</h3></div>
+                    <div class="container" style="color:Green"> <h3>Icons</h3></div>
                     <table border="1" cellspacing="2">
                        <tr>
                          <th>madeInCountry</th>
@@ -354,6 +362,21 @@
                          <td>${item.iconDescription.greenFriendlyIcon}</td>
                          <td>${item.iconDescription.coefficientOfFriction}</td>
                        </tr>
+                    </table>
+                    <div class="container" style="color:GREEN"> <h3>Units</h3></div>
+                    <table border="1" cellspacing="2">
+                       <tr>
+                         <th>Standard Unit</th>
+                         <th>Order Unit</th>
+                         <th>Standard Ratio</th>
+                         <th>Order Ratio</th>
+                       </tr>
+                       <tr>
+                          <td>${item.units.stdunit}</td>
+                          <td>${item.units.ordunit}</td>
+                          <td>${item.units.stdratio}</td>
+                          <td>${item.units.ordratio}</td>
+                        </tr>
                     </table>
   
                     <div class="container" style="color:GREEN"> <h3>Packaging Information</h3></div>

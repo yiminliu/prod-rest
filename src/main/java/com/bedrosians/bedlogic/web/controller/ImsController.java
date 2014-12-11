@@ -108,14 +108,27 @@ public class ImsController {
 		   items = imsServiceMVC.getItems(allRequestParams);
 	   }
 	   catch(Exception e){
+		   status.setComplete(); //finished the "item" SessionAttribute
     	   throw e;
 	   }
 	   if(items == null && item.getItemcode() != null)
 		  throw new DataNotFoundException(item.getItemcode());
 	   model.addAttribute("itemList", items);
-	   status.setComplete(); //finished the "aItem" SessionAttribute
+	   status.setComplete(); //finish the "item" SessionAttribute
 	   return "ims/getItemsSuccess";
    }
+   
+   /**
+    * This method is used to show the form to create an item
+    *
+    * @return String
+    */
+    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
+    @RequestMapping(value = "/createItem_menu", method = RequestMethod.GET)
+    public String createItemMenu(Model model) {
+        return "ims/createItem_menu";
+    }
+    
    
    /**
    * This method is used to show the form to create an item
@@ -160,8 +173,10 @@ public class ImsController {
  	   validator.validateGeneralInfo(item, bindingResult);
 	   if (bindingResult.hasErrors()) 
            return "ims/createItem_general";
-       if (item != null) 
+       if (item != null){ 
+    	   item.setItemcode(item.getItemcode().toUpperCase());
            model.addAttribute("aItem", item);
+       }    
    	   return "ims/createItem_material";
    
    }
@@ -218,8 +233,12 @@ public class ImsController {
    //handle packageUnits
    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
    @RequestMapping(value = "/createItem_vendor", method = RequestMethod.POST)
-   public String itemVendorForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult result) {
-      if (item != null) 
+   public String itemVendorForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult bindingResult) {
+	   validator.validatePackageUnits(item, bindingResult);
+ 	   if (bindingResult.hasErrors()) {
+           return "ims/createItem_vendor";
+       }
+ 	   if (item != null) 
           model.addAttribute("aItem", item);
       return "ims/createItem_vendor";
    }
@@ -246,7 +265,7 @@ public class ImsController {
      */
      @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
      @RequestMapping(value = "/createItem_test", method = RequestMethod.POST)
-     public String itemTestingForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult result) {
+     public String itemTestSpecForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult result) {
         if (item != null)
              model.addAttribute("aItem", item);
        	 return "ims/createItem_test";
@@ -275,13 +294,14 @@ public class ImsController {
       @RequestMapping(value = "/createItem_final", method = RequestMethod.POST)
       public String createItem(@ModelAttribute("aItem") @Valid Ims item, Model model, BindingResult bindingResult, SessionStatus status) {
           String itemCode = null;
+          validator.validateBuyer(item, bindingResult);
           if (bindingResult.hasErrors()) {
-              return "createItem";
+              return "ims/createItem_note";
           }
    	      if (item != null) {
        	     try {
        		    itemCode = imsServiceMVC.createItem(item);
-                model.addAttribute("item", item);
+                model.addAttribute("aItem", item);
                 model.addAttribute("itemCode", itemCode);
                 status.setComplete(); //finished the "aItem" SessionAttribute
              }
@@ -298,7 +318,7 @@ public class ImsController {
       *
       * @return ModelAndView
       */
-      @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
+   /*   @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
       @RequestMapping(value = "/createItemFinalPage", method = RequestMethod.POST)
       public String createItemFinal(@ModelAttribute("item") Ims item, Model model, BindingResult result) {
           String itemCode = null;
@@ -315,13 +335,13 @@ public class ImsController {
          }
          return null;
       }
-      
+     */ 
    /**
     * This method is used to show the form to create an item
     *
     * @return String
     */
-      @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
+    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
     @RequestMapping(value = "/updateItem/{itemcode}", method = RequestMethod.GET)
     public String updateItem(@PathVariable("itemcode") String itemCode, Model model){
        Ims item = null;
@@ -376,18 +396,97 @@ public class ImsController {
          return "ims/updateItemSuccess";
      }  
      
+     /**
+      * This method is used to show the form to create an item
+      *
+      * @return String
+      */
+      @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
+      @RequestMapping(value = "/cloneItem/{itemcode}", method = RequestMethod.GET)
+      public String cloneItem(@PathVariable("itemcode") String itemCode, Model model){
+    	  Ims retrievedItem = null;
+     	   try {
+     		  retrievedItem = imsServiceMVC.getItemByItemCodeForClone(itemCode);
+          }
+     	  catch(DataNotFoundException dnfe){
+     		  throw new InputParamException("No item with the Item Code " + itemCode + " found in database. You cannot clone an item with this item code.");
+          }
+          catch (Exception te) {
+              throw te;
+          }
+     	   if (retrievedItem == null)
+     		   throw new InputParamException("No item with the Item Code " + itemCode + " found in database. You cannot clone an item with this item code.");
+     	   else
+     		   model.addAttribute("item", retrievedItem);
+          return "ims/cloneItem";
+      }  
+     
+      @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
+      @RequestMapping(value = "/cloneItemForm", method = RequestMethod.GET)
+      public String cloneItem(Model model){
+         model.addAttribute("item", new Ims());
+         return "ims/cloneItemForm";
+      }
+      
+      /**
+       * This method is used to process the ticket form to create a ticket
+       *
+       * @return ModelAndView
+       */
+       //@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')")
+       @RequestMapping(value = "/cloneItem", method = RequestMethod.GET)
+       public String cloneItem(@ModelAttribute("item") Ims item, Model model, BindingResult bindingResult) {
+    	   Ims retrievedItem = null;
+      	   try {
+      		  retrievedItem = imsServiceMVC.getItemByItemCodeForClone(item.getItemcode());
+           }
+      	   catch(DataNotFoundException dnfe){
+    		  throw new InputParamException("No item with the Item Code " + item.getItemcode() + " found in database. You cannot clone an item with this item code.");
+           }
+           catch (Exception te) {
+               throw te;
+           }
+      	   if (retrievedItem == null)
+      		   throw new InputParamException("No item with the Item Code " + item.getItemcode() + " found in database. You cannot clone an item with this item code.");
+      	   else
+      		   model.addAttribute("item", retrievedItem);
+           return "ims/cloneItem";
+       }  
+       
+       @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
+       @RequestMapping(value = "/cloneItem", method = RequestMethod.POST)
+       public String PostCloneItem(@ModelAttribute("item") Ims item, Model model, BindingResult bindingResult) {
+    	  if(item != null){
+    		  validator.validateItemCode(item.getItemcode(), bindingResult);
+         	  if (bindingResult.hasErrors()) {
+                  return "ims/cloneItem";
+         	  } 
+    	      try {
+                  imsServiceMVC.cloneItem(item);
+              }
+              catch (Exception te) {
+                 throw te;
+              }
+          	  model.addAttribute("item", item);
+             return "ims/createItemSuccess";
+    	  }
+    	  else
+    		 throw new InputParamException("Empty item cannot be cloned.");
+      }  
+       
+       
      @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
      @RequestMapping(value="deleteItem/{itemCode}", method = RequestMethod.GET)
      public String deleteItem(@PathVariable("itemCode") String itemCode, Model model){
-  	   try{
+        try{
   		   imsServiceMVC.deleteItemByItemCode(itemCode);
-  	   }
-  	   catch(Exception e){
-  		   e.printStackTrace();
-  	   }
-  	   model.addAttribute("itemCode", itemCode);
-  	   model.addAttribute("operation", "Deleted");
- 	   return "ims/success";
+  	    }
+  	    catch(Exception e){
+  		   throw e;
+  	    }
+  	    model.addAttribute("itemCode", itemCode);
+  	    model.addAttribute("operation", "Deleted");
+ 	    return "ims/success";
      }
      
      @RequestMapping(value="deleteItem", method = RequestMethod.GET)
@@ -397,8 +496,12 @@ public class ImsController {
      }
      
      @RequestMapping(value="deleteItem", method = RequestMethod.POST)
-     public String deleteItem(@ModelAttribute("item") Ims item, Model model){
-  	   try{
+     public String deleteItem(@ModelAttribute("item") Ims item, Model model, BindingResult bindingResult) {
+        validator.validateItemCode(item.getItemcode(), bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "ims/deleteItem";
+        }
+  	    try{
   		   imsServiceMVC.deleteItem(item);
   	   }
   	   catch(Exception e){

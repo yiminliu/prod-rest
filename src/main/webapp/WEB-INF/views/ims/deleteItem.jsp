@@ -1,33 +1,10 @@
 <%@ include file="/WEB-INF/includes/taglibs.jsp"%>
 <%@ include file="/WEB-INF/includes/doctype.jsp"%>
+<%@ include file="/WEB-INF/includes/styles.jsp"%>
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>Item Management System</title>
-
-  <style type="text/css"> 
-     table.category { 
-        border-bottom: dotted 1px  blue;
-     }
-     .container {
-        color:#0076BF;
-        margin: -10px 0px -10px 0px;
-        border-spacing: 10px;
-        empty-cells:show;
-        width:90%;
-        text-align:left;
-      } 
-
-      .table tr {
-         height:15px;
-         white-space:nowrap;
-         text-align:left;
-      }
-	  td.narrow 
-      { 
-        width:10px;
-      }
-  </style>
+  <title>Item Management System</title>
 </head>
 <body>
 
@@ -41,6 +18,9 @@
       <tr>
          <td>Item Code: <form:input path="itemcode"></form:input></td>
       </tr>
+      <tr>
+         <td><form:errors path="itemcode" cssClass="error" /></td>               
+       </tr>
    </table>
    <table></table>
    <table> 
