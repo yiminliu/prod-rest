@@ -176,13 +176,15 @@ public class Vendor implements java.io.Serializable {
 		this.vendorPriceRoundAccuracy = vendorPriceRoundAccuracy;
 	}
 
-	@Column(name = "vendor_net_price", precision = 9, scale = 4, updatable=false)
+	@Column(name = "vendor_net_price", precision = 9, scale = 4)
 	public BigDecimal getVendorNetPrice() {
 		return this.vendorNetPrice;
+		//return new BigDecimal(vendorListPrice.floatValue() * vendorDiscountPct/100.00);
 	}
 
 	public void setVendorNetPrice(BigDecimal vendorNetPrice) {
 		this.vendorNetPrice = vendorNetPrice;
+		//this.vendorNetPrice = new BigDecimal(vendorListPrice.floatValue() * vendorDiscountPct/100);
 	}
 
 	@Column(name = "vendor_markup_pct", precision = 4, scale = 1)

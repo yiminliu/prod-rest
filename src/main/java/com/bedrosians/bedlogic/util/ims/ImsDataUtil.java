@@ -166,7 +166,7 @@ public class ImsDataUtil {
 	}
 
 	//convert new vendor system data to legacy vendor data
-	protected static VendorInfo convertItemVendorToImsVendorInfo(final Vendor vendor){
+	public static VendorInfo convertNewVendorToLegancyVendorInfo(final Vendor vendor){
 		VendorInfo vendorInfo = new VendorInfo();
 		if(vendor != null){
 			if(vendor.getVendorId() != null) vendorInfo.setVendornbr1(vendor.getId());
@@ -288,6 +288,23 @@ public class ImsDataUtil {
 				   sBuilder.append(colorHue.getColorHue());
 				else
 					sBuilder.append(colorHue.getColorHue()).append(":");
+				i++;
+			}
+		return sBuilder.toString();
+	  }
+	}
+	
+	public static String convertColorHuesToString(List<ColorHue> colorHues){
+		if(colorHues == null || colorHues.isEmpty())
+		   return null;	
+		else{
+		    int i = 0;	
+		    StringBuilder sBuilder = new StringBuilder();	
+			for(ColorHue colorHue : colorHues){
+				if(i == colorHues.size() - 1)
+				   sBuilder.append(colorHue.getColorHue());
+				else
+					sBuilder.append(colorHue.getColorHue()).append(", ");
 				i++;
 			}
 		return sBuilder.toString();
@@ -457,7 +474,7 @@ public class ImsDataUtil {
            else if(units.getUnit4isstdsell() != null && "Y".equalsIgnoreCase(units.getUnit4isstdsell().toString().trim()))
               baseToSellRatio = units.getUnit4ratio();
 	    }
-        if(baseToSellRatio == 0)
+        if(baseToSellRatio != null && baseToSellRatio.intValue() == 0)
         	baseToSellRatio = 1f;
         return baseToSellRatio;
     }
@@ -475,7 +492,7 @@ public class ImsDataUtil {
            else if(units.getUnit4isstdord() != null && "Y".equalsIgnoreCase(units.getUnit4isstdord().toString().trim()))
               baseToOrderRatio = units.getUnit4ratio();
         }
-        if(baseToOrderRatio == 0)
+        if(baseToOrderRatio != null && baseToOrderRatio.intValue() == 0)
            baseToOrderRatio = 1f;
         return baseToOrderRatio;
     }
@@ -640,7 +657,7 @@ public class ImsDataUtil {
 				     itemToDB.addNewVendorSystem(vendor);	
 				     //Populate vendor info in ims
 				     if((vendorInfo == null || vendorInfo.getVendornbr1() == null || vendorInfo.getVendornbr1() == 0) && vendor.getVendorOrder() == 1){
-				         itemToDB.setVendors(convertItemVendorToImsVendorInfo(vendor));	
+				         itemToDB.setVendors(convertNewVendorToLegancyVendorInfo(vendor));	
 				     }
 				   }   
 			   }    
@@ -672,7 +689,7 @@ public class ImsDataUtil {
 				   if(vendor.getVendorXrefId() != null) itemToDB.getNewVendorSystem().get(i).setVendorXrefId(vendor.getVendorXrefId());
 		           //Populate vendor info in ims table
 				   if((vendorInfo == null || vendorInfo.getVendornbr1() == null || vendorInfo.getVendornbr1() == 0) && vendor.getVendorOrder() == 1)
-				       itemToDB.setVendors(convertItemVendorToImsVendorInfo(vendor));				    
+				       itemToDB.setVendors(convertNewVendorToLegancyVendorInfo(vendor));				    
 			   }
 			   
     	   }	   

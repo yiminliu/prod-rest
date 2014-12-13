@@ -1,7 +1,9 @@
 package com.bedrosians.bedlogic.service.mvc.ims;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
@@ -20,6 +22,10 @@ import java.util.Set;
 
 
 
+
+
+
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.ws.rs.core.MultivaluedMap;
 
@@ -45,6 +51,7 @@ import com.bedrosians.bedlogic.domain.ims.ImsNewFeature;
 import com.bedrosians.bedlogic.domain.ims.Vendor;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Applications;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Units;
+import com.bedrosians.bedlogic.domain.ims.embeddable.VendorInfo;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.exception.DataNotFoundException;
@@ -79,13 +86,16 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
     @Override
     @Transactional(readOnly = true, isolation=Isolation.READ_COMMITTED)
 	public Ims getItemByItemCode(String itemCode){
-    	Ims ims = null;
+    	Ims item = null;
     	if(itemCode == null || itemCode.length() < 1)
     	   throw new InputParamException("Please enter valid Item Code !");	
 		try{
 			Session session = getSession();
 			session.setCacheMode(CacheMode.NORMAL);
-	  	    ims = imsDao.getItemByItemCode(session, itemCode.toUpperCase());
+	  	    item = imsDao.getItemByItemCode(session, itemCode.toUpperCase());
+	  	    //session.refresh(ims);
+	  	   // if(item.getColorhues() == null || item.getColorhues().isEmpty())
+	  	    //   item.setColorhues(ImsDataUtil.convertColorCategoryToColorHueObjects(item.getColorcategory()));	
 		}
 		catch(HibernateException hbe){
 			hbe.printStackTrace();
@@ -100,7 +110,7 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 		  	else
 		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  e.getMessage());	
 		}
-		return FormatUtil.process(ims);
+		return FormatUtil.process(item);
 	}
     
     @Loggable(value = LogLevel.INFO)
@@ -185,8 +195,10 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 		  	   throw new BedDAOException("Error occured during getItems(), due to: " +  e.getMessage());	
 		}
 		List<Ims> processedItems = new ArrayList<>();
-		for(Ims ims : itemList){
-			processedItems.add(FormatUtil.process(ims));
+		for(Ims item : itemList){
+			if(item.getColorhues() == null || item.getColorhues().isEmpty())
+		  	   item.setColorhues(ImsDataUtil.convertColorCategoryToColorHueObjects(item.getColorcategory()));	
+			processedItems.add(FormatUtil.process(item));
 		}
 		return processedItems;
 	}
@@ -215,8 +227,10 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 		  	   throw new DataOperationException("Error occured during getItems(), due to: " +  e.getMessage(), e);	
 		}
 		List<Ims> processedItems = new ArrayList<>();
-		for(Ims ims : itemList){
-			processedItems.add(FormatUtil.process(ims));
+		for(Ims item : itemList){
+			//if(item.getColorhues() == null || item.getColorhues().isEmpty())
+		  	//   item.setColorhues(ImsDataUtil.convertColorCategoryToColorHueObjects(item.getColorcategory()));	
+			processedItems.add(FormatUtil.process(item));
 		}
 		return processedItems;
 	}
@@ -226,37 +240,15 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 	
 	@Loggable(value = LogLevel.INFO)
 	@Override
-	public String createItem(Ims item){  	
+	public String createItem(Ims item, DBOperation createOrClone){  	
 		String id = "";
-		//take care of associations
-     	ImsNewFeature newFeature = item.getNewFeature();
-     	if(newFeature != null && !newFeature.isEmpty())
-     	   item.addNewFeature(newFeature);
-     	else
-     	   item.setNewFeature(null);
-     	List<ColorHue> colorhues = item.getColorhues();
-     	if(colorhues != null && !colorhues.isEmpty()){
-     	   item.setColorhues(null);
-     	   for(ColorHue colorhue : colorhues){
-     		   item.addColorhue(colorhue);
-     	   }
-     	   item.setColorcategory(ImsDataUtil.convertColorHuesToColorCategory(colorhues));
-     	}
-     	IconCollection icons = item.getIconDescription();
-     	if(icons != null && !icons.isEmpty())
-     	   item.addIconDescription(icons);	
-     	else
-     	   item.setIconDescription(null);	
-     	List<Vendor> vendors = item.getNewVendorSystem();
-     	item.setNewVendorSystem(null);
-     	if(vendors != null && !vendors.isEmpty()){
-     		for(Vendor vendor : vendors){
-     			if(vendor.getId() != null)
-           		  item.addNewVendorSystem(vendor);
-     		}	
-     	}
-     	item = processApplications(item);
-     	item = processPackgeUnits(item);
+		//take care of associations and components
+		processNewFeature(item, createOrClone);
+		processColorHues(item);
+       	processApplications(item);
+     	processIcons(item, createOrClone); 
+     	processPackgeUnits(item);
+     	processVendor(item);
      	try{
       	   ImsValidator.validateNewItem(item);
  		}
@@ -269,9 +261,9 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 		catch(HibernateException hbe){
 		   hbe.printStackTrace();
 		   if(hbe.getCause() != null)
-		      throw new DataOperationException("Error occured during createItem(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+		      throw new DataOperationException("Error occured during createItem(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
 		   else
-		  	  throw new DataOperationException("Error occured during createItem(), due to: " +  hbe.getMessage());	
+		  	  throw new DataOperationException("Error occured during createItem(), due to: " +  hbe.getMessage(), hbe);	
 	    }	
    	    catch(Exception e){
 		  e.printStackTrace();
@@ -299,6 +291,7 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
      	ImsNewFeature newFeature = item.getNewFeature();
      	if(newFeature != null && !newFeature.isEmpty()){
            item.setNewFeature(null);	
+           newFeature.setItemCode(null);
      	   item.addNewFeature(newFeature);
      	}
      	else
@@ -503,6 +496,28 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 		return item.getNewVendorSystem();
 	}
 	
+	private void processNewFeature(Ims item, DBOperation dBOperation){
+		ImsNewFeature newFeature = item.getNewFeature();
+     	if(newFeature != null && !newFeature.isEmpty()){
+     		if(dBOperation.equals(DBOperation.CLONE))
+     		   newFeature.setItemCode(null); //remove original item code which is the new item object cloned from from this newFeature object
+     		newFeature.setCreatedDate(new Date());
+     	    item.addNewFeature(newFeature);
+     	}   
+     	else
+     	   item.setNewFeature(null);
+	}
+	
+	private void processColorHues(Ims item){
+		List<ColorHue> colorhues = item.getColorhues();
+     	if(colorhues != null && !colorhues.isEmpty()){
+     	   item.setColorhues(null);
+     	   for(ColorHue colorhue : colorhues){
+     		   item.addColorhue(colorhue);
+     	   }
+     	   item.setColorcategory(ImsDataUtil.convertColorHuesToColorCategory(colorhues));
+     	}
+	}
 	private Ims processApplications(Ims item){
 		Applications app = item.getApplications();
      	if(app != null){
@@ -532,6 +547,69 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
      	}
     	return item;
 	} 	
+	//NEW.vendorlandedbasecost := (NEW.vendornetprice * (100.00 + NEW.vendormarkuppct) / 100.00 / tUnitRatio) + (NEW.vendorfreightratecwt * NEW.basewgtperunit / 100);
+	private Ims processVendor(Ims item){
+		List<Vendor> vendors = item.getNewVendorSystem();
+     	item.setNewVendorSystem(null);
+     	if(vendors != null && !vendors.isEmpty()){
+     		VendorInfo lagancyVendor = new VendorInfo(); 
+     		for(Vendor vendor : vendors){
+     			if(vendor.getId() != null){ //populated legacy vendor fields
+           		   item.addNewVendorSystem(vendor);
+           		   if(vendor.getVendorOrder() == 1)
+           			  lagancyVendor = ImsDataUtil.convertNewVendorToLegancyVendorInfo(vendor); 
+           		   else if(vendor.getVendorOrder() == 2)
+           			  lagancyVendor.setVendornbr2(vendor.getId()); 
+     			}  
+     			if(vendor.getVendorListPrice() != null){ //calculate net price
+    				if(vendor.getVendorDiscountPct() != null){
+    			       BigDecimal netPrice = new BigDecimal(vendor.getVendorListPrice().floatValue() * ((100 - vendor.getVendorDiscountPct())/100.00));
+    			       vendor.setVendorNetPrice(netPrice);
+    			       if(item.getUnits() != null && item.getUnits().getStdratio() != null && item.getUnits().getBasewgtperunit() != null){
+    			          BigDecimal landedBaseCost = new BigDecimal(netPrice.floatValue() * 
+    			    		                                         ((100 + vendor.getVendorMarkupPct())/100.00/item.getUnits().getStdratio()) + 
+    			    		                                         vendor.getVendorFreightRateCwt() *
+    			    		                                         item.getUnits().getBasewgtperunit().floatValue()/100.00);
+    			          vendor.setVendorLandedBaseCost(landedBaseCost);
+    			       }   
+    				}   
+    				else 
+    				   vendor.setVendorNetPrice(vendor.getVendorListPrice());
+    			} //NEW.vendornetprice := NEW.vendorlistprice * (100.00 - NEW.vendordiscpct1) * (100.00 - NEW.vendordiscpct2) * (100.00 - NEW.vendordiscpct3) / 1000000;
+     			  //NEW.vendornetprice := round(NEW.vendornetprice, CAST (NEW.vendorroundaccuracy AS INTEGER));
+     		}	
+           	item.setVendors(lagancyVendor);  
+       	}
+     	
+		/*List<Vendor> vendors = item.getNewVendorSystem();
+		for(Vendor vendor : vendors){
+			if(vendor.getVendorListPrice() != null){
+				if(vendor.getVendorDiscountPct() != null){
+			       BigDecimal netPrice = new BigDecimal(vendor.getVendorListPrice().floatValue() * ((100 - vendor.getVendorDiscountPct())/100));
+			       vendor.setVendorNetPrice(netPrice);
+				}   
+				else 
+					vendor.setVendorNetPrice(vendor.getVendorListPrice());
+			}	
+			  //BigDecimal netPrice = new BigDecimal(vendor.getVendorListPrice().floatValue() * vendor.getVendorFreightRateCwt());
+			  //vendor.setVendorNetPrice(netPrice);
+			//vendors.add(vendor);
+		}*/
+     
+    	return item;
+	} 	
+	
+	private void processIcons(Ims item, DBOperation dBOperation){
+		IconCollection icons = item.getIconDescription();
+     	if(icons != null && !icons.isEmpty()){
+     	   if(dBOperation.equals(DBOperation.CLONE))
+     		  icons.setItemCode(null); //remove original item code from icons object
+     	   item.addIconDescription(icons);	
+     	   item.setIconsystem(ImsDataUtil.convertIconCollectionToLegancyIcons(icons));
+     	}   
+     	else
+     	   item.setIconDescription(null);	
+	}
 	
 	public boolean validateVendorId(Integer vendorId){
 		List<Integer> keymarkVedorIdList = null;

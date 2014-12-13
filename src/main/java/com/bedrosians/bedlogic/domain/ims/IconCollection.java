@@ -240,7 +240,7 @@ public class IconCollection implements java.io.Serializable {
 	@JsonIgnore
     @Version
     @Column(name = "version")
-    public Integer gerVersion(){
+    public Integer getVersion(){
     	return version;
     }
 	

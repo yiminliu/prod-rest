@@ -7,7 +7,7 @@
   <title>Ims Menu</title>
 </head>
 <body>
-   <div class="container">
+   <div class="home-container">
       <c:choose>
          <c:when test="${empty itemList}">
              <div class="page_title">No Item Found!</div>
@@ -18,7 +18,7 @@
       </c:choose>
       <br/>
       <p></p>
-      <div id="main-content">
+      <div style="float:middle;">
              <div class="span-18 colborder">
                  <c:if test="${!empty itemList}">
                     <table border="1">
@@ -26,15 +26,20 @@
                          <th>Item Code</th>
                          <th>Item Description</th>
                          <th>Category</th>
-                         <th>Serious Name</th>
+                         <th>Seriess Name</th>
+                         <th>Series Color</th>
+                         <th>Color Hues</th>
                          <th>Active Status</th>
-                         <th>Color Category</th>
-                         <th>Color</th>
                          <th>Origin</th>
+                         <th>MSRP</th>
+                         <th>Price Unit</th>
+                         <th>Shade Variation</th>
                          <th>MPS</th>
                          <th>Grade</th>
                          <th>Status</th>
-                         <th>Inventory Item Code</th>
+                         <th>Prod Manager</th>
+                         <th>Buyer</th>
+                         <!--<th>Inventory Item Code</th>-->
                          <th>Edit</th>
                        </tr>
                        <c:forEach var="item" items="${itemList}" varStatus="status">  
@@ -43,6 +48,8 @@
                           <td>${item.itemdesc.itemdesc1}</td>
                           <td>${item.itemcategory}</td>
                           <td>${item.series.seriesname}</td>
+                          <td>${item.series.seriescolor}</td>
+                          <td>${item.getColorHuesAsStrng()}</td>
                           <c:choose>
                              <c:when test="${item.inactivecode == 'N'}">
                                 <td><c:out value="Active"/></td>
@@ -50,14 +57,17 @@
                              <c:otherwise>
                                 <td><c:out value="Inative"/></td>
                              </c:otherwise>
-                          </c:choose>
-                          <td>${item.getColorHuesAsStrng()}</td>
-                          <td>${item.series.seriescolor}</td>
-                          <td>${item.countryorigin}</td>
-                          <td>${item.newFeature.mpsCode}</td>
-                          <td>${item.newFeature.grade}</td>
-                          <td>${item.newFeature.status}</td>
-                          <td>${item.inventoryitemcode}</td>
+                         </c:choose>
+                         <td>${item.countryorigin}</td>
+                         <td>${item.price.sellprice}</td>
+                         <td>${item.units.stdunit}</td>
+                         <td>${item.shadevariation}</td>
+                         <td>${item.newFeature.mpsCode}</td>
+                         <td>${item.newFeature.grade}</td>
+                         <td>${item.newFeature.status}</td>
+                         <td>${item.purchasers.purchaser}</td>
+                         <td>${item.purchasers.purchaser2}</td>
+                          <!--<td>${item.inventoryitemcode}</td>-->
                           <td><a id="modifyItem" href="<spring:url value="/ims/updateItem/${item.itemcode}" />"><span>Edit</span></a></td>
                           <!-- <td><a id="deleteItem" href="<spring:url value="/ims/deleteItem/${item.itemcode}" />" class="button-m"><span>Delete</span></a></td>-->
                        </tr>

@@ -91,7 +91,6 @@
             <form:radiobutton path="newFeature.warranty" value="1" />1 year
             <form:radiobutton path="newFeature.warranty" value="3" />3 year
             <form:radiobutton path="newFeature.warranty" value="5" />5 year
-            <form:radiobutton path="newFeature.warranty" value="10" />10 year
          </td>
       </tr>
       <tr>  
@@ -116,7 +115,7 @@
       </tr>
       <tr>  
        <td>
-           <label for="ColorCategoryOptions">Color Category: </label>
+           <label for="ColorHuesyOptions">Color Hues: </label>
            <c:forEach var="colorHue" items="${colorList}" varStatus="status">
               <span style="padding-left: 5px;padding-bottom:3px; font-size: 12px;">
                 <form:checkbox path="colorhues" value="${colorHue}" />${colorHue}

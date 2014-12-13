@@ -11,10 +11,10 @@
 <div class="container">
 <spring:url var="action" value="/ims/cloneItem" />
 <form:form method="POST" action="${action}" modelAttribute="item">
-  <div style="color:Green"> <h3>Modify Pertaining Information</h3></div>
+  <div style="color:Green"> <h3>Edit Pertaining Information to Create a New Item</h3></div>
    <table class="category">
       <tr>
-         <td><label>New Item Code<span style="color:red;">*</span>: </label>  <form:input path="itemcode"></form:input><small>(maximum 18 characters)</small></td>
+         <td><label>New Item Code<span style="color:red;">*</span>: </label>  <form:input path="itemcode" style="text-transform:uppercase;"></form:input><small>(maximum 18 characters)</small></td>
       </tr>
       <tr>
          <td><form:errors path="itemcode" cssClass="error" /></td>               
@@ -49,7 +49,7 @@
       </tr>
       <tr>  
        <td>
-           <label for="ColorCategoryOptions">Color Category: </label>
+           <label for="ColorHuesOptions">Color Hues: </label>
            <c:forEach var="colorHue" items="${colorList}" varStatus="status">
               <span style="padding-left: 5px;padding-bottom:3px; font-size: 12px;">
                 <form:checkbox path="colorhues" value="${colorHue}" />${colorHue}
@@ -59,12 +59,12 @@
      </tr>
       <tr>
         <td><label for="length">Length: </label>
-            <form:input path="dimensions.length" cssErrorClass="span-8 validationFailed" cssStyle="width:175px;color:blue;"></form:input>
+            <form:input path="dimensions.length" cssErrorClass="span-8 validationFailed" cssStyle="width:175px;"></form:input>
         </td>
       </tr>
       <tr>
         <td><label for="nominallength">Nominal Length: </label> 
-            <form:input path="dimensions.nominallength" cssErrorClass="span-8 validationFailed" cssStyle="width:175px;color:blue;"></form:input>
+            <form:input path="dimensions.nominallength" cssErrorClass="span-8 validationFailed" cssStyle="width:175px;"></form:input>
         </td>
       </tr>
       <tr>

@@ -5,7 +5,8 @@ public enum DBOperation {
 	SEARCH("Search"),
 	CREATE("Create"),
 	UPDATE("Update"),
-	DELETE("Delete");
+	DELETE("Delete"),
+	CLONE("Clone");
 		 
 	
 	private String description;

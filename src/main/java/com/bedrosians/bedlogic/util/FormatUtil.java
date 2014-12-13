@@ -181,7 +181,7 @@ public class FormatUtil {
 			ims.getVendors().setVendorpriceunit(process(ims.getVendors().getVendorpriceunit()));
 			ims.getVendors().setVendorlandedbasecost(process(ims.getVendors().getVendorlandedbasecost()));
 			//product.getVendors().setDutypct(process(product.getVendors().getDutypct()));
-		}//populate ProductVendor with lagec Vendor info when ProductVendor is empty, this maybe removed after Item_Vedor table is populated with the ims data
+		}//populate ProductVendor with legacy Vendor info when ProductVendor is empty, this maybe removed after Item_Vedor table is populated with the ims data
 		if(ims.getVendors() != null && (ims.getNewVendorSystem() == null || ims.getNewVendorSystem().isEmpty())){
 			Vendor vendor = ImsDataUtil.convertImsVendorInfoToItemVendor(ims.getVendors());
 			vendor.setVendorOrder(1);
@@ -197,10 +197,10 @@ public class FormatUtil {
 		   ims.setUsage(ImsDataUtil.convertApplicationsToUsage(ims));
 		if(ims.getNewFeature() != null && ims.getNewFeature().getMpsCode() == null)
 	       ims.getNewFeature().setMpsCode(ImsDataUtil.convertInactivecdToMpsCode(ims.getInactivecode()));	
-	    //if((product.getColorhues() == null || product.getColorhues().isEmpty()) && product.getColorcategory() != null && !product.getColorcategory().isEmpty())
-	    //product.setColorhues(new ArrayList<>(ImsDataUtil.convertColorCategoryToColorHueObjects(product)));
-		//if(product.getNewVendorSystem() != null && !product.getNewVendorSystem().isEmpty())
-		//   product.setNewVendorSystem(new ArrayList<>(new HashSet<>(product.getNewVendorSystem())));	
-		return ims;
+	    if((ims.getColorhues() == null || ims.getColorhues().isEmpty()) && ims.getColorcategory() != null && !ims.getColorcategory().isEmpty())
+	    	ims.setColorhues(ImsDataUtil.convertColorCategoryToColorHueObjects(ims.getColorcategory()));
+		if(ims.getNewVendorSystem() != null && !ims.getNewVendorSystem().isEmpty())
+			ims.setNewVendorSystem(ims.getNewVendorSystem());	
+		return ims;	
 	}	
 }

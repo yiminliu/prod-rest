@@ -48,6 +48,7 @@ import com.bedrosians.bedlogic.exception.DataNotFoundException;
 import com.bedrosians.bedlogic.exception.DataOperationException;
 import com.bedrosians.bedlogic.exception.InputParamException;
 import com.bedrosians.bedlogic.service.mvc.ims.ImsServiceMVC;
+import com.bedrosians.bedlogic.util.enums.DBOperation;
 import com.bedrosians.bedlogic.web.validator.ImsValidator;
 
 @Controller
@@ -74,14 +75,13 @@ public class ImsController {
    }
    
    @RequestMapping(value="getItemDetail/{itemCode}", method = RequestMethod.GET)
-   //@ExceptionHandler(DataNotFoundException.class)
    public String getItemDetail(@PathVariable("itemCode") String itemCode, Model model){
 	   Ims item = null;
 	   try{
 		   item = imsServiceMVC.getItemByItemCode(itemCode);
 	   }
 	   catch(Exception e){
-		   e.printStackTrace();
+		  throw e;
 	   }
 	   if(item == null)
 		  throw new DataNotFoundException(itemCode);
@@ -118,6 +118,7 @@ public class ImsController {
 	   return "ims/getItemsSuccess";
    }
    
+   ////////////////// Create item ///////////////////
    /**
     * This method is used to show the form to create an item
     *
@@ -181,29 +182,32 @@ public class ImsController {
    
    }
    
-  /* //handle material info
+   //handle material info
    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
-   @RequestMapping(value = "/createItem_dimension", method = RequestMethod.POST)
+   @RequestMapping(value = "/createItem_dimensions", method = RequestMethod.POST)
    public String itemDimensionForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult bindingResult) {
-	   validator.validateMaterialInfo(item, bindingResult);
-	   if (bindingResult.hasErrors()) 
-           return "ims/createItem_general"; 
+	  validator.validateMaterialInfo(item, bindingResult);
+	  if (bindingResult.hasErrors()) 
+          return "ims/createItem_material"; 
       if (item != null) 
-         model.addAttribute("aItem", item); 
-       return "ims/createItem_dimension";
+          model.addAttribute("aItem", item); 
+      if(item != null && item.getMaterial() != null && item.getMaterial().getMaterialcategory().equalsIgnoreCase("tool"))
+    	  return "ims/createItem_price";
+      else
+          return "ims/createItem_dimensions";
    }
-  */
-   //handle material and dimension
+  
+   //handle dimension
    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
    @RequestMapping(value = "/createItem_price", method = RequestMethod.POST)
    public String itemPriceForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult bindingResult) {
-      	  validator.validateMaterialInfo(item, bindingResult);
-   	      if (bindingResult.hasErrors()) {
-              return "ims/createItem_material";
-          }
-   	      if (item != null) 
-              model.addAttribute("aItem", item);
-     	  return "ims/createItem_price";
+      //validator.validateMaterialInfo(item, bindingResult);
+   	  //if (bindingResult.hasErrors()) {
+       //   return "ims/createItem_dimensions";
+      //}
+   	  if (item != null) 
+          model.addAttribute("aItem", item);
+      return "ims/createItem_price";
    }
    
    //handle price
@@ -236,7 +240,7 @@ public class ImsController {
    public String itemVendorForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult bindingResult) {
 	   validator.validatePackageUnits(item, bindingResult);
  	   if (bindingResult.hasErrors()) {
-           return "ims/createItem_vendor";
+           return "ims/createItem_packageUnits";
        }
  	   if (item != null) 
           model.addAttribute("aItem", item);
@@ -300,8 +304,8 @@ public class ImsController {
           }
    	      if (item != null) {
        	     try {
-       		    itemCode = imsServiceMVC.createItem(item);
-                model.addAttribute("aItem", item);
+       		    itemCode = imsServiceMVC.createItem(item, DBOperation.CREATE);
+                model.addAttribute("item", item);
                 model.addAttribute("itemCode", itemCode);
                 status.setComplete(); //finished the "aItem" SessionAttribute
              }
@@ -462,7 +466,7 @@ public class ImsController {
                   return "ims/cloneItem";
          	  } 
     	      try {
-                  imsServiceMVC.cloneItem(item);
+                  imsServiceMVC.createItem(item, DBOperation.CLONE);
               }
               catch (Exception te) {
                  throw te;

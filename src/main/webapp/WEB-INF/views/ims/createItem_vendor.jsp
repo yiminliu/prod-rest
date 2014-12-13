@@ -33,8 +33,9 @@
           <!-- <td>Vendor Name: <form:input path="newVendorSystem[${loop.index}].vendorName"></form:input></td>
           <td>Vendor Name2: <form:input path="newVendorSystem[${loop.index}].vendorName2"></form:input></td>-->
           <td> <label>Vendor XrefId:</label> <form:input path="newVendorSystem[${loop.index}].vendorXrefId"></form:input></td>
-          <td><label>List Price:</label> <form:input path="newVendorSystem[${loop.index}].vendorListPrice" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:80px;"></form:input></td>
-          <td><label>Net Price:</label> <form:input path="newVendorSystem[${loop.index}].vendorNetPrice" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:80px;"></form:input></td>
+          <td><label>List Price:</label> <form:input path="newVendorSystem[${loop.index}].vendorListPrice" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:80px;"></form:input>
+                <form:errors path="newVendorSystem[${loop.index}].vendorListPrice" cssClass="error" />
+          </td>
           <td><label for="stdunitOptions">Price Unit: </label>
             <form:select id="vendorPriceUnit" path="newVendorSystem[${loop.index}].vendorPriceUnit" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:80px;">
                <form:option value="0" selected="selected">Select one</form:option>
@@ -42,9 +43,20 @@
                  <form:option value="${vendorPriceUnit}">${vendorPriceUnit}</form:option>
               </c:forEach>
             </form:select>
+            <form:errors path="newVendorSystem[${loop.index}].vendorPriceUnit" cssClass="error" />
           </td>
-          <td><label>Price Round Accuracy:</label> <form:input path="newVendorSystem[${loop.index}].vendorPriceRoundAccuracy" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:160px;"></form:input></td>
-          <td><label>Freight Rate Cwt:</label> <form:input path="newVendorSystem[${loop.index}].vendorFreightRateCwt" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:80px;"></form:input></td>
+          <td><label>Discount Pct:</label> <form:input path="newVendorSystem[${loop.index}].vendorDiscountPct" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:160px;"></form:input>
+             <form:errors path="newVendorSystem[${loop.index}].vendorDiscountPct" cssClass="error" />
+          </td>
+          <td><label>Price Round Accuracy:</label> <form:input path="newVendorSystem[${loop.index}].vendorPriceRoundAccuracy" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:160px;"></form:input>
+             <form:errors path="newVendorSystem[${loop.index}].vendorPriceRoundAccuracy" cssClass="error" />
+          </td>
+          <td><label>Markup Pct:</label> <form:input path="newVendorSystem[${loop.index}].vendorMarkupPct" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:80px;"></form:input>
+              <form:errors path="newVendorSystem[${loop.index}].vendorMarkupPct" cssClass="error" />
+          </td>
+          <td><label>Freight Rate Cwt:</label> <form:input path="newVendorSystem[${loop.index}].vendorFreightRateCwt" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:160px;"></form:input>
+             <form:errors path="newVendorSystem[${loop.index}].vendorFreightRateCwt" cssClass="error" />
+          </td>
           <td><label>Lead Time:</label> <form:input path="newVendorSystem[${loop.index}].leadTime" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:80px;"></form:input></td>
           <td><label>Duty Pct:</label> <form:input path="newVendorSystem[${loop.index}].dutyPct" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:80px;"></form:input></td>
        </tr>

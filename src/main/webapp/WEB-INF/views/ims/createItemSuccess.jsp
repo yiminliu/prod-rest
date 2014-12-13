@@ -23,20 +23,21 @@
   </head>
 <body>
   <div class="home-container">
-     <c:choose>
-        <c:when test="${empty item}">
+    <!--<c:choose>
+        <c:when test="${empty itemCode}">
            <div class="container">Error occured when create item</div>
         </c:when>
         <c:otherwise>
            <h2>Item Code: <span style="color:RED">${item.itemcode} </span>Has Been Created Successfully!</h2>
         </c:otherwise>
-     </c:choose>
+     </c:choose>-->
+     <h2>Item Code: <span style="color:RED">${item.itemcode} </span>Has Been Created Successfully!</h2>
      <br/>
      <br/>
      <table style="border:1px; margin: 0 auto;">
         <tr>
            <td><a id="viewItem" href="<spring:url value="/ims/getItemDetail/${item.itemcode}" />" class="button-m"><span>View The Item</span></a></td>
-           <td><a id="modifyItem" href="<spring:url value="/ims/updateItem/${item.itemcode}" />" class="button-m"><span>Modify The Item</span></a></td>
+           <td><a id="modifyItem" href="<spring:url value="/ims/updateItem/${item.itemcode}" />" class="button-m"><span>Edit The Item</span></a></td>
            <td><a id="deleteItem" href="<spring:url value="/ims/deleteItem/${item.itemcode}" />" class="button-m"><span>Delete The Item</span></a></td>
            <td><a id="CreateItem" href="<spring:url value="/ims/cloneItem/${item.itemcode}" />" class="button-m"><span>Clone This Item</span></a></td>
            <td><a id="CreateItem" href="<spring:url value="/ims/createItem_begin" />" class="button-m"><span>Create Another Item</span></a></td>

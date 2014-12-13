@@ -16,10 +16,11 @@
      <div style="color:66CCCC"> <h3>Base Unit</h3></div>
      <table>
        <tr>   
-          <td><span style="color:black;">Base Unit: </span>
+          <td><span style="color:black;">Base Unit<span style="color:red;">*</span>: </span>
               <c:forEach var="baseunit" items="${packageUnitList}" varStatus="status">
                  <form:radiobutton class="input_value" path="units.baseunit" value="${baseunit}"/>${baseunit}
               </c:forEach>
+              <form:errors path="units.baseunit" cssClass="error" />
           </td> 
        </tr>
        <tr>          
@@ -52,7 +53,9 @@
           <td style="color:black;">Base Volumn: <form:input path="units.basevolperunit"></form:input></td>
 	    </tr>
        <tr>  
-          <td style="color:black;">Base Weight: <form:input path="units.basewgtperunit"></form:input></td>
+          <td style="color:black;">Base Weight<span style="color:red;">*</span>: <form:input path="units.basewgtperunit"></form:input>
+             <form:errors path="units.basewgtperunit" cssClass="error" />
+          </td>
 	   </tr>
 	</table>   
           

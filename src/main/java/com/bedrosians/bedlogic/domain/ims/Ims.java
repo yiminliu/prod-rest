@@ -4,6 +4,7 @@ package com.bedrosians.bedlogic.domain.ims;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -119,7 +120,7 @@ public class Ims implements java.io.Serializable {
   	//private PriorVendor priorVendor;
   	
 	//------- Associations --------//
-  	private List<Vendor> newVendorSystem = new ArrayList<>();
+  	private List<Vendor> newVendorSystem = new CopyOnWriteArrayList<Vendor>();
   	private ImsNewFeature newFeature;
     private IconCollection iconDescription;
 	private List<ColorHue> colorhues =  new ArrayList<>();
@@ -487,8 +488,8 @@ public class Ims implements java.io.Serializable {
 	public void addNewFeature(ImsNewFeature newFeature ){
 		if(getNewFeature() != null)
 			setNewFeature(null);
-		if(newFeature.getItemCode() == null || !newFeature.getItemCode().equalsIgnoreCase(getItemcode()))
-			newFeature.setItemCode(getItemcode());
+		//if(newFeature.getItemCode() == null || !newFeature.getItemCode().equalsIgnoreCase(getItemcode()))
+		//	newFeature.setItemCode(getItemcode());
 		newFeature.setItem(this);
 		this.newFeature = newFeature;
 	}
@@ -504,8 +505,8 @@ public class Ims implements java.io.Serializable {
 	}
 	
 	public void addIconDescription(IconCollection iconDescription){
-		//if(getIconDescription() != null)
-		  // setIconDescription(null);	
+		if(getIconDescription() != null)
+		   setIconDescription(null);	
 		//if(iconDescription.getItemCode() == null || !iconDescription.getItemCode().equalsIgnoreCase(this.getItemcode()))
 		//   iconDescription.setItemCode(getItemcode());
 		iconDescription.setItem(this);
@@ -542,7 +543,7 @@ public class Ims implements java.io.Serializable {
 	
 	//@LazyCollection(LazyCollectionOption.FALSE)
 	//@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="item", cascade=CascadeType.ALL, orphanRemoval=true)
 	@Fetch(FetchMode.SUBSELECT)
 	public List<ColorHue> getColorhues() {
 		return this.colorhues;
@@ -617,7 +618,7 @@ public class Ims implements java.io.Serializable {
 	@JsonIgnore
 	@Transient
 	public String getColorHuesAsStrng(){
-		return ImsDataUtil.convertColorHuesToColorCategory(colorhues);
+		return ImsDataUtil.convertColorHuesToString(colorhues);
 	}
 	public Ims() {
 	}

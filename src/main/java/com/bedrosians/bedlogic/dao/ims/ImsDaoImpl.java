@@ -67,7 +67,14 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 	public Ims getItemByItemCode(Session session, final String itemCode) {
     	Query query = session.createQuery("From Ims where itemcode = :itemCode");
 		query.setString("itemCode", itemCode);
-		return (Ims)query.setCacheable(true).uniqueResult();
+		return (Ims)query.setCacheable(false).uniqueResult();
+	}
+	
+	public Ims getItemByItemCode(final String itemCode) {
+    	Query query = getSession().createQuery("From Ims where itemcode = :itemCode");
+		query.setString("itemCode", itemCode);
+		//return (Ims)getSession().get("Ims", itemCode,  LockMode.OPTIMISTIC); 
+		return (Ims)query.setCacheable(false).uniqueResult();
 	}
 	
 	@Override

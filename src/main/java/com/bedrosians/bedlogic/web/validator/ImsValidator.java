@@ -133,7 +133,7 @@ public class ImsValidator implements Validator {
 	 public void validatePackageUnits(Ims item, Errors errors) {
 		 Units data = item.getUnits();
 		 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "units.baseunit", "required.units.baseunit", "units.baseunit is required.");
-
+		 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "units.basewgtperunit", "required.units.basewgtperunit", "Base Unit Weight is required.");
 	 }
 	 
 	 public void validateTestSpecification(Ims item, Errors errors) {
@@ -151,13 +151,37 @@ public class ImsValidator implements Validator {
 	 
 	 public void validateVendorInfo(Ims item, Errors errors) {
 		 List<Vendor> data = item.getNewVendorSystem();
+		 Units units = item.getUnits();
 		 if (data != null && !data.isEmpty()) {
-			 if(data.get(0) != null && data.get(0).getVendorId() != null)
-			    validateVendorId(data.get(0).getVendorId().getId(), errors);
+			 Vendor vendor1 = data.get(0);
+			 if(vendor1 != null && vendor1.getVendorId() != null)
+			    validateVendorId(vendor1.getVendorId().getId(), errors);
 			 //if(data.get(0) != null && data.get(0).getVendorId().getId() == null)
 				 
 				// System.out.println("item.newVendorSystem[0] =" + data.get(0));
 		      //  errors.rejectValue("vendor.newVendorSystem[0].vendirId.id", "item.newVendorSystem[0].vendirId.id.null", "Please enter a valid number number");
+			 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorPriceUnit", "required.item.newVendorSystem[\"0\"].vendorPriceUnit", "Required.");
+			 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorListPrice", "required.item.newVendorSystem[\"0\"].vendorListPrice", "Required.");
+			 //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorNetPrice", "required.item.newVendorSystem[\"0\"].vendorNetPrice", "Required.");
+			 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorDiscountPct", "required.item.newVendorSystem[\"0\"].vendorDiscountPct", "Required.");
+			 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorPriceRoundAccuracy", "required.item.newVendorSystem[\"0\"].vendorPriceRoundAccuracy", "Required.");
+			 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorMarkupPct", "required.item.newVendorSystem[\"0\"].vendorMarkupPct", "Required.");
+			 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorFreightRateCwt", "required.item.newVendorSystem[\"0\"].vendorFreightRateCwt", "Required.");
+			 //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorLandedBaseCost", "required.item.newVendorSystem[\"0\"].vendorLandedBaseCost", "Required.");
+			 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorMarkupPct", "required.item.newVendorSystem[\"0\"].vendorMarkupPct", "Required.");
+		
+			 if((vendor1.getVendorPriceUnit() == null) ||
+			    (!vendor1.getVendorPriceUnit().equals(units.getBaseunit()) && 
+			     !vendor1.getVendorPriceUnit().equals(units.getUnit1unit()) && 
+			     !vendor1.getVendorPriceUnit().equals(units.getUnit2unit()) && 
+			     !vendor1.getVendorPriceUnit().equals(units.getUnit3unit()) && 
+			     !vendor1.getVendorPriceUnit().equals(units.getUnit4unit()))){
+				 errors.rejectValue("newVendorSystem[\"0\"].vendorPriceUnit", "item.newVendorSystem[\"0\"].vendorPriceUnit", "Vendor price unit should match one of the packageing units");
+			 }
+			// if((vendor1.getVendorPriceUnit() == null) ||
+			//		    (vendor1.getVendorPriceUnit().equals(units.getBaseunit()) && vendor1.getVendorFreightRateCwt()
+			//		     vendor1.getVendorPriceUnit().equals(units.getUnit1unit()) &&
+			 
 		 }
 	 }
 	 
