@@ -1,6 +1,6 @@
 package com.bedrosians.bedlogic.domain.ims.enums;
 
-public enum Color {
+public enum Color implements java.io.Serializable {
 
 	ALMOND("Almond"),
 	BEIGE("Beige"),

@@ -18,7 +18,7 @@
                 <td><a id="createItem" href="<spring:url value="/ims/createItem_menu"/>"><span>Create Item</span></a></td>
             </tr>
             <tr style="float:middle;"> 
-                <td><a id="updateItem" href="<spring:url value="/ims/updateItemInitForm"/>"><span>Update Item</span></a></td>
+                <td><a id="updateItem" href="<spring:url value="/ims/updateItemForm"/>"><span>Update Item</span></a></td>
             </tr>  
             <!-- <tr style="float:middle;"> 
                  <td><a id="deleteItem" href="<spring:url value="/ims/deleteItem"/>"><span>Delete Item</span></a></td>

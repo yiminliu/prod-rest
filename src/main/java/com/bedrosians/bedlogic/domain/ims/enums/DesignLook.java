@@ -1,6 +1,6 @@
 package com.bedrosians.bedlogic.domain.ims.enums;
 
-public enum DesignLook {
+public enum DesignLook implements java.io.Serializable {
 
 		 Wood("Wood"),
 		 Travertine("Travertine");

@@ -20,7 +20,6 @@ public interface ImsServiceMVC {
 	public List<Ims> getItems(MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException, BedDAOException;	
 	public List<Ims> getItems(LinkedHashMap<String, List<String>> queryParams);
 	public String createItem(Ims ims, DBOperation createOrClone);
-	public String cloneItem(Ims item);
 	public void updateItem(Ims ims);	
 	public void deactivateItem(Ims itemFromInput) throws BedDAOBadParamException, BedDAOException;
 	public void deleteItemByItemCode(String id);

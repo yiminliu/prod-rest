@@ -1,26 +1,22 @@
 package com.bedrosians.bedlogic.domain.ims;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.persistence.Version;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.search.annotations.ContainedIn;
-import org.hibernate.search.annotations.IndexedEmbedded;
 
 import com.bedrosians.bedlogic.util.FormatUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -29,35 +25,34 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name="apv")
 @DynamicUpdate
 @DynamicInsert
-//@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class KeymarkVendor implements java.io.Serializable {
 
 	private static final long serialVersionUID = -582265865921787L;
 	
-	private Integer vendorId;
+	private Integer vendorNumber;
 	private String name;
-	private String abaName;
+	private String dbaName;
 	private String fobCode;
+	//private Vendor vendor;
 		
 	public KeymarkVendor() {
 	}
 	
-	public KeymarkVendor(Integer vendorId) {
-		this.vendorId = vendorId;
+	public KeymarkVendor(Integer vendorNumber) {
+		this.vendorNumber = vendorNumber;
 	}
 	
 	@Id
 	@Column(name = "vendornbr")
-    public Integer getVendorId() {
-		return this.vendorId;
+    public Integer getvendorNumber() {
+		return this.vendorNumber;
 	}
 
-	public void setVendorId(Integer vendorId) {
-		this.vendorId = vendorId;
+	public void setvendorNumber(Integer vendorNumber) {
+		this.vendorNumber = vendorNumber;
 	}
 
-
-	
 	@Column(name = "name", length = 35)
 	public String getName() {
 		return name;
@@ -67,13 +62,13 @@ public class KeymarkVendor implements java.io.Serializable {
 		this.name = name;
 	}
 
-	@Column(name = "abaname", length = 40)
-	public String getAbaName() {
-		return this.abaName;
+	@Column(name = "dbaname", length = 40)
+	public String getDbaName() {
+		return this.dbaName;
 	}
 
-	public void setAbaName(String abaName) {
-		this.abaName = abaName;
+	public void setDbaName(String dbaName) {
+		this.dbaName = dbaName;
 	}
 
 	@Column(name = "fobcd", length = 10)
@@ -84,28 +79,24 @@ public class KeymarkVendor implements java.io.Serializable {
 	public void setFobCode(String fobCode) {
 		this.fobCode = fobCode;
 	}
-
-
-	//@JsonIgnore
-		//@ManyToOne(fetch = FetchType.EAGER)
-		//@JoinColumn(name="productVendorId.vendorId")//, updatable=false, insertable=false)
-		//public Vendor getVendor(){
-		//	return this.vendor;
-		//}
+/*
+	@JsonIgnore
+	@OneToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="vendorNumber.vendorNumber")//, updatable=false, insertable=false)
+	public Vendor getVendor(){
+		return this.vendor;
+	}
 		
-		//public void setVendor(Vendor vendor){
-		//	this.vendor = vendor;
-		//}
-		
-	
-	
-
+	public void setVendor(Vendor vendor){
+		this.vendor = vendor;
+	}
+*/	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((vendorId == null) ? 0 : vendorId.hashCode());
+				+ ((vendorNumber == null) ? 0 : vendorNumber.hashCode());
 		return result;
 	}
 
@@ -118,10 +109,10 @@ public class KeymarkVendor implements java.io.Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		KeymarkVendor other = (KeymarkVendor) obj;
-		if (vendorId == null) {
-			if (other.vendorId != null)
+		if (vendorNumber == null) {
+			if (other.vendorNumber != null)
 				return false;
-		} else if (!vendorId.equals(other.vendorId))
+		} else if (!vendorNumber.equals(other.vendorNumber))
 			return false;
 		return true;
 	}
@@ -129,7 +120,7 @@ public class KeymarkVendor implements java.io.Serializable {
 	@JsonIgnore
 	@Transient
 	static public List<String> allProperties(){
-		return Arrays.asList("vendorId", "vendorName", "vendorXrefId", "vendorPriceUnit", "vendorFob", "vendorlistprice", "vendorNetPrice", "vendorDiscountPct", 
+		return Arrays.asList("vendorNumber", "vendorName", "vendorXrefId", "vendorPriceUnit", "vendorFob", "vendorlistprice", "vendorNetPrice", "vendorDiscountPct", 
 				               "vendorPriceRoundAccuracy" , "leadTime", "vendorFreightRateCwt", "dutyPct");
 	}
 
@@ -137,7 +128,7 @@ public class KeymarkVendor implements java.io.Serializable {
 	@JsonIgnore
 	@Transient
 	public boolean isEmpty(){
-		return vendorId == null;
+		return vendorNumber == null;
 		//&& vendorName == null && vendorXrefId == null && vendorListPrice == null && 
 		//	   vendorNetPrice == null && vendorPriceUnit == null && vendorFob == null;
 	}

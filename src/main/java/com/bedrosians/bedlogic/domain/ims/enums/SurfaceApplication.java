@@ -1,6 +1,6 @@
 package com.bedrosians.bedlogic.domain.ims.enums;
 
-public enum SurfaceApplication {
+public enum SurfaceApplication implements java.io.Serializable {
 
 	Ink_Jet("Ink Jet"),
 	Roto("Roto"),

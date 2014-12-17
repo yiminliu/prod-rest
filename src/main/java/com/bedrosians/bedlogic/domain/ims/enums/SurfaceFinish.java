@@ -1,6 +1,6 @@
 package com.bedrosians.bedlogic.domain.ims.enums;
 
-public enum SurfaceFinish {
+public enum SurfaceFinish implements java.io.Serializable {
 
 	Antiquated("Antiquated"),
 	Filled_And_Honed("Filled & Honed"),

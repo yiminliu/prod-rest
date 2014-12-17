@@ -1,6 +1,6 @@
 package com.bedrosians.bedlogic.domain.ims.enums;
 
-public enum Grade {
+public enum Grade implements java.io.Serializable {
 
 		 First("First"),
 	     Second("Second"),

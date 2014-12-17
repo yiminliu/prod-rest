@@ -1,6 +1,6 @@
 package com.bedrosians.bedlogic.domain.ims.enums;
 
-public enum Status {
+public enum Status implements java.io.Serializable {
 
 		 Best("Best"),
 	     Better("Better"),

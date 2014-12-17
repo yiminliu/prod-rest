@@ -1,6 +1,7 @@
 package com.bedrosians.bedlogic.domain.ims.enums;
 
-public enum OriginCountry {
+public enum OriginCountry implements java.io.Serializable {
+	
         Italy("Italy"),
         USA("USA"),
         China("China"),

@@ -1,6 +1,6 @@
 package com.bedrosians.bedlogic.domain.ims.enums;
 
-public enum MaterialType {
+public enum MaterialType implements java.io.Serializable {
 
 	Brick("Brick"),
 	Ceramic("Ceramic"),

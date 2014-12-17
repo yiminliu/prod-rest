@@ -1,6 +1,6 @@
 package com.bedrosians.bedlogic.domain.ims.enums;
 
-public enum ShadeVariation {
+public enum ShadeVariation implements java.io.Serializable {
 
 	V1("V1"),
 	V2("V2"),

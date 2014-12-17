@@ -1,6 +1,6 @@
 package com.bedrosians.bedlogic.domain.ims.enums;
 
-public enum Edge {
+public enum Edge implements java.io.Serializable {
 
 	Rectified("Rectified"),
 	Squared("Squared"),

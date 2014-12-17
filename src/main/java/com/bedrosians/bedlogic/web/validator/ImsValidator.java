@@ -24,6 +24,7 @@ import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.service.ims.ImsService;
 import com.bedrosians.bedlogic.service.mvc.ims.ImsServiceMVC;
+import com.bedrosians.bedlogic.util.enums.DBOperation;
 
 
 @Component
@@ -40,50 +41,36 @@ public class ImsValidator implements Validator {
 	@Override
 	public void validate(Object target, Errors errors) {
 	   Ims item  = (Ims)target;
-	   //checkItemCode(item.getItemcode(), errors);
-	   //checkItemDescription(item.getItemdesc().getItemdesc1(), errors);
-	  // if(item.getPrice() != null && !item.getPrice().isDefault())
-	  //   checkPrice(item.getPrice(), errors);
-	   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "itemcode", "required.item.itemcode", "Item code is required.");
-	  // ValidationUtils.rejectIfEmptyOrWhitespace(errors, "itemcategory", "required.item.category", "Category is required.");
-	  // ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description",	"required.item.description", "Description is required.");
-	   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "inactivecode", "required.item.inactivecode", "Please enter a active status.");
-	   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "showonwebsite", "required.item.showonwebsite", "Please enter a valid value.");
-	   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newFeature.grade", "required.item.grade", "Please enter a valid grade.");
-	   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newFeature.status", "required.item.status", "Please enter a valid status.");
-	   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newFeature.mpsCode", "required.item.mpsCode", "Please enter a valid mps code.");
-	   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "countryorigin", "required.item.countryorigin", "Please enter a valid origin country.");
-	
 	}
 	
-	 public void validateGeneralInfo(Ims item, Errors errors) {
-		   validateItemCode(item.getItemcode(), errors);
-		   checkItemDescription(item.getItemdesc().getItemdesc1(), errors);
-		   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "itemcategory", "required.item.category", "Category is required.");
-		   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "series.seriesname", "required.item.series.seriesname", "Series Name is required.");
-		   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "series.seriescolor", "required.item.series.seriescolor", "Series Color is required.");
-		   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "countryorigin", "required.item.countryorigin", "Origin Country is required.");
-		   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "inactivecode", "required.item.inactivecode", "Active status is required.");
-		   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newFeature.grade", "required.item.grade", "Grade is required.");
-		   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newFeature.status", "required.item.status", "Status is required.");
-		   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newFeature.mpsCode", "required.item.mpsCode", "MPS code is required.");
-		   //
-
-	 }
+	public void validateGeneralInfo(Ims item, DBOperation action, Errors errors) {
+	   validateItemCode(item.getItemcode(), action, errors);
+	   checkItemDescription(item.getItemdesc().getItemdesc1(), errors);
+	   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "itemcategory", "required.item.category", "Category is required.");
+	   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "series.seriesname", "required.item.series.seriesname", "Series Name is required.");
+	   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "series.seriescolor", "required.item.series.seriescolor", "Series Color is required.");
+	   ValidationUtils.rejectIfEmptyOrWhitespace(errors, "countryorigin", "required.item.countryorigin", "Origin Country is required.");
+	   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "inactivecode", "required.item.inactivecode", "Active status is required.");
+	   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newFeature.grade", "required.item.grade", "Grade is required.");
+	   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newFeature.status", "required.item.status", "Status is required.");
+	   //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newFeature.mpsCode", "required.item.mpsCode", "MPS code is required.");
+	}
 	 
-	 public void validateItemCode(String itemCode, Errors errors) {
+	public void validateItemCode(String itemCode, DBOperation action, Errors errors) {
 		 if (itemCode == null || itemCode.length() < 1) {
 		    errors.rejectValue("itemcode", "item.itemcode.null", "Item code is required.");
 		 }
 		 else if (itemCode.length() > 18) {
 			    errors.rejectValue("itemcode", "item.itemcode.invalid", "Item code cannot be longer than 18 charactors");
 		 }
-		 else checkItemCodeAvailability(itemCode, errors);
+		 else checkItemCodeAvailability(itemCode, action, errors);
 	 }
 	 
-	 private void checkItemCodeAvailability(String itemCode, Errors errors) {
-	    if(imsService.itemCodeIsTaken(itemCode))
+	 private void checkItemCodeAvailability(String itemCode, DBOperation action, Errors errors) {
+	    if(imsService.itemCodeIsTaken(itemCode) && (action.equals(DBOperation.CREATE)  || action.equals(DBOperation.CLONE))) 
 	       errors.rejectValue("itemcode", "item.itemcode.taken", "Item code is taken, please use a different item code");
+	    else if(!imsService.itemCodeIsTaken(itemCode) && (action.equals(DBOperation.UPDATE) || action.equals(DBOperation.DELETE)))		
+		      errors.rejectValue("itemcode", "item.itemcode.not_found", "No Item found for this item code.");
 	 }
 	 
 	 private void checkItemDescription(String data, Errors errors) {
@@ -124,7 +111,7 @@ public class ImsValidator implements Validator {
 			 if(data.getTempdatefrom() == null) 
 			    errors.rejectValue("price.tempdatefrom", "item.tempdatefrom.null", "Please enter start date");
 			 if(data.getTempdatethru() == null) 
-				    errors.rejectValue("price.tempdatethru", "item.tempdatethru.null", "Please enter end date");
+				errors.rejectValue("price.tempdatethru", "item.tempdatethru.null", "Please enter end date");
 		 }		 
 		 compareDates(data.getTempdatefrom(), data.getTempdatethru(), errors);
 		 		 
@@ -134,8 +121,28 @@ public class ImsValidator implements Validator {
 		 Units data = item.getUnits();
 		 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "units.baseunit", "required.units.baseunit", "units.baseunit is required.");
 		 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "units.basewgtperunit", "required.units.basewgtperunit", "Base Unit Weight is required.");
+		 validateUnitRatio(data, errors);
 	 }
 	 
+	 private void validateUnitRatio(Units units, Errors errors) {
+		 if((units.getUnit1unit() != null && units.getUnit1unit().length() > 0) && units.getUnit1ratio() <= 0)
+			 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "units.unit1ratio", "required.units.unit1ratio", "Unit1 ratio is required.");
+		 if((units.getUnit1unit() == null || units.getUnit1unit().trim().length() == 0) && (units.getUnit1ratio() != null && units.getUnit1ratio() > 0))
+			 errors.rejectValue("units.unit1ratio", "units.unit1ratio.invalid", "Unit1 ratio should be 0, since unit1 unit is empty.");
+		 if((units.getUnit2unit() != null && units.getUnit2unit().length() > 0) && units.getUnit2ratio() <= 0)
+			 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "units.unit2ratio", "required.units.unit2ratio", "Unit2 ratio is required.");
+		 if((units.getUnit2unit() == null || units.getUnit2unit().trim().length() == 0) && (units.getUnit2ratio() != null && units.getUnit2ratio() > 0))
+			 errors.rejectValue("units.unit2ratio", "units.unit2ratio.invalid", "Unit2 ratio should be 0, since unit2 unit is empty.");
+		 if((units.getUnit3unit() != null && units.getUnit3unit().length() > 0) && units.getUnit3ratio() <= 0)
+			 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "units.unit3ratio", "required.units.unit3ratio", "Unit3 ratio is required.");
+		 if((units.getUnit3unit() == null || units.getUnit3unit().trim().length() == 0) && (units.getUnit3ratio() != null && units.getUnit3ratio() > 0))
+			 errors.rejectValue("units.unit3ratio", "units.unit3ratio.invalid", "Unit3 ratio should be 0, since unit3 unit is empty.");
+		 if((units.getUnit4unit() != null && units.getUnit4unit().length() > 0) && units.getUnit4ratio() <= 0)
+			 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "units.unit4ratio", "required.units.unit4ratio", "Unit4 ratio is required.");
+		 if((units.getUnit4unit() == null || units.getUnit4unit().trim().length() == 0) && (units.getUnit4ratio() != null && units.getUnit4ratio() > 0))
+			 errors.rejectValue("units.unit4ratio", "units.unit4ratio.invalid", "Unit4 ratio should be 0, since unit4 unit is empty.");
+	 }
+	
 	 public void validateTestSpecification(Ims item, Errors errors) {
 		 TestSpecification data = item.getTestSpecification();
 		 //if (data == null || data.getSellprice() == null) {

@@ -1,6 +1,6 @@
 package com.bedrosians.bedlogic.domain.ims.enums;
 
-public enum Usage {
+public enum Usage implements java.io.Serializable {
 
 	 F("Floor"),
      W("Wall"),

@@ -1,6 +1,6 @@
 package com.bedrosians.bedlogic.domain.ims.enums;
 
-public enum MaterialStyle {
+public enum MaterialStyle implements java.io.Serializable {
 
 	Beak("Beak"),
 	CB("Cove Base"),

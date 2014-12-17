@@ -1,6 +1,6 @@
 package com.bedrosians.bedlogic.domain.ims.enums;
 
-public enum PackageUnit {
+public enum PackageUnit implements java.io.Serializable {
 
 	    PCS("PCS"),
 		PKG("PKG"),

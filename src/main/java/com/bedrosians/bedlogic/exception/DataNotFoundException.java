@@ -8,27 +8,50 @@ public class DataNotFoundException extends RuntimeException
 {
 	private static final long serialVersionUID = -34724706273251377L;
 	
-    private String message;
+	private String errorCode;
+    private String errorMessage;
+    private Throwable error;
+    
+    
+    public DataNotFoundException(String message) { 
+       errorMessage = "No Data Found: " + message + "\n\r";
+    }
+    
+    public DataNotFoundException(String message, Throwable cause) { 
+    	if(cause != null)
+    	  errorMessage = "No Data Found: " + message + "\n\r" + "Cause: " + cause.getMessage();
+    	else
+    	  errorMessage = "No Data Found: " + message + "\n\r";
+    	error = cause;
+    }
+
+	public String getErrorCode() {
+		return errorCode;
+	}
+
+	public void setErrorCode(String errorCode) {
+		this.errorCode = errorCode;
+	}
+
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
+
+	public Throwable getError() {
+		return error;
+	}
+
+	public void setError(Throwable error) {
+		this.error = error;
+	}
+
     
     public DataNotFoundException() { 
     	super(); 
     }
-    
-    public DataNotFoundException(String id) {
-    	message = "No data found for "+ id;
-    }
-    
-    public DataNotFoundException(String id, Throwable cause) { 
-    	message = "No data found for "+ id + "\n\r" + "Cause: " + cause.getMessage();
-    }
-
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
-	}	
-    	
     
 }

@@ -69,7 +69,10 @@
           </td>
        </tr>
        <tr>  
-          <td style="color:black;">Unit1 Ratio: <form:input path="units.unit1ratio"></form:input></td>
+          <td style="color:black;">Unit1 Ratio: 
+              <form:input path="units.unit1ratio"></form:input>
+              <form:errors path="units.unit1ratio" cssClass="error" />
+          </td>
        </tr>
        <tr>  
            <td><span style="color:black;">Unit1 Is Standard Sell?: </span>
@@ -111,7 +114,10 @@
           </td>
        </tr>
        <tr>  
-          <td style="color:black;">Unit2 Ratio: <form:input path="units.unit2ratio"></form:input></td>
+          <td style="color:black;">Unit2 Ratio: 
+             <form:input path="units.unit2ratio"></form:input>
+             <form:errors path="units.unit2ratio" cssClass="error" />
+          </td>
        </tr>
        <tr>  
            <td><span style="color:black;">Unit2 Is Standard Sell?: </span>
@@ -153,7 +159,10 @@
           </td>
        </tr>
        <tr>  
-          <td style="color:black;">Unit3 Ratio: <form:input path="units.unit3ratio"></form:input></td>
+          <td style="color:black;">Unit3 Ratio: 
+             <form:input path="units.unit3ratio"></form:input>
+             <form:errors path="units.unit3ratio" cssClass="error" />
+          </td>
        </tr>
        <tr>  
            <td><span style="color:black;">Unit3 Is Standard Sell?: </span>
@@ -195,7 +204,10 @@
           </td>
        </tr>
        <tr>  
-          <td style="color:black;">Unit4 Ratio: <form:input path="units.unit4ratio"></form:input></td>
+          <td style="color:black;">Unit4 Ratio: 
+             <form:input path="units.unit4ratio"></form:input>
+             <form:errors path="units.unit4ratio" cssClass="error" />
+          </td>
        </tr>
        <tr>  
            <td><span style="color:black;">Unit4 Is Standard Sell?: </span>

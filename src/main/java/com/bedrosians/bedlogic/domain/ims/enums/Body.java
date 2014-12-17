@@ -1,7 +1,7 @@
 package com.bedrosians.bedlogic.domain.ims.enums;
 
-public enum Body {
-
+public enum Body implements java.io.Serializable {
+	
 	Double_Loaded("Double Loaded"),
 	Soluable_Salt("Soluable Salt"),
 	Thru_Body("Thru Body"),

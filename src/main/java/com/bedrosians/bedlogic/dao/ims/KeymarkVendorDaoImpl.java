@@ -12,8 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bedrosians.bedlogic.dao.GenericDaoImpl;
 import com.bedrosians.bedlogic.domain.ims.KeymarkVendor;
-import com.bedrosians.bedlogic.exception.BedDAOException;
-
 
 @Repository("keymarkVendorDao")
 public class KeymarkVendorDaoImpl extends GenericDaoImpl<KeymarkVendor, String> implements KeymarkVendorDao {
@@ -26,8 +24,8 @@ public class KeymarkVendorDaoImpl extends GenericDaoImpl<KeymarkVendor, String> 
 	
 	@Override
 	@Transactional(readOnly=true)
-	public List<Integer> getKeymarkVedorIdList() throws BedDAOException{
-		Query query = getSession().createQuery("Select vendorId From KeymarkVendor where vendorId Is Not Null");
+	public List<Integer> getKeymarkVendorIdList(){
+		Query query = getSession().createQuery("Select vendorNumber From KeymarkVendor where vendorNumber Is Not Null");
 		return (List<Integer>)query.setCacheable(true).list();
 	}
 	

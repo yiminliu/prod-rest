@@ -20,7 +20,8 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
 	
 	@SuppressWarnings("unchecked")
 	public PK save(Session session, T newInstance) {
-		return (PK)session.save(newInstance);
+		session.saveOrUpdate(newInstance);
+		return null;
 	}
 	
 	@Override

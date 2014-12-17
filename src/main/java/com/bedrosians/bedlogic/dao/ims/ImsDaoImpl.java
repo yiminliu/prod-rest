@@ -45,7 +45,6 @@ import com.bedrosians.bedlogic.domain.ims.enums.Status;
 import com.bedrosians.bedlogic.domain.ims.enums.SurfaceApplication;
 import com.bedrosians.bedlogic.domain.ims.enums.SurfaceFinish;
 import com.bedrosians.bedlogic.domain.ims.enums.SurfaceType;
-import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.util.ims.ImsQueryUtil;
 
 
@@ -415,8 +414,10 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 	
 	@Override
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
-	public void deleteItem(Ims ims){
-		delete(sessionFactory.getCurrentSession(), ims); 
+	public void deleteItem(Ims item){
+		Session session = sessionFactory.getCurrentSession();
+		Ims itemProxy = loadById(session, item.getItemcode());
+		delete(session, itemProxy); 
 	}
 	
 	@Override

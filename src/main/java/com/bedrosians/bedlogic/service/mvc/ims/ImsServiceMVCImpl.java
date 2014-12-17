@@ -6,26 +6,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.ws.rs.core.MultivaluedMap;
 
@@ -58,7 +38,6 @@ import com.bedrosians.bedlogic.exception.DataNotFoundException;
 import com.bedrosians.bedlogic.exception.DataOperationException;
 import com.bedrosians.bedlogic.exception.InputParamException;
 import com.bedrosians.bedlogic.util.FormatUtil;
-import com.bedrosians.bedlogic.util.JsonWrapper.ItemWrapper;
 import com.bedrosians.bedlogic.util.enums.DBOperation;
 import com.bedrosians.bedlogic.util.ims.ImsDataUtil;
 import com.bedrosians.bedlogic.util.ims.ImsValidator;
@@ -88,27 +67,24 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 	public Ims getItemByItemCode(String itemCode){
     	Ims item = null;
     	if(itemCode == null || itemCode.length() < 1)
-    	   throw new InputParamException("Please enter valid Item Code !");	
+    	   throw new InputParamException("Please enter a valid Item Code !");	
 		try{
 			Session session = getSession();
 			session.setCacheMode(CacheMode.NORMAL);
 	  	    item = imsDao.getItemByItemCode(session, itemCode.toUpperCase());
-	  	    //session.refresh(ims);
-	  	   // if(item.getColorhues() == null || item.getColorhues().isEmpty())
-	  	    //   item.setColorhues(ImsDataUtil.convertColorCategoryToColorHueObjects(item.getColorcategory()));	
 		}
 		catch(HibernateException hbe){
 			hbe.printStackTrace();
 			if(hbe.getCause() != null)
-		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
 		  	else
 		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  hbe.getMessage());	
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
 		  	else
-		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  e.getMessage());	
+		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  e.getMessage(), e);	
 		}
 		return FormatUtil.process(item);
 	}
@@ -146,22 +122,6 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 		}
 		return FormatUtil.process(item);
 	}
-
-
-    public boolean itemCodeIsTaken(String itemCode){
-    	List<String> itemCodeList = null;
-    	try{
-     	  itemCodeList = imsDao.getItemCodeList();
-    	}
-    	catch(Exception e){
-    		 throw new DataOperationException("Error occured while retriving item code. " + e);
-    	}
-    	for(String s : itemCodeList){
-    		if(s.trim().equalsIgnoreCase(itemCode))
-    		   return true;
-    	}
-    	return false;
-    }
 	
     @Loggable(value = LogLevel.INFO)
     @Override
@@ -283,75 +243,6 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 	  return id;		 	
     }
 	
-	@Loggable(value = LogLevel.INFO)
-	@Override
-	public String cloneItem(Ims item){  	
-		String id = "";
-		//take care of associations
-     	ImsNewFeature newFeature = item.getNewFeature();
-     	if(newFeature != null && !newFeature.isEmpty()){
-           item.setNewFeature(null);	
-           newFeature.setItemCode(null);
-     	   item.addNewFeature(newFeature);
-     	}
-     	else
-     	   item.setNewFeature(null);
-     	List<ColorHue> colorhues = item.getColorhues();
-     	if(colorhues != null && !colorhues.isEmpty()){
-     	   item.setColorhues(null);
-     	   for(ColorHue colorhue : colorhues){
-     		   item.addColorhue(colorhue);
-     	   }
-     	   item.setColorcategory(ImsDataUtil.convertColorHuesToColorCategory(colorhues));
-     	}
-     	IconCollection icons = item.getIconDescription();
-     	if(icons != null && !icons.isEmpty())
-     	   item.addIconDescription(icons);	
-     	else
-     	   item.setIconDescription(null);	
-     	List<Vendor> vendors = item.getNewVendorSystem();
-     	item.setNewVendorSystem(null);
-     	if(vendors != null && !vendors.isEmpty()){
-     		for(Vendor vendor : vendors){
-     			if(vendor.getId() != null)
-           		  item.addNewVendorSystem(vendor);
-     		}	
-     	}
-     	item = processApplications(item);
-     	item = processPackgeUnits(item);
-     	try{
-      	   ImsValidator.validateNewItem(item);
- 		}
- 		catch(Exception e){
- 			throw new InputParamException("Input valiation error: "+e.getMessage(), e);
- 		}
-     	try{
-		   id = imsDao.createItem(item);
-		}
-		catch(HibernateException hbe){
-		   hbe.printStackTrace();
-		   if(hbe.getCause() != null)
-		      throw new DataOperationException("Error occured during createItem(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
-		   else
-		  	  throw new DataOperationException("Error occured during createItem(), due to: " +  hbe.getMessage());	
-	    }	
-   	    catch(Exception e){
-		  e.printStackTrace();
-		  if(e != null && e.getMessage() != null){
-			  if(e.getMessage().contains("constraint [item_code]") || e.getMessage().contains("constraint [ims_code]"))
-				  throw new InputParamException("Invalid item code, since it is already existing in the database", e);
-		      else if(e.getMessage().contains("constraint [vendor_apv_fkey]"))
-			      throw new InputParamException("Invalid vendor number (ID), since it cannot be found in the vendor table", e);
-		      else
-		    	  throw new DataOperationException("Error occured during createItem(), due to: " + e.getMessage(), e);
-		  }
-		  else if(e.getCause() != null)
-	  	     throw new DataOperationException("Error occured during createItem(), due to: " +  " Root cause: " + e.getCause().getMessage(), e);	
-	  	  else
-	  	     throw new DataOperationException("Error occured during createItem().", e);	
-      }
-	  return id;		 	
-    }
 	
 	//--------------------------------Update DB Operation --------------------------//
 	
@@ -455,8 +346,10 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 	    if(itemCode == null || itemCode.length() == 0)
 	    	 throw new InputParamException("Item code should not be empty");		
 		try{
-			Ims ims = imsDao.loadItemByItemCode(getSession(), itemCode);
-			imsDao.deleteItem(ims);
+			Session session = getSession();
+			//Ims item = imsDao.loadItemByItemCode(session, itemCode);
+			Ims itemProxy = imsDao.loadById(session, itemCode);
+			imsDao.deleteItem(session, itemProxy);
 		}
 		catch(HibernateException hbe){
 			hbe.printStackTrace();
@@ -482,10 +375,27 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 		imsDao.deleteItem(item);
 	}
 
+	//------------------- Utility Methods ----------------------//
+	
 	private synchronized Session getSession(){
 	    	return sessionFactory.getCurrentSession();
 	}
-	
+
+    public boolean itemCodeIsTaken(String itemCode){
+    	List<String> itemCodeList = null;
+    	try{
+     	  itemCodeList = imsDao.getItemCodeList();
+    	}
+    	catch(Exception e){
+    		 throw new DataOperationException("Error occured while retriving item code. " + e);
+    	}
+    	for(String s : itemCodeList){
+    		if(s.trim().equalsIgnoreCase(itemCode))
+    		   return true;
+    	}
+    	return false;
+    }
+    
 	public void initVendors(int n){
 		new Ims().initVendors(3);
 	}
@@ -501,8 +411,11 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
      	if(newFeature != null && !newFeature.isEmpty()){
      		if(dBOperation.equals(DBOperation.CLONE))
      		   newFeature.setItemCode(null); //remove original item code which is the new item object cloned from from this newFeature object
-     		newFeature.setCreatedDate(new Date());
-     	    item.addNewFeature(newFeature);
+     		if(dBOperation.equals(DBOperation.CREATE) || dBOperation.equals(DBOperation.CLONE))
+     			newFeature.setCreatedDate(new Date());
+     	    else if(dBOperation.equals(DBOperation.UPDATE))
+ 		        newFeature.setLastModifiedDate(new Date());
+ 		    item.addNewFeature(newFeature);
      	}   
      	else
      	   item.setNewFeature(null);
@@ -612,14 +525,9 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 	}
 	
 	public boolean validateVendorId(Integer vendorId){
-		List<Integer> keymarkVedorIdList = null;
-		try{
-			keymarkVedorIdList = keymarkVendorDao.getKeymarkVedorIdList();
-		}
-		catch(BedDAOException e){
-			e.printStackTrace();
-		}
-    	for(Integer id : keymarkVedorIdList){
+		List<Integer> keymarkVendorIdList = null;
+		keymarkVendorIdList = keymarkVendorDao.getKeymarkVendorIdList();
+		for(Integer id : keymarkVendorIdList){
     		id = Integer.valueOf(String.valueOf(id).trim());
     		if(id.equals(vendorId))
     		   return true;

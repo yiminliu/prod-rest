@@ -104,7 +104,10 @@
           <tr>
               <td><label>Pos-Consummer: </label><form:input path="testSpecification.posconsummer"></form:input></td>
           </tr>
-   </table>
+           <tr>
+              <td><label>Pos-Consummer: </label><form:input path="testSpecification.posconsummer"></form:input></td>
+          </tr>
+    </table>
     <table> 
       <tr style="float:middle;"> 
         <td colspan="2">

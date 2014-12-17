@@ -62,9 +62,6 @@
        </tr>
      </c:forEach>  
      </table>
-  
-      </table>
-    <table></table>
     <table> 
       <tr style="float:middle;"> 
         <td colspan="2">

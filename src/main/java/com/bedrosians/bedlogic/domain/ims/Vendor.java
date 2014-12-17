@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.Version;
@@ -22,7 +23,6 @@ import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import com.bedrosians.bedlogic.util.FormatUtil;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -51,6 +51,7 @@ public class Vendor implements java.io.Serializable {
 	private Integer leadTime;
 	private Float dutyPct;
 	private Integer version;
+	private KeymarkVendor keymarkVendor;
 	private Ims ims;
 		
 	public Vendor() {
@@ -85,6 +86,29 @@ public class Vendor implements java.io.Serializable {
 	public void setIms(Ims ims){
 		this.ims = ims;
 	}
+/*
+	@JsonIgnore
+	@OneToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="productVendorId.vendorId")//, updatable=false, insertable=false)
+	public Vendor getVendor(){
+		return this.vendor;
+	}
+		
+	public void setVendor(Vendor vendor){
+		this.vendor = vendor;
+	}
+*/	
+	
+	@JsonIgnore
+	@OneToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="vendor_id", insertable = false, updatable = false)
+	public KeymarkVendor getKeymarkVendor() {
+		return keymarkVendor;
+	}
+
+	public void setKeymarkVendor(KeymarkVendor keymarkVendor) {
+		this.keymarkVendor = keymarkVendor;
+	}
 
 	@Transient
 	public Integer getId(){
@@ -104,9 +128,11 @@ public class Vendor implements java.io.Serializable {
 		this.vendorOrder = vendorOrder;
 	}
 	
-	@Column(name = "vendor_name", length = 60)
+	@Transient
+	//@Column(name = "vendor_name", length = 60)
 	public String getVendorName() {
-		return vendorName;
+		//return vendorName;
+		return (keymarkVendor == null)? null : keymarkVendor.getName();
 	}
 
 	public void setVendorName(String vendorName) {
@@ -184,7 +210,6 @@ public class Vendor implements java.io.Serializable {
 
 	public void setVendorNetPrice(BigDecimal vendorNetPrice) {
 		this.vendorNetPrice = vendorNetPrice;
-		//this.vendorNetPrice = new BigDecimal(vendorListPrice.floatValue() * vendorDiscountPct/100);
 	}
 
 	@Column(name = "vendor_markup_pct", precision = 4, scale = 1)

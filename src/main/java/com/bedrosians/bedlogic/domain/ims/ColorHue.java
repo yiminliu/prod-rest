@@ -12,13 +12,15 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 ///import org.codehaus.jackson.annotate.JsonIgnore;
 
 @Entity
 @Table(name = "ims_color_hue", schema = "public")
-//@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="colorHue")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="colorHue")
 public class ColorHue implements java.io.Serializable {
 
 	private static final long serialVersionUID = -7547545887L;
@@ -100,9 +102,8 @@ public class ColorHue implements java.io.Serializable {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 7;
-		result = prime * (result == 0? 1 : result)
-				+ ((colorHue == null) ? 0 : colorHue.hashCode());
+		int result = 7 + id;
+		result = prime * (result == 0? 1 : result) + ((colorHue == null) ? 0 : colorHue.hashCode());
 		result = prime * result + ((item == null) ? 0 : item.getItemcode().hashCode());
 		return result;
 	}

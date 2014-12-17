@@ -1,6 +1,6 @@
 package com.bedrosians.bedlogic.domain.ims.enums;
 
-public enum DesignStyle {
+public enum DesignStyle implements java.io.Serializable {
 
 	Contemporary("Contemporary"),
 	Modern("Modern"),

@@ -1,6 +1,6 @@
 package com.bedrosians.bedlogic.domain.ims.enums;
 
-public enum MaterialCategory {
+public enum MaterialCategory implements java.io.Serializable {
 
 	Medallion("Medallion"),
 	Deco("Deco"),

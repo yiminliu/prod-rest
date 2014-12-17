@@ -1,6 +1,6 @@
 package com.bedrosians.bedlogic.domain.ims.enums;
 
-public enum MaterialClass {
+public enum MaterialClass implements java.io.Serializable {
 
 	CTMNF("Ceramic Tile / Manufactured"),
 	CTSRC("Ceramic Tile Sourced"),

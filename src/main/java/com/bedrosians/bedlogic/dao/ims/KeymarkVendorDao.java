@@ -10,6 +10,6 @@ import com.bedrosians.bedlogic.exception.BedDAOException;
 
 public interface KeymarkVendorDao extends GenericDao<KeymarkVendor, String>{
   
-   public List<Integer> getKeymarkVedorIdList() throws BedDAOException; 
+   public List<Integer> getKeymarkVendorIdList(); 
   
 }

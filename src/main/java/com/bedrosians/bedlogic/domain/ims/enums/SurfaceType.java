@@ -1,6 +1,6 @@
 package com.bedrosians.bedlogic.domain.ims.enums;
 
-public enum SurfaceType {
+public enum SurfaceType implements java.io.Serializable {
 
 	Abrasive("Abrasive"),
 	Flamed("Flamed"),

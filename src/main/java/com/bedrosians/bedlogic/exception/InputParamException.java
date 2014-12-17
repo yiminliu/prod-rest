@@ -50,9 +50,5 @@ public class InputParamException extends RuntimeException
 	public void setError(Throwable error) {
 		this.error = error;
 	}
-
-	
-	
-    	
     
 }

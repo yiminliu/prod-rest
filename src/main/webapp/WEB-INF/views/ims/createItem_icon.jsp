@@ -45,7 +45,7 @@
       </tr>  
       <tr>
            <td><label_same_row>Lead Point:</label_same_row>
-             <form:checkbox path="iconDescription.leadPointIcon" value="Yes" />Yes
+             <form:checkbox path="iconDescription.leadPoint" value="Yes" />Yes
           </td>
       </tr> 
        <tr>      
@@ -70,7 +70,7 @@
       </tr> 
       <tr>
           <td><label_same_row>Green Friendly:</label_same_row>
-             <form:checkbox path="iconDescription.greenFriendlyIcon" value="Yes" />Yes
+             <form:checkbox path="iconDescription.greenFriendly" value="Yes" />Yes
           </td>
       </tr> 
       <tr>    

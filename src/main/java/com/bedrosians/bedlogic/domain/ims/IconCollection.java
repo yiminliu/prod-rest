@@ -31,7 +31,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "ims_icon", schema = "public")
 @DynamicUpdate
 @DynamicInsert
-//@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class IconCollection implements java.io.Serializable {
   
 	private static final long serialVersionUID = -1113582221787L;
@@ -52,8 +52,8 @@ public class IconCollection implements java.io.Serializable {
 	private String recycled = "No";
 	private String postRecycled = "No";
 	private String preRecycled = "No";
-	private String leadPointIcon = "No";
-	private String greenFriendlyIcon = "No";
+	private String leadPoint = "No";
+	private String greenFriendly = "No";
 	private String coefficientOfFriction = "No";
 	private Integer version;
 	private Ims item;
@@ -211,21 +211,21 @@ public class IconCollection implements java.io.Serializable {
 	}
 
 	@Column(name = "lead_point")
-	public String getLeadPointIcon() {
-		return this.leadPointIcon;
+	public String getLeadPoint() {
+		return this.leadPoint;
 	}
 
-	public void setLeadPointIcon(String leadPointIcon) {
-		this.leadPointIcon = leadPointIcon;
+	public void setLeadPoint(String leadPoint) {
+		this.leadPoint = leadPoint;
 	}
 
 	@Column(name = "green_friendly")
-	public String getGreenFriendlyIcon() {
-		return this.greenFriendlyIcon;
+	public String getGreenFriendly() {
+		return this.greenFriendly;
 	}
 
-	public void setGreenFriendlyIcon(String greenFriendlyIcon) {
-		this.greenFriendlyIcon = greenFriendlyIcon;
+	public void setGreenFriendly(String greenFriendly) {
+		this.greenFriendly = greenFriendly;
 	}
 
 	@Column(name = "coefficient_of_friction")
@@ -260,8 +260,8 @@ public class IconCollection implements java.io.Serializable {
 			String throughColor, String colorBody, String inkJet,
 			String glazed, String unglazed, String rectifiedEdge,
 			String chiseledEdge, String versaillesPattern, String recycled,
-			String postRecycled, String preRecycled, String leadPointIcon,
-			String greenFriendlyIcon, String coefficientOfFriction,
+			String postRecycled, String preRecycled, String leadPoint,
+			String greenFriendly, String coefficientOfFriction,
 			Integer version, Ims ims) {
 		super();
 		this.itemCode = itemCode;
@@ -279,8 +279,8 @@ public class IconCollection implements java.io.Serializable {
 		this.recycled = recycled;
 		this.postRecycled = postRecycled;
 		this.preRecycled = preRecycled;
-		this.leadPointIcon = leadPointIcon;
-		this.greenFriendlyIcon = greenFriendlyIcon;
+		this.leadPoint = leadPoint;
+		this.greenFriendly = greenFriendly;
 		this.coefficientOfFriction = coefficientOfFriction;
 		this.version = version;
 		this.item = item;
@@ -341,7 +341,7 @@ public class IconCollection implements java.io.Serializable {
 	static public List<String> allPropertis(){
 		return Arrays.asList("madeInCountry", "exteriorProduct", "adaAccessibility", "throughColor", "colorBody", "inkJet",
 				             "glazed", "unglazed", "rectifiedEdge", "chiseledEdge", "versaillesPattern", "recycled", "postRecycled",
-				             "preRecycled", "leadPointIcon", "greenFriendlyIcon", "coefficientOfFriction");
+				             "preRecycled", "leadPoint", "greenFriendly", "coefficientOfFriction");
 	}
 
 	@JsonIgnore
@@ -350,7 +350,7 @@ public class IconCollection implements java.io.Serializable {
 		return exteriorProduct == null && adaAccessibility == null && throughColor == null && colorBody == null && 
 			   inkJet == null && glazed == null && unglazed == null && rectifiedEdge == null &&
 			   chiseledEdge == null && versaillesPattern == null && recycled == null && postRecycled == null && 
-			   preRecycled == null && leadPointIcon == null && greenFriendlyIcon == null && coefficientOfFriction == null;
+			   preRecycled == null && leadPoint == null && greenFriendly == null && coefficientOfFriction == null;
 	}
 	
 	@JsonIgnore
@@ -359,7 +359,7 @@ public class IconCollection implements java.io.Serializable {
 		return exteriorProduct.equals("No") && adaAccessibility.equals("No") && throughColor.equals("No") && colorBody.equals("No") && 
 			   inkJet.equals("No") && glazed.equals("No") && unglazed.equals("No") && rectifiedEdge.equals("No") &&
 			   chiseledEdge.equals("No") && versaillesPattern.equals("No") && recycled.equals("No") && postRecycled.equals("No") && 
-			   preRecycled.equals("No") && leadPointIcon.equals("No") && greenFriendlyIcon.equals("No") && coefficientOfFriction.equals("No");
+			   preRecycled.equals("No") && leadPoint.equals("No") && greenFriendly.equals("No") && coefficientOfFriction.equals("No");
 	}
 
 	@Override
@@ -387,6 +387,5 @@ public class IconCollection implements java.io.Serializable {
 			return false;
 		return true;
 	}
-
 	
 }

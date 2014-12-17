@@ -1,6 +1,6 @@
 package com.bedrosians.bedlogic.domain.ims.enums;
 
-public enum MpsCode {
+public enum MpsCode implements java.io.Serializable {
 
 		 New_Product("New Product"),
 		 Active_Product("Active Product"),

@@ -23,6 +23,7 @@ import javax.persistence.Version;
 
 import javax.validation.constraints.Size;
 
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
@@ -30,17 +31,22 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.search.annotations.Analyze;
-//import org.hibernate.search.annotations.Analyzer;
+import org.hibernate.search.annotations.Analyzer;
+import org.hibernate.search.annotations.AnalyzerDef;
+
 import org.hibernate.search.annotations.Boost;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
+
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonRootName;
+
 import com.bedrosians.bedlogic.domain.ims.embeddable.Applications;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Cost;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Description;
@@ -64,11 +70,11 @@ import com.bedrosians.bedlogic.util.ims.ImsDataUtil;
 @Table(name = "ims", schema = "public")
 @DynamicUpdate
 @DynamicInsert
-//@Indexed
-//@Analyzer(impl = StandardAnalyzer.class)
+@Indexed
+@Analyzer(impl = StandardAnalyzer.class)
 //@AnalyzerDef(name ="colorCategoryAnalyzer", tokenizer = @org.hibernate.search.annotations.TokenizerDef(factory=LetterTokenizerFactory.class))
 //@Cacheable
-//@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Ims implements java.io.Serializable {
 
 	private static final long serialVersionUID = -8321358221787L;
@@ -543,7 +549,7 @@ public class Ims implements java.io.Serializable {
 	
 	//@LazyCollection(LazyCollectionOption.FALSE)
 	//@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-	@OneToMany(fetch=FetchType.EAGER, mappedBy="item", cascade=CascadeType.ALL, orphanRemoval=true)
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="item", cascade={CascadeType.ALL, CascadeType.REMOVE}, orphanRemoval=true)
 	@Fetch(FetchMode.SUBSELECT)
 	public List<ColorHue> getColorhues() {
 		return this.colorhues;

@@ -587,9 +587,9 @@ public class ImsDataUtil {
 				if(inputIconCollection.getColorBody() != null) itemToDB.getIconDescription().setColorBody(inputIconCollection.getColorBody());
 				if(inputIconCollection.getExteriorProduct() != null) itemToDB.getIconDescription().setExteriorProduct(inputIconCollection.getExteriorProduct());
 				if(inputIconCollection.getGlazed() != null) itemToDB.getIconDescription().setGlazed(inputIconCollection.getGlazed());
-				if(inputIconCollection.getGreenFriendlyIcon() != null) itemToDB.getIconDescription().setGreenFriendlyIcon(inputIconCollection.getGreenFriendlyIcon());
+				if(inputIconCollection.getGreenFriendly() != null) itemToDB.getIconDescription().setGreenFriendly(inputIconCollection.getGreenFriendly());
 				if(inputIconCollection.getInkJet() != null) itemToDB.getIconDescription().setInkJet(inputIconCollection.getInkJet());
-				if(inputIconCollection.getLeadPointIcon() != null) itemToDB.getIconDescription().setLeadPointIcon(inputIconCollection.getLeadPointIcon());
+				if(inputIconCollection.getLeadPoint() != null) itemToDB.getIconDescription().setLeadPoint(inputIconCollection.getLeadPoint());
 				if(inputIconCollection.getPostRecycled() != null) itemToDB.getIconDescription().setPostRecycled(inputIconCollection.getPostRecycled());
 				if(inputIconCollection.getPreRecycled() != null) itemToDB.getIconDescription().setPreRecycled(inputIconCollection.getPreRecycled());
 				if(inputIconCollection.getRectifiedEdge() != null) itemToDB.getIconDescription().setRectifiedEdge(inputIconCollection.getRectifiedEdge());
@@ -615,9 +615,9 @@ public class ImsDataUtil {
 				if(iconCollection.getColorBody() != null) itemToDB.getIconDescription().setColorBody(iconCollection.getColorBody());
 				if(iconCollection.getExteriorProduct() != null) itemToDB.getIconDescription().setExteriorProduct(iconCollection.getExteriorProduct());
 				if(iconCollection.getGlazed() != null) itemToDB.getIconDescription().setGlazed(iconCollection.getGlazed());
-				if(iconCollection.getGreenFriendlyIcon() != null) itemToDB.getIconDescription().setGreenFriendlyIcon(iconCollection.getGreenFriendlyIcon());
+				if(iconCollection.getGreenFriendly() != null) itemToDB.getIconDescription().setGreenFriendly(iconCollection.getGreenFriendly());
 				if(iconCollection.getInkJet() != null) itemToDB.getIconDescription().setInkJet(iconCollection.getInkJet());
-				if(iconCollection.getLeadPointIcon() != null) itemToDB.getIconDescription().setLeadPointIcon(iconCollection.getLeadPointIcon());
+				if(iconCollection.getLeadPoint() != null) itemToDB.getIconDescription().setLeadPoint(iconCollection.getLeadPoint());
 				if(iconCollection.getPostRecycled() != null) itemToDB.getIconDescription().setPostRecycled(iconCollection.getPostRecycled());
 				if(iconCollection.getPreRecycled() != null) itemToDB.getIconDescription().setPreRecycled(iconCollection.getPreRecycled());
 				if(iconCollection.getRectifiedEdge() != null) itemToDB.getIconDescription().setRectifiedEdge(iconCollection.getRectifiedEdge());
@@ -666,7 +666,7 @@ public class ImsDataUtil {
     		   int sizeOfItemVendors = itemToDB.getNewVendorSystem().size();
 			   for(int i = 0; i < inputItemVendors.size(); i++){
 				   Vendor vendor = inputItemVendors.get(i);
-				   if(vendor.getVendorId() == null || vendor.getVendorId().getId() == null || vendor.getVendorId().getId() == 0)
+				   if(vendor.getVendorOrder() == 1 && (vendor.getVendorId() == null || vendor.getVendorId().getId() == null || vendor.getVendorId().getId() == 0))
 					  throw new BedDAOBadParamException("Error: No vendor ID is provided.");
 				   if(sizeOfItemVendors <= i)
 					  itemToDB.addNewVendorSystem(new Vendor()); //there more itemvendor in new product than the current one

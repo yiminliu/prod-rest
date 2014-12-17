@@ -555,8 +555,8 @@ public class ImsServiceCreationWithJsonTest {
 	        assertEquals(false, icon.getRecycled());
 	        assertEquals(true, icon.getPostRecycled());
 	        assertEquals(false, icon.getPreRecycled());
-	        assertEquals(true, icon.getLeadPointIcon());
-	        assertEquals(false, icon.getGreenFriendlyIcon());
+	        assertEquals(true, icon.getLeadPoint());
+	        assertEquals(false, icon.getGreenFriendly());
 	        assertEquals(true, icon.getCoefficientOfFriction());
 	       /* 0 - Made in Italy
 			* 1 - Outdoor
@@ -609,7 +609,7 @@ public class ImsServiceCreationWithJsonTest {
 	        assertEquals(true, icon.getPostRecycled());
 	        assertEquals(false, icon.getPreRecycled());
 	        //assertEquals(true, icon.getLeadPointIcon());
-	        assertEquals(false, icon.getGreenFriendlyIcon());
+	        assertEquals(false, icon.getGreenFriendly());
 	        assertEquals(true, icon.getCoefficientOfFriction());
 	       /* 0 - Made in Italy
 			* 1 - Outdoor
@@ -785,8 +785,8 @@ public class ImsServiceCreationWithJsonTest {
 	        assertEquals(false, icon.getRecycled());
 	        assertEquals(true, icon.getPostRecycled());
 	        assertEquals(false, icon.getPreRecycled());
-	        assertEquals(true, icon.getLeadPointIcon());
-	        assertEquals(false, icon.getGreenFriendlyIcon());
+	        assertEquals(true, icon.getLeadPoint());
+	        assertEquals(false, icon.getGreenFriendly());
 	        assertEquals(true, icon.getCoefficientOfFriction());
 	        System.out.println("newly created Item id  = " + id);
 	 }

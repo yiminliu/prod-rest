@@ -22,8 +22,8 @@ import javax.persistence.Version;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-//import org.hibernate.annotations.Cache;
-//import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
@@ -32,6 +32,7 @@ import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Store;
 
 import com.bedrosians.bedlogic.domain.ims.enums.Body;
@@ -51,7 +52,8 @@ import com.bedrosians.bedlogic.util.FormatUtil;
 @Table(name = "ims_new_feature", schema = "public")
 @DynamicUpdate
 @DynamicInsert
-//@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Indexed
 public class ImsNewFeature implements java.io.Serializable {
    
 	private static final long serialVersionUID = -11135822658657L;

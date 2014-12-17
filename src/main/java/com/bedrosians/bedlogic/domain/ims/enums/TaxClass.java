@@ -1,6 +1,6 @@
 package com.bedrosians.bedlogic.domain.ims.enums;
 
-public enum TaxClass {
+public enum TaxClass implements java.io.Serializable {
 
 	 T("Tax"),
      N("Non_Tax"),

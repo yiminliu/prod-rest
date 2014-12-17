@@ -64,7 +64,6 @@
       <tr style="float:middle;"> 
         <td colspan="2">
             <input type="submit" value="Create Item"/>
-            <!--<a id="createItemPage2" href="<spring:url value="/ims/createItemPage2"/>"><span>Next</span></a>-->
         </td>
       </tr>
     </table> 

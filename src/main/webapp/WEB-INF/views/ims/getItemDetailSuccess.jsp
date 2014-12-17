@@ -224,23 +224,23 @@
                     <div class="container" style="color:Green"> <h3>Icons</h3></div>
                     <table border="1" cellspacing="2">
                        <tr>
-                         <th>madeInCountry</th>
-                         <th>exteriorProduct</th>
-                         <th>adaAccessibility</th>
-                         <th>throughColor</th>
-                         <th>colorBody</th>
-                         <th>inkJet</th>
-                         <th>glazed</th>
-                         <th>unglazed</th>
-                         <th>rectifiedEdge</th>
-                         <th>chiseledEdge</th>
-                         <th>versaillesPattern</th>
-                         <th>recycled</th>
-                         <th>postRecycled</th>
-                         <th>preRecycled</th>
-                         <th>leadPointIcon</th>
-                         <th>greenFriendlyIcon</th>
-                         <th>coefficientOfFriction</th>
+                         <th>Country</th>
+                         <th>Exterior Product</th>
+                         <th>Ada Accessibility</th>
+                         <th>Through Color</th>
+                         <th>Color Body</th>
+                         <th>InkJet</th>
+                         <th>Glazed</th>
+                         <th>Unglazed</th>
+                         <th>Rectified Edge</th>
+                         <th>Chiseled Edge</th>
+                         <th>Versailles Pattern</th>
+                         <th>Recycled</th>
+                         <th>PostRecycled</th>
+                         <th>PreRecycled</th>
+                         <th>Lead Point</th>
+                         <th>Green Friendly</th>
+                         <th>Coefficient of Friction</th>
                          </tr>
                        <tr>
                           <td>${item.iconDescription.madeInCountry}</td>
@@ -257,8 +257,8 @@
                          <td>${item.iconDescription.recycled}</td>
                          <td>${item.iconDescription.postRecycled}</td>
                          <td>${item.iconDescription.preRecycled}</td>
-                         <td>${item.iconDescription.leadPointIcon}</td>
-                         <td>${item.iconDescription.greenFriendlyIcon}</td>
+                         <td>${item.iconDescription.leadPoint}</td>
+                         <td>${item.iconDescription.greenFriendly}</td>
                          <td>${item.iconDescription.coefficientOfFriction}</td>
                        </tr>
                     </table>

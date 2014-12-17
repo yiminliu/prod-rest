@@ -1,11 +1,10 @@
 package com.bedrosians.bedlogic.domain.ims.enums;
 
-public enum MeasureUnit {
+public enum MeasureUnit implements java.io.Serializable {
 
 	E("English"),
 	M("Metric");
-		 
-	
+		
 	private String description;
 		 
 	private MeasureUnit(String description){
