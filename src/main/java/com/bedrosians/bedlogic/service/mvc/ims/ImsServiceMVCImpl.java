@@ -14,6 +14,7 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
 import org.hibernate.CacheMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.SessionEventListener;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,10 +29,12 @@ import com.bedrosians.bedlogic.domain.ims.ColorHue;
 import com.bedrosians.bedlogic.domain.ims.IconCollection;
 import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.domain.ims.ImsNewFeature;
+import com.bedrosians.bedlogic.domain.ims.KeymarkVendor;
 import com.bedrosians.bedlogic.domain.ims.Vendor;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Applications;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Units;
 import com.bedrosians.bedlogic.domain.ims.embeddable.VendorInfo;
+import com.bedrosians.bedlogic.domain.ims.enums.Usage;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.exception.DataNotFoundException;
@@ -200,13 +203,13 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 	
 	@Loggable(value = LogLevel.INFO)
 	@Override
-	public String createItem(Ims item, DBOperation createOrClone){  	
+	public String createItem(Ims item, DBOperation operation){  	
 		String id = "";
 		//take care of associations and components
-		processNewFeature(item, createOrClone);
-		processColorHues(item);
+		processNewFeature(item, operation);
+		processColorHues(item, operation);
        	processApplications(item);
-     	processIcons(item, createOrClone); 
+     	processIcons(item, operation); 
      	processPackgeUnits(item);
      	processVendor(item);
      	try{
@@ -421,8 +424,40 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
      	   item.setNewFeature(null);
 	}
 	
-	private void processColorHues(Ims item){
+	private void processColorHues(Ims item, DBOperation dBOperation){
 		List<ColorHue> colorhues = item.getColorhues();
+    	if(dBOperation.equals(DBOperation.CLONE) || dBOperation.equals(DBOperation.UPDATE)){
+		   if(!ImsDataUtil.colorHuesAndColorsEquals(item.getColorhues(), item.getColors())){
+			   if(dBOperation.equals(DBOperation.UPDATE)){ //For update, if colorhue changed, we need to remove old ones
+			      item.setColorhues(null);
+			      //item.getColorhues().clear();
+			      for(ColorHue colorHue: colorhues){
+			          colorHueDao.deleteColorHue(colorHue);
+			      }
+			   }
+			   colorhues = ImsDataUtil.convertColorListToColorHueObjects(item.getColors()); //For both clone and update, if colorhue changed, we need to get new values for colorhues
+			}	
+			else 
+			   return; // no colorhue changed for update/clone operation, therefore, no need to make change	
+		}
+	
+		if(colorhues != null && !colorhues.isEmpty()){
+     	   item.setColorhues(null);
+     	   for(ColorHue colorhue : colorhues){
+     		   item.addColorhue(colorhue);
+     	   }
+     	   item.setColorcategory(ImsDataUtil.convertColorHuesToColorCategory(colorhues));
+     	}
+	}
+	/*
+	private void processColorHuesForUpdate(Session session, Ims item, DBOperation dBOperation){
+		List<ColorHue> colorhues = item.getColorhues();
+		if(!ImsDataUtil.colorHuesAndColorsEquals(colorhues, item.getColors()))
+			session.delete(colorhues);
+		if(item.getColors() != null && !item.getColors().isEmpty() && (dBOperation.equals(DBOperation.CLONE) || dBOperation.equals(DBOperation.UPDATE)))
+	   	   colorhues = ImsDataUtil.convertColorListToColorHueObjects(item.getColors());	
+		//else if(colorhues != null && dBOperation.equals(DBOperation.UPDATE))
+		//   session.delete(item.getColorhues());
      	if(colorhues != null && !colorhues.isEmpty()){
      	   item.setColorhues(null);
      	   for(ColorHue colorhue : colorhues){
@@ -431,6 +466,34 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
      	   item.setColorcategory(ImsDataUtil.convertColorHuesToColorCategory(colorhues));
      	}
 	}
+	*/
+	
+	private void processApplications(Ims item){
+		List<String> usage = item.getUsage();
+     	if(usage != null){
+     		item.setApplications(ImsDataUtil.convertUsageToApplications(usage));
+     	}   
+	}
+	
+	/*
+	private Ims processApplications(Ims item){
+		Applications app = item.getApplications();
+     	if(app != null){
+     	   List<String> residential = app.getResidentialList();
+     	   List<String> lightCommercial = app.getLightcommercialList();
+     	   List<String> commercial = app.getCommercialList();
+    	
+    	   if(residential != null)
+    		  app.setResidential(ImsDataUtil.convertUsageToApplicationString(residential));
+    	   if(lightCommercial != null)
+    		  app.setLightcommercial(ImsDataUtil.convertUsageToApplicationString(lightCommercial));
+    	   if(commercial != null)
+    		  app.setCommercial(ImsDataUtil.convertUsageToApplicationString(commercial));
+     	}   
+    	item.setApplications(app);
+    	return item;
+	}
+	/*
 	private Ims processApplications(Ims item){
 		Applications app = item.getApplications();
      	if(app != null){
@@ -447,8 +510,27 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
      	}   
     	item.setApplications(app);
     	return item;
+	}
+	*/
+	/*
+	private Ims processApplicationsString(Ims item){
+		Applications app = item.getApplications();
+     	if(app != null){
+     	   String residential = app.getResidential();
+    	   String lightCommercial = app.getLightcommercial();
+    	   String commercial = app.getCommercial();
+    	
+    	   if(residential != null)
+    		  app.setResidential(residential.replace(",", ":"));
+    	   if(lightCommercial != null)
+    		  app.setLightcommercial(lightCommercial.replace(",", ":"));
+    	   if(commercial != null)
+    		  app.setCommercial(commercial.replace(",", ":"));
+     	}   
+    	item.setApplications(app);
+    	return item;
 	} 	
-	
+	*/
 	private Ims processPackgeUnits(Ims item){
 		Units units = item.getUnits();
      	if(units != null){
@@ -534,4 +616,33 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
     	}
     	return false;
 	}
+	
+	 @Loggable(value = LogLevel.INFO)
+	 @Override
+	 @Transactional(readOnly = true, isolation=Isolation.READ_COMMITTED)
+	 public KeymarkVendor getKeymarkVendorByVendorNumber(Integer vendorId){
+		 KeymarkVendor vendor = null;
+	    	if(vendorId == null)
+	    	   throw new InputParamException("Please enter a valid Item Code !");	
+			try{
+				Session session = getSession();
+				session.setCacheMode(CacheMode.NORMAL);
+		  	    vendor = keymarkVendorDao.getKeymarkVendorByVendorNumber(session, vendorId);
+			}
+			catch(HibernateException hbe){
+				hbe.printStackTrace();
+				if(hbe.getCause() != null)
+			  	   throw new DataOperationException("Error occured during getKeymarkVendorByVendorNumber, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
+			  	else
+			  	   throw new DataOperationException("Error occured during getKeymarkVendorByVendorNumber, due to: " +  hbe.getMessage());	
+			}
+			catch(RuntimeException e){
+				if(e.getCause() != null)
+			  	   throw new DataOperationException("Error occured during getKeymarkVendorByVendorNumber, due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
+			  	else
+			  	   throw new DataOperationException("Error occured during getKeymarkVendorByVendorNumber, due to: " +  e.getMessage(), e);	
+			}
+			return vendor;
+		}
+	   
 }

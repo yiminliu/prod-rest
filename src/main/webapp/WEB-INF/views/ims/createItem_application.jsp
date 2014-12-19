@@ -15,22 +15,22 @@
      <table class="category">     
          <tr>
               <td><label for="residentialOptions">Residential:</label>
-                 <c:forEach var="usage" items="${usageList}" varStatus="status">
-                   <form:checkbox path="applications.residential" value="${usage}R" />${usage.getDescription()}
+                 <c:forEach var="use" items="${usageList}" varStatus="status">
+                   <form:checkbox path="usage" value="${use}R" />${use.getDescription()}
                  </c:forEach>
               </td>
          </tr>
          <tr>
               <td><label for="lightcommercialOptions">Light Commercial:</label>
-                   <c:forEach var="usage" items="${usageList}" varStatus="status">
-                      <form:checkbox path="applications.lightcommercial" value="${usage}L" />${usage.getDescription()}
+                   <c:forEach var="use" items="${usageList}" varStatus="status">
+                      <form:checkbox path="usage" value="${use}L" />${use.getDescription()}
                    </c:forEach>
               </td>
          </tr>
          <tr>
             <td><label for="commercialOptions">Commercial:</label>
-                <c:forEach var="usage" items="${usageList}" varStatus="status">
-                   <form:checkbox path="applications.commercial" value="${usage}C" />${usage.getDescription()}
+                <c:forEach var="use" items="${usageList}" varStatus="status">
+                   <form:checkbox path="usage" value="${use}C" />${use.getDescription()}
                 </c:forEach>
             </td>
          </tr>

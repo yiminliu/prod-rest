@@ -24,6 +24,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.bedrosians.bedlogic.domain.ims.Ims;
+import com.bedrosians.bedlogic.domain.ims.KeymarkVendor;
 import com.bedrosians.bedlogic.domain.ims.enums.MaterialCategory;
 import com.bedrosians.bedlogic.domain.ims.enums.MaterialClass;
 import com.bedrosians.bedlogic.domain.ims.enums.MaterialStyle;
@@ -85,6 +86,7 @@ public class ImsController {
     */
    @RequestMapping(value="getItemDetail/{itemCode}", method = RequestMethod.GET)
    public String getItemDetail(@PathVariable("itemCode") String itemCode, Model model){
+	   dbOperation = "retrieve";
 	   Ims item = null;
 	   try{
 		   item = imsServiceMVC.getItemByItemCode(itemCode);
@@ -105,6 +107,7 @@ public class ImsController {
     */
     @RequestMapping(value = "/getItem", method = RequestMethod.GET)
     public String getItems(Model model) {
+       dbOperation = "retrieve";
        model.addAttribute("item", new Ims());	
        return "ims/getItems";
     }
@@ -153,6 +156,7 @@ public class ImsController {
    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
    @RequestMapping(value = "/createItem_begin", method = RequestMethod.GET)
    public String createItem(Model model) {
+	  dbOperation = "create";
       model.addAttribute("aItem", new Ims());
       return "ims/createItem_general";
    }
@@ -336,7 +340,7 @@ public class ImsController {
           throw te;
        }
        model.addAttribute("aItem", item);
-      dbOperation = "update";
+       dbOperation = "update";
        return "ims/updateItem_begin";
     }
    
@@ -356,6 +360,7 @@ public class ImsController {
      @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')")
      @RequestMapping(value = "/updateItem_begin", method = RequestMethod.GET)
      public String updateItemBegin(@RequestParam("itemcode") String itemCode, @ModelAttribute("item") Ims item, Model model, BindingResult bindingResult) {
+    	 dbOperation = "update";
     	 validator.validateItemCode(itemCode, DBOperation.UPDATE, bindingResult);
           if (bindingResult.hasErrors()) {
               return "ims/updateItemForm";
@@ -373,21 +378,6 @@ public class ImsController {
     	 model.addAttribute("dbOperation", "update");
          return "ims/updateItem_begin";
      }  
-   /*
-     @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
-     @RequestMapping(value = "/updateItem_final", method = RequestMethod.POST)
-     public String PostupdateItem(@ModelAttribute("aItem") Ims item, Model model, BindingResult result) {
-      	 try {
-              imsServiceMVC.updateItem(item);
-         }
-      	 catch (Exception te) {
-             throw te;
-         }
-      	 if(item != null)
-      		model.addAttribute("item", item);
-         return "ims/success";
-     }  
-     */
      
      /////////////////////// Clone an Item /////////////////////
      /**
@@ -398,6 +388,7 @@ public class ImsController {
       @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
       @RequestMapping(value = "/cloneItem/{itemcode}", method = RequestMethod.GET)
       public String cloneItem(@PathVariable("itemcode") String itemCode, Model model){
+    	  dbOperation = "clone";
     	  Ims retrievedItem = null;
      	   try {
      		  retrievedItem = imsServiceMVC.getItemByItemCodeForClone(itemCode);
@@ -418,7 +409,8 @@ public class ImsController {
       @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
       @RequestMapping(value = "/cloneItemForm", method = RequestMethod.GET)
       public String cloneItem(Model model){
-         model.addAttribute("item", new Ims());
+    	  dbOperation = "clone";
+    	  model.addAttribute("item", new Ims());
          return "ims/cloneItemForm";
       }
       
@@ -464,7 +456,8 @@ public class ImsController {
           	  model.addAttribute("item", item);
               model.addAttribute("itemCode", item.getItemcode());
       	      model.addAttribute("operation", "Created");
-              return "ims/createItemSuccess";
+      	      dbOperation = "";
+      	      return "ims/createItemSuccess";
     	  }
     	  else
     		 throw new InputParamException("Empty item cannot be cloned.");
@@ -474,7 +467,8 @@ public class ImsController {
      @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
      @RequestMapping(value="deleteItem/{itemCode}", method = RequestMethod.GET)
      public String deleteItem(@PathVariable("itemCode") String itemCode, Model model){
-        try{
+    	 dbOperation = "delete";
+    	 try{
   		   imsServiceMVC.deleteItemByItemCode(itemCode);
   	    }
   	    catch(Exception e){
@@ -505,6 +499,7 @@ public class ImsController {
   	   }
   	   model.addAttribute("itemCode", item.getItemcode());
   	   model.addAttribute("operation", "Deleted");
+  	   dbOperation = "";
  	   return "ims/success";
      }
      
@@ -631,4 +626,24 @@ public class ImsController {
  		return model;
   	}
     
+    /**
+     * This method is used to show item detail information for the given item code
+     *
+     * @return String the item detail page
+     */
+    @RequestMapping(value="getKeymarkVendorDetail/{vendorNumber}", method = RequestMethod.GET)
+    public String getKeymarkVendorDetail(@PathVariable("vendorNumber") String vendorNumber, Model model){
+ 	   KeymarkVendor  keymarkVendor = null;
+ 	   try{
+ 		  keymarkVendor = imsServiceMVC.getKeymarkVendorByVendorNumber(Integer.valueOf(vendorNumber));
+ 	   }
+ 	   catch(Exception e){
+ 		  throw e;
+ 	   }
+ 	   if(keymarkVendor == null)
+ 		  throw new DataNotFoundException(vendorNumber);
+ 	   model.addAttribute("kVendor", keymarkVendor);
+ 	   return "ims/getKeymarkVendorDetailSuccess";
+    }
+
 }

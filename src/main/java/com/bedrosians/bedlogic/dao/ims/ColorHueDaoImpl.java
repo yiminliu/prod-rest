@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bedrosians.bedlogic.dao.GenericDaoImpl;
 import com.bedrosians.bedlogic.domain.ims.ColorHue;
-import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.util.logger.aspect.LogLevel;
 import com.bedrosians.bedlogic.util.logger.aspect.Loggable;
 

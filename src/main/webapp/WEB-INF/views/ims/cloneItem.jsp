@@ -50,9 +50,9 @@
       <tr>  
        <td>
            <label for="ColorHuesOptions">Color Hues: </label>
-           <c:forEach var="colorHue" items="${colorList}" varStatus="status">
+           <c:forEach var="color" items="${colorList}" varStatus="status">
               <span style="padding-left: 5px;padding-bottom:3px; font-size: 12px;">
-                <form:checkbox path="colorhues" value="${colorHue}" />${colorHue}
+                <form:checkbox path="colors" value="${color}" />${color}
               </span>  
            </c:forEach>
        </td> 

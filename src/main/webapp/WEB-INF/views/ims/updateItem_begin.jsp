@@ -14,10 +14,7 @@
   <div style="color:Green"> <h3>General Information</h3></div>
    <table class="category">
       <tr>
-         <td><label>Item Code<span style="color:red;">*</span>: </label>  <form:input path="itemcode" style="text-transform:uppercase;"></form:input><small>(maximum 18 characters)</small></td>
-      </tr>
-      <tr>
-         <td><form:errors path="itemcode" cssClass="error" /></td>               
+         <td><label>Item Code: </label>  <form:input path="itemcode" disabled="true" readonly="readonly"></form:input></td>
       </tr>
       <tr>   
          <td><label>Category<span style="color:red;">*</span>: </label>  <form:input path="itemcategory"></form:input><small>(maximum 8 characters)</small></td>
@@ -116,9 +113,9 @@
       <tr>  
        <td>
            <label for="ColorHuesyOptions">Color Hues: </label>
-           <c:forEach var="colorHue" items="${colorList}" varStatus="status">
+           <c:forEach var="color" items="${colorList}" varStatus="status">
               <span style="padding-left: 5px;padding-bottom:3px; font-size: 12px;">
-                <form:checkbox path="colorhues" value="${colorHue}" />${colorHue}
+                 <form:checkbox path="colors" value="${color}" />${color}
               </span>  
            </c:forEach>
        </td> 

@@ -102,7 +102,7 @@ public class ColorHue implements java.io.Serializable {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 7 + id;
+		int result = 7 + ((id == null)? 0 : id.intValue());
 		result = prime * (result == 0? 1 : result) + ((colorHue == null) ? 0 : colorHue.hashCode());
 		result = prime * result + ((item == null) ? 0 : item.getItemcode().hashCode());
 		return result;

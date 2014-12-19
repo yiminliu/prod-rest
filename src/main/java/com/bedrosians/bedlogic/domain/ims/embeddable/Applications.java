@@ -1,7 +1,10 @@
 package com.bedrosians.bedlogic.domain.ims.embeddable;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 
 @Embeddable
 public class Applications  implements java.io.Serializable {
@@ -11,6 +14,10 @@ public class Applications  implements java.io.Serializable {
 	private String residential;
 	private String lightcommercial;
 	private String commercial;
+
+	private List<String> residentialList;
+	private List<String> lightcommercialList;
+	private List<String> commercialList;
 	
 	@Column(name = "residential", length = 20)
 	public String getResidential() {
@@ -37,6 +44,35 @@ public class Applications  implements java.io.Serializable {
 
 	public void setCommercial(String commercial) {
 		this.commercial = commercial;
+	}
+	
+	
+	
+	@Transient
+	public List<String> getResidentialList() {
+		return this.residentialList;
+	}
+
+	public void setResidentialList(List<String> residentialList) {
+		this.residentialList = residentialList;
+	}
+
+	@Transient
+	public List<String> getLightcommercialList() {
+		return this.lightcommercialList;
+	}
+
+	public void setLightcommercialList(List<String> lightcommercialList) {
+		this.lightcommercialList = lightcommercialList;
+	}
+
+	@Transient
+	public List<String> getCommercialList() {
+		return this.commercialList;
+	}
+
+	public void setCommercialList(List<String> commercialList) {
+		this.commercialList = commercialList;
 	}
 	
 }

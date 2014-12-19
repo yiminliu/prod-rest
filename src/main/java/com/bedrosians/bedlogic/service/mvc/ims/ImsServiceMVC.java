@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ws.rs.core.MultivaluedMap;
 
 import com.bedrosians.bedlogic.domain.ims.Ims;
+import com.bedrosians.bedlogic.domain.ims.KeymarkVendor;
 import com.bedrosians.bedlogic.domain.ims.Vendor;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
@@ -27,4 +28,5 @@ public interface ImsServiceMVC {
 	public void initVendors(int n);
 	public List<Vendor> getNewVendorSystem();
 	public boolean validateVendorId(Integer vendorId);
+	public KeymarkVendor getKeymarkVendorByVendorNumber(Integer vendorId);
 }

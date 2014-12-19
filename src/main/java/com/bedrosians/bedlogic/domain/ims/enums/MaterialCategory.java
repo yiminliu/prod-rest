@@ -9,6 +9,9 @@ public enum MaterialCategory implements java.io.Serializable {
 	SettingMat("SettingMat"),
 	Tear_Sheet("Tear Sheet"),
 	Board("Board"),
+	Showroom_Board("Showroom Board"), 
+	Contractor_Board("Contractor Board"),
+	Feature_Board("Feature Board"),
 	Label("Label"),
 	Listello("Listello"),
 	Trim("Trim"),
@@ -18,7 +21,7 @@ public enum MaterialCategory implements java.io.Serializable {
 	Paver("Paver"),
 	Mosaic("Mosaic"),
 	Slab("Slab"),
-	Pack_Out("Pack_Out"),
+	Pack_Out("Pack Out"),
 	Display("Display"),
 	ARC("ARC"),
 	Ledger("Ledger");

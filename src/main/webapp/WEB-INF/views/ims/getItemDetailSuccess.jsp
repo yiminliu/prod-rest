@@ -72,7 +72,14 @@
                          <td>${item.newFeature.status}</td>
                          <td>${item.purchasers.purchaser}</td>
                          <td>${item.purchasers.purchaser2}</td>
-                         <td>${item.newFeature.warranty}year</td>
+                         <c:choose>
+                             <c:when test="${item.newFeature.warranty != null}">
+                                <td>${item.newFeature.warranty}year</td>
+                             </c:when>
+                             <c:otherwise>
+                                <td><c:out value="N/A"/></td>
+                             </c:otherwise>
+                         </c:choose>      
                        </tr>
                     </table>
                     <div class="container" style="color:GREEN"> <h3>Material Information</h3></div>
@@ -187,7 +194,7 @@
                          <th>#</th>
                          <th>Vendor Number</th>
                          <th>Vendor Name</th>
-                         <th>Vendor Name2</th>
+                         <!--<th>Vendor Name2</th>-->
                          <th>Vendor XrefId</th>
                          <th>List Price</th>
                          <th>Net Price</th>
@@ -203,9 +210,10 @@
                       <c:forEach var="vendor" items="${item.newVendorSystem}">
                       <tr>
                          <td>${vendor.vendorOrder}</td>
-                         <td>${vendor.vendorId.id}</td>
+                         <td style="color : red"><a id="keymarkVendoDetail" href="<spring:url value="/ims/getKeymarkVendorDetail/${vendor.vendorId.id}" />">${vendor.vendorId.id}</a></td>
+                         <!--<td>${vendor.vendorId.id}</td>-->
                          <td>${vendor.vendorName}</td>
-                         <td>${vendor.vendorName2}</td>
+                         <!--<td>${vendor.vendorName2}</td>-->
                          <td>${vendor.vendorXrefId}</td>
                          <td>${vendor.vendorListPrice}</td>
                          <td>${vendor.vendorNetPrice}</td>

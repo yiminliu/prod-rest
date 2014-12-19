@@ -14,6 +14,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -33,7 +34,6 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.AnalyzerDef;
-
 import org.hibernate.search.annotations.Boost;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
@@ -41,12 +41,10 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
-
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonRootName;
-
 import com.bedrosians.bedlogic.domain.ims.embeddable.Applications;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Cost;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Description;
@@ -61,6 +59,7 @@ import com.bedrosians.bedlogic.domain.ims.embeddable.SimilarItemCode;
 import com.bedrosians.bedlogic.domain.ims.embeddable.TestSpecification;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Units;
 import com.bedrosians.bedlogic.domain.ims.embeddable.VendorInfo;
+import com.bedrosians.bedlogic.domain.ims.enums.Color;
 import com.bedrosians.bedlogic.util.ims.ImsDataUtil;
 
 
@@ -126,10 +125,12 @@ public class Ims implements java.io.Serializable {
   	//private PriorVendor priorVendor;
   	
 	//------- Associations --------//
+  	//@OrderBy("vendorOrder ASC") 
   	private List<Vendor> newVendorSystem = new CopyOnWriteArrayList<Vendor>();
   	private ImsNewFeature newFeature;
     private IconCollection iconDescription;
 	private List<ColorHue> colorhues =  new ArrayList<>();
+	private List<String> colors =  new ArrayList<>();
   	//private List<Note> newNoteSystem = new ArrayList<>();
      	
 	@Id
@@ -272,7 +273,7 @@ public class Ims implements java.io.Serializable {
 	
 	@Transient
 	public List<String> getUsage() {
-			return this.usage;
+	    return this.usage;
 	}
 	public void setUsage(List<String> usage) {
 		this.usage = usage;
@@ -432,10 +433,22 @@ public class Ims implements java.io.Serializable {
 	}
 	*/
 	
+	@Transient
+	public List<String> getColors() {
+		if(colors == null || colors.isEmpty())
+		   colors = ImsDataUtil.convertColorCategoryToStringList(colorcategory);	
+		return colors;
+		//return ImsDataUtil.convertColorCategoryToStringList(colorcategory);
+	}
+	public void setColors(List<String> colors) {
+		this.colors = colors;
+	}
+	
 	@Column(name = "showonalysedwards", length = 1)
 	public String getShowonalysedwards() {
 		return this.showonalysedwards;
 	}
+	
 	public void setShowonalysedwards(String showonalysedwards) {
 		this.showonalysedwards = showonalysedwards;
 	}
@@ -549,7 +562,7 @@ public class Ims implements java.io.Serializable {
 	
 	//@LazyCollection(LazyCollectionOption.FALSE)
 	//@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-	@OneToMany(fetch=FetchType.EAGER, mappedBy="item", cascade={CascadeType.ALL, CascadeType.REMOVE}, orphanRemoval=true)
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="item", cascade={CascadeType.ALL, CascadeType.REMOVE})//, orphanRemoval=true)
 	@Fetch(FetchMode.SUBSELECT)
 	public List<ColorHue> getColorhues() {
 		return this.colorhues;

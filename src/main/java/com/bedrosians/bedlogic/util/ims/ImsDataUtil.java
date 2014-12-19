@@ -56,6 +56,7 @@ public class ImsDataUtil {
 		return mpsCode;
 	}
 	
+	/************************************ Icon Util *******************************/
 	public static IconCollection convertLegacyIconsToIconCollection(String icons){
 		 /*
 		* Stored as 20 character string
@@ -145,6 +146,7 @@ public class ImsDataUtil {
     	return new String(legacyIcons);
     }
 	
+	/************************************ Vendor Util *******************************/
 	public static Vendor convertImsVendorInfoToItemVendor(final  VendorInfo vendorInfo){
 		Vendor vendor = new Vendor();
 		if(vendorInfo != null){
@@ -186,6 +188,7 @@ public class ImsDataUtil {
 		return vendorInfo;
 	}
 
+	/************************************ Applications/Usage Util *******************************/
 	private String convertUsageToApplications(List<String> usage, String application){
 		if(usage == null || usage.isEmpty())
 		   return null;
@@ -256,6 +259,40 @@ public class ImsDataUtil {
 	    return applocation;
 	}
 
+	public static String convertUsageToApplicationString(final List<String> usage){
+		if(usage == null || usage.isEmpty())
+		   return null;
+		StringBuilder sb = new StringBuilder();
+		
+			
+	    for(int i = 0; i < usage.size(); i++){
+	    	if(usage.get(i).endsWith("R")){
+	           if(i == usage.size() - 1)	
+	       	      sb.append(usage.get(i));	
+	    	   else    
+	    		   sb.append(usage.get(i)).append(":"); 
+	    	}
+	        else if(usage.get(i).endsWith("L")){
+		        if(i == usage.size() - 1)	
+		       	   sb.append(usage.get(i));	
+		    	else    
+				   sb.append(usage.get(i)).append(":"); 
+	    	}   
+		    else if(usage.get(i).endsWith("C")){
+		        if(i == usage.size() - 1)	
+		       	   sb.append(usage.get(i));	
+		    	else    
+		    	   sb.append(usage.get(i)).append(":"); 
+		    }     
+	    }
+	    String string = sb.toString();
+	    if(string != null && string.endsWith(":"))
+	    	string = string.substring(0, string.lastIndexOf(":"));
+	   return string;
+	}
+
+	
+	/************************************ ColorCategory/ColorHue Util *******************************/
 	public static List<String> convertColorCategoryToStringList(String colorCategory){
 		if(colorCategory == null)
 		   return null;	
@@ -338,6 +375,32 @@ public class ImsDataUtil {
 			}
 	        return colorHues;
 		}
+	}
+	
+	public static List<ColorHue> convertColorListToColorHueObjects(List<String> colors){
+		if(colors == null || colors.isEmpty())
+		   return null;	
+		else{
+			List<ColorHue> colorHues = new ArrayList<>();
+			ColorHue colorHue = null;
+			for(String color : colors){
+				colorHue = new ColorHue(color);
+				colorHues.add(colorHue);
+			}
+	        return colorHues;
+		}
+	}
+	
+	public static boolean colorHuesAndColorsEquals(final List<ColorHue> colorhues, final List<String> colors){
+		if(colors == null && colorhues == null)
+		   return true;	
+		if(colorhues.size() != colors.size())
+		   return false;
+		List<String> tempList = new ArrayList<String>(colorhues.size());
+		for(ColorHue colorhue : colorhues){
+			tempList.add(colorhue.getColorHue());
+		}
+		return colors.containsAll(tempList) && tempList.containsAll(colors);
 	}
 	
 	/*public static Set<ColorHue> convertColorCategoryToColorHueString(String colorCategory){

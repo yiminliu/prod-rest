@@ -12,7 +12,7 @@ public enum PackageUnit implements java.io.Serializable {
 		YD("YD"),
 		ROLL("ROLL"),
 		LBS("LBS"),
-		SF("S/F"),
+		SF("S/F"), 
 		SM("S/M");
 		//LF("L/F"),
 		//RS("R/S"),

@@ -142,6 +142,7 @@ public class Vendor implements java.io.Serializable {
 	@Column(name = "vendor_name2", length = 60)
 	public String getVendorName2() {
 		return this.vendorName2;
+		//return (keymarkVendor == null)? null : keymarkVendor.getDbaname();
 	}
 
 	public void setVendorName2(String vendorName2) {

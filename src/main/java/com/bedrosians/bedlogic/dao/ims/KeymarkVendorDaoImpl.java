@@ -5,7 +5,6 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,5 +34,8 @@ public class KeymarkVendorDaoImpl extends GenericDaoImpl<KeymarkVendor, String> 
 	   if (session == null)
 		   session = sessionFactory.openSession();
        return session;
+   }
+   public KeymarkVendor getKeymarkVendorByVendorNumber(Session session, Integer vendorId){
+	   return (KeymarkVendor)session.get(KeymarkVendor.class, vendorId);
    }
 }
