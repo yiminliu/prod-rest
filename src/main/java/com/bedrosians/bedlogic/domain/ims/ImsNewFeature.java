@@ -105,17 +105,6 @@ public class ImsNewFeature implements java.io.Serializable {
 		this.item = item;
 	}
 	
-	@JsonIgnore
-	@Version
-	@Column(name = "version")
-	public Integer getVersion(){
-		return version;
-	}
-	
-	private void setVersion(Integer version){
-		this.version = version;
-	}
-	
 	@JoinColumn(name = "edge")
 	@Enumerated(EnumType.STRING)
 	public Edge getEdge() {
@@ -284,6 +273,17 @@ public class ImsNewFeature implements java.io.Serializable {
 
 	public void setLastModifiedDate(Date lastModifiedDate) {
 		this.lastModifiedDate = lastModifiedDate;
+	}
+
+	@JsonIgnore
+	@Version
+	@Column(name = "version")
+	public Integer getVersion(){
+		return version;
+	}
+	
+	private void setVersion(Integer version){
+		this.version = version;
 	}
 	
 	@JsonIgnore

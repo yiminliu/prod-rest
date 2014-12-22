@@ -22,7 +22,7 @@ public class Description implements java.io.Serializable {
 	public Description(){}
 	
 	@Field(index=Index.YES, analyze=Analyze.YES, store=Store.YES)
-	@Boost(2.0f)
+	@Boost(1.5f)
 	@Column(name = "fulldesc", length = 70)
 	public String getFulldesc() {
 		return this.fulldesc;

@@ -14,7 +14,6 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
 import org.hibernate.CacheMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.SessionEventListener;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,10 +30,8 @@ import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.domain.ims.ImsNewFeature;
 import com.bedrosians.bedlogic.domain.ims.KeymarkVendor;
 import com.bedrosians.bedlogic.domain.ims.Vendor;
-import com.bedrosians.bedlogic.domain.ims.embeddable.Applications;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Units;
 import com.bedrosians.bedlogic.domain.ims.embeddable.VendorInfo;
-import com.bedrosians.bedlogic.domain.ims.enums.Usage;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.exception.DataNotFoundException;
@@ -73,7 +70,6 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
     	   throw new InputParamException("Please enter a valid Item Code !");	
 		try{
 			Session session = getSession();
-			session.setCacheMode(CacheMode.NORMAL);
 	  	    item = imsDao.getItemByItemCode(session, itemCode.toUpperCase());
 		}
 		catch(HibernateException hbe){
@@ -81,7 +77,7 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 			if(hbe.getCause() != null)
 		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
 		  	else
-		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  hbe.getMessage());	
+		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  hbe.getMessage(), hbe);	
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
@@ -211,7 +207,7 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
        	processApplications(item);
      	processIcons(item, operation); 
      	processPackgeUnits(item);
-     	processVendor(item);
+     	processVendor(item, operation);
      	try{
       	   ImsValidator.validateNewItem(item);
  		}
@@ -429,12 +425,17 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
     	if(dBOperation.equals(DBOperation.CLONE) || dBOperation.equals(DBOperation.UPDATE)){
 		   if(!ImsDataUtil.colorHuesAndColorsEquals(item.getColorhues(), item.getColors())){
 			   if(dBOperation.equals(DBOperation.UPDATE)){ //For update, if colorhue changed, we need to remove old ones
-			      item.setColorhues(null);
+			      //item.setColorhues(null);
 			      //item.getColorhues().clear();
 			      for(ColorHue colorHue: colorhues){
-			          colorHueDao.deleteColorHue(colorHue);
+			    	  //if(!item.getColors().contains(colorHue.getColorHue())){
+			    		  //colorhues.remove(colorHue);
+			    		  colorHue.setItem(null);
+			    		  colorHueDao.deleteColorHue(colorHue);
+			    	  //}   
 			      }
 			   }
+			   item.setColorhues(null);
 			   colorhues = ImsDataUtil.convertColorListToColorHueObjects(item.getColors()); //For both clone and update, if colorhue changed, we need to get new values for colorhues
 			}	
 			else 
@@ -543,14 +544,15 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
     	return item;
 	} 	
 	//NEW.vendorlandedbasecost := (NEW.vendornetprice * (100.00 + NEW.vendormarkuppct) / 100.00 / tUnitRatio) + (NEW.vendorfreightratecwt * NEW.basewgtperunit / 100);
-	private Ims processVendor(Ims item){
+	private Ims processVendor(Ims item, DBOperation dBOperation){
 		List<Vendor> vendors = item.getNewVendorSystem();
      	item.setNewVendorSystem(null);
      	if(vendors != null && !vendors.isEmpty()){
      		VendorInfo lagancyVendor = new VendorInfo(); 
      		for(Vendor vendor : vendors){
      			if(vendor.getId() != null){ //populated legacy vendor fields
-           		   item.addNewVendorSystem(vendor);
+     			   //if(vendor.getId().equals(item.getVendors().getVendornbr1()) && (DBOperation.UPDATE.equals(dBOperation) || DBOperation.CLONE.equals(dBOperation)))	
+     		       item.addNewVendorSystem(vendor);
            		   if(vendor.getVendorOrder() == 1)
            			  lagancyVendor = ImsDataUtil.convertNewVendorToLegancyVendorInfo(vendor); 
            		   else if(vendor.getVendorOrder() == 2)

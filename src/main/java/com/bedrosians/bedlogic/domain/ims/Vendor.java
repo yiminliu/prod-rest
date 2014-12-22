@@ -62,7 +62,7 @@ public class Vendor implements java.io.Serializable {
 	}
 	
 	@JsonIgnore
-	@IndexedEmbedded
+	//@IndexedEmbedded
 	@EmbeddedId
 	@AttributeOverrides({
 		@AttributeOverride(name = "itemCode", column = @Column(name = "item_code", nullable = false, length = 20)),
@@ -78,7 +78,7 @@ public class Vendor implements java.io.Serializable {
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="item_code", updatable=false, insertable=false)
-	@ContainedIn
+	//@ContainedIn
 	public Ims getIms(){
 		return this.ims;
 	}

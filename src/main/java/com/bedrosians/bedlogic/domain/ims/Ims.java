@@ -59,7 +59,6 @@ import com.bedrosians.bedlogic.domain.ims.embeddable.SimilarItemCode;
 import com.bedrosians.bedlogic.domain.ims.embeddable.TestSpecification;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Units;
 import com.bedrosians.bedlogic.domain.ims.embeddable.VendorInfo;
-import com.bedrosians.bedlogic.domain.ims.enums.Color;
 import com.bedrosians.bedlogic.util.ims.ImsDataUtil;
 
 
@@ -129,7 +128,7 @@ public class Ims implements java.io.Serializable {
   	private List<Vendor> newVendorSystem = new CopyOnWriteArrayList<Vendor>();
   	private ImsNewFeature newFeature;
     private IconCollection iconDescription;
-	private List<ColorHue> colorhues =  new ArrayList<>();
+	private List<ColorHue> colorhues =  new CopyOnWriteArrayList<>();
 	private List<String> colors =  new ArrayList<>();
   	//private List<Note> newNoteSystem = new ArrayList<>();
      	
@@ -144,16 +143,6 @@ public class Ims implements java.io.Serializable {
 		this.itemcode = itemcode;
 	}
 	
-	@JsonIgnore
-	@Version
-	@Column(name="version")
-	public Long getVersion() {
-		return version;
-	}
-	private void setVersion(Long version) {
-		this.version = version;
-	}
-
 	@Embedded
 	@IndexedEmbedded
 	public Description getItemdesc() {
@@ -535,7 +524,7 @@ public class Ims implements java.io.Serializable {
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "ims", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Fetch(FetchMode.SUBSELECT)
 	//@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-	@IndexedEmbedded(depth=2)
+	//@IndexedEmbedded(depth=2)
 	public List<Vendor> getNewVendorSystem() {
 		return this.newVendorSystem;
 	}
@@ -561,7 +550,8 @@ public class Ims implements java.io.Serializable {
 
 	
 	//@LazyCollection(LazyCollectionOption.FALSE)
-	//@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+	@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+	//@IndexedEmbedded(depth=1)
 	@OneToMany(fetch=FetchType.EAGER, mappedBy="item", cascade={CascadeType.ALL, CascadeType.REMOVE})//, orphanRemoval=true)
 	@Fetch(FetchMode.SUBSELECT)
 	public List<ColorHue> getColorhues() {
@@ -623,6 +613,17 @@ public class Ims implements java.io.Serializable {
 		}
 	}	
 	*/
+	
+	@JsonIgnore
+	@Version
+	@Column(name="version")
+	public Long getVersion() {
+		return version;
+	}
+	private void setVersion(Long version) {
+		this.version = version;
+	}
+	
     @JsonIgnore
     @Transient
 	public String getStandardSellUnit(){
@@ -638,6 +639,7 @@ public class Ims implements java.io.Serializable {
 	@Transient
 	public String getColorHuesAsStrng(){
 		return ImsDataUtil.convertColorHuesToString(colorhues);
+		//return ImsDataUtil.convertColorHuesToString(getColorhues());
 	}
 	public Ims() {
 	}

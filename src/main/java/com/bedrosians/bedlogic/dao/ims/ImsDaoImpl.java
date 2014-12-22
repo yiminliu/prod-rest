@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
 import org.hibernate.FlushMode;
 import org.hibernate.LockMode;
@@ -59,14 +60,16 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
     //--------------------------- retrieval DB operation -----------------------//
     
 	/*
-	 * This method returns an Product with associated entities for the given product id.
+	 * This method returns an item with associated entities for the given item code.
      * Note: it's not set "Read Only" because it could be called by update()
      */
 	@Override
 	public Ims getItemByItemCode(Session session, final String itemCode) {
+		session.setCacheMode(CacheMode.REFRESH);
     	Query query = session.createQuery("From Ims where itemcode = :itemCode");
 		query.setString("itemCode", itemCode);
-		return (Ims)query.setCacheable(false).uniqueResult();
+		//return (Ims)query.setCacheable(false).uniqueResult();
+		return (Ims)query.uniqueResult();
 	}
 	
 	public Ims getItemByItemCode(final String itemCode) {
@@ -395,6 +398,28 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 	   return ims;
 	}
     
+	@Override
+	@Transactional(readOnly=true, propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED)
+	@SuppressWarnings("unchecked")
+    public List<Ims> getItemsByKeyword(String keyword){
+	   List<Ims> items = null;
+	   FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+	   //create query builder	
+	   QueryBuilder queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(Ims.class).get();
+	   // create native Lucene keyword query
+	   org.apache.lucene.search.Query luceneQuery = queryBuilder.keyword()
+		   	                                        .fuzzy()
+                                                    .withThreshold(0.75f)
+                                                    .onFields("itemdesc.itemdesc1", "itemdesc.fulldesc", "category", "material.meterialCategory", "material.meterialType")
+		   	                                        .matching(keyword)
+		   	                                        .createQuery();
+	   // wrap Lucene query in a javax.persistence.Query
+	   org.hibernate.Query fullTextQuery = fullTextSession.createFullTextQuery(luceneQuery, Ims.class).setCacheable(true);
+	   // retrieve item list
+	   items = (List<Ims>)fullTextQuery.list();     
+	   return items;
+	}
+	
 	//------------------------------- creation DB operation -------------------------//
 	
 	@Override

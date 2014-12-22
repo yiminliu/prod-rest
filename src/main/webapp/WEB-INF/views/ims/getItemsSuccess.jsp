@@ -41,6 +41,7 @@
                          <th>Buyer</th>
                          <!--<th>Inventory Item Code</th>-->
                          <th>Edit</th>
+                         <th>Clone</th>
                        </tr>
                        <c:forEach var="item" items="${itemList}" varStatus="status">  
                        <tr>
@@ -69,6 +70,8 @@
                          <td>${item.purchasers.purchaser2}</td>
                           <!--<td>${item.inventoryitemcode}</td>-->
                           <td><a id="modifyItem" href="<spring:url value="/ims/updateItem_begin/${item.itemcode}" />"><span>Edit</span></a></td>
+                          <td><a id="cloneItem" href="<spring:url value="/ims/cloneItem/${item.itemcode}" />" ><span>Clone</span></a></td>
+         
                           <!-- <td><a id="deleteItem" href="<spring:url value="/ims/deleteItem/${item.itemcode}" />" class="button-m"><span>Delete</span></a></td>-->
                        </tr>
                      </c:forEach> 

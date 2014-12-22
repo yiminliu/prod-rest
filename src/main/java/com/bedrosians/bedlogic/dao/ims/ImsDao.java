@@ -9,12 +9,13 @@ import org.hibernate.Session;
 
 import com.bedrosians.bedlogic.dao.GenericDao;
 import com.bedrosians.bedlogic.domain.ims.Ims;
-import com.bedrosians.bedlogic.domain.ims.KeymarkVendor;
+
 
 public interface ImsDao extends GenericDao<Ims, String>{
    public Ims getItemByItemCode(Session session, String itemCode);
    public Ims loadItemByItemCode(Session session, String itemCode);
    public List<String> getItemCodeList();	
+   public List<Ims> getItemsByKeyword(String keyword);
    public List<Ims> getActiveAndShownOnWebsiteItems();
    public List<Ims> getItemsByQueryParameters(MultivaluedMap<String, String> queryParams);
    public List<Ims> getItems(LinkedHashMap<String,List<String>> queryParams);

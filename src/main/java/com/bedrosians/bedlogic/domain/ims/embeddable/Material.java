@@ -43,7 +43,7 @@ public class Material implements java.io.Serializable {
 	}
 
 	@Field(index=Index.YES, analyze=Analyze.NO, store=Store.YES)
-	@Boost(2.0f)
+	@Boost(2.5f)
 	@Column(name = "matcategory", length = 10)
 	public String getMaterialcategory() {
 		return this.materialcategory;

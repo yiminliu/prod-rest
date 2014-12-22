@@ -14,6 +14,14 @@ import javax.persistence.Version;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Boost;
+import org.hibernate.search.annotations.ContainedIn;
+import org.hibernate.search.annotations.DocumentId;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.Store;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 ///import org.codehaus.jackson.annotate.JsonIgnore;
@@ -21,6 +29,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "ims_color_hue", schema = "public")
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="colorHue")
+@Indexed
 public class ColorHue implements java.io.Serializable {
 
 	private static final long serialVersionUID = -7547545887L;
@@ -30,7 +39,56 @@ public class ColorHue implements java.io.Serializable {
 	private Ims item;
 	private Integer version;
 	
-	public ColorHue() {
+	
+	@JsonIgnore
+	@Id
+	@Column(name = "id", unique = true, nullable = false)
+	@GeneratedValue(strategy=GenerationType.AUTO, generator="ims_color_hue_id_seq_gen")
+	@SequenceGenerator(name="ims_color_hue_id_seq_gen", sequenceName="ims_color_hue_id_seq")
+	@DocumentId
+	public Integer getId() {
+		return this.id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	@JsonIgnore
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "item_code")
+	//@ContainedIn
+	public Ims getItem() {
+		return this.item;
+	}
+
+	public void setItem(Ims item) {
+		this.item = item;
+	}
+
+	@Field(index=Index.YES, analyze=Analyze.NO, store=Store.YES)
+	@Boost(2.0f)
+	@Column(name = "color_hue", length = 120)
+	public String getColorHue() {
+		return this.colorHue;
+	}
+
+	public void setColorHue(String colorHue) {
+		this.colorHue = colorHue;
+	}
+
+	@JsonIgnore
+    @Version
+    @Column(name = "version")
+    public Integer getVersion(){
+    	return version;
+    }
+	
+    private void setVersion(Integer version){
+		this.version = version;
+	}
+	
+    public ColorHue() {
 	}
 
 	public ColorHue(Integer id) {
@@ -53,50 +111,6 @@ public class ColorHue implements java.io.Serializable {
 		this.id = id;
 		this.colorHue = colorHue;
 		this.item = item;
-	}
-	
-	@JsonIgnore
-	@Id
-	@Column(name = "id", unique = true, nullable = false)
-	@GeneratedValue(strategy=GenerationType.AUTO, generator="ims_color_hue_id_seq_gen")
-	@SequenceGenerator(name="ims_color_hue_id_seq_gen", sequenceName="ims_color_hue_id_seq")
-	public Integer getId() {
-		return this.id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "item_code")
-	public Ims getItem() {
-		return this.item;
-	}
-
-	public void setItem(Ims item) {
-		this.item = item;
-	}
-
-	@Column(name = "color_hue", length = 120)
-	public String getColorHue() {
-		return this.colorHue;
-	}
-
-	public void setColorHue(String colorHue) {
-		this.colorHue = colorHue;
-	}
-
-	@JsonIgnore
-    @Version
-    @Column(name = "version")
-    public Integer getVersion(){
-    	return version;
-    }
-	
-    private void setVersion(Integer version){
-		this.version = version;
 	}
 	
 	@Override
