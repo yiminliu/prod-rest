@@ -131,6 +131,8 @@ public class Ims implements java.io.Serializable {
 	private List<String> colors =  new ArrayList<>();
   	//private List<Note> newNoteSystem = new ArrayList<>();
      	
+	private String colorHueString;
+	
 	@Id
 	@DocumentId
 	@Column(name = "itemcd", unique = true, nullable = false, length = 18)
@@ -423,12 +425,22 @@ public class Ims implements java.io.Serializable {
 	}
 	*/
 	
+	
 	@Transient
 	public List<String> getColors() {
 		if(colors == null || colors.isEmpty())
 		   colors = ImsDataUtil.convertColorCategoryToStringList(colorcategory);	
 		return colors;
 		//return ImsDataUtil.convertColorCategoryToStringList(colorcategory);
+	}
+	
+	@Transient
+	public String getColorHueString() {
+		//return colorHueString;
+		return ImsDataUtil.convertColorHuesToString(colorhues);
+	}
+	public void setColorHueString(String colorHueString) {
+		this.colorHueString = colorHueString;
 	}
 	public void setColors(List<String> colors) {
 		this.colors = colors;

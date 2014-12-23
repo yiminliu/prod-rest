@@ -56,7 +56,7 @@
                           <td>${item.itemcategory}</td>
                           <td>${item.series.seriesname}</td>
                           <td>${item.series.seriescolor}</td>
-                          <td>${item.colors}</td>
+                          <td>${item.colorHueString}</td>
                           <c:choose>
                              <c:when test="${item.inactivecode == 'N'}">
                                 <td><c:out value="Active"/></td>

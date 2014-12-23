@@ -107,49 +107,49 @@
      <tr>
           <td><label for="edgeOptions">Edge: </label>
               <c:forEach var="edge" items="${edgeList}" varStatus="status">
-                 <form:radiobutton path="newFeature.edge" value="${edge}"/>${edge.getDescription()}
+                 <form:radiobutton path="newFeature.edge" value="${edge}"/>${edge}
               </c:forEach>
          </td>                  
        </tr>
        <tr>
          <td><label for="bodyOptions">Body: </label>
               <c:forEach var="body" items="${bodyList}" varStatus="status">
-                 <form:radiobutton path="newFeature.body" value="${body}"/>${body.getDescription()}
+                 <form:radiobutton path="newFeature.body" value="${body}"/>${body}
               </c:forEach>
          </td>
        </tr>
        <tr>
          <td><label for="designLookOptions">Design Look: </label>
               <c:forEach var="designLook" items="${designLookList}" varStatus="status">
-                 <form:radiobutton path="newFeature.designLook" value="${designLook}" />${designLook.getDescription()}
+                 <form:radiobutton path="newFeature.designLook" value="${designLook}" />${designLook}
               </c:forEach>
           </td>  
        </tr>
        <tr>
         <td><label for="designStyleOptions">Design Styles: </label>
               <c:forEach var="designStyle" items="${designStyleList}" varStatus="status">
-                 <form:radiobutton  path="newFeature.designStyle" value="${designStyle}"/>${designStyle.getDescription()}
+                 <form:radiobutton  path="newFeature.designStyle" value="${designStyle}"/>${designStyle}
               </c:forEach>
          </td>  
       </tr>
       <tr>
         <td><label for="surfaceTypeOptions">Surface Type: </label>
               <c:forEach var="surfaceType" items="${surfaceTypeList}" varStatus="status">
-                 <form:radiobutton path="newFeature.surfaceType" value="${surfaceType}"/>${surfaceType.getDescription()}
+                 <form:radiobutton path="newFeature.surfaceType" value="${surfaceType}"/>${surfaceType}
               </c:forEach>
          </td>  
        </tr>
        <tr>
           <td><label for="surfaceFinishOptions">Surface Finish: </label>
               <c:forEach var="surfaceFinish" items="${surfaceFinishList}" varStatus="status">
-                 <form:radiobutton path="newFeature.surfaceFinish" value="${surfaceFinish}"/>${surfaceFinish.getDescription()}
+                 <form:radiobutton path="newFeature.surfaceFinish" value="${surfaceFinish}"/>${surfaceFinish}
               </c:forEach>
           </td>         
        </tr>
        <tr>
          <td><label for="surfaceApplicationOptions">Surface Application: </label>
               <c:forEach var="surfaceApplication" items="${surfaceApplicationList}" varStatus="status">
-                 <form:radiobutton path="newFeature.surfaceApplication" value="${surfaceApplication}" />${surfaceApplication.getDescription()}
+                 <form:radiobutton path="newFeature.surfaceApplication" value="${surfaceApplication}" />${surfaceApplication}
               </c:forEach>
          </td>
        </tr>
