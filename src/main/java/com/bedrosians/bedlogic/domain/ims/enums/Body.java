@@ -21,6 +21,10 @@ public enum Body implements java.io.Serializable {
 	public String getDescription(){
 		 return description;
 	}
+
+	public void setDescription(String description){
+		this.description = description;
+	}
 		 
 	public static Body instanceOf(String key){
 		for(Body body : values()){ 

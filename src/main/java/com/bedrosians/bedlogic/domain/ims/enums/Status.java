@@ -15,6 +15,11 @@ public enum Status implements java.io.Serializable {
 			 return description;
 		 }
 
+
+	 	 public void setDescription(String description){
+			this.description = description;
+		 }
+				
 		 public static Status instanceOf(String description){
 			 Status status = null ;
 			 switch(description) {

@@ -16,7 +16,11 @@ public enum MaterialClass implements java.io.Serializable {
 	public String getDescription(){
 		 return description;
 	}
-		 
+
+	public void setDescription(String description){
+		this.description = description;
+	}
+		
 	public static MaterialClass instanceOf(String key){
 		for(MaterialClass instance : values()){
 		    if( instance.getDescription().equalsIgnoreCase(key))

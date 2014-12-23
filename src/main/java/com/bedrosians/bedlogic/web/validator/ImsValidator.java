@@ -107,7 +107,7 @@ public class ImsValidator implements Validator {
 		 if (data != null && data.getTempdatefrom() != null && data.getTempprice() == null){
 		    errors.rejectValue("price.tempprice", "item.tempprice.null", "Please enter valid special price");
 		 }	 
-		 if (data != null && data.getTempprice() != null){
+		 if (data != null && data.getTempprice() != null && data.getTempprice().floatValue() > 0.0){
 			 if(data.getTempdatefrom() == null) 
 			    errors.rejectValue("price.tempdatefrom", "item.tempdatefrom.null", "Please enter start date");
 			 if(data.getTempdatethru() == null) 

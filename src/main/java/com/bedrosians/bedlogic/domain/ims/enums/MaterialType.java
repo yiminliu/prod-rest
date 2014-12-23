@@ -24,6 +24,10 @@ public enum MaterialType implements java.io.Serializable {
 	public String getDescription(){
 		 return description;
 	}
+
+	public void setDescription(String description){
+		this.description = description;
+	}
 		 
 	public static MaterialType instanceOf(String key){
 		for(MaterialType instance : values()){

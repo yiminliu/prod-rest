@@ -20,7 +20,7 @@
             <form:select id="materialCategory" path="material.materialcategory" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;color:#0076BF;">
                <form:option value="" selected="selected">Select one</form:option>
                <c:forEach var="materialCategory" items="${materialCategoryList}" varStatus="status">
-                 <form:option value="${materialCategory}">${materialCategory.getDescription()}</form:option>
+                 <form:option value="${materialCategory}">${materialCategory.description}</form:option>
               </c:forEach>
             </form:select>
          </td>   

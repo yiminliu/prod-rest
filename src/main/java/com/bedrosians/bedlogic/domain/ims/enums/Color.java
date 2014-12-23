@@ -7,6 +7,7 @@ public enum Color implements java.io.Serializable {
 	BLACK("Black"),
 	BLUE("Blue"),
 	BROWN("Brown"),
+	CLEAR("Clear"),
 	CREAM("Cream"),
 	GOLD("Gold"),
 	GREEN("Green"),
@@ -32,6 +33,10 @@ public enum Color implements java.io.Serializable {
 	
 	public String getDescription(){
 		 return description;
+	}
+	
+	public void setDescription(String description){
+		this.description = description;
 	}
 		 
 	public static Color instanceOf(String key){

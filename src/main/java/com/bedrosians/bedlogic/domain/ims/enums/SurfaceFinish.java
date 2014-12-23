@@ -22,7 +22,11 @@ public enum SurfaceFinish implements java.io.Serializable {
 	public String getDescription(){
 		 return description;
 	}
-		 
+
+	public void setDescription(String description){
+		this.description = description;
+	}
+		
 	public static SurfaceFinish instanceOf(String key){
 		for(SurfaceFinish instance : values()){
 		    if( instance.getDescription().equalsIgnoreCase(key))

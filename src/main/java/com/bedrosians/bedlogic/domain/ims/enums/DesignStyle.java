@@ -24,6 +24,10 @@ public enum DesignStyle implements java.io.Serializable {
 	public String getDescription(){
 		 return description;
 	}
+
+	public void setDescription(String description){
+		this.description = description;
+	}
 		 
 	public static DesignStyle instanceOf(String key){
 	  for(DesignStyle designStyle : values()){

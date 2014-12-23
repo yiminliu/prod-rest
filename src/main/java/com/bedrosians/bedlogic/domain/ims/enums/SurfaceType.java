@@ -20,7 +20,11 @@ public enum SurfaceType implements java.io.Serializable {
 	public String getDescription(){
 		 return description;
 	}
-		 
+
+	public void setDescription(String description){
+		this.description = description;
+	}
+		
 	public static SurfaceType instanceOf(String key){
 		for(SurfaceType instance : values()){
 		    if( instance.getDescription().equalsIgnoreCase(key))

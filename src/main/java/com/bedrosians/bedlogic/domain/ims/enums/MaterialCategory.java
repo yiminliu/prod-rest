@@ -26,7 +26,6 @@ public enum MaterialCategory implements java.io.Serializable {
 	ARC("ARC"),
 	Ledger("Ledger");
 		
-
 	
 	private String description;
 		 
@@ -37,7 +36,11 @@ public enum MaterialCategory implements java.io.Serializable {
 	public String getDescription(){
 		 return description;
 	}
-		 
+
+	public void setDescription(String description){
+		this.description = description;
+	}
+		
 	public static MaterialCategory instanceOf(String key){
 		for(MaterialCategory instance : values()){
 		    if( instance.getDescription().equalsIgnoreCase(key))

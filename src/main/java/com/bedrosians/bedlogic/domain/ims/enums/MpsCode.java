@@ -28,7 +28,7 @@ public enum MpsCode implements java.io.Serializable {
 		 public void setDescription(String description){
 			 this.description = description;
 		 }	
-		 
+		    
 		 public static MpsCode instanceOf(String description){
 			 MpsCode instance = null;
 			 switch(description) {

@@ -43,7 +43,11 @@ public enum OriginCountry implements java.io.Serializable {
 		 public String getDescription(){
 			 return description;
 		 }
-		 
+
+		 public void setDescription(String description){
+			this.description = description;
+		 }
+				
 		 public static OriginCountry instanceOf(String key){
 				for(OriginCountry instance : values()){
 				    if( instance.getDescription().equalsIgnoreCase(key))

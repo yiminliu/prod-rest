@@ -30,7 +30,11 @@ public enum PackageUnit implements java.io.Serializable {
 	public String getDescription(){
 		 return description;
 	}
-		 
+
+	public void setDescription(String description){
+		this.description = description;
+	}
+		
 	public static PackageUnit instanceOf(String key){
 		for(PackageUnit body : values()){ 
 		    if(body.getDescription().equalsIgnoreCase(key))

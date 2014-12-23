@@ -26,7 +26,11 @@ public enum MaterialStyle implements java.io.Serializable {
 	public String getDescription(){
 		 return description;
 	}
-		 
+
+	public void setDescription(String description){
+		this.description = description;
+	}
+		
 	public static MaterialStyle instanceOf(String key){
 		for(MaterialStyle instance : values()){
 		    if( instance.getDescription().equalsIgnoreCase(key))

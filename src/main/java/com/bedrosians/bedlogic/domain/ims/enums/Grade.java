@@ -14,7 +14,11 @@ public enum Grade implements java.io.Serializable {
 		 public String getDescription(){
 			 return description;
 		 }
-		 
+
+		 public void setDescription(String description){
+			this.description = description;
+		 }
+				
 		 public static Grade instanceOf(String description){
 			 Grade grade = null;
 			 switch(description) {

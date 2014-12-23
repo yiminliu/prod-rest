@@ -13,7 +13,11 @@ public enum DesignLook implements java.io.Serializable {
 		 public String getDescription(){
 			 return description;
 		 }
-		 
+
+		 public void setDescription(String description){
+			 this.description = description;
+		 }
+				
 		 public static DesignLook instanceOf(String description){
 			 DesignLook instance = null;
 			 switch(description) {
