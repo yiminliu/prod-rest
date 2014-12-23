@@ -36,7 +36,7 @@ public class ImsServiceUpdateWithJsonTest {
 	@Autowired
 	ImsService imsService;
 	
-	private String id = "NEWITEMCODE1";
+	private String id = "NEWITEMCODE31";
 	
  	
 	@Before
@@ -44,7 +44,7 @@ public class ImsServiceUpdateWithJsonTest {
 	
 	}
 	
-	@Test
+	//@Test
 	 public void testUpdateItemWithColorCategoryJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringColorCategory);
@@ -814,7 +814,7 @@ public class ImsServiceUpdateWithJsonTest {
     		+ "}";
  
 	 String jStringWithMultipleColorHues = 
-		     "{\"itemcode\":\"newItemcode10\","
+		     "{\"itemcode\":\"newItemcode31\","
 		    + "\"itemcategory\":\"ATHENA\","
  		    + "\"countryorigin\":\"Italy\","
  		    + "\"inactivecode\":\"N\","
@@ -1008,7 +1008,7 @@ public class ImsServiceUpdateWithJsonTest {
 	    		+ "}";
 	 
 	 String jStringDescription = 
-			   "{\"itemcode\":\"NEWITEMCODE1\","
+			   "{\"itemcode\":\"NEWITEMCODE31\","
 			   + "\"itemdesc\":{\"itemdesc1\":\"update 2x2 Athena Mosaic on 12x12 \"},"		   
 	    		+ "}";
 	

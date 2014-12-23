@@ -98,7 +98,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	    //testColor = "Beige";
 	    testColor = "White";
 	    testColorCategory = "RED";
-	    testColorHue = "RED";
+	    testColorHue = "BEIGE";
 	    testColorHue2 = "CLEAR";
 	    testColorHue3 = "GREEN";
 	    testColorHue4 = "YELLOW";
@@ -1169,7 +1169,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
      public void testGetItemByMultiPrameters() throws Exception {
 	        System.out.println("testGetItemByMultivaluedMap: ");
 	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
-	        params.put("colorhues", Arrays.asList(new String[]{testColorHue}));
+	        //params.put("colorhues", Arrays.asList(new String[]{testColorHue}));
 			//params.put("category", Arrays.asList(new String[]{testCategory}));
 		    params.put("materialtype", Arrays.asList(new String[]{testMaterialType}));
 			//params.put("countryorigin", Arrays.asList(new String[]{testOrigin, testOrigin2}));

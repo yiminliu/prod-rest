@@ -58,7 +58,7 @@ public class ImsValidator {
 		if(item.getMaterial() != null && item.getMaterial().getMaterialclass() != null && item.getMaterial().getMaterialclass().length() > 5)
 		   throw new BedDAOBadParamException("Matrial class code should not be longer that 5 characters.");
 		if(item.getMaterial() != null && item.getMaterial().getMaterialstyle() != null && item.getMaterial().getMaterialstyle().length() > 7 )
-			   throw new BedDAOBadParamException("Matrial style should not be longer that 7 characters.");
+		   throw new BedDAOBadParamException("Matrial style should not be longer that 7 characters.");
 		if(item.getItemdesc() != null && item.getItemdesc().getItemdesc1() != null && item.getItemdesc().getItemdesc1().length() > 35)
 		   throw new BedDAOBadParamException("Description should not be longer that 35 characters.");
 		if(item.getPurchasers() != null && item.getPurchasers().getPurchaser() != null && item.getPurchasers().getPurchaser().length() > 10)
@@ -118,7 +118,7 @@ public class ImsValidator {
 	
 	//Validate new product against the item table CHECK constraints
 	public static void validateNewItemUnit(Ims item) throws BedDAOBadParamException{
-	    if(item.getUnits() == null || item.getUnits().isDefault()) 
+	    if(item.getUnits() == null || item.getUnits().isDefault() || item.getUnits().getBasewgtperunit() == null) 
 	       return;
 	
 	    validateStandardOrderUnit(item);
@@ -191,12 +191,12 @@ public class ImsValidator {
         	!item.getVendors().getVendorpriceunit().equalsIgnoreCase(item.getUnits().getUnit2unit()) &&
         	!item.getVendors().getVendorpriceunit().equalsIgnoreCase(item.getUnits().getUnit3unit()) &&
         	!item.getVendors().getVendorpriceunit().equalsIgnoreCase(item.getUnits().getUnit4unit())) {
-        	 System.out.println("Vendorpriceunit = " + item.getVendors().getVendorpriceunit());
+        	/* System.out.println("Vendorpriceunit = " + item.getVendors().getVendorpriceunit());
         	 System.out.println("Base unit = " + item.getUnits().getBaseunit());
         	 System.out.println("Unit 1 unit = " + item.getUnits().getUnit1unit());
         	 System.out.println("Unit 2 unit = " + item.getUnits().getUnit2unit());
         	 System.out.println("Unit 3 unit = " + item.getUnits().getUnit3unit());
-        	 System.out.println("Unit 4 unit = " + item.getUnits().getUnit4unit());
+        	 System.out.println("Unit 4 unit = " + item.getUnits().getUnit4unit());*/
            throw new BedDAOBadParamException("According to item table requirments, vendor price unit should match one of the unit's packaging unit."); 	 
          }
          if(item.getVendors().getVendorlistprice() == null){

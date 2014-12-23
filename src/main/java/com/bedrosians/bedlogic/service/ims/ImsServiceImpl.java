@@ -26,6 +26,7 @@ import com.bedrosians.bedlogic.domain.ims.ColorHue;
 import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
+import com.bedrosians.bedlogic.service.mvc.ims.ImsServiceMVC;
 import com.bedrosians.bedlogic.util.FormatUtil;
 import com.bedrosians.bedlogic.util.JsonUtil;
 import com.bedrosians.bedlogic.util.JsonWrapper.ItemWrapper;
@@ -46,6 +47,9 @@ public class ImsServiceImpl implements ImsService {
     
     @Autowired
 	private SessionFactory sessionFactory;
+    
+    @Autowired
+   	private ImsServiceMVC imsServiceMVC;
       	    	  
     //--------------------------------Retrieval DB Operation --------------------------//
     
@@ -156,8 +160,11 @@ public class ImsServiceImpl implements ImsService {
 	public String createItem(JSONObject jsonObj) throws BedDAOBadParamException, BedDAOException{  	
 		String itemCode = JsonUtil.validateItemCode(jsonObj);
 		String id;
-		Ims itemToCreate = new Ims(itemCode);
      	Ims itemFromInput = (Ims)JsonUtil.jsonObjectToPOJO(jsonObj, new Ims());
+     	itemFromInput.setItemcode(itemFromInput.getItemcode().toUpperCase());
+     	id = imsServiceMVC.createItem(itemFromInput, DBOperation.CREATE);
+     	/*
+     	Ims itemToCreate = new Ims(itemCode);
      	itemToCreate = ImsDataUtil.transformItem(itemToCreate, itemFromInput, DBOperation.CREATE);
      	ImsValidator.validateNewItem(itemToCreate);
    	    try{
@@ -180,7 +187,7 @@ public class ImsServiceImpl implements ImsService {
 	  	     throw new BedDAOException("Error occured during createItem(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
 	  	  else
 	  	     throw new BedDAOException("Error occured during createItem(), due to: " +  e.getMessage());	
-      }
+      }*/
 	  return id;		 	
     }
 	

@@ -424,8 +424,10 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 	
 	@Override
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
-	public String createItem(Ims ims){
-		return (String)save(sessionFactory.getCurrentSession(), ims); 
+	public String createItem(Ims item){
+		//return (String)save(sessionFactory.getCurrentSession(), ims); 
+		save(sessionFactory.getCurrentSession(), item);
+		return item.getItemcode();
 	}
 	
 	//------------------------------- update DB operation ---------------------------//

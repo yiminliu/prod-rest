@@ -262,7 +262,9 @@ public class Ims implements java.io.Serializable {
 	
 	@Transient
 	public List<String> getUsage() {
-	    return this.usage;
+	    if(usage == null || usage.isEmpty())
+	       usage = ImsDataUtil.convertApplicationsToUsage(this);
+	    return usage;
 	}
 	public void setUsage(List<String> usage) {
 		this.usage = usage;
