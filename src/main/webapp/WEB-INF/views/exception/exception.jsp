@@ -17,7 +17,7 @@
 		    <h4>Error Message:</h4> ${errorMessage}
 	     </c:if>
          <table>
-           <tr>
+           <!--<tr>
               <c:if test="${not empty url}">
                  <td><h4>Failed URL:</h4> ${url}</td>
               </c:if>    
@@ -26,7 +26,7 @@
               <tr>   
                  <td><h4>Root Cause:</h4>  ${error.getCause().getMessage()}</td>
               </tr>
-           </c:if>   
+           </c:if>-->   
               <c:if test="${not empty error}">
               <tr>
                  <td><h4>Stack Trace:</h4>

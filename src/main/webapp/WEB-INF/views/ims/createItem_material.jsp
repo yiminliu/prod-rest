@@ -33,7 +33,7 @@
             <form:select id="materialType" path="material.materialtype" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;color:#0076BF;">
                <form:option value="" selected="selected">Select one</form:option>
                <c:forEach var="materialType" items="${materialTypeList}" varStatus="status">
-                 <form:option value="${materialType}">${materialType.getDescription()}</form:option>
+                 <form:option value="${materialType}">${materialType.description}</form:option>
               </c:forEach>
             </form:select>
          </td> 
@@ -46,7 +46,7 @@
             <form:select id="materialClass" path="material.materialclass" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;color:#0076BF;">
                <form:option value="" selected="selected">Select one</form:option>
                <c:forEach var="materialClass" items="${materialClassList}" varStatus="status">
-                 <form:option value="${materialClass}">${materialClass.getDescription()}</form:option>
+                 <form:option value="${materialClass}">${materialClass.description}</form:option>
               </c:forEach>
             </form:select>
          </td>
@@ -59,7 +59,7 @@
             <form:select id="materialStyle" path="material.materialstyle" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;color:#0076BF;">
                <form:option value="" selected="selected">Select one</form:option>
                <c:forEach var="materialStyle" items="${materialStyleList}" varStatus="status">
-                 <form:option value="${materialStyle}">${materialStyle.getDescription()}</form:option>
+                 <form:option value="${materialStyle}">${materialStyle.description}</form:option>
               </c:forEach>
             </form:select>
          </td> 

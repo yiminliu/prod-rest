@@ -97,7 +97,7 @@
       <tr>
           <td><label for="madeInCountryOptions">Country: </label>
               <c:forEach var="madeInCountry" items="${countryList}" varStatus="status">
-                 <form:radiobutton path="iconDescription.madeInCountry" value="${madeInCountry}"/>${madeInCountry.getDescription()}
+                 <form:radiobutton path="iconDescription.madeInCountry" value="${madeInCountry}"/>${madeInCountry}
               </c:forEach>
           </td>
       </tr>

@@ -100,7 +100,7 @@
             <form:select id="materialType" path="material.materialtype" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;">
                <form:option value="0" selected="selected">Select one</form:option>
                <c:forEach var="materialType" items="${materialTypeList}" varStatus="status">
-                 <form:option value="${materialType}">${materialType.getDescription()}</form:option>
+                 <form:option value="${materialType}">${materialType.description}</form:option>
               </c:forEach>
             </form:select>
          </td>   
@@ -108,7 +108,7 @@
             <form:select id="materialCategory" path="material.materialcategory" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;">
                <form:option value="0" selected="selected">Select one</form:option>
                <c:forEach var="materialCategory" items="${materialCategoryList}" varStatus="status">
-                 <form:option value="${materialCategory}">${materialCategory.getDescription()}</form:option>
+                 <form:option value="${materialCategory}">${materialCategory.description}</form:option>
               </c:forEach>
             </form:select>
          </td>   
@@ -116,7 +116,7 @@
             <form:select id="materialClass" path="material.materialclass" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;">
                <form:option value="0" selected="selected">Select one</form:option>
                <c:forEach var="materialClass" items="${materialClassList}" varStatus="status">
-                 <form:option value="${materialClass}">${materialClass.getDescription()}</form:option>
+                 <form:option value="${materialClass}">${materialClass.description}</form:option>
               </c:forEach>
             </form:select>
          </td> 
@@ -124,7 +124,7 @@
             <form:select id="materialStyle" path="material.materialstyle" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;">
                <form:option value="0" selected="selected">Select one</form:option>
                <c:forEach var="materialStyle" items="${materialStyleList}" varStatus="status">
-                 <form:option value="${materialStyle}">${materialStyle.getDescription()}</form:option>
+                 <form:option value="${materialStyle}">${materialStyle.description}</form:option>
               </c:forEach>
             </form:select>
          </td>   
@@ -165,7 +165,7 @@
             <form:select id="edge" path="newFeature.edge" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:100px;">
                <form:option value="0" selected="selected">Select one</form:option>
                <c:forEach var="edge" items="${edgeList}" varStatus="status">
-                 <form:option value="${edge}">${edge.getDescription()}</form:option>
+                 <form:option value="${edge}">${edge.description}</form:option>
               </c:forEach>
             </form:select>
          </td>                  
@@ -173,7 +173,7 @@
             <form:select id="body" path="newFeature.body" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:100px;">
                <form:option value="0" selected="selected">Select one</form:option>
                <c:forEach var="body" items="${bodyList}" varStatus="status">
-                 <form:option value="${body}">${body.getDescription()}</form:option>
+                 <form:option value="${body}">${body.description}</form:option>
               </c:forEach>
             </form:select>
          </td>
@@ -181,7 +181,7 @@
             <form:select id="designLook" path="newFeature.designLook" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:100px;">
                <form:option value="0" selected="selected">Select one</form:option>
                <c:forEach var="designLook" items="${designLookList}" varStatus="status">
-                 <form:option value="${designLook}">${designLook.getDescription()}</form:option>
+                 <form:option value="${designLook}">${designLook.description}</form:option>
               </c:forEach>
             </form:select>
          </td>  
@@ -189,7 +189,7 @@
             <form:select id="designStyle" path="newFeature.designStyle" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:100px;">
                <form:option value="0" selected="selected">Select one</form:option>
                <c:forEach var="designStyle" items="${designStyleList}" varStatus="status">
-                 <form:option value="${designStyle}">${designStyle.getDescription()}</form:option>
+                 <form:option value="${designStyle}">${designStyle.description}</form:option>
               </c:forEach>
             </form:select>
          </td>  
@@ -197,7 +197,7 @@
             <form:select id="surfaceType" path="newFeature.surfaceType" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:100px;">
                <form:option value="0" selected="selected">Select one</form:option>
                <c:forEach var="surfaceType" items="${surfaceTypeList}" varStatus="status">
-                 <form:option value="${surfaceType}">${surfaceType.getDescription()}</form:option>
+                 <form:option value="${surfaceType}">${surfaceType.description}</form:option>
               </c:forEach>
             </form:select>
          </td>  
@@ -205,7 +205,7 @@
             <form:select id="surfaceFinish" path="newFeature.surfaceFinish" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:100px;">>
                <form:option value="0" selected="selected">Select one</form:option>
                <c:forEach var="surfaceFinish" items="${surfaceFinishList}" varStatus="status">
-                 <form:option value="${surfaceFinish}">${surfaceFinish.getDescription()}</form:option>
+                 <form:option value="${surfaceFinish}">${surfaceFinish.description}</form:option>
               </c:forEach>
             </form:select>
          </td>         
@@ -213,7 +213,7 @@
             <form:select id="surfaceApplication" path="newFeature.surfaceApplication" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:100px;">
                <form:option value="0" selected="selected">Select one</form:option>
                <c:forEach var="surfaceApplication" items="${surfaceApplicationList}" varStatus="status">
-                 <form:option value="${surfaceApplication}">${surfaceApplication.getDescription()}</form:option>
+                 <form:option value="${surfaceApplication}">${surfaceApplication.description}</form:option>
               </c:forEach>
             </form:select>
          </td>
