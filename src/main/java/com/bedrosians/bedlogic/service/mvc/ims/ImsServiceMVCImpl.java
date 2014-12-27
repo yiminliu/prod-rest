@@ -174,8 +174,8 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 			itemList = imsDao.getItems(queryParams);
 		}
 		catch(HibernateException hbe){
-	    	if(hbe.getCause() != null)
-		       throw new DataOperationException("Error occured during getItems(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
+		  	if(hbe.getCause() != null)
+		       throw new DataOperationException("Error occured during getItems(), due to: " +  hbe.getMessage() + ". Root cause -- " + hbe.getCause().getMessage(), hbe);	
 		  	else
 		  	   throw new DataOperationException("Error occured during getItems(), due to: " +  hbe.getMessage());
 		}
@@ -208,12 +208,14 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
      	processIcons(item, operation); 
      	processPackgeUnits(item);
      	processVendor(item, operation);
-     	try{
-      	   ImsValidator.validateNewItem(item);
- 		}
- 		catch(Exception e){
- 			throw new InputParamException("Input valiation error: "+e.getMessage(), e);
- 		}
+     	if(DBOperation.CREATE.equals(operation) || DBOperation.CLONE.equals(operation)){ 
+     	   try{
+      	      ImsValidator.validateNewItem(item);
+ 		   }
+ 		   catch(Exception e){
+ 			  throw new InputParamException("Input valiation error: "+e.getMessage(), e);
+ 		   }
+     	}   
      	try{
 		   id = imsDao.createItem(item);
 		}
@@ -239,8 +241,8 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 	  	  else
 	  	     throw new DataOperationException("Error occured during createItem().", e);	
       }
-	  return id;		 	
-    }
+	  return id;	
+   }
 	
 	
 	//--------------------------------Update DB Operation --------------------------//

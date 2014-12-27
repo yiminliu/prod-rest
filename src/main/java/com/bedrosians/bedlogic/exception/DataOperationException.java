@@ -12,19 +12,20 @@ public class DataOperationException extends RuntimeException
     private Throwable error;
     
     public DataOperationException() { 
-    	super(); 
+    	super();
+    	errorMessage = "Database Operation Failed"; 
     }
     
-    public DataOperationException(String id) {
-    	errorMessage = "Database Operation Failed";
+    public DataOperationException(String errorMessage) { 
+        this.errorMessage = "Database Operation Failed " + "\n\r" + "Cause: " + errorMessage;
     }
     
-    public DataOperationException(String id, Throwable cause) { 
-    	if(cause != null)
-    	  errorMessage = "Database Operation Failed " + "\n\r" + "Cause: " + cause.getMessage();
+    public DataOperationException(String errorMessage, Throwable cause) { 
+    	if(cause.getCause() != null)
+    	   this.errorMessage = "Database Operation Failed " + "\n\r" + " Reason: " + errorMessage + "\n\r" + "Root Cause: " + cause.getCause().getMessage();
     	else
-    		errorMessage = "Database Operation Failed " + "\n\r";
-    	error = cause;
+    	  this. errorMessage = "Database Operation Failed " + "\n\r" + " Reason: " + errorMessage;
+    	this.error = cause;
     }
 
 	public String getErrorCode() {

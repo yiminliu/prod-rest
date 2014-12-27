@@ -9,8 +9,7 @@
   <body>
       <div class="container">
          <h1 class="error">Error!</h1>
-         
-         <c:if test="${not empty errorCode}">
+             <c:if test="${not empty errorCode}">
 		    <h1>Error Code: ${errorCode}</h1>
 	     </c:if>
        	 <c:if test="${not empty errorMessage}">

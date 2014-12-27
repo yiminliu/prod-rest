@@ -394,6 +394,8 @@ public class ImsDataUtil {
 	public static boolean colorHuesAndColorsEquals(final List<ColorHue> colorhues, final List<String> colors){
 		if(colors == null && colorhues == null)
 		   return true;	
+		if((colors == null && colorhues != null) || (colors != null && colorhues == null))
+			   return false;
 		if(colorhues.size() != colors.size())
 		   return false;
 		List<String> tempList = new ArrayList<String>(colorhues.size());

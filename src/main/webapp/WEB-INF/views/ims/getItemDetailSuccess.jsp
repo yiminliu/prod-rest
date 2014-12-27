@@ -46,6 +46,8 @@
                          <th>MPS</th>
                          <th>Grade</th>
                          <th>Status</th>
+                         <th>Standard Unit</th>
+                         <th>Order Unit</th>
                          <th>Prod Manager</th>
                          <th>Buyer</th>
                          <th>Warranty</th>
@@ -70,6 +72,8 @@
                          <td>${item.newFeature.mpsCode}</td>
                          <td>${item.newFeature.grade}</td>
                          <td>${item.newFeature.status}</td>
+                         <td>${item.units.stdunit}</td>
+                         <td>${item.units.ordunit}</td>
                          <td>${item.purchasers.purchaser}</td>
                          <td>${item.purchasers.purchaser2}</td>
                          <c:choose>
@@ -270,7 +274,7 @@
                          <td>${item.iconDescription.coefficientOfFriction}</td>
                        </tr>
                     </table>
-                    <div class="container" style="color:GREEN"> <h3>Units</h3></div>
+                    <!--div class="container" style="color:GREEN"> <h3>Units</h3></div>
                     <table border="1" cellspacing="2">
                        <tr>
                          <th>Standard Unit</th>
@@ -284,7 +288,7 @@
                           <td>${item.units.stdratio}</td>
                           <td>${item.units.ordratio}</td>
                         </tr>
-                    </table>
+                    </table>-->
   
                     <div class="container" style="color:Green"> <h3>Usage</h3></div>
                     <table border="1" cellspacing="2">

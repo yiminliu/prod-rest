@@ -48,6 +48,7 @@ import com.bedrosians.bedlogic.domain.ims.enums.Usage;
 import com.bedrosians.bedlogic.exception.DataNotFoundException;
 import com.bedrosians.bedlogic.exception.DataOperationException;
 import com.bedrosians.bedlogic.exception.InputParamException;
+import com.bedrosians.bedlogic.service.ims.ImsService;
 import com.bedrosians.bedlogic.service.mvc.ims.ImsServiceMVC;
 import com.bedrosians.bedlogic.util.enums.DBOperation;
 import com.bedrosians.bedlogic.web.validator.ImsValidator;
@@ -61,6 +62,9 @@ public class ImsController {
 
    @Autowired
    private ImsServiceMVC imsServiceMVC;
+   
+   @Autowired
+   private ImsService imsService;
        
    @Autowired
    @Qualifier("imsValidator")
@@ -122,6 +126,10 @@ public class ImsController {
 	   List<Ims> items = null;
 	   try{
 		   items = imsServiceMVC.getItems(allRequestParams);
+	   }
+	   catch(DataNotFoundException e){
+		   status.setComplete(); //finished the "item" SessionAttribute
+    	   throw e;
 	   }
 	   catch(Exception e){
 		   status.setComplete(); //finished the "item" SessionAttribute
@@ -306,11 +314,11 @@ public class ImsController {
           }
    	      try {
               if("update".equalsIgnoreCase(dbOperation)){
-       	         imsServiceMVC.createItem(item, DBOperation.UPDATE);
+       	         imsService.createOrUpdateItem(item, DBOperation.UPDATE);
            	     model.addAttribute("operation", "Updated");
               }
               else{
-                 imsServiceMVC.createItem(item, DBOperation.CREATE);
+                 imsService.createOrUpdateItem(item, DBOperation.CREATE);
                  model.addAttribute("operation", "Created");
               }
               model.addAttribute("item", item);
@@ -621,7 +629,8 @@ public class ImsController {
  		ModelAndView model = new ModelAndView("/exception/exception");
  		model.addObject("errorCode", ex.getErrorCode());
  		model.addObject("errorMessage", ex.getErrorMessage());
- 		model.addObject("error", ex.getError());
+ 		model.addObject("exception", ex);
+ 		model.addObject("rootError", ex.getError());
   
  		return model;
   	}

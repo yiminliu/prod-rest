@@ -12,14 +12,18 @@ public class DataNotFoundException extends RuntimeException
     private String errorMessage;
     private Throwable error;
     
+    public DataNotFoundException() { 
+    	super(); 
+        errorMessage = "No Data Found: " + "\n\r";
+     }
     
     public DataNotFoundException(String message) { 
        errorMessage = "No Data Found: " + message + "\n\r";
     }
     
     public DataNotFoundException(String message, Throwable cause) { 
-    	if(cause != null)
-    	  errorMessage = "No Data Found: " + message + "\n\r" + "Cause: " + cause.getMessage();
+    	if(cause.getMessage() != null)
+    	  errorMessage = "No Data Found: " + message + "\n\r" + "Cause: " + cause.getCause().getMessage();
     	else
     	  errorMessage = "No Data Found: " + message + "\n\r";
     	error = cause;
@@ -48,10 +52,5 @@ public class DataNotFoundException extends RuntimeException
 	public void setError(Throwable error) {
 		this.error = error;
 	}
-
-    
-    public DataNotFoundException() { 
-    	super(); 
-    }
     
 }

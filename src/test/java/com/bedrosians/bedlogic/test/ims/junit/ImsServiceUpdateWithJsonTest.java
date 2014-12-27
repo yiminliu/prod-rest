@@ -36,7 +36,7 @@ public class ImsServiceUpdateWithJsonTest {
 	@Autowired
 	ImsService imsService;
 	
-	private String id = "NEWITEMCODE31";
+	private String id = "TEST";
 	
  	
 	@Before
@@ -809,7 +809,7 @@ public class ImsServiceUpdateWithJsonTest {
 	    		+ "\"priorVendor\":null}";
 	 
 	 String jStringWithColorHues = 
-		     "{\"itemcode\":\"newItemcode1\","
+		     "{\"itemcode\":\"test\","
  			+ "\"colorhues\":[\"GREEN\"],"
     		+ "}";
  
@@ -864,7 +864,7 @@ public class ImsServiceUpdateWithJsonTest {
 	    		+ "}";
 	 
 	 String jStringWithApplicationsInfo = 
-		     "{\"itemcode\":\"newItemcode1\","
+		     "{\"itemcode\":\"test\","
 			+ "\"applications\":{"
 			+ "\"residential\":\"FR:WR:CR:SR:PR\","
 			+ "\"lightcommercial\":\"FL:WL:CL:SL:PL\","
