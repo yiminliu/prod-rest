@@ -4,7 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Ims Menu</title>
+  <title>Item Management System</title>
 </head>
 <body>
    <div class="home-container">
@@ -16,24 +16,21 @@
            <div class="page_title">Search Result(${fn:length(itemList)} items)</div>
           </c:otherwise>
       </c:choose>
-      <br/>
-      <p></p>
-      <div style="float:middle;">
-             <div class="span-18 colborder">
-                 <c:if test="${!empty itemList}">
-                    <table border="1">
-                       <tr style="color: BLACK">
+      <div>
+                  <c:if test="${!empty itemList}">
+                    <table class="datatable">
+                       <tr style="background-color: Ivory;">
                          <th>Item Code</th>
                          <th>Item Description</th>
                          <th>Category</th>
                          <th>Seriess Name</th>
-                         <th>Series Color</th>
+                         <!--<th>Series Color</th>-->
                          <th>Color Hues</th>
                          <th>Active Status</th>
                          <th>Origin</th>
                          <th>MSRP</th>
                          <th>Price Unit</th>
-                         <th>Shade Variation</th>
+                         <!--<th>Shade Variation</th>-->
                          <th>MPS</th>
                          <th>Grade</th>
                          <th>Status</th>
@@ -43,13 +40,13 @@
                          <th>Edit</th>
                          <th>Clone</th>
                        </tr>
-                       <c:forEach var="item" items="${itemList}" varStatus="status">  
-                       <tr>
+                       <c:forEach var="item" items="${itemList}" varStatus="loopStatus">  
+                       <tr class="${loopStatus.index % 2 == 0 ? 'even' : 'odd'}">
                           <td style="color : red"><a id="itemDetail" href="<spring:url value="/ims/getItemDetail/${item.itemcode}" />">${item.itemcode}</a></td>
                           <td>${item.itemdesc.itemdesc1}</td>
                           <td>${item.itemcategory}</td>
                           <td>${item.series.seriesname}</td>
-                          <td>${item.series.seriescolor}</td>
+                          <!--<td>${item.series.seriescolor}</td>-->
                           <td>${item.colorHueString}</td>
                           <c:choose>
                              <c:when test="${item.inactivecode == 'N'}">
@@ -62,7 +59,7 @@
                          <td>${item.countryorigin}</td>
                          <td>${item.price.sellprice}</td>
                          <td>${item.units.stdunit}</td>
-                         <td>${item.shadevariation}</td>
+                         <!--<td>${item.shadevariation}</td>-->
                          <td>${item.newFeature.mpsCode}</td>
                          <td>${item.newFeature.grade}</td>
                          <td>${item.newFeature.status}</td>
@@ -81,13 +78,11 @@
                
              <table  class="center" style="margin: 0 auto; cellspacing: 30px; cellpadding: 30px; border-spacing: 50px;">
                 <tr>
-                   <td style="cellspacing: 30px; cellpadding: 30px;">
-                      <a id="imsSearch" href="<spring:url value="/ims/getItem" />" class="button-mn"><span style="cellspacing: 30px; cellpadding: 30px;">Item Search Page</span></a>
-                      <a id="imsHome" href="<spring:url value="/ims/index" />" class="button-mn"><span style="cellspacing: 30px; cellpadding: 30px;">Ims Management Home</span></a>
-                   </td>
+                   <td><a id="imsSearch" href="<spring:url value="/ims/getItem" />" class="button-m"><span style="cellspacing: 30px; cellpadding: 30px;">Item Search Page</span></a></td>
+                   <td><a id="imsHome" href="<spring:url value="/ims/index" />" class="button-m"><span style="cellspacing: 30px; cellpadding: 30px;">Ims Home</span></a></td>
                 </tr>
              </table>
-      </div> <!-- close main-content -->
+      
    </div> <!-- Close container -->
 </body>
 </html>

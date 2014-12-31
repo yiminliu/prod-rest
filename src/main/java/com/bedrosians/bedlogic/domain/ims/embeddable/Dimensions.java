@@ -4,7 +4,6 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Boost;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.NumericField;

@@ -2,6 +2,7 @@ package com.bedrosians.bedlogic.service.user;
 
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,10 @@ public class UserServiceImpl implements UserService{
 		Session session = sessionFactory.openSession();
 	    try{
 	    	user = userDao.getUserByName(session, userName);
+	    }
+	    catch(HibernateException e){
+	    	e.printStackTrace();
+	    	throw new DataOperationException("Error occured while retrieve user from database. Reason: " + e.getMessage(), e);
 	    }
 	    catch(Exception e){
 	    	throw new DataOperationException("Error occured while retrieve user from database. Reason: " + e.getMessage(), e);

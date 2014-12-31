@@ -18,13 +18,11 @@ public interface ImsServiceMVC {
     public Ims getItemByItemCodeForClone(String itemCode);
 	public boolean itemCodeIsTaken(String itemCode) throws DataOperationException;	
 	public List<Ims> getActiveAndShownOnWebsiteItems() throws BedDAOBadParamException, BedDAOException;
-	public List<Ims> getItems(MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException, BedDAOException;	
 	public List<Ims> getItems(LinkedHashMap<String, List<String>> queryParams);
 	public String createItem(Ims ims, DBOperation createOrClone);
 	public void updateItem(Ims ims);	
 	public void deactivateItem(Ims itemFromInput) throws BedDAOBadParamException, BedDAOException;
 	public void deleteItemByItemCode(String id);
-	public void deleteItem(Ims ims) throws BedDAOBadParamException, BedDAOException;
 	public void initVendors(int n);
 	public List<Vendor> getNewVendorSystem();
 	public boolean validateVendorId(Integer vendorId);

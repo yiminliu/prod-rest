@@ -1,9 +1,11 @@
 package com.bedrosians.bedlogic.domain.authority;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public enum Role {
+public enum Role implements Serializable {
+	
 	ROLE_SUPERUSER("Superuser"), 
 	ROLE_ADMIN("Administrator"), 
 	ROLE_MANAGER("Manager"), 

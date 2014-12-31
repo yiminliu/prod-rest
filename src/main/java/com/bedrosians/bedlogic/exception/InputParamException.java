@@ -1,10 +1,12 @@
 package com.bedrosians.bedlogic.exception;
 
+import java.io.Serializable;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value=HttpStatus.BAD_REQUEST, reason="Input Parameter Error") 
-public class InputParamException extends RuntimeException
+public class InputParamException extends RuntimeException  implements Serializable
 {
 	private static final long serialVersionUID = -34724706273251377L;
 	private String errorCode;

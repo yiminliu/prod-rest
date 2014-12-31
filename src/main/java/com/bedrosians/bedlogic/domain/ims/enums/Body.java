@@ -11,7 +11,6 @@ public enum Body implements java.io.Serializable {
 	Composite_Body("Composite Body"),
 	Porcelain_Body_Stone_Face("Porcelain Body Stone Face");
 		 
-	
 	private String description;
 		 
 	private Body(String description){

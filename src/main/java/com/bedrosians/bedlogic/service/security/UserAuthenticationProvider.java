@@ -14,7 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import com.bedrosians.bedlogic.dao.user.UserDao;
 import com.bedrosians.bedlogic.domain.user.User;
 import com.bedrosians.bedlogic.exception.DataOperationException;
 import com.bedrosians.bedlogic.exception.UnauthenticatedException;
@@ -23,15 +22,14 @@ import com.bedrosians.bedlogic.service.user.UserService;
 @Component
 public class UserAuthenticationProvider implements AuthenticationProvider {
 	
-	@Autowired UserService userService;
-		
+	@Autowired UserService userService;	
 	Collection<? extends GrantedAuthority> grantedAuthorities = new ArrayList<>();
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 	   UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
 	   String userName = token.getName();
 	   User user = null;
 	   if(userName != null && !userName.isEmpty()) {
-		//1. Use the username to load the data for the user, including authorities and password. 
+		  //1. Use the username to load the data for the user, including authorities and password. 
 		  try { 
 		      user = userService.getUserByName(userName);
 		  }

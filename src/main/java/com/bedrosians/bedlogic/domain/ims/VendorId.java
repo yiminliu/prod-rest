@@ -51,6 +51,13 @@ public class VendorId implements Serializable{
 		this.id = id;
 	}
 
+	public int hashCode() {
+		int result = 17;
+    	result = 37 * result + (getItemCode() == null ? 0 : this.getItemCode().hashCode());
+		result = 37 * result + (getId() == null? 1 : getId().intValue());
+		return result;
+	}
+
 	public boolean equals(Object other) {
 		if ((this == other))
 			return true;
@@ -65,15 +72,5 @@ public class VendorId implements Serializable{
 				this.getItemCode().equals(castOther.getItemCode()))) && 
 				(this.getId() == castOther.getId());
 	}
-
-	public int hashCode() {
-		int result = 17;
-
-		result = 37 * result
-				+ (getItemCode() == null ? 0 : this.getItemCode().hashCode());
-		result = 37 * result + (getId()==null? 1 : getId().intValue());
-		return result;
-	}
-
 }
 

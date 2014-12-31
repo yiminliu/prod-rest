@@ -6,28 +6,21 @@
 <title>Ims Index</title>
  </head>
 <body>
-<div class="home-container">
-   <div id="main-content">
+   <div id="menu" style="margin-top:50px;">
           <div class="page_title">Item Management System</div>
-          <br/><br/>
-          <table class="center" style="cellspacing: 35px;">
-            <tr style="float:middle;"> 
-               <td><a id="searchItem" href="<spring:url value="/ims/getItem"/>"><span>Search Item</span></a></td>
-            </tr>
-            <tr style="float:middle;">   
-                <td><a id="createItem" href="<spring:url value="/ims/createItem_menu"/>"><span>Create Item</span></a></td>
-            </tr>
-            <tr style="float:middle;"> 
-                <td><a id="updateItem" href="<spring:url value="/ims/updateItemForm"/>"><span>Update Item</span></a></td>
-            </tr>  
-            <!-- <tr style="float:middle;"> 
-                 <td><a id="deleteItem" href="<spring:url value="/ims/deleteItem"/>"><span>Delete Item</span></a></td>
-            </tr>
-            <tr style="float:middle;"> 
-                <td><a id="deactivateItem" href="<spring:url value="/ims/deactivateItem"/>"><span>Deactivate Item</span></a></td>
-            </tr>-->
-         </table>
-  </div><!-- close main-content -->
+          <ul>
+            <li><a id="searchItem" href="<spring:url value="/ims/getItem"/>">Search Item</a></li>
+            <li>Create Item
+                <ul>
+                    <li style="margin-left:100px;"><a id="createItem" href="<spring:url value="/ims/createItem_begin"/>">Create a Brand New Item</a></li>
+                    <li style="margin-left:80px;"><a id="cloneItem" href="<spring:url value="/ims/cloneItemForm"/>">    Clone an Existing Item</a></li>  
+                </ul>
+            </li>
+            <li><a id="updateItem" href="<spring:url value="/ims/updateItemForm"/>">Update Item</a></li>  
+            <!--<li><a id="deleteItem" href="<spring:url value="/ims/deleteItem"/>"><span>Delete Item</span></a></li>
+            <li><a id="deactivateItem" href="<spring:url value="/ims/deactivateItem"/>"><span>Deactivate Item</span></a></li>-->
+        </ul>
+ 
 </div> <!-- Close container -->
 </body>
 </html>

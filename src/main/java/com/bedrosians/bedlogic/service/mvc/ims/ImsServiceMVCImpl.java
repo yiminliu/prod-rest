@@ -128,47 +128,11 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 	public List<Ims> getActiveAndShownOnWebsiteItems() throws BedDAOBadParamException, BedDAOException{
     	return imsDao.getActiveAndShownOnWebsiteItems();
 	}
-    
-	@Loggable(value = LogLevel.INFO)
-	@Override
-	public List<Ims> getItems(MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException, BedDAOException{
-		if(queryParams == null || queryParams.isEmpty()){
-			queryParams = new MultivaluedMapImpl();
-			queryParams.put("inactivecode", Arrays.asList(new String[]{"N"}));
-		}
-		List<Ims> itemList = null;
-		try{
-			itemList = imsDao.getItemsByQueryParameters(queryParams);
-		}
-		catch(HibernateException hbe){
-			hbe.printStackTrace();
-			if(hbe.getCause() != null)
-		       throw new BedDAOException("Error occured during getItems(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
-		  	else
-		  	   throw new BedDAOException("Error occured during getItems(), due to: " +  hbe.getMessage());
-		}
-		catch(RuntimeException e){
-			if(e.getCause() != null)
-		  	   throw new BedDAOException("Error occured during getItems(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
-		  	else
-		  	   throw new BedDAOException("Error occured during getItems(), due to: " +  e.getMessage());	
-		}
-		List<Ims> processedItems = new ArrayList<>();
-		for(Ims item : itemList){
-			if(item.getColorhues() == null || item.getColorhues().isEmpty())
-		  	   item.setColorhues(ImsDataUtil.convertColorCategoryToColorHueObjects(item.getColorcategory()));	
-			processedItems.add(FormatUtil.process(item));
-		}
-		return processedItems;
-	}
+   
 	
 	@Loggable(value = LogLevel.INFO)
 	@Override
 	public List<Ims> getItems(LinkedHashMap<String, List<String>> queryParams){
-		if(queryParams == null || queryParams.isEmpty()){
-			//queryParams = new MultivaluedMapImpl();
-			//queryParams.put("inactivecode", Arrays.asList(new String[]{"N"}));
-		}
 		List<Ims> itemList = null;
 		try{
 			itemList = imsDao.getItems(queryParams);
@@ -187,8 +151,6 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 		}
 		List<Ims> processedItems = new ArrayList<>();
 		for(Ims item : itemList){
-			//if(item.getColorhues() == null || item.getColorhues().isEmpty())
-		  	//   item.setColorhues(ImsDataUtil.convertColorCategoryToColorHueObjects(item.getColorcategory()));	
 			processedItems.add(FormatUtil.process(item));
 		}
 		return processedItems;
@@ -368,13 +330,7 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 		}
 	}
 	
-	@Loggable(value = LogLevel.INFO)
-	@Override
-	synchronized public void deleteItem(Ims item) throws BedDAOBadParamException, BedDAOException{
-		 if(item.getItemcode() == null || item.getItemcode().length() == 0)
-	    	 throw new BedDAOBadParamException("Item code should not be empty");
-		imsDao.deleteItem(item);
-	}
+	
 
 	//------------------- Utility Methods ----------------------//
 	

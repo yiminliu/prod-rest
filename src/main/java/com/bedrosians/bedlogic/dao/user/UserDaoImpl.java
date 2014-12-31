@@ -1,23 +1,12 @@
 package com.bedrosians.bedlogic.dao.user;
 
 
-import java.math.BigDecimal;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-
-import javax.ws.rs.core.MultivaluedMap;
 
 import org.hibernate.CacheMode;
 import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.Disjunction;
-import org.hibernate.criterion.LogicalExpression;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -30,7 +19,6 @@ public class UserDaoImpl extends GenericDaoImpl<User, String> implements UserDao
 	@Override
 	public User getUserByName(Session session, String userName){
 		  User user = null;
-		  String queryString = "From User u where u.username = :userName";
 		  Criteria criteria = session.createCriteria(User.class);
 		  criteria.setReadOnly(true);
 		  criteria.add(Restrictions.eq("username", userName.trim()).ignoreCase());

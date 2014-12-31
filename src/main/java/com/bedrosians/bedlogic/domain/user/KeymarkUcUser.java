@@ -25,8 +25,7 @@ import org.hibernate.search.annotations.Store;
 @Immutable
 @Indexed
 public class KeymarkUcUser implements Serializable {
-
-	    private static final long serialVersionUID = -3213582221787L;
+       private static final long serialVersionUID = -3213582221787L;
 	
 		private String userCode;
 		private String username;

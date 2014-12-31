@@ -1,10 +1,12 @@
 package com.bedrosians.bedlogic.exception;
 
+import java.io.Serializable;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value=HttpStatus.NOT_FOUND, reason="No Such Object")  // 404
-public class DataNotFoundException extends RuntimeException
+public class DataNotFoundException extends RuntimeException implements Serializable
 {
 	private static final long serialVersionUID = -34724706273251377L;
 	

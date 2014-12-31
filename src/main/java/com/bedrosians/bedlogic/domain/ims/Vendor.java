@@ -86,19 +86,7 @@ public class Vendor implements java.io.Serializable {
 	public void setIms(Ims ims){
 		this.ims = ims;
 	}
-/*
-	@JsonIgnore
-	@OneToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name="productVendorId.vendorId")//, updatable=false, insertable=false)
-	public Vendor getVendor(){
-		return this.vendor;
-	}
-		
-	public void setVendor(Vendor vendor){
-		this.vendor = vendor;
-	}
-*/	
-	
+
 	@JsonIgnore
 	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="vendor_id", insertable = false, updatable = false)
@@ -127,29 +115,8 @@ public class Vendor implements java.io.Serializable {
 	public void setVendorOrder(Integer vendorOrder) {
 		this.vendorOrder = vendorOrder;
 	}
-	
-	@Transient
-	//@Column(name = "vendor_name", length = 60)
-	public String getVendorName() {
-		//return vendorName;
-		return (keymarkVendor == null)? null : keymarkVendor.getName();
-	}
 
-	public void setVendorName(String vendorName) {
-		this.vendorName = vendorName;
-	}
-
-	@Column(name = "vendor_name2", length = 60)
-	public String getVendorName2() {
-		return this.vendorName2;
-		//return (keymarkVendor == null)? null : keymarkVendor.getDbaname();
-	}
-
-	public void setVendorName2(String vendorName2) {
-		this.vendorName2 = vendorName2;
-	}
-
-	@Column(name = "vendor_xref_id", length = 60)
+	@Column(name = "xref_id", length = 60)
 	public String getVendorXrefId() {
 		return this.vendorXrefId;
 	}
@@ -158,7 +125,7 @@ public class Vendor implements java.io.Serializable {
 		this.vendorXrefId = vendorXrefId;
 	}
 
-	@Column(name = "vendor_price_unit", length = 4)
+	@Column(name = "price_unit", length = 4)
 	public String getVendorPriceUnit() {
 		return this.vendorPriceUnit;
 	}
@@ -167,7 +134,7 @@ public class Vendor implements java.io.Serializable {
 		this.vendorPriceUnit = vendorPriceUnit;
 	}
 
-	@Column(name = "vendor_fob", length = 10)
+	@Column(name = "fob", length = 10)
 	public String getVendorFob() {
 		return FormatUtil.process(vendorFob);
 	}
@@ -176,7 +143,7 @@ public class Vendor implements java.io.Serializable {
 		this.vendorFob = vendorFob;
 	}
 
-	@Column(name = "vendor_list_price", precision = 9, scale = 4)
+	@Column(name = "list_price", precision = 9, scale = 4)
 	public BigDecimal getVendorListPrice() {
 		return FormatUtil.process(vendorListPrice);
 	}
@@ -185,7 +152,7 @@ public class Vendor implements java.io.Serializable {
 		this.vendorListPrice = vendorListPrice;
 	}
 
-	@Column(name = "vendor_discount_pct", precision = 5)
+	@Column(name = "discount_pct", precision = 5)
 	public Float getVendorDiscountPct() {
 		return this.vendorDiscountPct;
 	}
@@ -194,7 +161,7 @@ public class Vendor implements java.io.Serializable {
 		this.vendorDiscountPct = vendorDiscountPct;
 	}
 
-	@Column(name = "vendor_round_accuracy", precision = 1, scale = 0)
+	@Column(name = "round_accuracy", precision = 1, scale = 0)
 	public Integer getVendorPriceRoundAccuracy() {
 		return this.vendorPriceRoundAccuracy;
 	}
@@ -203,7 +170,7 @@ public class Vendor implements java.io.Serializable {
 		this.vendorPriceRoundAccuracy = vendorPriceRoundAccuracy;
 	}
 
-	@Column(name = "vendor_net_price", precision = 9, scale = 4)
+	@Column(name = "net_price", precision = 9, scale = 4)
 	public BigDecimal getVendorNetPrice() {
 		return this.vendorNetPrice;
 		//return new BigDecimal(vendorListPrice.floatValue() * vendorDiscountPct/100.00);
@@ -213,7 +180,7 @@ public class Vendor implements java.io.Serializable {
 		this.vendorNetPrice = vendorNetPrice;
 	}
 
-	@Column(name = "vendor_markup_pct", precision = 4, scale = 1)
+	@Column(name = "markup_pct", precision = 4, scale = 1)
 	public Float getVendorMarkupPct() {
 		return vendorMarkupPct;
 	}
@@ -231,7 +198,7 @@ public class Vendor implements java.io.Serializable {
 		this.leadTime = leadTime;
 	}
 
-	@Column(name = "vendor_landed_base_cost", precision = 13, scale = 6, updatable=false)
+	@Column(name = "landed_base_cost", precision = 13, scale = 6, updatable=false)
 	public BigDecimal getVendorLandedBaseCost() {
 		return this.vendorLandedBaseCost;
 	}
@@ -240,7 +207,7 @@ public class Vendor implements java.io.Serializable {
 		this.vendorLandedBaseCost = vendorLandedBaseCost;
 	}
 	
-	@Column(name = "vendor_freight_rate_cwt", precision = 9, scale = 4)
+	@Column(name = "freight_rate_cwt", precision = 9, scale = 4)
 	public Float getVendorFreightRateCwt() {
 		return this.vendorFreightRateCwt;
 	}
@@ -267,6 +234,27 @@ public class Vendor implements java.io.Serializable {
 	
 	private void setVersion(Integer version){
 		this.version = version;
+	}
+	
+
+	@Transient
+	public String getVendorName() {
+		//return vendorName;
+		return (keymarkVendor == null)? null : keymarkVendor.getName();
+	}
+
+	public void setVendorName(String vendorName) {
+		this.vendorName = vendorName;
+	}
+
+	@Transient
+	public String getVendorName2() {
+		//return this.vendorName2;
+		return (keymarkVendor == null)? null : keymarkVendor.getDbaname();
+	}
+
+	public void setVendorName2(String vendorName2) {
+		this.vendorName2 = vendorName2;
 	}
 
 	//@JsonIgnore

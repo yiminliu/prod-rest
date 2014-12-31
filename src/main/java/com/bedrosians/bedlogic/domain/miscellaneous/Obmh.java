@@ -6,9 +6,6 @@ import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.SelectBeforeUpdate;
-
 
 @Entity
 @NamedQuery(
@@ -16,8 +13,9 @@ import org.hibernate.annotations.SelectBeforeUpdate;
 		query = "from Obmh"
 	)
 @Table(name="obmh")
-public class Obmh {
-		
+public class Obmh implements java.io.Serializable {
+	private static final long serialVersionUID = -338982221787L;
+	
 	private String name;
 	private long lastCustId;
 
@@ -39,8 +37,4 @@ public class Obmh {
 	public void setLastCustId(long lastCustId) {
 		this.lastCustId = lastCustId;
 	}		
-	
-	
-	
-
 }

@@ -18,6 +18,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 
@@ -28,9 +32,11 @@ import com.bedrosians.bedlogic.domain.authority.Role;
 
 @Entity
 @Table(name = "users")
+@DynamicUpdate
+@DynamicInsert
 //@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 public class User implements Serializable {
-
     private static final long serialVersionUID = -321397721787L;
 	private Integer userId;
 	private String username;
@@ -45,7 +51,7 @@ public class User implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "user_id")
+	@Column(name = "id")
 	public Integer getUserId() {
 		return this.userId;
 	}
@@ -55,7 +61,7 @@ public class User implements Serializable {
 	}
 
 	//@Override
-	@Column(name = "username")
+	@Column(name = "username", unique = true)
 	public String getUsername() {
 		return this.username;
 	}
@@ -195,29 +201,37 @@ public class User implements Serializable {
 		return authentication != null && authentication.getPrincipal() instanceof UserDetails;
 	}
 */
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((email == null) ? 0 : email.hashCode());
-		result = prime * result + ((username == null) ? 0 : username.hashCode());
+		result = prime * result
+				+ ((password == null) ? 0 : password.hashCode());
+		result = prime * result + ((userId == null) ? 0 : userId.hashCode());
+		result = prime * result
+				+ ((username == null) ? 0 : username.hashCode());
 		return result;
 	}
 
 	@Override
-	public boolean equals(
-			Object obj) {
+	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof User))
 			return false;
 		User other = (User) obj;
-		if (email == null) {
-			if (other.email != null)
+		if (password == null) {
+			if (other.password != null)
 				return false;
-		} else if (!email.equals(other.email))
+		} else if (!password.equals(other.password))
+			return false;
+		if (userId == null) {
+			if (other.userId != null)
+				return false;
+		} else if (!userId.equals(other.userId))
 			return false;
 		if (username == null) {
 			if (other.username != null)
@@ -233,7 +247,7 @@ public class User implements Serializable {
 		return "User [userId=" + userId + ", username=" + username + ", email=" + email + ", dateEnabled=" + dateEnabled + ", dateDisabled=" + dateDisabled
 				+ ", enabled=" + enabled + ", authorities=" + grantedAuthorities + "]";
 	}
-
+	
 	@Transient
 	public String toShortString() {
 		return "User [userId=" + userId + ", username=" + username + ", email=" + email + "]";

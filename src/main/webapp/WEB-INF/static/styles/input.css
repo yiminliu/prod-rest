@@ -17,7 +17,7 @@ Input definition
   .home-container {
      float:middle;
      color:#0076BF;
-     margin-top: 80px; 
+     margin-top: 40px; 
      margin-left:auto; 
      margin-right:auto;
      padding: 30px;
@@ -29,6 +29,11 @@ Input definition
   .error {
      color: red;
   } 
+  hr {
+     color: Ivory;
+     width:110%;
+     border: 0.5px dotted
+  }
   #main-content{
      float:middle;
   }
@@ -39,24 +44,71 @@ Input definition
   .center {
      text-align:center;
   } 
+  .datatable {
+     border: 1px solid #338BA6;
+     border-collapse: collapse;
+     float:middle;
+     padding: 0;
+     margin-left:auto; 
+     margin-right:auto;
+     margin-bottom: 20px
+  }
+  .datatable th {
+     color: BLACK;
+  }   
+  .datatable td, .datatable th {
+     border: 1px solid #73C0D4;
+  }
+  .datatable td, .datatable th {
+     border: 1px solid #73C0D4;
+  }
+  .datatable tr.odd td {
+     background-color: AliceBlue;
+  }
+  .datatable caption {
+     color: GREEN;
+     font-size: 130%;
+  }
   .page_title {
      margin-left:auto; 
      margin-right:auto;
+     margin-bottom:25px;
      border-style: solid;
      border-width: 1px;
-     background-color: #E6E6E6;
+     background-color: AliceBlue;
      color:GREEN; 
      width:40%;
      text-align: center;
      font-size: 200%;
   }        
- .menu {
+ #menu {
     list-style-type: none;
     list-style-position: inside;
     list-style-image: none;
+    margin-left:auto; 
+    margin-right:auto;
+    width:90%;
+    text-align: center;
+    font-size: 120%;
   }    
-  .menu li { 
-	 list-style-type:square; 
+  #menu page_title {
+     margin-left:auto; 
+     margin-right:auto;
+     margin-bottom:130px;
+     border-style: solid;
+     border-width: 1px;
+     background-color: AliceBlue;
+     color:GREEN; 
+     width:100%;
+     text-align: center;
+     font-size: 180%;
+  }        
+  #menu li { 
+	 list-style-type:disc; 
+	  margin-left:-100px; 
+  }  
+  #menu li ul li{ 
+	 list-style-type:circle;
   }  
   label {
      display: table-cell;
@@ -76,23 +128,21 @@ Input definition
      display:table-row;
   } 
   .input-container {
-        width: 500px;
-        clear: both;
-   }
-   .input-container input {
-        width: 100%;
-        clear: both;
+     width: 500px;
+     clear: both;
+  }
+  .input-container input {
+     width: 100%;
+     clear: both;
   }
   .table.category { 
-        border-bottom: dotted 1px blue;
+      border-bottom: dotted 1px blue;
   }
-    
   .table tr {
-         height:20px;
-         white-space:nowrap;
-         text-align:left;
+      height:20px;
+      white-space:nowrap;
+      text-align:left;
   }
-  
   .td.narrow 
   { 
       width:10px;
@@ -109,3 +159,45 @@ Input definition
        color: white;
        font-weight: bold;
   }   
+  #nav, #nav ul {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+  }
+  #nav li {
+    float: left;
+    position: relative;
+    width: 10em;
+    border: 1px solid #B0C4DE;
+    background-color: #E7EDF5;
+    color: #2D486C;
+    font-size: 80%;
+    margin-right: 1em;
+  }
+  #nav a:link, #nav a:visited {
+    display: block;
+    text-decoration: none;
+    padding-left: 1em;
+    color: #2D486C;
+  }
+  html #nav a {
+    width: 100%;
+  }
+  #nav ul {
+    display: none;
+    position: absolute;
+    padding: 0;
+  }
+  #nav ul li {
+     border: 0 none transparent;
+     border-bottom: 1px solid #E7EDF5;
+     border-top: .5em solid #FFF;
+     background-color: #F1F5F9;
+     font-size: 100%;
+     margin-bottom: -1px;
+     margin-top: 1px;
+     padding: 0;
+  }
+  #nav li:hover ul {
+     display: block; 
+  }

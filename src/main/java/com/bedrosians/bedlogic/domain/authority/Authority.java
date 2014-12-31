@@ -14,8 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.bedrosians.bedlogic.domain.ims.enums.RoleDomain;
 import com.bedrosians.bedlogic.domain.user.User;
-
 
 
 @Entity
@@ -25,6 +25,7 @@ public class Authority implements Serializable {
 	private static final long serialVersionUID = -6398259652301626438L;
 	private User user;
 	private Role role;
+	private RoleDomain roleDomain;
 
 	protected Authority() {
 		// default
@@ -61,9 +62,14 @@ public class Authority implements Serializable {
 		this.user = user;
 	}
 
-	@Override
-	public String toString() {
-		return "Authority [Role=" + role + "]";
+	@Column(name = "role_domain")
+	@Enumerated(EnumType.STRING)
+	public RoleDomain getRoleDomain() {
+		return roleDomain;
+	}
+
+	public void setRoleDomain(RoleDomain roleDomain) {
+		this.roleDomain = roleDomain;
 	}
 
 	@Transient
@@ -89,24 +95,28 @@ public class Authority implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((role == null) ? 0 : role.hashCode());
+		result = prime * result + ((roleDomain == null) ? 0 : roleDomain.hashCode());
 		result = prime * result + ((user == null) ? 0 : user.hashCode());
 		return result;
 	}
 
 	@Override
-	public boolean equals(
-			Object obj) {
+	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof Authority))
 			return false;
 		Authority other = (Authority) obj;
-		if (role == null) {
-			if (other.role != null)
+		if (role != other.role)
+			return false;
+		if (roleDomain != other.roleDomain)
+			return false;
+		if (user == null) {
+			if (other.user != null)
 				return false;
-		} else if (!role.equals(other.role))
+		} else if (!user.equals(other.user))
 			return false;
 		return true;
 	}

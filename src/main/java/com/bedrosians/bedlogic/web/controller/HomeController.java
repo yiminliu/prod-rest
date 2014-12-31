@@ -61,7 +61,7 @@ public class HomeController {
 	public ModelAndView handleAllException(Exception ex) {
  
 		ModelAndView model = new ModelAndView("error/generic_error");
-		model.addObject("errMsg", "this is Exception.class");
+		model.addObject("errorMessage", "this is Exception.class");
  
 		return model;
  

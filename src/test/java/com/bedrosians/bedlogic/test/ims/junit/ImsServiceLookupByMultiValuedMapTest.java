@@ -1106,7 +1106,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	        for(Ims prod : items){
 	        	 //System.out.println("item = " + prod);
 	        	 //System.out.println("item new feature = " + prod.getImsNewFeature());
-	           	 assertEquals(prod.getNewFeature().getStatus(), Status.Good);
+	           	 assertEquals(prod.getNewFeature().getStatus(), Status.GOOD);
 	        }
 	        Products result = new Products(items);
 	        try{

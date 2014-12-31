@@ -1,5 +1,6 @@
 <%@ include file="/WEB-INF/includes/taglibs.jsp"%>
 <%@ include file="/WEB-INF/includes/doctype.jsp"%>
+<%@ include file="/WEB-INF/includes/styles.jsp"%>
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
@@ -21,7 +22,7 @@
              <div class="container">No Item Found</div>
          </c:when>
          <c:otherwise>
-             <div class="container" style="text-align: middle;"><h2>Vendor Information for Vendor Number: <span style="color : red">${kVendor.vendorNumber}</span></h2></div>
+             <div class="page_title">Vendor Information for Vendor Number: <span style="color : red">${kVendor.vendorNumber}</span></div>
          </c:otherwise>
       </c:choose>
       <br/>

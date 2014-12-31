@@ -1,38 +1,27 @@
 <%@ include file="/WEB-INF/includes/taglibs.jsp"%>
 <%@ include file="/WEB-INF/includes/doctype.jsp"%>
+<%@ include file="/WEB-INF/includes/styles.jsp"%>
+
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Ims Menu</title>
-  <style type="text/css"> 
-    table.category { 
-        border-bottom: dotted 1px  blue;
-     }
-	td.narrow 
-     { 
-        width:10px;
-     }
-  </style>
+  <title>Item Detail</title>
 </head>
 <body>
    <div class="container">
       <c:choose>
          <c:when test="${empty item}">
-             <div class="container">No Item Found</div>
+             <div class="page_title">No Item Found</div>
          </c:when>
          <c:otherwise>
-             <div class="container" style="text-align: middle;"><h2>Item Information for Item Code: <span style="color : red">${item.itemcode}</span></h2></div>
+             <div class="page_title">Item Information for Item Code: <span style="color : red">${item.itemcode}</span></div>
          </c:otherwise>
       </c:choose>
-      <br/>
-      <p></p>
-      
-      <div class="container">
-         <div id="main-content">
-             <div class="span-18 colborder">
-                 <c:if test="${!empty item}">
-                    <div class="container" style="color:GREEN"><h3>General Information</h3></div>
-                    <table border="1">
+      <div>
+               <c:if test="${!empty item}">
+                    <!--<div class="container" style="color:GREEN"><h3>General Information</h3></div>-->
+                    <table class="datatable">
+                        <caption>General Info</caption>
                        <tr>
                          <!--<th>Item Code</th>-->
                          <th>Item Description</th>
@@ -86,8 +75,9 @@
                          </c:choose>      
                        </tr>
                     </table>
-                    <div class="container" style="color:GREEN"> <h3>Material Information</h3></div>
-                    <table border="1" cellspacing="2">
+                    <hr></hr>
+                    <table class="datatable">
+                        <caption>Material Info</caption>
                        <tr>
                          <th>Material Type</th>
                          <th>Material Category</th>
@@ -103,6 +93,7 @@
                           <td >${item.material.materialfeature}</td>
                        </tr>
                     </table>
+                   <hr></hr>
                     <!--<div class="container" style="color:GREEN"> <h3>Color Hues</h3></div>
                     <table border="1" cellspacing="2">
                       <tr>
@@ -120,8 +111,8 @@
                           <td>${item.colorcategory}</td>
                         </tr> 
                     </table>-->
-                    <div class="container" style="color:GREEN"> <h3>Dimensions</h3></div>
-                    <table border="1" cellspacing="2">
+                    <table class="datatable">
+                        <caption>Dimensions</caption>
                        <tr>
                          <th>Length</th>
                          <th>Width</th>
@@ -143,11 +134,11 @@
                           <td>${item.dimensions.thicknessunit}</td>
                         </tr>
                     </table>
-                   
-                    <div class="container" style="color:GREEN"> <h3>Pricing Information</h3></div>
-                    <table border="1" cellspacing="2">
+                    <hr></hr>
+                    <table class="datatable">
+                       <caption>Pricing Info</caption>
                        <tr>
-                         <th>MSRP</th>
+                         <th>MSRP($)</th>
                          <th>Price Unit</th>
                          <c:if test="${item.price.tempprice > 0.0000}">
                             <th>Special Price</th>
@@ -166,8 +157,10 @@
                            </c:if>   
                        </tr>
                     </table>
-                    <div class="container" style="color:Green"> <h3>Applications</h3></div>
-                    <table border="1" cellspacing="2">
+                    <hr></hr>
+                    <c:if test="${!empty item.newFeature}">
+                    <table class="datatable">
+                       <caption>Applications</caption>
                        <tr>
                          <th>Edge</th>
                          <th>Body</th>
@@ -191,9 +184,10 @@
                          <td>${item.newFeature.recommendedGroutJointMax}</td>
                        </tr>
                     </table>
-                   
-                    <div class="container" style="color:Green"> <h3>Vendors</h3></div>
-                    <table border="1" cellspacing="2">
+                    <hr></hr>
+                    </c:if>
+                    <table class="datatable">
+                       <caption>Vendor</caption>
                       <tr>
                          <th>#</th>
                          <th>Vendor Number</th>
@@ -231,10 +225,11 @@
                          <td>${vendor.dutyPct}</td>                         
                        </tr>
                     </c:forEach>   
-                    </table>
-	
-                    <div class="container" style="color:Green"> <h3>Icons</h3></div>
-                    <table border="1" cellspacing="2">
+                   </table>
+                   <hr></hr>
+                   <c:if test="${!empty item.iconDescription}">
+	                <table class="datatable">
+                       <caption>Icons</caption>
                        <tr>
                          <th>Country</th>
                          <th>Exterior Product</th>
@@ -274,6 +269,8 @@
                          <td>${item.iconDescription.coefficientOfFriction}</td>
                        </tr>
                     </table>
+                    <hr></hr>
+                    </c:if>
                     <!--div class="container" style="color:GREEN"> <h3>Units</h3></div>
                     <table border="1" cellspacing="2">
                        <tr>
@@ -289,9 +286,9 @@
                           <td>${item.units.ordratio}</td>
                         </tr>
                     </table>-->
-  
-                    <div class="container" style="color:Green"> <h3>Usage</h3></div>
-                    <table border="1" cellspacing="2">
+                   <c:if test="${!empty item.applications}">
+                    <table class="datatable">
+                       <caption>Usage</caption>
                        <tr>
                          <th>Residential</th>
                          <th>Light Commercial</th>
@@ -303,9 +300,10 @@
                          <td>${item.applications.commercial}</td>
                        </tr>
                     </table>
-                    
-                    <div class="container" style="color:Green"> <h3>Web</h3></div>
-                    <table border="1" cellspacing="2">
+                    <hr></hr>
+                    </c:if>
+                    <table class="datatable">
+                       <caption>Web</caption>
                        <tr>
                          <th>Show on Bedrosians</th>
                          <th>Show on AlysEdwards</th>
@@ -326,8 +324,7 @@
                          </td>                 
                        </tr>
                     </table>
-                    
-                    
+                    <hr></hr>
                      <!--<div class="container" style="color:Green"> <h3>Buyers</h3></div>
                      <table border="1" cellspacing="2">
                        <tr>
@@ -339,9 +336,9 @@
                          <td>${item.purchasers.purchaser2}</td>
                        </tr>
                     </table>-->
-                    
-                    <div class="container" style="color:GREEN"> <h3>Notes</h3></div>
-                    <table border="1" cellspacing="2">
+                    <c:if test="${!empty item.notes}">
+                    <table class="datatable">
+                       <caption>Notes</caption>
                        <tr>
                          <th>PO Notes</th>
                          <th>Buyer Notes</th>
@@ -355,9 +352,11 @@
                           <td>${item.notes.internalnotes}</td>
                         </tr>
                     </table>
-              
-	                <div class="container" style="color:Green"> <h3>Test Specifications</h3></div>
-                    <table border="1" cellspacing="2">
+                    <hr></hr>
+                   </c:if> 
+                   <c:if test="${!empty item.testSpecification}">
+                    <table class="datatable">
+                       <caption>Test Specifications</caption>
                        <tr>
                          <th>waterabsorption</th>
                          <th>scratchresistance</th>
@@ -403,7 +402,8 @@
                          <td>${item.testSpecification.posconsummer}</td>
                        </tr>
                     </table>
-                  
+                    <hr></hr>
+                   </c:if>
                     <!--<div class="container" style="color:GREEN"> 
                     <h3>Packaging Information</h3></div>
                     <table border="1" cellspacing="2">
@@ -426,14 +426,14 @@
                     </table>-->
                    
                 </c:if>
-<table cellspacing="10">
-<tr>
-<td>
-<a id="imsHome" href="<spring:url value="/ims/index" />" class="button action-m"><span>Back To Ims Management Home</span></a>
-</td>
-</tr>
-</table>
-</div> <!-- close main-content -->
+              </div>
+ <table style="border:1px; margin: 0 auto;">
+        <tr>
+           <td><a id="modifyItem" href="<spring:url value="/ims/updateItem_begin/${item.itemcode}" />" class="button-m"><span>Edit This Item</span></a></td>
+           <td><a id="CreateItem" href="<spring:url value="/ims/cloneItem/${item.itemcode}" />" class="button-m"><span>Clone This Item</span></a></td>
+           <td><a id="imsHome" href="<spring:url value="/ims/index" />" class="button-m"><span>IMS Home</span></a></td>
+        </tr>
+     </table>
 </div> <!-- Close container -->
 </body>
 </html>

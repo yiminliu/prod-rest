@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -66,35 +67,34 @@ public class ImsServiceImpl implements ImsService {
    	//private ImsServiceMVC imsServiceMVC;
       	    	  
     //--------------------------------Retrieval DB Operation --------------------------//
-    
+   
     @Loggable(value = LogLevel.INFO)
     @Override
     @Transactional(readOnly = true, isolation=Isolation.READ_COMMITTED)
-	public Ims getItemByItemCode(String itemCode) throws BedDAOBadParamException, BedDAOException{
-    	Ims ims = null;
+	public Ims getItemByItemCode(String itemCode){
+    	Ims item = null;
     	if(itemCode == null || itemCode.length() < 1)
-    	   throw new BedDAOBadParamException("Please enter valid product code !");	
+    	   throw new InputParamException("Please enter a valid Item Code !");	
 		try{
 			Session session = getSession();
-			session.setCacheMode(CacheMode.NORMAL);
-	  	    ims = imsDao.getItemByItemCode(session, itemCode);
+	  	    item = imsDao.getItemByItemCode(session, itemCode.toUpperCase());
 		}
 		catch(HibernateException hbe){
 			hbe.printStackTrace();
 			if(hbe.getCause() != null)
-		  	   throw new BedDAOException("Error occured during getItemByItemCode, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
 		  	else
-		  	   throw new BedDAOException("Error occured during getItemByItemCode, due to: " +  hbe.getMessage());	
+		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  hbe.getMessage(), hbe);	
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-		  	   throw new BedDAOException("Error occured during getItemByItemCode, due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
 		  	else
-		  	   throw new BedDAOException("Error occured during getItemByItemCode, due to: " +  e.getMessage());	
+		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  e.getMessage(), e);	
 		}
-		return FormatUtil.process(ims);
+		return FormatUtil.process(item);
 	}
-
+    
     @Loggable(value = LogLevel.INFO)
     @Override
     @Transactional(readOnly = true)
@@ -133,7 +133,32 @@ public class ImsServiceImpl implements ImsService {
 		return processedItems;
 	}
 	
-
+	@Loggable(value = LogLevel.INFO)
+	@Override
+	public List<Ims> getItems(LinkedHashMap<String, List<String>> queryParams){
+		List<Ims> itemList = null;
+		try{
+			itemList = imsDao.getItems(queryParams);
+		}
+		catch(HibernateException hbe){
+		  	if(hbe.getCause() != null)
+		       throw new DataOperationException("Error occured during getItems(), due to: " +  hbe.getMessage() + ". Root cause -- " + hbe.getCause().getMessage(), hbe);	
+		  	else
+		  	   throw new DataOperationException("Error occured during getItems(), due to: " +  hbe.getMessage());
+		}
+		catch(RuntimeException e){
+			if(e.getCause() != null)
+		  	   throw new DataOperationException("Error occured during getItems(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
+		  	else
+		  	   throw new DataOperationException("Error occured during getItems(), due to: " +  e.getMessage(), e);	
+		}
+		List<Ims> processedItems = new ArrayList<>();
+		for(Ims item : itemList){
+			processedItems.add(FormatUtil.process(item));
+		}
+		return processedItems;
+	}
+	
 	@Loggable(value = LogLevel.INFO)
 	@Override
 	public List<ItemWrapper> getWrappedItems(MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException, BedDAOException{
@@ -175,7 +200,7 @@ public class ImsServiceImpl implements ImsService {
 		String itemCode = JsonUtil.validateItemCode(jsonObj);
 		String id;
      	Ims itemFromInput = (Ims)JsonUtil.jsonObjectToPOJO(jsonObj, new Ims());
-     	itemFromInput.setItemcode(itemFromInput.getItemcode().toUpperCase());
+     	//itemFromInput.setItemcode(itemFromInput.getItemcode().toUpperCase());
      	id = createOrUpdateItem(itemFromInput, DBOperation.CREATE);
      	/*
      	Ims itemToCreate = new Ims(itemCode);
@@ -209,6 +234,7 @@ public class ImsServiceImpl implements ImsService {
 	@Override
 	public String createOrUpdateItem(Ims item, DBOperation operation){  	
 		String id = "";
+		item.setItemcode(item.getItemcode().toUpperCase());
 		//take care of associations and components
 		processNewFeature(item, operation);
 		processColorHues(item, operation);
@@ -306,29 +332,31 @@ public class ImsServiceImpl implements ImsService {
 	}
 	
 	//--------------------------------Deletion DB Operation --------------------------//
-	
 	@Loggable(value = LogLevel.INFO)
 	@Override
-	synchronized public void deleteItemByItemCode(String itemCode) throws BedDAOBadParamException, BedDAOException{
+	@Transactional(readOnly=false, propagation=Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
+	synchronized public void deleteItemByItemCode(String itemCode){
 	    if(itemCode == null || itemCode.length() == 0)
-	    	 throw new BedDAOBadParamException("Item code should not be empty");		
-		Ims ims = new Ims(itemCode);
+	    	 throw new InputParamException("Item code should not be empty");		
 		try{
-			imsDao.deleteItem(ims);
+			Session session = getSession();
+			//Ims item = imsDao.loadItemByItemCode(session, itemCode);
+			Ims itemProxy = imsDao.loadById(session, itemCode);
+			imsDao.deleteItem(session, itemProxy);
 		}
 		catch(HibernateException hbe){
 			hbe.printStackTrace();
 			if(hbe.getCause() != null)
-		       throw new BedDAOException("Error occured during deleteItemByItemCode(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+		       throw new DataOperationException("Error occured during deleteItemByItemCode(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
 		  	else
-		  	   throw new BedDAOException("Error occured during deleteItemByItemCode(), due to: " +  hbe.getMessage());
+		  	   throw new DataOperationException("Error occured during deleteItemByItemCode(), due to: " +  hbe.getMessage(), hbe);
 		
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-		  	   throw new BedDAOException("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+		  	   throw new DataOperationException("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
 		  	else
-		  	   throw new BedDAOException("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage());	
+		  	   throw new DataOperationException("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage(), e);	
 		}
 	}
 	
@@ -338,56 +366,113 @@ public class ImsServiceImpl implements ImsService {
 		String itemCode = JsonUtil.validateItemCode(jsonObj);
 		deleteItemByItemCode(itemCode);
 	}
+	
+	@Loggable(value = LogLevel.INFO)
+	@Override
+	synchronized public void deleteItem(Ims item) throws BedDAOBadParamException, BedDAOException{
+		 if(item.getItemcode() == null || item.getItemcode().length() == 0)
+	    	 throw new BedDAOBadParamException("Item code should not be empty");
+		imsDao.deleteItem(item);
+	}
 
+	//--------------------------------Deactivate Item DB Operation --------------------------//
+	
+	@Loggable(value = LogLevel.INFO)
+	@Override
+	@Transactional(readOnly = false, propagation=Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ) 
+	public synchronized void deactivateItem(Ims itemFromInput) throws BedDAOBadParamException, BedDAOException{
+		Ims itemToUpdate = null;
+		Session session = getSession();
+		try{
+			itemToUpdate = imsDao.getItemByItemCode(session, itemFromInput.getItemcode().trim());
+		}
+	    catch(HibernateException hbe){
+		    hbe.printStackTrace();
+		    throw new BedDAOException("Error occured during updateProduct() due to: " + hbe.getMessage(), hbe);
+	    }
+		catch(RuntimeException e){
+			if(e.getCause() != null)
+		  	   throw new BedDAOException("Error occured during updateItem(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+		  	else
+		  	   throw new BedDAOException("Error occured during updateItem(), due to: " +  e.getMessage());	
+		}
+		if(itemToUpdate == null)
+	       throw new BedDAOException("No data found for the given item code: " + itemFromInput.getItemcode());	 
+		
+		itemToUpdate.setInactivecode("Y");
+  	    ImsValidator.validateNewItem(itemToUpdate);
+    	try{
+		      imsDao.updateItem(session,itemToUpdate);
+	 	}
+    	catch(HibernateException hbe){
+     	      if(hbe.getCause() != null)
+ 		         throw new BedDAOException("Error occured during updateItem, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+ 		      else
+ 		  	     throw new BedDAOException("Error occured during updateItem, due to: " +  hbe.getMessage());	
+ 	    }	
+    	catch(Exception e){
+			  if(e.getMessage().contains("constraint [vendor_apv_fkey]"))
+			     throw new BedDAOBadParamException("Invalid vendor number (ID), since it cannot be found in the vendor table");
+			  if(e.getCause() != null)
+		         throw new BedDAOException("Error occured during updateItem(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+		  	  else
+			     throw new BedDAOException("Error occured during updateItem(), due to: " +  e.getMessage());	
+		   }	   
+	}
 	private synchronized Session getSession(){
 	    	return sessionFactory.getCurrentSession();
 	}
 
-private void processNewFeature(Ims item, DBOperation dBOperation){
-	ImsNewFeature newFeature = item.getNewFeature();
- 	if(newFeature != null && !newFeature.isEmpty()){
- 		if(dBOperation.equals(DBOperation.CLONE))
- 		   newFeature.setItemCode(null); //remove original item code which is the new item object cloned from from this newFeature object
- 		if(dBOperation.equals(DBOperation.CREATE) || dBOperation.equals(DBOperation.CLONE))
- 			newFeature.setCreatedDate(new Date());
- 	    else if(dBOperation.equals(DBOperation.UPDATE))
-		        newFeature.setLastModifiedDate(new Date());
-		    item.addNewFeature(newFeature);
- 	}   
- 	else
- 	   item.setNewFeature(null);
-}
+	public List<Vendor> getNewVendorSystem(){
+		Ims item = new Ims();
+		item.initVendors(3);
+		return item.getNewVendorSystem();
+	}
 
-private void processColorHues(Ims item, DBOperation dBOperation){
-	List<ColorHue> colorhues = item.getColorhues();
-	if(dBOperation.equals(DBOperation.CLONE) || dBOperation.equals(DBOperation.UPDATE)){
-	   if(!ImsDataUtil.colorHuesAndColorsEquals(item.getColorhues(), item.getColors())){
-		   if(dBOperation.equals(DBOperation.UPDATE)){ //For update, if colorhue changed, we need to remove old ones
-		      //item.setColorhues(null);
-		      //item.getColorhues().clear();
-		      for(ColorHue colorHue: colorhues){
+	private void processNewFeature(Ims item, DBOperation dBOperation){
+	   ImsNewFeature newFeature = item.getNewFeature();
+ 	   if(newFeature != null && !newFeature.isEmpty()){
+ 		  if(dBOperation.equals(DBOperation.CLONE))
+ 		     newFeature.setItemCode(null); //remove original item code which is the new item object cloned from from this newFeature object
+ 		  if(dBOperation.equals(DBOperation.CREATE) || dBOperation.equals(DBOperation.CLONE))
+ 			 newFeature.setCreatedDate(new Date());
+ 	      else if(dBOperation.equals(DBOperation.UPDATE))
+		        newFeature.setLastModifiedDate(new Date());
+		  item.addNewFeature(newFeature);
+ 	   }   
+       else
+ 	      item.setNewFeature(null);
+    }
+
+    private void processColorHues(Ims item, DBOperation dBOperation){
+	   List<ColorHue> colorhues = item.getColorhues();
+	   if(dBOperation.equals(DBOperation.CLONE) || dBOperation.equals(DBOperation.UPDATE)){
+	      if(!ImsDataUtil.colorHuesAndColorsEquals(item.getColorhues(), item.getColors())){
+		     if(dBOperation.equals(DBOperation.UPDATE)){ //For update, if colorhue changed, we need to remove old ones
+		       //item.setColorhues(null);
+		       //item.getColorhues().clear();
+		       for(ColorHue colorHue: colorhues){
 		    	  //if(!item.getColors().contains(colorHue.getColorHue())){
 		    		  //colorhues.remove(colorHue);
 		    		  colorHue.setItem(null);
 		    		  colorHueDao.deleteColorHue(colorHue);
 		    	  //}   
-		      }
-		   }
-		   item.setColorhues(null);
-		   colorhues = ImsDataUtil.convertColorListToColorHueObjects(item.getColors()); //For both clone and update, if colorhue changed, we need to get new values for colorhues
-		}	
-		else 
-		   return; // no colorhue changed for update/clone operation, therefore, no need to make change	
-	}
-
-	if(colorhues != null && !colorhues.isEmpty()){
- 	   item.setColorhues(null);
- 	   for(ColorHue colorhue : colorhues){
- 		   item.addColorhue(colorhue);
- 	   }
- 	   item.setColorcategory(ImsDataUtil.convertColorHuesToColorCategory(colorhues));
- 	}
-}
+		       }
+		    }
+		    item.setColorhues(null);
+		    colorhues = ImsDataUtil.convertColorListToColorHueObjects(item.getColors()); //For both clone and update, if colorhue changed, we need to get new values for colorhues
+		 }	
+		 else 
+		    return; // no colorhue changed for update/clone operation, therefore, no need to make change	
+	  }
+  	  if(colorhues != null && !colorhues.isEmpty()){
+ 	     item.setColorhues(null);
+ 	     for(ColorHue colorhue : colorhues){
+ 		    item.addColorhue(colorhue);
+ 	     }
+ 	     item.setColorcategory(ImsDataUtil.convertColorHuesToColorCategory(colorhues));
+ 	  }
+   }
 /*
 private void processColorHuesForUpdate(Session session, Ims item, DBOperation dBOperation){
 	List<ColorHue> colorhues = item.getColorhues();
@@ -585,3 +670,4 @@ public boolean validateVendorId(Integer vendorId){
 		return vendor;
 	}
 }
+

@@ -2,9 +2,9 @@ package com.bedrosians.bedlogic.domain.ims.enums;
 
 public enum Status implements java.io.Serializable {
 
-		 Best("Best"),
-	     Better("Better"),
-	     Good("Good");
+		 BEST("Best"),
+	     BETTER("Better"),
+	     GOOD("Good");
 		 
 		 private String description;
 		 
@@ -20,19 +20,11 @@ public enum Status implements java.io.Serializable {
 			this.description = description;
 		 }
 				
-		 public static Status instanceOf(String description){
-			 Status status = null ;
-			 switch(description) {
-				 case("Best"): case("BEST"): case("best"):
-				    status = Best;
-				    break;
-				 case("Better"): case("BETTER"): case("better"):
-				    status = Better;
-				    break;
-				 case("Good"): case("GOOD"): case("good"):
-					status = Good;
-				    break;	    
-			 }	   
-			 return status;
-		 }
+		 public static Status instanceOf(String key){
+			for(Status instance : values()){
+			    if( instance.getDescription().equalsIgnoreCase(key))
+			        return instance;				        
+			}
+			    return null;
+		}
 }

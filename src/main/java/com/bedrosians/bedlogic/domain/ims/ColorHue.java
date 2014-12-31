@@ -14,6 +14,8 @@ import javax.persistence.Version;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Boost;
 import org.hibernate.search.annotations.ContainedIn;
@@ -24,10 +26,11 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Store;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-///import org.codehaus.jackson.annotate.JsonIgnore;
 
 @Entity
 @Table(name = "ims_color_hue", schema = "public")
+@DynamicUpdate
+@DynamicInsert
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="colorHue")
 @Indexed
 public class ColorHue implements java.io.Serializable {

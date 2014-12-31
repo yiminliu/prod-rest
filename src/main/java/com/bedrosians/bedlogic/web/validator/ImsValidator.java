@@ -1,13 +1,9 @@
 package com.bedrosians.bedlogic.web.validator;
 
 
-
-
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -20,9 +16,6 @@ import com.bedrosians.bedlogic.domain.ims.embeddable.Material;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Price;
 import com.bedrosians.bedlogic.domain.ims.embeddable.TestSpecification;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Units;
-import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
-import com.bedrosians.bedlogic.exception.BedDAOException;
-import com.bedrosians.bedlogic.service.ims.ImsService;
 import com.bedrosians.bedlogic.service.mvc.ims.ImsServiceMVC;
 import com.bedrosians.bedlogic.util.enums.DBOperation;
 
@@ -165,18 +158,17 @@ public class ImsValidator implements Validator {
 			    validateVendorId(vendor1.getVendorId().getId(), errors);
 			 //if(data.get(0) != null && data.get(0).getVendorId().getId() == null)
 				 
-				// System.out.println("item.newVendorSystem[0] =" + data.get(0));
-		      //  errors.rejectValue("vendor.newVendorSystem[0].vendirId.id", "item.newVendorSystem[0].vendirId.id.null", "Please enter a valid number number");
+	         //  errors.rejectValue("vendor.newVendorSystem[0].vendirId.id", "item.newVendorSystem[0].vendirId.id.null", "Please enter a valid number number");
 			 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorPriceUnit", "required.item.newVendorSystem[\"0\"].vendorPriceUnit", "Required.");
 			 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorListPrice", "required.item.newVendorSystem[\"0\"].vendorListPrice", "Required.");
-			 //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorNetPrice", "required.item.newVendorSystem[\"0\"].vendorNetPrice", "Required.");
 			 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorDiscountPct", "required.item.newVendorSystem[\"0\"].vendorDiscountPct", "Required.");
 			 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorPriceRoundAccuracy", "required.item.newVendorSystem[\"0\"].vendorPriceRoundAccuracy", "Required.");
 			 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorMarkupPct", "required.item.newVendorSystem[\"0\"].vendorMarkupPct", "Required.");
 			 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorFreightRateCwt", "required.item.newVendorSystem[\"0\"].vendorFreightRateCwt", "Required.");
-			 //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorLandedBaseCost", "required.item.newVendorSystem[\"0\"].vendorLandedBaseCost", "Required.");
 			 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorMarkupPct", "required.item.newVendorSystem[\"0\"].vendorMarkupPct", "Required.");
-		
+			 //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorNetPrice", "required.item.newVendorSystem[\"0\"].vendorNetPrice", "Required.");
+			 //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorLandedBaseCost", "required.item.newVendorSystem[\"0\"].vendorLandedBaseCost", "Required.");
+			
 			 if((vendor1.getVendorPriceUnit() == null) ||
 			    (!vendor1.getVendorPriceUnit().equals(units.getBaseunit()) && 
 			     !vendor1.getVendorPriceUnit().equals(units.getUnit1unit()) && 

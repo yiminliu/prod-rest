@@ -1,42 +1,29 @@
 package com.bedrosians.bedlogic.domain.ims;
 
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import com.bedrosians.bedlogic.util.FormatUtil;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="apv")
-@DynamicUpdate
-@DynamicInsert
-@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
 public class KeymarkVendor implements java.io.Serializable {
 
 	private static final long serialVersionUID = -582265865921787L;
 	
 	private Integer vendorNumber;
 	private String name;
-	//private Vendor vendor;
-	
     private String addr1;
     private String addr2;
     private String city;
@@ -97,10 +84,7 @@ public class KeymarkVendor implements java.io.Serializable {
     private Character excfromcashflow;
     private Character ecutopia;
     private Byte portToStockDays;
-    //private Set imsItemVendors = new HashSet(0);
-
-   
-
+  
     @Id
 	@Column(name = "vendornbr", unique = true, nullable = false, precision = 6, scale = 0)
     public Integer getvendorNumber() {
@@ -679,108 +663,7 @@ public class KeymarkVendor implements java.io.Serializable {
 	public KeymarkVendor(Integer vendorNumber) {
 		this.vendorNumber = vendorNumber;
 	}
-	
-	
-/*
-	@JsonIgnore
-	@OneToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name="vendorNumber.vendorNumber")//, updatable=false, insertable=false)
-	public Vendor getVendor(){
-		return this.vendor;
-	}
-		
-	public void setVendor(Vendor vendor){
-		this.vendor = vendor;
-	}
-*/	
 
-    /*
-    public Apv(int vendornbr, String name, String addr1, String addr2,
-            String city, String statecd, String zip, String countrycd,
-            String email, Long fax, Long phone, Character alwaysonhold,
-            Character codea1, Character codea2, Integer coden1, Integer coden2,
-            Byte daysoffloat, Float discountpct, String fobcd,
-            Integer glacct, String inactivecd, String lastChgipaddr,
-            String lastChgusercd, String memodesc, String notes1,
-            String notes2, String notes3, String notes4, String notes5,
-            String ourcustcd, Short paymentdate, String pmttermscd,
-            Boolean preflevel, Character printmemodesc,
-            Character printnoteonchk, Short estrcvbydays, Short cancelbydays,
-            String shipviacd, Character t99cd, String t99fedid,
-            Float vendorfreightratecwt, Float vendorchargeamt,
-            Float otherfreightratecwt, Float othermarkuppct,
-            Float vendormarkuppct, Float otherchargeamt,
-            Float t99Avail, Float t99Actual, Character filingCode,
-            String dbaname, Character t99fedidisssnbr, String setupby,
-            Date setupdate, String accountnbr, String pinnbr, String passwd,
-            Character import_, String poEmail, Short cashflowdays,
-            Character excfromcashflow, Character ecutopia,
-            Byte portToStockDays, Set imsItemVendors) {
-        this.vendornbr = vendornbr;
-        this.name = name;
-        this.addr1 = addr1;
-        this.addr2 = addr2;
-        this.city = city;
-        this.statecd = statecd;
-        this.zip = zip;
-        this.countrycd = countrycd;
-        this.email = email;
-        this.fax = fax;
-        this.phone = phone;
-        this.alwaysonhold = alwaysonhold;
-        this.codea1 = codea1;
-        this.codea2 = codea2;
-        this.coden1 = coden1;
-        this.coden2 = coden2;
-        this.daysoffloat = daysoffloat;
-        this.discountpct = discountpct;
-        this.fobcd = fobcd;
-        this.glacct = glacct;
-        this.inactivecd = inactivecd;
-        this.lastChgipaddr = lastChgipaddr;
-        this.lastChgusercd = lastChgusercd;
-        this.memodesc = memodesc;
-        this.notes1 = notes1;
-        this.notes2 = notes2;
-        this.notes3 = notes3;
-        this.notes4 = notes4;
-        this.notes5 = notes5;
-        this.ourcustcd = ourcustcd;
-        this.paymentdate = paymentdate;
-        this.pmttermscd = pmttermscd;
-        this.preflevel = preflevel;
-        this.printmemodesc = printmemodesc;
-        this.printnoteonchk = printnoteonchk;
-        this.estrcvbydays = estrcvbydays;
-        this.cancelbydays = cancelbydays;
-        this.shipviacd = shipviacd;
-        this.t99cd = t99cd;
-        this.t99fedid = t99fedid;
-        this.vendorfreightratecwt = vendorfreightratecwt;
-        this.vendorchargeamt = vendorchargeamt;
-        this.otherfreightratecwt = otherfreightratecwt;
-        this.othermarkuppct = othermarkuppct;
-        this.vendormarkuppct = vendormarkuppct;
-        this.otherchargeamt = otherchargeamt;
-        this.t99Avail = t99Avail;
-        this.t99Actual = t99Actual;
-        this.filingCode = filingCode;
-        this.dbaname = dbaname;
-        this.t99fedidisssnbr = t99fedidisssnbr;
-        this.setupby = setupby;
-        this.setupdate = setupdate;
-        this.accountnbr = accountnbr;
-        this.pinnbr = pinnbr;
-        this.passwd = passwd;
-        this.import_ = import_;
-        this.poEmail = poEmail;
-        this.cashflowdays = cashflowdays;
-        this.excfromcashflow = excfromcashflow;
-        this.ecutopia = ecutopia;
-        this.portToStockDays = portToStockDays;
-        this.imsItemVendors = imsItemVendors;
-    }
-*/
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -805,22 +688,6 @@ public class KeymarkVendor implements java.io.Serializable {
 		} else if (!vendorNumber.equals(other.vendorNumber))
 			return false;
 		return true;
-	}
-	
-	@JsonIgnore
-	@Transient
-	static public List<String> allProperties(){
-		return Arrays.asList("vendorNumber", "vendorName", "vendorXrefId", "vendorPriceUnit", "vendorFob", "vendorlistprice", "vendorNetPrice", "vendorDiscountPct", 
-				               "vendorPriceRoundAccuracy" , "leadTime", "vendorFreightRateCwt", "dutyPct");
-	}
-
-	
-	@JsonIgnore
-	@Transient
-	public boolean isEmpty(){
-		return vendorNumber == null;
-		//&& vendorName == null && vendorXrefId == null && vendorListPrice == null && 
-		//	   vendorNetPrice == null && vendorPriceUnit == null && vendorFob == null;
 	}
 
 }
