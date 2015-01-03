@@ -37,7 +37,7 @@ Input definition
   #main-content{
      float:middle;
   }
-  table.center {
+  .element_center {
      margin-left:auto; 
      margin-right:auto;
   }

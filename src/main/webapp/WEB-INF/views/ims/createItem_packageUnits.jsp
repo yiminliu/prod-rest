@@ -18,7 +18,7 @@
        <tr>   
           <td><span style="color:black;">Base Unit<span style="color:red;">*</span>: </span>
               <c:forEach var="baseunit" items="${packageUnitList}" varStatus="status">
-                 <form:radiobutton class="input_value" path="units.baseunit" value="${baseunit}"/>${baseunit}
+                 <form:radiobutton class="input_value" path="units.baseunit" value="${baseunit.description}"/>${baseunit.description}
               </c:forEach>
               <form:errors path="units.baseunit" cssClass="error" />
           </td> 
@@ -64,7 +64,8 @@
        <tr>  
           <td><span style="color:black;">Unit1 Unit: </span>
               <c:forEach var="unit1unit" items="${packageUnitList}" varStatus="status">
-                <form:radiobutton  path="units.unit1unit" value="${unit1unit}"/>${unit1unit}
+              
+                <form:radiobutton  path="units.unit1unit" value="${unit1unit.description}"/>${unit1unit.description}
               </c:forEach>
           </td>
        </tr>
@@ -109,7 +110,7 @@
        <tr>  
           <td><span style="color:black;">Unit2 Unit: </span>
               <c:forEach var="unit2unit" items="${packageUnitList}" varStatus="status">
-                <form:radiobutton  path="units.unit2unit" value="${unit2unit}"/>${unit2unit}
+                <form:radiobutton  path="units.unit2unit" value="${unit2unit.description}"/>${unit2unit.description}
               </c:forEach>
           </td>
        </tr>
@@ -154,7 +155,7 @@
        <tr>  
           <td><span style="color:black;">Unit3 Unit: </span>
               <c:forEach var="unit3unit" items="${packageUnitList}" varStatus="status">
-                <form:radiobutton  path="units.unit3unit" value="${unit3unit}"/>${unit3unit}
+                <form:radiobutton  path="units.unit3unit" value="${unit3unit.description}"/>${unit3unit.description}
               </c:forEach>
           </td>
        </tr>
@@ -199,7 +200,7 @@
        <tr>  
           <td><span style="color:black;">Unit4 Unit: </span>
               <c:forEach var="unit4unit" items="${packageUnitList}" varStatus="status">
-                <form:radiobutton  path="units.unit4unit" value="${unit4unit}"/>${unit4unit}
+                <form:radiobutton  path="units.unit4unit" value="${unit4unit.description}"/>${unit4unit.description}
               </c:forEach>
           </td>
        </tr>
@@ -241,9 +242,8 @@
 	 </table>
     <table> 
       <tr style="float:middle;"> 
-        <td colspan="2">
-             <input type="submit" value="Continue"/>
-            <!--<a id="createItemPage2" href="<spring:url value="/ims/createItemPage2"/>"><span>Next</span></a>-->
+        <td>
+             <input type="submit" value="Continue >>"/>
         </td>
       </tr>
     </table> 

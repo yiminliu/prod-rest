@@ -53,7 +53,7 @@ import com.bedrosians.bedlogic.util.enums.DBOperation;
 import com.bedrosians.bedlogic.web.validator.ImsValidator;
 
 /**
-* This MVC controller class takes all ims-related requests and dispatches the requests to corresponding services fulfill database CRUD operations on ims.
+* This MVC controller class takes all ims-related requests and dispatches the requests to corresponding services to fulfill database CRUD operations on ims.
 * This class handles all requests rooted with "/ims".
 *
 */
@@ -89,7 +89,7 @@ public class ImsController {
    //--------------------------- Search Item --------------------------// 
    
    /**
-    * This method is used to show item detail information for the given item code
+    * This method is to show item detail information for the given item code within query string
     *
     * @return String the name of the item detail page
     */

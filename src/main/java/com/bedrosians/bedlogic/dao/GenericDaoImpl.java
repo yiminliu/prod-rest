@@ -8,17 +8,21 @@ import org.hibernate.HibernateException;
 import org.hibernate.LockOptions;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T, PK> {
 	private Class<T> type;
-	
+  
+	@Autowired
+	private SessionFactory sessionFactory;
+		
 	@SuppressWarnings("unchecked")
 	public GenericDaoImpl(){
 		this.type = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 	}
 	
-	@SuppressWarnings("unchecked")
+	@Override
 	public PK save(Session session, T newInstance) {
 		session.saveOrUpdate(newInstance);
 		return null;
@@ -72,7 +76,11 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
 		session.delete(persistentObject);
 	}
 	
-	protected synchronized Session getSession(SessionFactory sessionFactory){
-		 return sessionFactory.getCurrentSession();
-	 }
+	
+	protected synchronized Session getSession(){
+		Session session = sessionFactory.getCurrentSession();
+		if (session == null)
+		   session = sessionFactory.openSession();
+	    return session;
+    }
 }

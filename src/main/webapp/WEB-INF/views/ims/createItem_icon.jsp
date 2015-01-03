@@ -107,7 +107,7 @@
     <table> 
       <tr style="float:middle;"> 
         <td colspan="2">
-             <input type="submit" value="Continue"/>
+             <input type="submit" value="Continue >>"/>
         </td>
       </tr>
     </table>  

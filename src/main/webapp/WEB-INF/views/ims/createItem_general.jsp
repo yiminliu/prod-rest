@@ -128,8 +128,8 @@
    <br/>
    <table> 
       <tr > 
-        <td colspan="2">
-            <input type="submit" value="Continue"/>
+        <td>
+            <input type="submit" value="Continue >>"/>
         </td>
       </tr>
    </table> 

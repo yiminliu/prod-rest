@@ -61,8 +61,8 @@
           </tr>
      </table>   
      <table> 
-      <tr style="float:middle;"> 
-        <td colspan="2">
+      <tr> 
+        <td>
             <input type="submit" value="Create Item"/>
         </td>
       </tr>

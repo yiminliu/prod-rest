@@ -1,6 +1,8 @@
 package com.bedrosians.bedlogic.util.enums;
 
-public enum ApiName {
+import java.io.Serializable;
+
+public enum ApiName implements Serializable{
 
 	IMS("Ims"),
 	ACCOUNT("Account");

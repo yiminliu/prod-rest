@@ -55,7 +55,7 @@
          <td><form:errors path="material.materialclass" cssClass="error" /></td>               
        </tr>
        <tr>   
-         <td><label for="materialStyle">Material Style<span style="color:red;">*</span>:</label>
+         <td><label for="materialStyle">Material Style:</label>
             <form:select id="materialStyle" path="material.materialstyle" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;color:#0076BF;">
                <form:option value="" selected="selected">Select one</form:option>
                <c:forEach var="materialStyle" items="${materialStyleList}" varStatus="status">
@@ -75,9 +75,9 @@
     </table> 
     
     <table> 
-      <tr style="float:middle;"> 
-        <td colspan="2">
-            <input type="submit" value="Continue"/>
+      <tr> 
+        <td>
+            <input type="submit" value="Continue >>"/>
         </td>
       </tr>
     </table>  

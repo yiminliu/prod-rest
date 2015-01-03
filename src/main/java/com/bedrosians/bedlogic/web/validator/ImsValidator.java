@@ -79,7 +79,7 @@ public class ImsValidator implements Validator {
 		 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "material.materialcategory", "required.item.material.materialcategory", "Material Category is required.");
 		 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "material.materialstyle", "required.item.material.materialstyle", "Material Style is required.");
 		 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "material.materialclass", "required.item.material.materialclass", "Material Class is required.");
-		 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "material.materialtype", "required.item.material.materialtype", "Material Type is required.");
+		 //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "material.materialtype", "required.item.material.materialtype", "Material Type is required.");
 		 
 		 Material data = item.getMaterial();
 		 if (data.getMaterialstyle() != null && data.getMaterialstyle().length() > 7) 
@@ -195,6 +195,10 @@ public class ImsValidator implements Validator {
 	 }
 		 
 	 private void compareDates(Date startDate, Date endDate, Errors errors) {
+		 if (startDate != null && startDate.before(new Date()))
+				errors.rejectValue("price.tempdatefrom", "item.tempdatefrom.invalid_startTempdate", "Start date should not be earlyer than today");		
+		 if (endDate != null && endDate.before(new Date()))
+				errors.rejectValue("price.item.tempdatethru", "item.tempdatethru.invalid_thruTempdate", "End date should not be earlyer than today");		
 		 if (startDate != null && endDate != null && startDate.after(endDate))
 			errors.rejectValue("price.tempdatethru", "item.tempdatethru.invalid_endTtempdate", "End date should not be earlyer than start date");		
 	 }

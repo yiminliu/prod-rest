@@ -164,8 +164,8 @@
           </td> 
      </tr>
      <tr>
-        <td colspan="2">
-            <input class ="button-m" type="submit" value="Submit"/>
+        <td>
+            <input type="submit" value="Submit"/>
         </td>
     </tr>
 </table>  

@@ -647,10 +647,4 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 		return criteria;
    }	
 
-   private synchronized Session getSession(){
-	   Session session = sessionFactory.getCurrentSession();
-	   if (session == null)
-		   session = sessionFactory.openSession();
-       return session;
-   }
 }

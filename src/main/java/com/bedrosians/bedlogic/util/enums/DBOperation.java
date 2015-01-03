@@ -1,6 +1,6 @@
 package com.bedrosians.bedlogic.util.enums;
 
-public enum DBOperation {
+public enum DBOperation implements java.io.Serializable{
 
 	SEARCH("Search"),
 	CREATE("Create"),

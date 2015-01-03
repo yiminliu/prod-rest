@@ -1,5 +1,7 @@
 package com.bedrosians.bedlogic.service.security;
 
+import java.io.Serializable;
+
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +14,7 @@ import com.bedrosians.bedlogic.util.enums.DBOperation;
 
 @Service("keymarkUcUserAuthorization")
 @Scope("singleton")
-public class KeymarkUcUserAuthorizationImpl implements KeymarkUcUserAuthorization{
+public class KeymarkUcUserAuthorizationImpl implements KeymarkUcUserAuthorization, Serializable{
 
 	public boolean authorize(KeymarkUcUser user, ApiName apiName, DBOperation dBOperation) throws BedDAOBadParamException, BedDAOException, BedResUnAuthorizedException{
 		switch(dBOperation) {

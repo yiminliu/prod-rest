@@ -5,6 +5,7 @@ public enum PackageUnit implements java.io.Serializable {
 	    PCS("PCS"),
 		PKG("PKG"),
 		CTN("CTN"),
+		PLT("PLT"),
 		SHT("SHT"),
 		BOX("BOX"),
 		SET("SET"), 
