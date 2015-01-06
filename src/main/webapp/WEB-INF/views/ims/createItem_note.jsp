@@ -4,10 +4,10 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>Item Management System</title>
+<title>Item Management System -- Create An Item</title>
 </head>
 <body>
-
+<%@ include file="/WEB-INF/includes/header.jsp"%>
 <div class="container">
 <spring:url var="action" value="/ims/createItem_final" />
 <form:form method="POST" action="${action}" modelAttribute="aItem">
@@ -63,12 +63,12 @@
      <table> 
       <tr> 
         <td>
-            <input type="submit" value="Create Item"/>
+            <input type="submit" value="Submit"/>
         </td>
       </tr>
     </table> 
 </form:form>
-
+<%@ include file="/WEB-INF/includes/footer.jsp"%>
 </div><!-- container -->
 </body>
 </html>

@@ -45,7 +45,7 @@
  
 	<div id="login-box" class="container">
  
-		<h3>Authentication Required</h3>
+		<h3>Login with Username and Password</h3>
  
         <c:if test="${param.failed == true}">
              <div class="error">Your login attempt failed. Please try again.</div><br/>
@@ -53,8 +53,8 @@
 		<c:if test="${not empty error}">
 			<div class="error">${error}</div>
 		</c:if>
-		<c:if test="${not empty msg}">
-			<div class="msg">${msg}</div>
+		<c:if test="${not empty message}">
+			<div class="msg">${message}</div>
 		</c:if>
  
 		<form name='loginForm' action="<c:url value='j_spring_security_check' />" method='POST'>
@@ -71,7 +71,7 @@
 			<table  class="element_center">  
 			  <tr>
 			    <td> 
-			       <input name="submit" type="submit" value="Log in" />
+			       <input name="submit" type="submit" value="Login" />
 			    </td>
 			    <td> 
 			       <input name="reset" type="reset" value="Reset" />

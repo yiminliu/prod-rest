@@ -2,73 +2,7 @@
 Input definition
 ***********************************************/
 
- .body {
-    width:100%;
- }
- .container {
-     color:#0076BF;
-     margin: -10px auto; 
-     padding: 30px;
-     border-spacing: 10px;
-     empty-cells:show;
-     width:90%;
-     text-align:left;
-  } 
-  .home-container {
-     float:middle;
-     color:#0076BF;
-     margin-top: 40px; 
-     margin-left:auto; 
-     margin-right:auto;
-     padding: 30px;
-     border-spacing: 10px;
-     empty-cells:show;
-     width:90%;
-     text-align:center;
-  } 
-  .error {
-     color: red;
-  } 
-  hr {
-     color: Ivory;
-     width:110%;
-     border: 0.5px dotted
-  }
-  #main-content{
-     float:middle;
-  }
-  .element_center {
-     margin-left:auto; 
-     margin-right:auto;
-  }
-  .center {
-     text-align:center;
-  } 
-  .datatable {
-     border: 1px solid #338BA6;
-     border-collapse: collapse;
-     float:middle;
-     padding: 0;
-     margin-left:auto; 
-     margin-right:auto;
-     margin-bottom: 20px
-  }
-  .datatable th {
-     color: BLACK;
-  }   
-  .datatable td, .datatable th {
-     border: 1px solid #73C0D4;
-  }
-  .datatable td, .datatable th {
-     border: 1px solid #73C0D4;
-  }
-  .datatable tr.odd td {
-     background-color: AliceBlue;
-  }
-  .datatable caption {
-     color: GREEN;
-     font-size: 130%;
-  }
+ 
   .page_title {
      margin-left:auto; 
      margin-right:auto;
@@ -80,7 +14,21 @@ Input definition
      width:40%;
      text-align: center;
      font-size: 200%;
-  }        
+  } 
+  .input_table_cells {
+    border-collapse: separate;
+    border-spacing: 10px;
+  } 
+  fieldset {
+    border-collapse: separate;
+    border-spacing: 10px;
+  }     
+  fieldset legend{  
+    color: 66CCCC;
+  }    
+  fieldset label{  
+    color: BLACK;
+  } 
  #menu {
     list-style-type: none;
     list-style-position: inside;
@@ -122,11 +70,16 @@ Input definition
      color: BLACK;
   }
   .input_value {
+     color: 66CCFF;
+  }
+  .input_row{
+     display:table-row;
+     color: BLACK;
+  } 
+  .input_row form{
+     display:table-row;
      color: BLUE;
   }
-  .div.row{
-     display:table-row;
-  } 
   .input-container {
      width: 500px;
      clear: both;

@@ -4,10 +4,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 <head>
-<title>Item Management System -- Create Icons</title>
+<title>Item Management System -- Create An Item Icons</title>
 </head>
 <body>
-
+<%@ include file="/WEB-INF/includes/header.jsp"%>
 <div class="container">
 <spring:url var="action" value="/ims/createItem_test" />
 <form:form method="POST" action="${action}" modelAttribute="aItem">
@@ -102,16 +102,15 @@
           </td>
       </tr>
     </table> 
-    
-    <table></table>
     <table> 
-      <tr style="float:middle;"> 
-        <td colspan="2">
+      <tr"> 
+        <td>
              <input type="submit" value="Continue >>"/>
         </td>
       </tr>
     </table>  
 </form:form>
+<%@ include file="/WEB-INF/includes/footer.jsp"%>
 </div><!-- container -->
 </body>
 </html>

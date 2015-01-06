@@ -2,13 +2,12 @@
 <%@ include file="/WEB-INF/includes/doctype.jsp"%>
 <%@ include file="/WEB-INF/includes/styles.jsp"%>
 
-
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>Item Management System</title>
+<title>Item Management System -- Create An Item Material</title>
 </head>
 <body>
-
+<%@ include file="/WEB-INF/includes/header.jsp"%>
 <div class="container">
 
 <spring:url var="action" value="/ims/createItem_dimensions" />
@@ -29,19 +28,6 @@
          <td><form:errors path="material.materialcategory" cssClass="error" /></td>               
        </tr>
        <tr>  
-         <td><label for="materialType">Material Type<span style="color:red;">*</span>:</label>
-            <form:select id="materialType" path="material.materialtype" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;color:#0076BF;">
-               <form:option value="" selected="selected">Select one</form:option>
-               <c:forEach var="materialType" items="${materialTypeList}" varStatus="status">
-                 <form:option value="${materialType}">${materialType.description}</form:option>
-              </c:forEach>
-            </form:select>
-         </td> 
-       </tr>
-       <tr>
-         <td><form:errors path="material.materialtype" cssClass="error" /></td>               
-       </tr>
-       <tr>  
          <td><label for="materialClass">Material Class<span style="color:red;">*</span>:</label>
             <form:select id="materialClass" path="material.materialclass" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;color:#0076BF;">
                <form:option value="" selected="selected">Select one</form:option>
@@ -54,8 +40,21 @@
        <tr>
          <td><form:errors path="material.materialclass" cssClass="error" /></td>               
        </tr>
+       <tr>  
+         <td><label for="materialType">Material Type<span style="color:red;">*</span>:</label>
+            <form:select id="materialType" path="material.materialtype" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;color:#0076BF;">
+               <form:option value="" selected="selected">Select one</form:option>
+               <c:forEach var="materialType" items="${materialTypeList}" varStatus="status">
+                 <form:option value="${materialType}">${materialType.description}</form:option>
+              </c:forEach>
+            </form:select>
+         </td> 
+       </tr>
+       <tr>
+         <td><form:errors path="material.materialtype" cssClass="error" /></td>               
+       </tr>
        <tr>   
-         <td><label for="materialStyle">Material Style:</label>
+         <td><label for="materialStyle">Material Style<span style="color:red;">*</span>:</label>
             <form:select id="materialStyle" path="material.materialstyle" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:180px;color:#0076BF;">
                <form:option value="" selected="selected">Select one</form:option>
                <c:forEach var="materialStyle" items="${materialStyleList}" varStatus="status">
@@ -64,7 +63,7 @@
             </form:select>
          </td> 
        </tr>
-        <tr>
+      <tr>
          <td><form:errors path="material.materialstyle" cssClass="error" /></td>               
        </tr>
        <tr>    
@@ -73,7 +72,6 @@
          </td>
         </tr>
     </table> 
-    
     <table> 
       <tr> 
         <td>
@@ -82,7 +80,7 @@
       </tr>
     </table>  
 </form:form>
-
+<%@ include file="/WEB-INF/includes/footer.jsp"%>
 </div><!-- container -->
 </body>
 </html>

@@ -4,12 +4,11 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-  <title>Item Management System -- pricing</title>
+  <title>Item Management System -- Create An Item pricing</title>
   <meta charset="utf-8">
   <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
   <script src="//code.jquery.com/jquery-1.10.2.js"></script>
   <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
-  <link rel="stylesheet" href="/resources/demos/style.css">
   <script>
     $(function() {
     	 $( "#from" ).datepicker({
@@ -32,7 +31,7 @@
   </script>
 </head>
 <body>
-
+<%@ include file="/WEB-INF/includes/header.jsp"%>
 <div class="container">
 <spring:url var="action" value="/ims/createItem_application" />
 <form:form method="POST" action="${action}" modelAttribute="aItem" enctype="application/x-www-form-urlencoded">
@@ -50,25 +49,25 @@
        </tr>
        <tr>
           <td><label> Special Price Start Date: </label>
-              <form:input id="from" path="price.tempdatefrom" type="text"></form:input></td>
+              <form:input id="from" path="price.tempdatefrom" type="date"></form:input></td>
           <td><form:errors path="price.tempdatefrom" cssClass="error" /></td>
        </tr>
        <tr>
           <td><label> Special Price End Date: </label>
-              <form:input id="to" path="price.tempdatethru" type="text"></form:input></td>
+              <form:input id="to" path="price.tempdatethru" type="date"></form:input></td>
           <td><form:errors path="price.tempdatethru" cssClass="error" /></td>
        </tr>     
     </table>  
 
     <table> 
-      <tr style="float:middle;"> 
-        <td colspan="2">
+      <tr> 
+        <td>
              <input type="submit" value="Continue >>"/>
         </td>
       </tr>
     </table> 
 </form:form>
-
+<%@ include file="/WEB-INF/includes/footer.jsp"%>
 </div><!-- container -->
 </body>
 </html>

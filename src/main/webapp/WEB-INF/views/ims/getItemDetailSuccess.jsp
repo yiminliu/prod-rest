@@ -2,12 +2,12 @@
 <%@ include file="/WEB-INF/includes/doctype.jsp"%>
 <%@ include file="/WEB-INF/includes/styles.jsp"%>
 
-
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <title>Item Detail</title>
 </head>
 <body>
+   <%@ include file="/WEB-INF/includes/header.jsp"%>
    <div class="container">
       <c:choose>
          <c:when test="${empty item}">
@@ -191,8 +191,8 @@
                       <tr>
                          <th>#</th>
                          <th>Vendor Number</th>
-                         <th>Vendor Name</th>
-                         <!--<th>Vendor Name2</th>-->
+                         <!--<th>Vendor Name</th>
+                         <th>Vendor Name2</th>-->
                          <th>Vendor XrefId</th>
                          <th>List Price</th>
                          <th>Net Price</th>
@@ -210,8 +210,8 @@
                          <td>${vendor.vendorOrder}</td>
                          <td style="color : red"><a id="keymarkVendoDetail" href="<spring:url value="/ims/getKeymarkVendorDetail/${vendor.vendorId.id}" />">${vendor.vendorId.id}</a></td>
                          <!--<td>${vendor.vendorId.id}</td>-->
-                         <td>${vendor.vendorName}</td>
-                         <!--<td>${vendor.vendorName2}</td>-->
+                         <!--<td>${vendor.vendorName}</td>
+                         <td>${vendor.vendorName2}</td>-->
                          <td>${vendor.vendorXrefId}</td>
                          <td>${vendor.vendorListPrice}</td>
                          <td>${vendor.vendorNetPrice}</td>
@@ -434,6 +434,7 @@
            <td><a id="imsHome" href="<spring:url value="/ims/index" />" class="button-m"><span>IMS Home</span></a></td>
         </tr>
      </table>
+     <%@ include file="/WEB-INF/includes/footer.jsp"%>
 </div> <!-- Close container -->
 </body>
 </html>

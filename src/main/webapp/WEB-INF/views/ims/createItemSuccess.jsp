@@ -4,7 +4,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-     <title>Ims Menu</title>
+     <title>Create Item Success</title>
      <style type="text/css"> 
  
     .button-m {
@@ -22,6 +22,7 @@
  </style>
   </head>
 <body>
+  <%@ include file="/WEB-INF/includes/header.jsp"%>
   <div class="home-container">
     <!--<c:choose>
         <c:when test="${empty itemCode}">
@@ -40,10 +41,11 @@
            <td><a id="modifyItem" href="<spring:url value="/ims/updateItem_begin/${item.itemcode}" />" class="button-m"><span>Edit The Item</span></a></td>
            <td><a id="deleteItem" href="<spring:url value="/ims/deleteItem/${item.itemcode}" />" class="button-m"><span>Delete The Item</span></a></td>
            <td><a id="CreateItem" href="<spring:url value="/ims/cloneItem/${item.itemcode}" />" class="button-m"><span>Clone The Item</span></a></td>
-           <td><a id="CreateItem" href="<spring:url value="/ims/createItem_begin" />" class="button-m"><span>Create An New Item</span></a></td>
-           <td><a id="imsHome" href="<spring:url value="/ims/index" />" class="button-m"><span>Home</span></a></td>
+           <td><a id="CreateItem" href="<spring:url value="/ims/createItem_begin" />" class="button-m"><span>Create A New Item</span></a></td>
+           <td><a id="imsHome" href="<spring:url value="/ims/index" />" class="button-m"><span>IMS Home</span></a></td>
         </tr>
      </table>
+     <%@ include file="/WEB-INF/includes/footer.jsp"%>
 </div> <!-- Close container -->
 </body>
 </html>

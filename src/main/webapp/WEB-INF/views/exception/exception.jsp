@@ -35,12 +35,12 @@
                   </td>
              </tr>  
             </c:if>    
-           </table>
-           <table>
+         </table>
+         <table>
              <tr>
-               <td><a id="imsHome" href="<spring:url value="/ims/index" />" class="button-m"><span>Home</span></a></td>
+               <td><a id="imsHome" href="<spring:url value="/ims/index" />" class="button-m"><span>IMS Home</span></a></td>
              </tr>
-           </table>
+         </table>
       </div><!-- Close container -->
  </body>
 </html>

@@ -3,12 +3,10 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-     <title>Item Management System - Page Not Found</title>
+     <title>Item Management System -- Error Page </title>
   </head>
   <body>
       <div class="container">
-        <div id="main-content">
-           <div class="span-18 colborder">
               <h3 style="margin-bottom: 10px; padding-bottom: 0px; border-bottom: 1px #ccc dotted;">There was a problem</h3>
               <p style="font-size: 1.3em;">Your request could not be completed at this time.</a></p>
      <hr />
@@ -47,9 +45,10 @@
         ex.printStackTrace(new java.io.PrintWriter(out));
      }
      %>
-
-</div>
-</div>
+      <table>
+          <tr><td><a id="imsHome" href="<spring:url value="/ims/index" />" class="button-m"><span>IMS Home</span></a></td><tr>
+      </table>
+       
 </div>
 <!-- Close container -->
 </body>

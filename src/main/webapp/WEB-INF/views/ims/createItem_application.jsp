@@ -4,10 +4,10 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>Item Management System</title>
+<title>Item Management System -- Create An Item Application</title>
 </head>
 <body>
-
+<%@ include file="/WEB-INF/includes/header.jsp"%>
 <div class="container">
 <spring:url var="action" value="/ims/createItem_packageUnits" />
 <form:form method="POST" action="${action}" modelAttribute="aItem">
@@ -110,7 +110,8 @@
       </tr>
     </table> 
 </form:form>
-
+<%@ include file="/WEB-INF/includes/footer.jsp"%>
+</div><!-- container -->
 </div><!-- container -->
 </body>
 </html>

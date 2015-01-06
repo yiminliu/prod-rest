@@ -7,11 +7,9 @@
 <title>Show Item</title>
 </head>
 <body>
-
+<%@ include file="/WEB-INF/includes/header.jsp"%>
 <div class="container">
 
-<div id="main-content">
-<div class="span-18 colborder">
 <h3 style="margin-bottom: 10px; padding-bottom: 0px; color: GREEN">Enter Item Search Criteria</h3>
 
 <spring:url var="action" value="/ims/getItems" />
@@ -170,9 +168,7 @@
     </tr>
 </table>  
 </form:form>
-
-</div><!-- border -->
-</div><!-- content -->
+<%@ include file="/WEB-INF/includes/footer.jsp"%>
 </div><!-- container -->
 </body>
 </html>

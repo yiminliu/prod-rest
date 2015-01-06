@@ -6,6 +6,7 @@
 <title>Ims Index</title>
  </head>
 <body>
+   <%@ include file="/WEB-INF/includes/header.jsp"%>
    <div id="menu" style="margin-top:50px;">
           <div class="page_title">Item Management System</div>
           <ul>
@@ -20,7 +21,7 @@
             <!--<li><a id="deleteItem" href="<spring:url value="/ims/deleteItem"/>"><span>Delete Item</span></a></li>
             <li><a id="deactivateItem" href="<spring:url value="/ims/deactivateItem"/>"><span>Deactivate Item</span></a></li>-->
         </ul>
- 
-</div> <!-- Close container -->
+        <%@ include file="/WEB-INF/includes/footer.jsp"%>
+   </div> 
 </body>
 </html>

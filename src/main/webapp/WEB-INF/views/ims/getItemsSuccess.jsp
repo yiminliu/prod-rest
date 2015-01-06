@@ -4,9 +4,10 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Item Management System</title>
+  <title>Item Management System -- Get Item Success</title>
 </head>
 <body>
+   <%@ include file="/WEB-INF/includes/header.jsp"%>
    <div class="home-container">
       <c:choose>
          <c:when test="${empty itemList}">
@@ -82,7 +83,7 @@
                    <td><a id="imsHome" href="<spring:url value="/ims/index" />" class="button-m"><span style="cellspacing: 30px; cellpadding: 30px;">Ims Home</span></a></td>
                 </tr>
              </table>
-      
+        <%@ include file="/WEB-INF/includes/footer.jsp"%>
    </div> <!-- Close container -->
 </body>
 </html>

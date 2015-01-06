@@ -7,10 +7,8 @@
   <title>Item Management System</title>
 </head>
 <body>
-
+<%@ include file="/WEB-INF/includes/header.jsp"%>
 <div class="container">
-<div id="main-content">
-<div class="span-18 colborder">
 
 <form:form method="POST" modelAttribute="item">
    <div class="container" style="color:GREEN"> <h3>Delete An Item</h3></div>
@@ -31,9 +29,7 @@
       </tr>
     </table>  
 </form:form>
-
-</div><!-- border -->
-</div><!-- content -->
+<%@ include file="/WEB-INF/includes/footer.jsp"%>
 </div><!-- container -->
 </body>
 </html>
