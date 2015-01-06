@@ -1,10 +1,6 @@
 package com.bedrosians.bedlogic.service.user;
 
-import java.util.List;
-
 import javax.ws.rs.core.MultivaluedMap;
-
-import org.hibernate.Session;
 
 import com.bedrosians.bedlogic.domain.user.User;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;

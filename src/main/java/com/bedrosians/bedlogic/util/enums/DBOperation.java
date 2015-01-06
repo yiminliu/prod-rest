@@ -8,7 +8,6 @@ public enum DBOperation implements java.io.Serializable{
 	DELETE("Delete"),
 	CLONE("Clone");
 		 
-	
 	private String description;
 		 
 	private DBOperation(String description){

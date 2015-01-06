@@ -1,5 +1,7 @@
 package com.bedrosians.bedlogic.web.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,7 +22,7 @@ public class HomeController {
 	public ModelAndView adminPage() {
  
 		ModelAndView model = new ModelAndView();
-		model.addObject("title", "Spring Security Custom Login Form");
+		model.addObject("title", "IMS Login Form");
 		model.addObject("message", "This is protected page!");
 		model.setViewName("admin");
  
@@ -30,7 +32,8 @@ public class HomeController {
  
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public ModelAndView login(@RequestParam(value = "error", required = false) String error,
-		                      @RequestParam(value = "logout", required = false) String logout) {
+		                      @RequestParam(value = "logout", required = false) String logout,
+		                      HttpSession session) {
  
 		ModelAndView model = new ModelAndView();
 		if (error != null) {
@@ -38,7 +41,8 @@ public class HomeController {
 		}
  
 		if (logout != null) {
-			model.addObject("msg", "You've been logged out successfully.");
+			session.invalidate();
+			model.addObject("message", "You've been logged out successfully.");
 		}
 		model.setViewName("ims/index");
  

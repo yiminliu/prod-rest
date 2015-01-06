@@ -2,7 +2,6 @@ package com.bedrosians.bedlogic.util.logger.aspect;
 
 import java.text.MessageFormat;
 import java.util.List;
-import java.util.Set;
 import java.util.Stack;
 
 import javax.annotation.Resource;
