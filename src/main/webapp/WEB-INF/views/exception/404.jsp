@@ -16,5 +16,6 @@
                <td><a id="imsHome" href="<spring:url value="/ims/index" />" class="button-m"><span>IMS Home</span></a></td>
              </tr>
     </table>
+    <%@ include file="/WEB-INF/includes/footer.jsp"%>
 </body>
 </html>

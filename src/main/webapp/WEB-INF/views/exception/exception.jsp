@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/includes/doctype.jsp"%>
 <%@ include file="/WEB-INF/includes/styles.jsp"%>
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
      <title>Item Management System - Page Not Found</title>
   </head>
@@ -41,6 +41,7 @@
                <td><a id="imsHome" href="<spring:url value="/ims/index" />" class="button-m"><span>IMS Home</span></a></td>
              </tr>
          </table>
+         <%@ include file="/WEB-INF/includes/footer.jsp"%>
       </div><!-- Close container -->
  </body>
 </html>
