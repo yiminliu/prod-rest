@@ -17,8 +17,7 @@
             <h2>Item: <span style="color:RED">${itemCode} </span>Has Been ${operation} Successfully!</h2>
          </c:otherwise>
       </c:choose>
-    
-     <table style="border:1px">
+      <table class="bottom_link">
         <tr>
            <td><a id="imsHome" href="<spring:url value="/ims/index" />" class="button-m"><span>IMS Home</span></a></td>
         </tr>

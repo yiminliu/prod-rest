@@ -41,7 +41,7 @@
          <td><form:errors path="inactivecode" cssClass="error" /></td>               
       </tr>
       <tr> 
-        <td calss="narrow"><label for="itemStatusOptions">Status: </label>
+        <td class="narrow"><label for="itemStatusOptions">Status: </label>
               <c:forEach var="itemStatus" items="${statusList}" varStatus="status">
                  <form:radiobutton path="newFeature.status" value="${itemStatus}" />${itemStatus}
               </c:forEach>

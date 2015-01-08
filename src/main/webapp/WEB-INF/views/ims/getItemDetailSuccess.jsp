@@ -427,7 +427,7 @@
                    
                 </c:if>
               </div>
- <table style="border:1px; margin: 0 auto;">
+     <table style="border:1px; margin: 0 auto;">
         <tr>
            <td><a id="modifyItem" href="<spring:url value="/ims/updateItem_begin/${item.itemcode}" />" class="button-m"><span>Edit This Item</span></a></td>
            <td><a id="CreateItem" href="<spring:url value="/ims/cloneItem/${item.itemcode}" />" class="button-m"><span>Clone This Item</span></a></td>

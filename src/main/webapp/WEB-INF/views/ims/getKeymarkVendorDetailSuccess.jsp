@@ -2,13 +2,13 @@
 <%@ include file="/WEB-INF/includes/doctype.jsp"%>
 <%@ include file="/WEB-INF/includes/styles.jsp"%>
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml"  lang="en">
 <head>
   <title>Vendor Detail</title>
 </head>
 <body>
    <%@ include file="/WEB-INF/includes/header.jsp"%>
-   <div class="container">
+   <div class="home-container">
       <c:choose>
          <c:when test="${empty kVendor}">
              <div class="container">No Item Found</div>
@@ -17,13 +17,11 @@
              <div class="page_title">Vendor Information for Vendor Number: <span style="color : red">${kVendor.vendorNumber}</span></div>
          </c:otherwise>
       </c:choose>
-      <br/>
       <p></p>
-      <div class="container">
-                  <c:if test="${!empty kVendor}">
-                      <table border="1">
-                       <tr>
-                         <!--<th>Item Code</th>-->
+      <div>
+            <c:if test="${!empty kVendor}">
+                 <table border="1">
+                     <tr>
                          <th>Name</th>
                          <th>Dba Name</th>
                          <th>Address1</th>
@@ -41,9 +39,8 @@
                          <th>Always On-Hold</th>
                          <th>Discount %</th>
                          <th>Freight Rate Cwt</th>
-                       </tr>  
-                       <tr>
-                          <!--<td style="color : red">${item.itemcode}</td>-->
+                    </tr>  
+                    <tr>
                           <td>${kVendor.name}</td>
                           <td>${kVendor.dbaname}</td>
                           <td>${kVendor.addr1}</td>
@@ -61,17 +58,17 @@
                           <td>${kVendor.alwaysonhold}</td>
                           <td>${kVendor.discountpct}</td>
                           <td>${kVendor.vendorfreightratecwt}</td>
-                       </tr>
-                    </table>
-                 </c:if>
-       <table>
-          <tr>
-             <td>
-                <a id="imsHome" href="<spring:url value="/ims/index" />" class="button action-m"><span>Back To IMS Home</span></a>
-             </td>
-          </tr>
-       </table>
-       <%@ include file="/WEB-INF/includes/footer.jsp"%>
-</div> <!-- Close container -->
+                    </tr>
+                 </table>
+           </c:if>
+     </div>
+     <table class="bottom_link">
+              <tr>
+                 <td><a id="viewItem" href="<spring:url value="/ims/getItemDetail/${item.itemcode}" />" class="button-l"><span>Back to The Item Detail</span></a></td>
+                 <td><a id="imsHome" href="<spring:url value="/ims/index" />" class="button-m"><span>IMS Home</span></a></td>
+              </tr>
+     </table>
+     <%@ include file="/WEB-INF/includes/footer.jsp"%>
+   </div> <!-- Close container -->
 </body>
 </html>
