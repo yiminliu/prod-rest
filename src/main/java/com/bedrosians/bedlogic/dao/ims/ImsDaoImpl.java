@@ -22,6 +22,7 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
@@ -86,8 +87,9 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 		return (List<String>)query.setCacheable(true).list();
 	}
 	
-	/*This method only gets a proxy of the persistent entity, without hitting the database
-	*/
+	/*
+	 * This method only gets a proxy of the persistent entity, without hitting the database
+	 */
 	@Override
 	public Ims loadItemByItemCode(Session session, final String itemCode) {
        return loadById(session, itemCode);
@@ -255,7 +257,7 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 		    //--------------- Process the input data --------------//
 	     	Entry<String, List<String>> entry = (Entry<String, List<String>>)it.next();
 	 	    key = normalizeKey((String)entry.getKey());
-	 	   if(key == null || key.isEmpty())
+	 	    if(key == null || key.isEmpty())
 	           continue;
 	 	    Object obj = entry.getValue();
 	 	    if(obj instanceof String)
@@ -362,7 +364,7 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 	 	   	}	      	    	
 	    }
         itemCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-        //itemCriteria.addOrder(Order.asc("itemcode"));
+        itemCriteria.addOrder(Order.asc("itemcode"));
         System.out.println("getItemsByQueryParameters() using criteria = " +itemCriteria.toString());
   
 		try {
