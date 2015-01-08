@@ -17,9 +17,9 @@ import com.bedrosians.bedlogic.util.enums.DBOperation;
 
 public interface ImsService {	
 	public Ims getItemByItemCode(String itemCode);	
-	public List<Ims> getActiveAndShownOnWebsiteItems() throws BedDAOBadParamException, BedDAOException;
-	public List<Ims> getItems(MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException, BedDAOException;	
+	public List<Ims> getActiveAndShownOnWebsiteItems();
 	public List<Ims> getItems(LinkedHashMap<String, List<String>> queryParams);
+	public List<Ims> getItems(MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException, BedDAOException;	
 	public List<ItemWrapper> getWrappedItems(MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException, BedDAOException;		   	
 	public String createItem(JSONObject inputJsonObj) throws BedDAOBadParamException, BedDAOException;
 	public String createOrUpdateItem(Ims item, DBOperation operation);

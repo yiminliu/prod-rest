@@ -592,9 +592,12 @@ public class ImsController {
      public ModelAndView handleDataNotFoundException(DataNotFoundException ex) {
    
   		ModelAndView model = new ModelAndView("/exception/exception");
-  		model.addObject("errorType", ex.getErrorType());
-  		model.addObject("errorMessage", ex.getErrorMessage());
-  		model.addObject("error", ex.getRootError());
+  		model.addObject("errorCode", ex.getErrorCode());
+ 		model.addObject("errorType", ex.getErrorType());
+ 		model.addObject("errorMessage", ex.getErrorMessage());
+ 		model.addObject("rootErrorMessage", ex.getRootErrorMessage());
+ 		model.addObject("error", ex);
+ 		model.addObject("rootError", ex.getRootError());
    
   		return model;
    	 }
@@ -604,8 +607,11 @@ public class ImsController {
    
   		ModelAndView model = new ModelAndView("/exception/exception");
   		model.addObject("errorCode", ex.getErrorCode());
-  		model.addObject("errorMessage", ex.getErrorMessage());
-  		model.addObject("error", ex.getError());
+ 		model.addObject("errorType", ex.getErrorType());
+ 		model.addObject("errorMessage", ex.getErrorMessage());
+ 		model.addObject("rootErrorMessage", ex.getRootErrorMessage());
+ 		model.addObject("error", ex);
+ 		model.addObject("rootError", ex.getRootError());
    
   		return model;
    	}
@@ -615,9 +621,11 @@ public class ImsController {
   
  		ModelAndView model = new ModelAndView("/exception/exception");
  		model.addObject("errorCode", ex.getErrorCode());
+ 		model.addObject("errorType", ex.getErrorType());
  		model.addObject("errorMessage", ex.getErrorMessage());
- 		model.addObject("exception", ex);
- 		model.addObject("rootError", ex.getError());
+ 		model.addObject("rootErrorMessage", ex.getRootErrorMessage());
+ 		model.addObject("error", ex);
+ 		model.addObject("rootError", ex.getRootError());
   
  		return model;
   	}

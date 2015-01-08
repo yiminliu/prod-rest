@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
 
 import javax.ws.rs.core.MultivaluedMap;
 
@@ -38,7 +37,6 @@ import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.exception.DataOperationException;
 import com.bedrosians.bedlogic.exception.InputParamException;
-import com.bedrosians.bedlogic.service.mvc.ims.ImsServiceMVC;
 import com.bedrosians.bedlogic.util.FormatUtil;
 import com.bedrosians.bedlogic.util.JsonUtil;
 import com.bedrosians.bedlogic.util.JsonWrapper.ItemWrapper;
@@ -62,10 +60,7 @@ public class ImsServiceImpl implements ImsService {
     
     @Autowired
 	private SessionFactory sessionFactory;
-    
-    //@Autowired
-   	//private ImsServiceMVC imsServiceMVC;
-      	    	  
+         	    	  
     //--------------------------------Retrieval DB Operation --------------------------//
    
     @Loggable(value = LogLevel.INFO)
@@ -80,25 +75,55 @@ public class ImsServiceImpl implements ImsService {
 	  	    item = imsDao.getItemByItemCode(session, itemCode.toUpperCase());
 		}
 		catch(HibernateException hbe){
-			hbe.printStackTrace();
 			if(hbe.getCause() != null)
-		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
-		  	else
-		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  hbe.getMessage(), hbe);	
+			   System.out.println("Error occured during getItems(), due to: " +  hbe.getMessage() + ". Root cause -- " + hbe.getCause().getMessage());	
+			else
+			   System.out.println("Error occured during getItems(), due to: " +  hbe.getMessage());
+			throw new DataOperationException("Error occured during getItems(). ", hbe);
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
-		  	else
-		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  e.getMessage(), e);	
-		}
+			   System.out.println("Error occured during getItems(), due to: " +  e.getMessage() + ". Root cause -- " + e.getCause().getMessage());	
+			else
+			   System.out.println("Error occured during getItems(), due to: " +  e.getMessage());
+			throw new DataOperationException("Error occured during getItems(). ", e);
+	}
 		return FormatUtil.process(item);
 	}
     
     @Loggable(value = LogLevel.INFO)
+	@Override
+	public List<Ims> getItems(LinkedHashMap<String, List<String>> queryParams){
+		List<Ims> itemList = null;
+		try{
+			itemList = imsDao.getItems(queryParams);
+		}
+		catch(HibernateException hbe){
+		  	if(hbe.getCause() != null)
+		  	   System.out.println("Error occured during getItems(), due to: " +  hbe.getMessage() + ". Root cause -- " + hbe.getCause().getMessage());	
+		   	else
+		   	   System.out.println("Error occured during getItems(), due to: " +  hbe.getMessage());
+			throw new DataOperationException("Error occured during getItems(). ", hbe);
+		}
+		catch(RuntimeException e){
+			if(e.getCause() != null)
+			   System.out.println("Error occured during getItems(), due to: " +  e.getMessage() + ". Root cause -- " + e.getCause().getMessage());	
+		   	else
+		   	   System.out.println("Error occured during getItems(), due to: " +  e.getMessage());
+			throw new DataOperationException("Error occured during getItems(). ", e);
+			
+		}
+		List<Ims> processedItems = new ArrayList<>();
+		for(Ims item : itemList){
+			processedItems.add(FormatUtil.process(item));
+		}
+		return processedItems;
+	}
+	
+    @Loggable(value = LogLevel.INFO)
     @Override
     @Transactional(readOnly = true)
-	public List<Ims> getActiveAndShownOnWebsiteItems() throws BedDAOBadParamException, BedDAOException{
+	public List<Ims> getActiveAndShownOnWebsiteItems() {
     	return imsDao.getActiveAndShownOnWebsiteItems();
 	}
     
@@ -129,32 +154,6 @@ public class ImsServiceImpl implements ImsService {
 		List<Ims> processedItems = new ArrayList<>();
 		for(Ims ims : itemList){
 			processedItems.add(FormatUtil.process(ims));
-		}
-		return processedItems;
-	}
-	
-	@Loggable(value = LogLevel.INFO)
-	@Override
-	public List<Ims> getItems(LinkedHashMap<String, List<String>> queryParams){
-		List<Ims> itemList = null;
-		try{
-			itemList = imsDao.getItems(queryParams);
-		}
-		catch(HibernateException hbe){
-		  	if(hbe.getCause() != null)
-		       throw new DataOperationException("Error occured during getItems(), due to: " +  hbe.getMessage() + ". Root cause -- " + hbe.getCause().getMessage(), hbe);	
-		  	else
-		  	   throw new DataOperationException("Error occured during getItems(), due to: " +  hbe.getMessage());
-		}
-		catch(RuntimeException e){
-			if(e.getCause() != null)
-		  	   throw new DataOperationException("Error occured during getItems(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
-		  	else
-		  	   throw new DataOperationException("Error occured during getItems(), due to: " +  e.getMessage(), e);	
-		}
-		List<Ims> processedItems = new ArrayList<>();
-		for(Ims item : itemList){
-			processedItems.add(FormatUtil.process(item));
 		}
 		return processedItems;
 	}
@@ -254,11 +253,11 @@ public class ImsServiceImpl implements ImsService {
 		   id = imsDao.createItem(item);
 		}
 		catch(HibernateException hbe){
-		   hbe.printStackTrace();
-		   if(hbe.getCause() != null)
-		      throw new DataOperationException("Error occured during createItem(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
-		   else
-		  	  throw new DataOperationException("Error occured during createItem(), due to: " +  hbe.getMessage(), hbe);	
+			if(hbe.getCause() != null)
+			   System.out.println("Error occured during createOrUpdateItem(), due to: " +  hbe.getMessage() + ". Root cause -- " + hbe.getCause().getMessage());	
+			else
+			   System.out.println("Error occured during createOrUpdateItem(), due to: " +  hbe.getMessage());
+			throw new DataOperationException("Error occured during createOrUpdateItem(). ", hbe);
 	    }	
    	    catch(Exception e){
 		  e.printStackTrace();
@@ -270,10 +269,12 @@ public class ImsServiceImpl implements ImsService {
 		      else
 		    	  throw new DataOperationException("Error occured during createItem(), due to: " + e.getMessage(), e);
 		  }
-		  else if(e.getCause() != null)
-	  	     throw new DataOperationException("Error occured during createItem(), due to: " +  " Root cause: " + e.getCause().getMessage(), e);	
-	  	  else
-	  	     throw new DataOperationException("Error occured during createItem().", e);	
+		  if(e.getCause() != null)
+			 System.out.println("Error occured during createOrUpdateItem(), due to: " +  e.getMessage() + ". Root cause -- " + e.getCause().getMessage());	
+		  else
+			 System.out.println("Error occured during createOrUpdateItem(), due to: " +  e.getMessage());
+		  throw new DataOperationException("Error occured during createOrUpdateItem(). ", e);
+	
       }
 	  return id;	
    }
@@ -308,7 +309,6 @@ public class ImsServiceImpl implements ImsService {
 		
 		//imsServiceMVC.createItem(itemFromInput, DBOperation.UPDATE);
  
-		
 		itemToUpdate = ImsDataUtil.transformItem(itemToUpdate, itemFromInput, DBOperation.UPDATE);
   	    ImsValidator.validateNewItem(itemToUpdate);
     	try{
@@ -345,18 +345,18 @@ public class ImsServiceImpl implements ImsService {
 			imsDao.deleteItem(session, itemProxy);
 		}
 		catch(HibernateException hbe){
-			hbe.printStackTrace();
 			if(hbe.getCause() != null)
-		       throw new DataOperationException("Error occured during deleteItemByItemCode(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
-		  	else
-		  	   throw new DataOperationException("Error occured during deleteItemByItemCode(), due to: " +  hbe.getMessage(), hbe);
-		
+			   System.out.println("Error occured during deleteItemByItemCode(), due to: " +  hbe.getMessage() + ". Root cause -- " + hbe.getCause().getMessage());	
+			else
+			   System.out.println("Error occured during deleteItemByItemCode(), due to: " +  hbe.getMessage());
+			throw new DataOperationException("Error occured during deleteItemByItemCode(). ", hbe);
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-		  	   throw new DataOperationException("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
-		  	else
-		  	   throw new DataOperationException("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage(), e);	
+			   System.out.println("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage() + ". Root cause -- " + e.getCause().getMessage());	
+			else
+			   System.out.println("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage());
+			throw new DataOperationException("Error occured during deleteItemByItemCode(). ", e);
 		}
 	}
 	
@@ -419,6 +419,38 @@ public class ImsServiceImpl implements ImsService {
 			     throw new BedDAOException("Error occured during updateItem(), due to: " +  e.getMessage());	
 		   }	   
 	}
+
+	/************************* Keymark Vender DB Operation ************************/
+	@Loggable(value = LogLevel.INFO)
+	@Override
+	@Transactional(readOnly = true, isolation=Isolation.READ_COMMITTED)
+	public KeymarkVendor getKeymarkVendorByVendorNumber(Integer vendorId){
+	     KeymarkVendor vendor = null;
+	    	if(vendorId == null)
+	    	   throw new InputParamException("Please enter a valid Item Code !");	
+			try{
+				Session session = getSession();
+				session.setCacheMode(CacheMode.NORMAL);
+		  	    vendor = keymarkVendorDao.getKeymarkVendorByVendorNumber(session, vendorId);
+			}
+			catch(HibernateException hbe){
+				hbe.printStackTrace();
+				if(hbe.getCause() != null)
+			  	   throw new DataOperationException("Error occured during getKeymarkVendorByVendorNumber, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
+			  	else
+			  	   throw new DataOperationException("Error occured during getKeymarkVendorByVendorNumber, due to: " +  hbe.getMessage());	
+			}
+			catch(RuntimeException e){
+				if(e.getCause() != null)
+			  	   throw new DataOperationException("Error occured during getKeymarkVendorByVendorNumber, due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
+			  	else
+			  	   throw new DataOperationException("Error occured during getKeymarkVendorByVendorNumber, due to: " +  e.getMessage(), e);	
+			}
+			return vendor;
+	}
+	
+	/************************* Util Methods ************************/
+	
 	private synchronized Session getSession(){
 	    	return sessionFactory.getCurrentSession();
 	}
@@ -492,12 +524,12 @@ private void processColorHuesForUpdate(Session session, Ims item, DBOperation dB
 }
 */
 
-private void processApplications(Ims item){
-	List<String> usage = item.getUsage();
- 	if(usage != null){
- 		item.setApplications(ImsDataUtil.convertUsageToApplications(usage));
- 	}   
-}
+    private void processApplications(Ims item){
+	   List<String> usage = item.getUsage();
+       if(usage != null){
+ 		 item.setApplications(ImsDataUtil.convertUsageToApplications(usage));
+ 	   }   
+    }
 
 /*
 private Ims processApplications(Ims item){
@@ -555,17 +587,18 @@ private Ims processApplicationsString(Ims item){
 	return item;
 } 	
 */
-private Ims processPackgeUnits(Ims item){
-	Units units = item.getUnits();
- 	if(units != null){
- 	   units.setOrdunit(ImsDataUtil.getStandardOrderUnit(item));
- 	   units.setOrdratio(ImsDataUtil.getBaseToOrderRatio(item));
- 	   units.setStdunit(ImsDataUtil.getStandardSellUnit(item));
- 	   units.setStdratio(ImsDataUtil.getBaseToSellRatio(item));
-  	   item.setUnits(units);
- 	}
-	return item;
-} 	
+    private Ims processPackgeUnits(Ims item){
+	   Units units = item.getUnits();
+ 	   if(units != null){
+ 	      units.setOrdunit(ImsDataUtil.getStandardOrderUnit(item));
+ 	      units.setOrdratio(ImsDataUtil.getBaseToOrderRatio(item));
+ 	      units.setStdunit(ImsDataUtil.getStandardSellUnit(item));
+ 	      units.setStdratio(ImsDataUtil.getBaseToSellRatio(item));
+  	      item.setUnits(units);
+ 	   }
+	   return item;
+   } 	
+    
 //NEW.vendorlandedbasecost := (NEW.vendornetprice * (100.00 + NEW.vendormarkuppct) / 100.00 / tUnitRatio) + (NEW.vendorfreightratecwt * NEW.basewgtperunit / 100);
 private Ims processVendor(Ims item, DBOperation dBOperation){
 	List<Vendor> vendors = item.getNewVendorSystem();
@@ -619,55 +652,27 @@ private Ims processVendor(Ims item, DBOperation dBOperation){
 	return item;
 } 	
 
-private void processIcons(Ims item, DBOperation dBOperation){
-	IconCollection icons = item.getIconDescription();
- 	if(icons != null && !icons.isEmpty()){
- 	   if(dBOperation.equals(DBOperation.CLONE))
- 		  icons.setItemCode(null); //remove original item code from icons object
- 	   item.addIconDescription(icons);	
- 	   item.setIconsystem(ImsDataUtil.convertIconCollectionToLegancyIcons(icons));
- 	}   
- 	else
- 	   item.setIconDescription(null);	
-}
+    private void processIcons(Ims item, DBOperation dBOperation){
+	   IconCollection icons = item.getIconDescription();
+       if(icons != null && !icons.isEmpty()){
+ 	      if(dBOperation.equals(DBOperation.CLONE))
+ 		     icons.setItemCode(null); //remove original item code from icons object
+ 	      item.addIconDescription(icons);	
+ 	      item.setIconsystem(ImsDataUtil.convertIconCollectionToLegancyIcons(icons));
+ 	   }   
+ 	   else
+ 	      item.setIconDescription(null);	
+    }
 
-public boolean validateVendorId(Integer vendorId){
-	List<Integer> keymarkVendorIdList = null;
-	keymarkVendorIdList = keymarkVendorDao.getKeymarkVendorIdList();
-	for(Integer id : keymarkVendorIdList){
-		id = Integer.valueOf(String.valueOf(id).trim());
-		if(id.equals(vendorId))
-		   return true;
-	}
-	return false;
-}
-
- @Loggable(value = LogLevel.INFO)
- @Override
- @Transactional(readOnly = true, isolation=Isolation.READ_COMMITTED)
- public KeymarkVendor getKeymarkVendorByVendorNumber(Integer vendorId){
-	 KeymarkVendor vendor = null;
-    	if(vendorId == null)
-    	   throw new InputParamException("Please enter a valid Item Code !");	
-		try{
-			Session session = getSession();
-			session.setCacheMode(CacheMode.NORMAL);
-	  	    vendor = keymarkVendorDao.getKeymarkVendorByVendorNumber(session, vendorId);
-		}
-		catch(HibernateException hbe){
-			hbe.printStackTrace();
-			if(hbe.getCause() != null)
-		  	   throw new DataOperationException("Error occured during getKeymarkVendorByVendorNumber, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
-		  	else
-		  	   throw new DataOperationException("Error occured during getKeymarkVendorByVendorNumber, due to: " +  hbe.getMessage());	
-		}
-		catch(RuntimeException e){
-			if(e.getCause() != null)
-		  	   throw new DataOperationException("Error occured during getKeymarkVendorByVendorNumber, due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
-		  	else
-		  	   throw new DataOperationException("Error occured during getKeymarkVendorByVendorNumber, due to: " +  e.getMessage(), e);	
-		}
-		return vendor;
-	}
+    public boolean validateVendorId(Integer vendorId){
+	   List<Integer> keymarkVendorIdList = null;
+	   keymarkVendorIdList = keymarkVendorDao.getKeymarkVendorIdList();
+	   for(Integer id : keymarkVendorIdList){
+		   id = Integer.valueOf(String.valueOf(id).trim());
+		   if(id.equals(vendorId))
+		      return true;
+	   }
+	   return false;
+    }
 }
 

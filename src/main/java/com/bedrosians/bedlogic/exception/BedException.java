@@ -5,8 +5,10 @@ import java.io.Serializable;
 public class BedException extends RuntimeException  implements Serializable
 {
 	protected static final long serialVersionUID = -34724706273251377L;
+	protected String errorCode;
 	protected String errorType;
 	protected String errorMessage;
+	protected String rootErrorMessage;
 	protected Throwable rootError;
     
     public BedException() {
@@ -19,13 +21,22 @@ public class BedException extends RuntimeException  implements Serializable
     
     public BedException(String message, Throwable rootError) { 
     	if(rootError != null)
-    	  errorMessage = errorType + ": " + message + "\n\r" + "Cause: " + rootError.getMessage();
+    	   errorMessage = message + " Cause: " + rootError.getMessage();
     	else
-    	  errorMessage = errorType + ": " + message + "\n\r";
+    	   errorMessage = message + "\n\r";
     	this.rootError = rootError;
     }
 
+	public String getErrorCode() {
+		return errorCode;
+	}
+
+	public void setErrorCode(String errorCode) {
+		this.errorCode = errorCode;
+	}
+
 	public String getErrorType() {
+		errorType = this.getClass().getName();
 		return errorType;
 	}
 
@@ -39,6 +50,15 @@ public class BedException extends RuntimeException  implements Serializable
 
 	public void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
+	}
+
+	public String getRootErrorMessage() {
+		rootErrorMessage = (rootError == null)? "" : (rootError.getCause() == null)? "" : rootError.getCause().getMessage();
+		return rootErrorMessage;
+	}
+
+	public void setRootErrorMessage(String rootErrorMessage) {
+		this.rootErrorMessage = rootErrorMessage;
 	}
 
 	public Throwable getRootError() {

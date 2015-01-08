@@ -9,8 +9,9 @@ public class DataNotFoundException extends BedException {
 
 	public DataNotFoundException() { 
     	super(); 
-    	errorType = "Data Not Found Exception";	
-     }
+    	if(errorType == null)
+    	  errorType = "Data Not Found Exception";	
+    }
     
     public DataNotFoundException(String message) { 
        errorType = "Data Not Found Exception";	
@@ -18,11 +19,6 @@ public class DataNotFoundException extends BedException {
     }
     
     public DataNotFoundException(String message, Throwable cause) { 
-    	errorType = "Data Not Found Exception";	
-    	if(cause.getMessage() != null)
-    	  errorMessage = "No Data Found: " + message + "\n\r" + "Cause: " + cause.getCause().getMessage();
-    	else
-    	  errorMessage = "No Data Found: " + message + "\n\r";
-    	rootError = cause;
+    	super("No Data Found: " + message, cause);
     }    
 }

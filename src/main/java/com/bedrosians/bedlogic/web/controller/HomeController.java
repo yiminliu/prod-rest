@@ -56,7 +56,7 @@ public class HomeController {
 		ModelAndView model = new ModelAndView("/exception/exception");
 		model.addObject("errorCode", ex.getErrorCode());
 		model.addObject("errorMessage", ex.getErrorMessage());
-		model.addObject("error", ex.getError());
+		model.addObject("error", ex.getRootError());
  
 		return model;
  	}
