@@ -5,7 +5,6 @@ import java.io.Serializable;
 import com.bedrosians.bedlogic.domain.user.User;
 
 
-
 public class AuthorityId implements Serializable {
   private static final long serialVersionUID = 7740332242823859489L;
   private User user;

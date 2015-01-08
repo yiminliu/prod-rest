@@ -23,19 +23,17 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import com.bedrosians.bedlogic.domain.authority.Authority;
 import com.bedrosians.bedlogic.domain.authority.Role;
-
 
 
 @Entity
 @Table(name = "users")
 @DynamicUpdate
 @DynamicInsert
-//@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
+@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class User implements Serializable {
     private static final long serialVersionUID = -321397721787L;
 	private Integer userId;
@@ -45,9 +43,7 @@ public class User implements Serializable {
 	private Date dateEnabled;
 	private Date dateDisabled;
 	private boolean enabled;
-	//private SecurityQuestionAnswer userHint = new SecurityQuestionAnswer();
 	private Collection<Authority> roles = new HashSet<Authority>();
-	//private ContactInfo contactInfo = new ContactInfo();
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -88,7 +84,6 @@ public class User implements Serializable {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
 
 	@Column(name = "enabled", columnDefinition = "BOOLEAN")
 	public boolean isEnabled() {
@@ -142,7 +137,7 @@ public class User implements Serializable {
 		if (grantedAuthorities == null) {
 			grantedAuthorities = new HashSet<GrantedAuthority>();
 			for (Authority authority : getRoles()) {
-				grantedAuthorities.add(new GrantedAuthorityImpl(authority.getRole().toString()));
+				grantedAuthorities.add(new SimpleGrantedAuthority(authority.getRole().toString()));
 			}
 		}
 		return grantedAuthorities;

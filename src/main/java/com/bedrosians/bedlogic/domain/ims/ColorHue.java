@@ -31,7 +31,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "ims_color_hue", schema = "public")
 @DynamicUpdate
 @DynamicInsert
-@Cache(usage=CacheConcurrencyStrategy.READ_WRITE, region="colorHue")
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 @Indexed
 public class ColorHue implements java.io.Serializable {
 

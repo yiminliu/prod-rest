@@ -17,6 +17,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.search.annotations.ContainedIn;
@@ -29,7 +31,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name="ims_item_vendor")
 @DynamicUpdate
 @DynamicInsert
-//@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Vendor implements java.io.Serializable {
 
 	private static final long serialVersionUID = -582265865921787L;

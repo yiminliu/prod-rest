@@ -497,7 +497,7 @@ public class Ims implements java.io.Serializable {
 	
 	@OneToOne(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Fetch(FetchMode.JOIN)
-	@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+	//@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	@IndexedEmbedded
 	public ImsNewFeature getNewFeature() {	
 	    return this.newFeature;
@@ -517,7 +517,7 @@ public class Ims implements java.io.Serializable {
 	
 	@OneToOne(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Fetch(FetchMode.JOIN)
-	@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+	//@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	public IconCollection getIconDescription() {	
 	    return this.iconDescription;// != null//? iconCollection : ImsDataUtil.parseIcons(getIconsystem());
 	}
@@ -536,7 +536,7 @@ public class Ims implements java.io.Serializable {
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "ims", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Fetch(FetchMode.SUBSELECT)
-	//@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+	@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	//@IndexedEmbedded(depth=2)
 	public List<Vendor> getNewVendorSystem() {
 		return this.newVendorSystem;
@@ -564,7 +564,7 @@ public class Ims implements java.io.Serializable {
 	
 	//@LazyCollection(LazyCollectionOption.FALSE)
 	@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-	//@IndexedEmbedded(depth=1)
+	@IndexedEmbedded(depth=1)
 	@OneToMany(fetch=FetchType.EAGER, mappedBy="item", cascade={CascadeType.ALL, CascadeType.REMOVE})//, orphanRemoval=true)
 	@Fetch(FetchMode.SUBSELECT)
 	public List<ColorHue> getColorhues() {

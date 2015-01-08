@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ehcache.xsd" updateCheck="false" monitoring="autodetect"  dynamicConfig="true">
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:noNamespaceSchemaLocation="ehcache.xsd" 
+         updateCheck="true" 
+         monitoring="autodetect"  
+         dynamicConfig="true">
 
      
     <diskStore path="java.io.tmpdir"/>
@@ -11,34 +15,24 @@
     
     <cache name="org.hibernate.cache.internal.StandardQueryCache"
            maxElementsInMemory="10000"
-           eternal="true"
-           overflowToDisk="true"/>
-           <!-- timeToIdleSeconds="180000"
-           timeToLiveSeconds="500000"
+           eternal="false"
+           timeToIdleSeconds="1800"
+           timeToLiveSeconds="5000"
+           memoryStoreEvictionPolicy="LRU"/>
+           <!--overflowToDisk="true"/>
            overflowToDisk="true"
            diskPersistent="false"
            diskExpiryThreadIntervalSeconds="10000"
            memoryStoreEvictionPolicy="LRU"/>-->
+         
            
     <cache name="com.bedrosians.bedlogic.domain.ims.Ims"
            maxElementsInMemory="5000"
            eternal="false"
            timeToIdleSeconds="1800"
            timeToLiveSeconds="4000"
-           overflowToDisk="true"
-           diskPersistent="false"
-           diskExpiryThreadIntervalSeconds="10000"
            memoryStoreEvictionPolicy="LRU"/>
     
-    <cache name="com.bedrosians.bedlogic.domain.ims.Ims.imsNewFeature"
-           maxElementsInMemory="5000"
-           eternal="false"
-           timeToIdleSeconds="1800"
-           timeToLiveSeconds="4000"
-           overflowToDisk="true"
-           diskPersistent="false"
-           diskExpiryThreadIntervalSeconds="10000"
-           memoryStoreEvictionPolicy="LRU"/>
     <cache name="com.bedrosians.bedlogic.domain.ims.Ims.colorhues"
            maxElementsInMemory="5000"
            eternal="false"
@@ -48,16 +42,6 @@
            diskPersistent="false"
            diskExpiryThreadIntervalSeconds="10000"
            memoryStoreEvictionPolicy="LRU"/>       
-    
-    <cache name="com.bedrosians.bedlogic.domain.ims.Ims.iconDescription"
-           maxElementsInMemory="5000"
-           eternal="false"
-           timeToIdleSeconds="1800"
-           timeToLiveSeconds="4000"
-           overflowToDisk="true"
-           diskPersistent="false"
-           diskExpiryThreadIntervalSeconds="10000"
-           memoryStoreEvictionPolicy="LRU"/>
            
      <cache name="com.bedrosians.bedlogic.domain.ims.Ims.newVendorSystem"
            maxElementsInMemory="5000"
@@ -74,9 +58,6 @@
            eternal="false"
            timeToIdleSeconds="1800"
            timeToLiveSeconds="4000"
-           overflowToDisk="true"
-           diskPersistent="false"
-           diskExpiryThreadIntervalSeconds="10000"
            memoryStoreEvictionPolicy="LRU"/>
     
     <cache name="com.bedrosians.bedlogic.domain.ims.ColorHue"
@@ -84,9 +65,6 @@
            eternal="false"
            timeToIdleSeconds="1800"
            timeToLiveSeconds="4000"
-           overflowToDisk="true"
-           diskPersistent="false"
-           diskExpiryThreadIntervalSeconds="10000"
            memoryStoreEvictionPolicy="LRU"/>
     
     <cache name="com.bedrosians.bedlogic.domain.ims.IconCollection"
@@ -94,9 +72,6 @@
            eternal="false"
            timeToIdleSeconds="1800"
            timeToLiveSeconds="4000"
-           overflowToDisk="true"
-           diskPersistent="false"
-           diskExpiryThreadIntervalSeconds="10000"
            memoryStoreEvictionPolicy="LRU"/>       
      
     <cache name="com.bedrosians.bedlogic.domain.ims.Vendor"
@@ -104,9 +79,6 @@
            eternal="false"
            timeToIdleSeconds="1800"
            timeToLiveSeconds="4000"
-           overflowToDisk="true"
-           diskPersistent="false"
-           diskExpiryThreadIntervalSeconds="10000"
            memoryStoreEvictionPolicy="LRU"/>       
         
     <cache name="com.bedrosians.bedlogic.domain.ims.KeymarkVendor"
@@ -114,9 +86,6 @@
            eternal="false"
            timeToIdleSeconds="1800"
            timeToLiveSeconds="4000"
-           overflowToDisk="true"
-           diskPersistent="false"
-           diskExpiryThreadIntervalSeconds="10000"
            memoryStoreEvictionPolicy="LRU"/>       
            
     <!--<cache name="com.bedrosians.bedlogic.domain.account.Account"
@@ -140,21 +109,22 @@
            eternal="false"
            timeToIdleSeconds="10000"
            timeToLiveSeconds="100000"
-           overflowToDisk="true"
-           diskPersistent="false"
-           diskExpiryThreadIntervalSeconds="2000"
            memoryStoreEvictionPolicy="LRU"/>
   
-    <cache name="com.bedrosians.bedlogic.domain.user.user"
+    <cache name="com.bedrosians.bedlogic.domain.user.User"
            maxElementsInMemory="2000"
            eternal="false"
            timeToIdleSeconds="10000"
            timeToLiveSeconds="100000"
-           overflowToDisk="true"
-           diskPersistent="false"
-           diskExpiryThreadIntervalSeconds="2000"
            memoryStoreEvictionPolicy="LRU"/>
            
+    <cache name="com.bedrosians.bedlogic.domain.authority.Authority"
+           maxElementsInMemory="2000"
+           eternal="false"
+           timeToIdleSeconds="10000"
+           timeToLiveSeconds="100000"
+           memoryStoreEvictionPolicy="LRU"/>
+                  
     <defaultCache
             maxElementsInMemory="20000"
             eternal="false"

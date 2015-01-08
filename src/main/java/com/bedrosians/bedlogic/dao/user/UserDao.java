@@ -2,8 +2,6 @@ package com.bedrosians.bedlogic.dao.user;
 
 import java.util.List;
 
-import javax.ws.rs.core.MultivaluedMap;
-
 import org.hibernate.Session;
 
 import com.bedrosians.bedlogic.dao.GenericDao;

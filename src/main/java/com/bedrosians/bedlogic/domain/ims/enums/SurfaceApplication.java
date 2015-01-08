@@ -7,8 +7,6 @@ public enum SurfaceApplication implements java.io.Serializable {
 	Silk("Silk"),
 	Hand_Painted_Crafted("Hand Painted/Crafted");
 	
-
-	
 	private String description;
 		 
 	private SurfaceApplication(String description){

@@ -14,6 +14,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.bedrosians.bedlogic.domain.ims.enums.RoleDomain;
 import com.bedrosians.bedlogic.domain.user.User;
 
@@ -21,6 +24,7 @@ import com.bedrosians.bedlogic.domain.user.User;
 @Entity
 @Table(name = "authorities")
 @IdClass(AuthorityId.class)
+@Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
 public class Authority implements Serializable {
 	private static final long serialVersionUID = -6398259652301626438L;
 	private User user;

@@ -12,7 +12,6 @@ public enum SurfaceFinish implements java.io.Serializable {
 	Tumbled("Tumbled"),
 	Textured("Textured");
 	
-	 
 	private String description;
 		 
 	private SurfaceFinish(String description){

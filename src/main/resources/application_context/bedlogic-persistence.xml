@@ -13,13 +13,13 @@
                         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
                         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
                         http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-4.0.xsd">
-                 
-     <!-- Annotation auto scan -->                        
+                        
+    <!-- Annotation auto scan -->                        
     <context:component-scan base-package="com.bedrosians.bedlogic" />
    
     <!-- Transaction -->
     <tx:annotation-driven transaction-manager="transactionManager" />
-    
+     
     <!-- Datasource -->
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">  
         <property name="driverClassName" value="${database.driver}" />  
@@ -57,11 +57,11 @@
                 <prop key="hibernate.cache.use_second_level_cache">${hibernate.cache.use_second_level_cache}</prop>
                 <prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop>
                 <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>  
-                <prop key="hibernate.cache.provider_configuration_file_resource_path">${hibernate.cache.provider_configuration_file_resource_path}</prop> 
+                <prop key="hibernate.cache.ehcache.configurationResourceName">/ehcache.xml</prop>
                 <prop key="hibernate.cache.use_structured_entries">${hibernate.cache.use_structured_entries}</prop>     
                 <prop key="hibernate.cache.generate_statistics">${hibernate.cache.generate_statistics}</prop> 
                 <!--  Hibernate Search -->
-                 <prop key="hibernate.search.default.directory_provider">${hibernate.search.default.directory_provider}</prop>
+                <prop key="hibernate.search.default.directory_provider">${hibernate.search.default.directory_provider}</prop>
                 <prop key="hibernate.search.default.indexBase">${hibernate.search.default.indexBase}</prop>  
                 <prop key="hibernate.search.lucene_version">${hibernate.search.lucene_version}</prop>
                 <!--<prop key="hibernate.search.default.refresh">${hibernate.search.default.refresh}</prop>-->
@@ -70,6 +70,7 @@
         </property>  
     </bean>
     
+    <!-- Transaction Intercepter -->
     <bean id="transactionInterceptor" class="org.springframework.transaction.interceptor.TransactionInterceptor">
        <property name="transactionManager" ref="transactionManager" />
        <property name="transactionAttributes">

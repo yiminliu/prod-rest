@@ -12,8 +12,7 @@ public enum MaterialType implements java.io.Serializable {
 	Pebble_Rock("Pebble Rock"),
 	Quarry("Quarry"),
 	Resin_Metal("Resin/Metal"),
-	Other("Other");
-		
+	Other("Other");	
 	
 	private String description;
 		 

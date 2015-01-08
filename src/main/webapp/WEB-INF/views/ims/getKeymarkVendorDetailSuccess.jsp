@@ -39,6 +39,8 @@
                          <th>Fob Code</th>
                          <th>Gla Account</th>
                          <th>Always On-Hold</th>
+                         <th>Discount %</th>
+                         <th>Freight Rate Cwt</th>
                        </tr>  
                        <tr>
                           <!--<td style="color : red">${item.itemcode}</td>-->
@@ -51,12 +53,14 @@
                           <td>${kVendor.zip}</td>
                           <td>${kVendor.countrycd}</td>
                           <td>${kVendor.email}</td>
-                          <td>${kVendor.poemail}</td>
+                          <td>${kVendor.poEmail}</td>
                           <td>${kVendor.phone}</td>
                           <td>${kVendor.fax}</td>
                           <td>${kVendor.fobcd}</td>
                           <td>${kVendor.glacct}</td>
                           <td>${kVendor.alwaysonhold}</td>
+                          <td>${kVendor.discountpct}</td>
+                          <td>${kVendor.vendorfreightratecwt}</td>
                        </tr>
                     </table>
                  </c:if>
