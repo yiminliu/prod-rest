@@ -100,18 +100,7 @@ Input definition
   { 
       width:10px;
   } 
-  .button-m {
-       display: block;
-       width: 130px;
-       height: 25px;
-       background: #4E9CAF;
-       padding: 10px;
-       text-align: center;
-       text-decoration: none;
-       border-radius: 5px;
-       color: white;
-       font-weight: bold;
-  }   
+ 
   #nav, #nav ul {
       padding: 0;
       margin: 0;

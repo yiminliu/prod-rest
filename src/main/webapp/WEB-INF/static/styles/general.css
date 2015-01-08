@@ -28,7 +28,13 @@ Input definition
   } 
   .error {
      color: red;
-  } 
+  }
+  .error_title {
+     color: blue;
+     font-size: 120%;
+     font-weight: bolder;
+     font-style: italic;
+  }    
   hr {
      color: Ivory;
      width:110%;
@@ -137,9 +143,26 @@ Input definition
   { 
       width:10px;
   } 
+  .bottom_link {
+     margin-top:40px;
+     margin-left:auto; 
+     margin-right:auto;
+  }   
   .button-m {
        display: block;
        width: 130px;
+       height: 25px;
+       background: #4E9CAF;
+       padding: 10px;
+       text-align: center;
+       text-decoration: none;
+       border-radius: 5px;
+       color: white;
+       font-weight: bold;
+  }   
+  .button-l {
+       display: block;
+       width: 170px;
        height: 25px;
        background: #4E9CAF;
        padding: 10px;
