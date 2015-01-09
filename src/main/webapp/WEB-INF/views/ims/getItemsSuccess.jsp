@@ -14,7 +14,7 @@
              <div class="page_title">No Item Found!</div>
          </c:when>
          <c:otherwise>
-           <div class="page_title">Search Result(${fn:length(itemList)} items)</div>
+           <div class="page_title_no_top">Search Result(${fn:length(itemList)} items)</div>
           </c:otherwise>
       </c:choose>
       <div>

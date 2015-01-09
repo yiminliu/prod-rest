@@ -10,8 +10,8 @@
   <%@ include file="/WEB-INF/includes/header.jsp"%>
   <div class="home-container">
      <c:choose>
-         <c:when test="${empty item}">
-           <div class="container">Error occurred</div>
+         <c:when test="${operation == 'Deleted'}">
+           <h2>Item: <span style="color:RED">${itemCode} </span>Has Been ${operation} Successfully!</h2>
          </c:when>
          <c:otherwise>
             <h2>Item: <span style="color:RED">${item.itemcode} </span>Has Been ${operation} Successfully!</h2>

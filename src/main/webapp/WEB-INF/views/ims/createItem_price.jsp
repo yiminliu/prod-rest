@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/includes/doctype.jsp"%>
 <%@ include file="/WEB-INF/includes/styles.jsp"%>
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
   <title>Item Management System -- Create An Item pricing</title>
   <meta charset="utf-8">
@@ -56,7 +56,25 @@
           <td><label> Special Price End Date: </label>
               <form:input id="to" path="price.tempdatethru" type="date"></form:input></td>
           <td><form:errors path="price.tempdatethru" cssClass="error" /></td>
-       </tr>     
+       </tr> 
+       <!--<tr>
+          <td><label> Special Price Unit: </label>
+              <c:forEach var="unit1unit" items="${packageUnitList}" varStatus="status">
+                 <span style="font-size: 75%;">
+                   <form:radiobutton path="units.unit1unit" value="${unit1unit.description}"/>${unit1unit.description}
+                 </span>
+              </c:forEach> 
+          </td>
+       </tr> 
+       <tr>
+          <td><label> Participating Locations: </label>
+              <c:forEach var="unit1unit" items="${packageUnitList}" varStatus="status">
+                 <span style="font-size: 75%;">
+                   <form:radiobutton path="units.unit1unit" value="${unit1unit.description}"/>${unit1unit.description}
+                 </span>
+              </c:forEach> 
+          </td>
+       </tr>-->           
     </table>  
 
     <table> 
