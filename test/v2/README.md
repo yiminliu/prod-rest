@@ -13,7 +13,6 @@ Hello
 curl --basic -u "guest:" --get "http://192.168.56.23:8080/bedlogic/v2/hello"
 ```
 
-
 Item Search
 ---------------
 
@@ -47,3 +46,15 @@ curl -H "Accept: application/json" -H "Content-type: application/json" -i --user
 Item Update
 -----------------
 curl -H "Accept: application/json" -H "Content-type: application/json" -i --user keymark:JBED -X PUT http://192.168.56.10:8080/bedlogic/v2/ims -d '{"itemcode":"CRDBARBTEST","itemcategory":"AT","itemdesc":{"itemdesc1":"update"}}' 
+=======
+CURL commands to test bedlogic resource endpoints. Commands assume bedlogic server IP is 192.168.56.23. Replace with your dns/IP if it is different.
+
+For keymark account type, replace <usercode> by your user code.
+
+Hello
+---------
+
+```sh
+# Guest User
+curl --basic -u "guest:" --get "http://192.168.56.23:8080/bedlogic/v2/hello"
+```
