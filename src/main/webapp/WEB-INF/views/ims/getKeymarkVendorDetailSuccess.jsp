@@ -62,7 +62,7 @@
                  </table>
            </c:if>
      </div>
-     <table class="bottom_link">
+     <table class="table_center">
               <tr>
                  <td><a id="viewItem" href="<spring:url value="/ims/getItemDetail/${item.itemcode}" />" class="button-l"><span>Back to The Item Detail</span></a></td>
                  <td><a id="imsHome" href="<spring:url value="/ims/index" />" class="button-m"><span>IMS Home</span></a></td>

@@ -7,11 +7,10 @@
 </head>
 <body>
   <%@ include file="/WEB-INF/includes/header.jsp"%>
-  <div class="container">
-  <h3 style="margin-bottom: 10px; padding-bottom: 0px;">Enter Item Information</h3>
-
-  <form:form method="GET" action="updateItem_begin" modelAttribute="item">
-     <table>
+   <div class="home_container">
+   <div class="page_title">Update An Item</div>
+   <form:form method="GET" action="updateItem_begin" modelAttribute="item">
+     <table class="table_center">
         <tr>
            <td><form:label path="itemcode">Enter Item Code:</form:label></td>
            <td><form:input path="itemcode" /></td>
@@ -19,9 +18,11 @@
         <tr>
            <td><form:errors path="itemcode" cssClass="error" /></td>               
         </tr>
+     </table>
+     <table class="element_center">    
         <tr>
            <td>
-               <input type="submit" value="Submit"/>
+               <input name="submit" type="submit" value="Submit"/>
            </td>
         </tr>
      </table>  

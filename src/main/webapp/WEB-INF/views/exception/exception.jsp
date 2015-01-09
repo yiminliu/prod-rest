@@ -19,7 +19,7 @@
             <p><span class="error_title">Root Cause:</span>  ${rootErrorMessage}</p>
          </c:if>  
          <c:if test="${not empty rootError}">
-            <h4>Stack Trace:</h4>
+            <span class="error_title">Stack Trace:</span>>
                <c:forEach items="${rootError.stackTrace}" var="ste">   
                   <span style="font-siz: 75%;">${ste}</span>
                </c:forEach>

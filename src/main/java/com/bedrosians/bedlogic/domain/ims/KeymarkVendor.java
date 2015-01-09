@@ -20,7 +20,7 @@ public class KeymarkVendor implements java.io.Serializable {
 
 	private static final long serialVersionUID = -582265865921787L;
 	
-	private Integer vendorNumber;
+	private Integer vendorNumber = null;
 	private String name;
     private String addr1;
     private String addr2;

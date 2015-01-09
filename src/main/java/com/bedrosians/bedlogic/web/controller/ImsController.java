@@ -313,7 +313,7 @@ public class ImsController {
              throw e;
           }
    	      dbOperation = "";
-          return "ims/createItemSuccess";
+          return "ims/updateItemSuccess";
      }
       
     //--------------------------- Update Item --------------------------//  
@@ -453,7 +453,7 @@ public class ImsController {
               model.addAttribute("itemCode", item.getItemcode());
       	      model.addAttribute("operation", "Created");
       	      dbOperation = "";
-      	      return "ims/createItemSuccess";
+      	      return "ims/updateItemSuccess";
     	  }
     	  else
     		 throw new InputParamException("Empty item cannot be cloned.");
@@ -473,7 +473,7 @@ public class ImsController {
   	    }
   	    model.addAttribute("itemCode", itemCode);
   	    model.addAttribute("operation", "Deleted");
- 	    return "ims/success";
+ 	    return "ims/updateItemSuccess";
      }
      
      @RequestMapping(value="deleteItem", method = RequestMethod.GET)
@@ -497,7 +497,7 @@ public class ImsController {
   	   model.addAttribute("itemCode", item.getItemcode());
   	   model.addAttribute("operation", "Deleted");
   	   dbOperation = "";
- 	   return "ims/success";
+ 	   return "ims/updateItemSuccess";
      }
      
      @RequestMapping(value="deactivateItem", method = RequestMethod.GET)
@@ -516,7 +516,7 @@ public class ImsController {
   	   }
   	   model.addAttribute("itemCode", item.getItemcode());
   	   model.addAttribute("operation", "Deactvated");
-   	   return "ims/success";
+   	   return "ims/updateItemSuccess";
      }
      
      //------------------- Model Attributes Initiation ------------------//
