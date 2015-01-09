@@ -22,7 +22,7 @@ public class UserDaoImpl extends GenericDaoImpl<User, String> implements UserDao
 		  Criteria criteria = session.createCriteria(User.class);
 		  criteria.setReadOnly(true);
 		  criteria.add(Restrictions.eq("username", userName.trim()).ignoreCase());
-		  System.out.println("Criteria = " + criteria.toString());
+		  criteria.setCacheable(true);
 		  user = (User)criteria.uniqueResult();
 		  return user;
 	}
@@ -37,17 +37,16 @@ public class UserDaoImpl extends GenericDaoImpl<User, String> implements UserDao
 	}
 	
 	@Override
-	  public User getUserByEmail(Session session, String email){ 
-		  return null;
-	  }
+	public User getUserByEmail(Session session, String email){ 
+	  return null;
+	}
 	 
-	  @Override
-	 
-	  public void updateUser(Session session, User user){};
-	  
-	  @Override
-	  public Long createUser(Session session, User user){ 
-		  return (Long)session.save(user);
-	  }
+	@Override
+	public void updateUser(Session session, User user){};
+	
+	@Override
+	public Long createUser(Session session, User user){ 
+	  return (Long)session.save(user);
+	}
 	
 }

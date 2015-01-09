@@ -8,7 +8,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Units;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
-import com.bedrosians.bedlogic.exception.DataOperationException;
+import com.bedrosians.bedlogic.exception.DatabaseOperationException;
 import com.bedrosians.bedlogic.exception.InputParamException;
 
 

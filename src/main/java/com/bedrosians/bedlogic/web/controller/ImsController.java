@@ -46,7 +46,8 @@ import com.bedrosians.bedlogic.domain.ims.enums.Edge;
 import com.bedrosians.bedlogic.domain.ims.enums.PackageUnit;
 import com.bedrosians.bedlogic.domain.ims.enums.Usage;
 import com.bedrosians.bedlogic.exception.DataNotFoundException;
-import com.bedrosians.bedlogic.exception.DataOperationException;
+import com.bedrosians.bedlogic.exception.DatabaseOperationException;
+import com.bedrosians.bedlogic.exception.DatabaseSchemaException;
 import com.bedrosians.bedlogic.exception.InputParamException;
 import com.bedrosians.bedlogic.service.ims.ImsService;
 import com.bedrosians.bedlogic.util.enums.DBOperation;
@@ -616,8 +617,22 @@ public class ImsController {
   		return model;
    	}
      
-    @ExceptionHandler(DataOperationException.class)
- 	public ModelAndView handleDataOperationException(DataOperationException ex) {
+    @ExceptionHandler(DatabaseOperationException.class)
+ 	public ModelAndView handleDataOperationException(DatabaseOperationException ex) {
+  
+ 		ModelAndView model = new ModelAndView("/exception/exception");
+ 		model.addObject("errorCode", ex.getErrorCode());
+ 		model.addObject("errorType", ex.getErrorType());
+ 		model.addObject("errorMessage", ex.getErrorMessage());
+ 		model.addObject("rootErrorMessage", ex.getRootErrorMessage());
+ 		model.addObject("error", ex);
+ 		model.addObject("rootError", ex.getRootError());
+  
+ 		return model;
+  	}
+    
+    @ExceptionHandler(DatabaseSchemaException.class)
+ 	public ModelAndView handleDatabaseSchemaException(DatabaseSchemaException ex) {
   
  		ModelAndView model = new ModelAndView("/exception/exception");
  		model.addObject("errorCode", ex.getErrorCode());

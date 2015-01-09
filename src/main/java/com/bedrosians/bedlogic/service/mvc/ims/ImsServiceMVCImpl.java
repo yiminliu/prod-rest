@@ -35,7 +35,7 @@ import com.bedrosians.bedlogic.domain.ims.embeddable.VendorInfo;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
 import com.bedrosians.bedlogic.exception.DataNotFoundException;
-import com.bedrosians.bedlogic.exception.DataOperationException;
+import com.bedrosians.bedlogic.exception.DatabaseOperationException;
 import com.bedrosians.bedlogic.exception.InputParamException;
 import com.bedrosians.bedlogic.util.FormatUtil;
 import com.bedrosians.bedlogic.util.enums.DBOperation;
@@ -75,15 +75,15 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 		catch(HibernateException hbe){
 			hbe.printStackTrace();
 			if(hbe.getCause() != null)
-		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
+		  	   throw new DatabaseOperationException("Error occured during getItemByItemCode, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
 		  	else
-		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  hbe.getMessage(), hbe);	
+		  	   throw new DatabaseOperationException("Error occured during getItemByItemCode, due to: " +  hbe.getMessage(), hbe);	
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
+		  	   throw new DatabaseOperationException("Error occured during getItemByItemCode, due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
 		  	else
-		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  e.getMessage(), e);	
+		  	   throw new DatabaseOperationException("Error occured during getItemByItemCode, due to: " +  e.getMessage(), e);	
 		}
 		return FormatUtil.process(item);
 	}
@@ -109,15 +109,15 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 		catch(HibernateException hbe){
 			hbe.printStackTrace();
 			if(hbe.getCause() != null)
-		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+		  	   throw new DatabaseOperationException("Error occured during getItemByItemCode, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
 		  	else
-		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  hbe.getMessage());	
+		  	   throw new DatabaseOperationException("Error occured during getItemByItemCode, due to: " +  hbe.getMessage());	
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+		  	   throw new DatabaseOperationException("Error occured during getItemByItemCode, due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
 		  	else
-		  	   throw new DataOperationException("Error occured during getItemByItemCode, due to: " +  e.getMessage());	
+		  	   throw new DatabaseOperationException("Error occured during getItemByItemCode, due to: " +  e.getMessage());	
 		}
 		return FormatUtil.process(item);
 	}
@@ -139,15 +139,15 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 		}
 		catch(HibernateException hbe){
 		  	if(hbe.getCause() != null)
-		       throw new DataOperationException("Error occured during getItems(), due to: " +  hbe.getMessage() + ". Root cause -- " + hbe.getCause().getMessage(), hbe);	
+		       throw new DatabaseOperationException("Error occured during getItems(), due to: " +  hbe.getMessage() + ". Root cause -- " + hbe.getCause().getMessage(), hbe);	
 		  	else
-		  	   throw new DataOperationException("Error occured during getItems(), due to: " +  hbe.getMessage());
+		  	   throw new DatabaseOperationException("Error occured during getItems(), due to: " +  hbe.getMessage());
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-		  	   throw new DataOperationException("Error occured during getItems(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
+		  	   throw new DatabaseOperationException("Error occured during getItems(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
 		  	else
-		  	   throw new DataOperationException("Error occured during getItems(), due to: " +  e.getMessage(), e);	
+		  	   throw new DatabaseOperationException("Error occured during getItems(), due to: " +  e.getMessage(), e);	
 		}
 		List<Ims> processedItems = new ArrayList<>();
 		for(Ims item : itemList){
@@ -184,9 +184,9 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 		catch(HibernateException hbe){
 		   hbe.printStackTrace();
 		   if(hbe.getCause() != null)
-		      throw new DataOperationException("Error occured during createItem(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
+		      throw new DatabaseOperationException("Error occured during createItem(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
 		   else
-		  	  throw new DataOperationException("Error occured during createItem(), due to: " +  hbe.getMessage(), hbe);	
+		  	  throw new DatabaseOperationException("Error occured during createItem(), due to: " +  hbe.getMessage(), hbe);	
 	    }	
    	    catch(Exception e){
 		  e.printStackTrace();
@@ -196,12 +196,12 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 		      else if(e.getMessage().contains("constraint [vendor_apv_fkey]"))
 			      throw new InputParamException("Invalid vendor number (ID), since it cannot be found in the vendor table", e);
 		      else
-		    	  throw new DataOperationException("Error occured during createItem(), due to: " + e.getMessage(), e);
+		    	  throw new DatabaseOperationException("Error occured during createItem(), due to: " + e.getMessage(), e);
 		  }
 		  else if(e.getCause() != null)
-	  	     throw new DataOperationException("Error occured during createItem(), due to: " +  " Root cause: " + e.getCause().getMessage(), e);	
+	  	     throw new DatabaseOperationException("Error occured during createItem(), due to: " +  " Root cause: " + e.getCause().getMessage(), e);	
 	  	  else
-	  	     throw new DataOperationException("Error occured during createItem().", e);	
+	  	     throw new DatabaseOperationException("Error occured during createItem().", e);	
       }
 	  return id;	
    }
@@ -220,16 +220,16 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 		}
 	    catch(HibernateException hbe){
 		    hbe.printStackTrace();
-		    throw new DataOperationException("Error occured during updateProduct() due to: " + hbe.getMessage(), hbe);
+		    throw new DatabaseOperationException("Error occured during updateProduct() due to: " + hbe.getMessage(), hbe);
 	    }
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-		  	   throw new DataOperationException("Error occured during updateItem(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+		  	   throw new DatabaseOperationException("Error occured during updateItem(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
 		  	else
-		  	   throw new DataOperationException("Error occured during updateItem(), due to: " +  e.getMessage(), e);	
+		  	   throw new DatabaseOperationException("Error occured during updateItem(), due to: " +  e.getMessage(), e);	
 		}
 		if(itemToUpdate == null)
-	       throw new DataOperationException("No data found for the given item code: " + itemFromInput.getItemcode());	 
+	       throw new DatabaseOperationException("No data found for the given item code: " + itemFromInput.getItemcode());	 
 		try {
 			itemToUpdate = ImsDataUtil.transformItem(itemToUpdate, itemFromInput, DBOperation.UPDATE);
   	        ImsValidator.validateNewItem(itemToUpdate);
@@ -317,16 +317,16 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 		catch(HibernateException hbe){
 			hbe.printStackTrace();
 			if(hbe.getCause() != null)
-		       throw new DataOperationException("Error occured during deleteItemByItemCode(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
+		       throw new DatabaseOperationException("Error occured during deleteItemByItemCode(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
 		  	else
-		  	   throw new DataOperationException("Error occured during deleteItemByItemCode(), due to: " +  hbe.getMessage(), hbe);
+		  	   throw new DatabaseOperationException("Error occured during deleteItemByItemCode(), due to: " +  hbe.getMessage(), hbe);
 		
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-		  	   throw new DataOperationException("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
+		  	   throw new DatabaseOperationException("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
 		  	else
-		  	   throw new DataOperationException("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage(), e);	
+		  	   throw new DatabaseOperationException("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage(), e);	
 		}
 	}
 	
@@ -344,7 +344,7 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
      	  itemCodeList = imsDao.getItemCodeList();
     	}
     	catch(Exception e){
-    		 throw new DataOperationException("Error occured while retriving item code. " + e);
+    		 throw new DatabaseOperationException("Error occured while retriving item code. " + e);
     	}
     	for(String s : itemCodeList){
     		if(s.trim().equalsIgnoreCase(itemCode))
@@ -592,15 +592,15 @@ public class ImsServiceMVCImpl implements ImsServiceMVC {
 			catch(HibernateException hbe){
 				hbe.printStackTrace();
 				if(hbe.getCause() != null)
-			  	   throw new DataOperationException("Error occured during getKeymarkVendorByVendorNumber, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
+			  	   throw new DatabaseOperationException("Error occured during getKeymarkVendorByVendorNumber, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
 			  	else
-			  	   throw new DataOperationException("Error occured during getKeymarkVendorByVendorNumber, due to: " +  hbe.getMessage());	
+			  	   throw new DatabaseOperationException("Error occured during getKeymarkVendorByVendorNumber, due to: " +  hbe.getMessage());	
 			}
 			catch(RuntimeException e){
 				if(e.getCause() != null)
-			  	   throw new DataOperationException("Error occured during getKeymarkVendorByVendorNumber, due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
+			  	   throw new DatabaseOperationException("Error occured during getKeymarkVendorByVendorNumber, due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
 			  	else
-			  	   throw new DataOperationException("Error occured during getKeymarkVendorByVendorNumber, due to: " +  e.getMessage(), e);	
+			  	   throw new DatabaseOperationException("Error occured during getKeymarkVendorByVendorNumber, due to: " +  e.getMessage(), e);	
 			}
 			return vendor;
 		}

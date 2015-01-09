@@ -17,7 +17,7 @@ Input definition
   .home-container {
      float:middle;
      color:#0076BF;
-     margin-top: 40px; 
+     margin-top: 30px; 
      margin-left:auto; 
      margin-right:auto;
      padding: 30px;
@@ -54,6 +54,19 @@ Input definition
      margin-left:auto; 
      margin-right:auto;
      margin-top:30px;
+     margin-bottom:25px;
+     border-style: solid;
+     border-width: 1px;
+     background-color: AliceBlue;
+     color:GREEN; 
+     width:40%;
+     text-align: center;
+     font-size: 200%;
+  } 
+  .page_title_no_top {
+     margin-left:auto; 
+     margin-right:auto;
+     margin-top:0px;
      margin-bottom:25px;
      border-style: solid;
      border-width: 1px;

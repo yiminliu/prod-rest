@@ -15,8 +15,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import com.bedrosians.bedlogic.domain.user.User;
-import com.bedrosians.bedlogic.exception.DataOperationException;
-import com.bedrosians.bedlogic.exception.UnauthenticatedException;
 import com.bedrosians.bedlogic.service.user.UserService;
 
 @Component
@@ -28,22 +26,9 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 	   UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
 	   String userName = token.getName();
 	   User user = null;
-	   if(userName != null && !userName.isEmpty()) {
-		  //1. Use the username to load the data for the user, including authorities and password. 
-		  try { 
-		      user = userService.getUserByName(userName);
-		  }
-		  catch(DataOperationException e){
-			  e.printStackTrace();
-			  throw new DataOperationException("DB Error occured during retrieving user: " + e.getMessage(), e);
-		  }
-		  catch(Exception e){
-			 if(e instanceof AuthenticationException)
-			   throw e;
-			 else
-				 throw new UnauthenticatedException("Error occured during retrieving user: " + e.getMessage(), e);	 
-		  }
-	   }
+	   //1. Use the username to load the data for the user, including authorities and password. 
+	   if(userName != null && !userName.isEmpty())
+		  user = userService.getUserByName(userName); //rethrow exceptions if they occur
 	   if(user == null) {
 	     throw new UsernameNotFoundException("User not found for the given username: " + userName);
 	   }
@@ -52,11 +37,9 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 	   if(!password.equals(token.getCredentials())) {
 	      throw new BadCredentialsException("Invalid username/password");
 	   }
-	   
 	   Collection<? extends GrantedAuthority> grantedAuthorities = user.getAuthorities();
 	   // 3. Preferably clear the password in the user object before storing in authentication object
 	   user.clearPassword();
-
 	   // 4. Return an authenticated token, containing user data and authorities 
 	   //grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 	   Authentication auth = new UsernamePasswordAuthenticationToken(user, password, grantedAuthorities);

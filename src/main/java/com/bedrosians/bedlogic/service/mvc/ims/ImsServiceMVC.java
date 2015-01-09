@@ -10,13 +10,13 @@ import com.bedrosians.bedlogic.domain.ims.KeymarkVendor;
 import com.bedrosians.bedlogic.domain.ims.Vendor;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
-import com.bedrosians.bedlogic.exception.DataOperationException;
+import com.bedrosians.bedlogic.exception.DatabaseOperationException;
 import com.bedrosians.bedlogic.util.enums.DBOperation;
 
 public interface ImsServiceMVC {	
 	public Ims getItemByItemCode(String itemCode);	
     public Ims getItemByItemCodeForClone(String itemCode);
-	public boolean itemCodeIsTaken(String itemCode) throws DataOperationException;	
+	public boolean itemCodeIsTaken(String itemCode) throws DatabaseOperationException;	
 	public List<Ims> getActiveAndShownOnWebsiteItems() throws BedDAOBadParamException, BedDAOException;
 	public List<Ims> getItems(LinkedHashMap<String, List<String>> queryParams);
 	public String createItem(Ims ims, DBOperation createOrClone);

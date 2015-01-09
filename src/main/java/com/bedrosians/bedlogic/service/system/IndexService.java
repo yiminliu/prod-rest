@@ -23,7 +23,7 @@ public class IndexService {
     	FullTextSession fullTextSession = Search.getFullTextSession(sessionFactory.openSession());
     	try{
     		fullTextSession.createIndexer().purgeAllOnStart(true).batchSizeToLoadObjects(100).optimizeOnFinish(true).startAndWait();
-    		System.out.println("Lucene indeses have initialized.");
+    		System.out.println("Lucene indeses have been initialized.");
     		return true;
     	}
     	catch(InterruptedException e){

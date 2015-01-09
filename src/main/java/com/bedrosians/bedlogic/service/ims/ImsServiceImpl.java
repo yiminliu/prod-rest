@@ -36,7 +36,7 @@ import com.bedrosians.bedlogic.domain.ims.embeddable.Units;
 import com.bedrosians.bedlogic.domain.ims.embeddable.VendorInfo;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
-import com.bedrosians.bedlogic.exception.DataOperationException;
+import com.bedrosians.bedlogic.exception.DatabaseOperationException;
 import com.bedrosians.bedlogic.exception.InputParamException;
 import com.bedrosians.bedlogic.util.FormatUtil;
 import com.bedrosians.bedlogic.util.JsonUtil;
@@ -80,14 +80,14 @@ public class ImsServiceImpl implements ImsService {
 			   System.out.println("Error occured during getItems(), due to: " +  hbe.getMessage() + ". Root cause -- " + hbe.getCause().getMessage());	
 			else
 			   System.out.println("Error occured during getItems(), due to: " +  hbe.getMessage());
-			throw new DataOperationException("Error occured during getItems(). ", hbe);
+			throw new DatabaseOperationException("Error occured during getItems(). ", hbe);
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
 			   System.out.println("Error occured during getItems(), due to: " +  e.getMessage() + ". Root cause -- " + e.getCause().getMessage());	
 			else
 			   System.out.println("Error occured during getItems(), due to: " +  e.getMessage());
-			throw new DataOperationException("Error occured during getItems(). ", e);
+			throw new DatabaseOperationException("Error occured during getItems(). ", e);
 	}
 		return FormatUtil.process(item);
 	}
@@ -104,14 +104,14 @@ public class ImsServiceImpl implements ImsService {
 		  	   System.out.println("Error occured during getItems(), due to: " +  hbe.getMessage() + ". Root cause -- " + hbe.getCause().getMessage());	
 		   	else
 		   	   System.out.println("Error occured during getItems(), due to: " +  hbe.getMessage());
-			throw new DataOperationException("Error occured during getItems(). ", hbe);
+			throw new DatabaseOperationException("Error occured during getItems(). ", hbe);
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
 			   System.out.println("Error occured during getItems(), due to: " +  e.getMessage() + ". Root cause -- " + e.getCause().getMessage());	
 		   	else
 		   	   System.out.println("Error occured during getItems(), due to: " +  e.getMessage());
-			throw new DataOperationException("Error occured during getItems(). ", e);
+			throw new DatabaseOperationException("Error occured during getItems(). ", e);
 			
 		}
 		List<Ims> processedItems = new ArrayList<>();
@@ -258,7 +258,7 @@ public class ImsServiceImpl implements ImsService {
 			   System.out.println("Error occured during createOrUpdateItem(), due to: " +  hbe.getMessage() + ". Root cause -- " + hbe.getCause().getMessage());	
 			else
 			   System.out.println("Error occured during createOrUpdateItem(), due to: " +  hbe.getMessage());
-			throw new DataOperationException("Error occured during createOrUpdateItem(). ", hbe);
+			throw new DatabaseOperationException("Error occured during createOrUpdateItem(). ", hbe);
 	    }	
    	    catch(Exception e){
 		  e.printStackTrace();
@@ -268,13 +268,13 @@ public class ImsServiceImpl implements ImsService {
 		      else if(e.getMessage().contains("constraint [vendor_apv_fkey]"))
 			      throw new InputParamException("Invalid vendor number (ID), since it cannot be found in the vendor table", e);
 		      else
-		    	  throw new DataOperationException("Error occured during createItem(), due to: " + e.getMessage(), e);
+		    	  throw new DatabaseOperationException("Error occured during createItem(), due to: " + e.getMessage(), e);
 		  }
 		  if(e.getCause() != null)
 			 System.out.println("Error occured during createOrUpdateItem(), due to: " +  e.getMessage() + ". Root cause -- " + e.getCause().getMessage());	
 		  else
 			 System.out.println("Error occured during createOrUpdateItem(), due to: " +  e.getMessage());
-		  throw new DataOperationException("Error occured during createOrUpdateItem(). ", e);
+		  throw new DatabaseOperationException("Error occured during createOrUpdateItem(). ", e);
 	
       }
 	  return id;	
@@ -350,14 +350,14 @@ public class ImsServiceImpl implements ImsService {
 			   System.out.println("Error occured during deleteItemByItemCode(), due to: " +  hbe.getMessage() + ". Root cause -- " + hbe.getCause().getMessage());	
 			else
 			   System.out.println("Error occured during deleteItemByItemCode(), due to: " +  hbe.getMessage());
-			throw new DataOperationException("Error occured during deleteItemByItemCode(). ", hbe);
+			throw new DatabaseOperationException("Error occured during deleteItemByItemCode(). ", hbe);
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
 			   System.out.println("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage() + ". Root cause -- " + e.getCause().getMessage());	
 			else
 			   System.out.println("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage());
-			throw new DataOperationException("Error occured during deleteItemByItemCode(). ", e);
+			throw new DatabaseOperationException("Error occured during deleteItemByItemCode(). ", e);
 		}
 	}
 	
@@ -437,15 +437,15 @@ public class ImsServiceImpl implements ImsService {
 			catch(HibernateException hbe){
 				hbe.printStackTrace();
 				if(hbe.getCause() != null)
-			  	   throw new DataOperationException("Error occured during getKeymarkVendorByVendorNumber, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
+			  	   throw new DatabaseOperationException("Error occured during getKeymarkVendorByVendorNumber, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
 			  	else
-			  	   throw new DataOperationException("Error occured during getKeymarkVendorByVendorNumber, due to: " +  hbe.getMessage());	
+			  	   throw new DatabaseOperationException("Error occured during getKeymarkVendorByVendorNumber, due to: " +  hbe.getMessage());	
 			}
 			catch(RuntimeException e){
 				if(e.getCause() != null)
-			  	   throw new DataOperationException("Error occured during getKeymarkVendorByVendorNumber, due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
+			  	   throw new DatabaseOperationException("Error occured during getKeymarkVendorByVendorNumber, due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
 			  	else
-			  	   throw new DataOperationException("Error occured during getKeymarkVendorByVendorNumber, due to: " +  e.getMessage(), e);	
+			  	   throw new DatabaseOperationException("Error occured during getKeymarkVendorByVendorNumber, due to: " +  e.getMessage(), e);	
 			}
 			return vendor;
 	}

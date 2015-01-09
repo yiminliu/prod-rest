@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bedrosians.bedlogic.exception.DataOperationException;
+import com.bedrosians.bedlogic.exception.DatabaseOperationException;
+import com.bedrosians.bedlogic.exception.DatabaseSchemaException;
 
 public class HomeController {
 
@@ -30,7 +31,7 @@ public class HomeController {
  
 	}
  
-	@RequestMapping(value = "/login", method = RequestMethod.POST)
+	@RequestMapping(value = "/j_spring_security_check", method = RequestMethod.POST)
 	public ModelAndView login(@RequestParam(value = "error", required = false) String error,
 		                      @RequestParam(value = "logout", required = false) String logout,
 		                      HttpSession session) {
@@ -50,8 +51,22 @@ public class HomeController {
  
 	}
 	
-	@ExceptionHandler(DataOperationException.class)
-	public ModelAndView handleDataOperationException(DataOperationException ex) {
+	@ExceptionHandler(DatabaseSchemaException.class)
+	 	public ModelAndView handleDatabaseSchemaException(DatabaseSchemaException ex) {
+	  
+	 		ModelAndView model = new ModelAndView("/exception/exception");
+	 		model.addObject("errorCode", ex.getErrorCode());
+	 		model.addObject("errorType", ex.getErrorType());
+	 		model.addObject("errorMessage", ex.getErrorMessage());
+	 		model.addObject("rootErrorMessage", ex.getRootErrorMessage());
+	 		model.addObject("error", ex);
+	 		model.addObject("rootError", ex.getRootError());
+	  
+	 		return model;
+	}
+	
+	@ExceptionHandler(DatabaseOperationException.class)
+	public ModelAndView handleDataOperationException(DatabaseOperationException ex) {
  
 		ModelAndView model = new ModelAndView("/exception/exception");
 		model.addObject("errorCode", ex.getErrorCode());

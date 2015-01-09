@@ -12,7 +12,8 @@ import com.bedrosians.bedlogic.dao.user.UserDao;
 import com.bedrosians.bedlogic.domain.user.User;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
-import com.bedrosians.bedlogic.exception.DataOperationException;
+import com.bedrosians.bedlogic.exception.DatabaseOperationException;
+import com.bedrosians.bedlogic.exception.DatabaseSchemaException;
 
 @Service("userService")
 public class UserServiceImpl implements UserService{
@@ -30,12 +31,18 @@ public class UserServiceImpl implements UserService{
 	    try{
 	    	user = userDao.getUserByName(session, userName);
 	    }
+	    catch(org.hibernate.exception.SQLGrammarException e){
+	       	if(e.getSQLException() != null)
+	    	   throw new DatabaseSchemaException("Error occured while retrieve user from database. SQLException: " + e.getSQLException().getMessage(), e);	
+	    	else
+	    	   throw new DatabaseSchemaException("Error occured while retrieve user from database. Reason: " + e.getMessage() + "", e);	
+	    }
 	    catch(HibernateException e){
-	    	e.printStackTrace();
-	    	throw new DataOperationException("Error occured while retrieve user from database. Reason: " + e.getMessage(), e);
+	     	e.printStackTrace();
+	    	throw new DatabaseOperationException("Error occured while retrieve user from database. Reason: " + e.getMessage(), e);
 	    }
 	    catch(Exception e){
-	    	throw new DataOperationException("Error occured while retrieve user from database. Reason: " + e.getMessage(), e);
+	    	throw new DatabaseOperationException("Error occured while retrieve user from database. Reason: " + e.getMessage(), e);
 	    }
 	    return user;
 	}
