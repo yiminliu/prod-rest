@@ -124,9 +124,7 @@
        </td> 
      </tr>
     </table>
-  
-   <br/>
-   <table> 
+    <table> 
       <tr > 
         <td>
             <input type="submit" value="Continue >>"/>
@@ -135,7 +133,6 @@
    </table> 
 </form:form>
 <%@ include file="/WEB-INF/includes/footer.jsp"%>
-</div><!-- container -->
 </div><!-- container -->
 </body>
 </html>

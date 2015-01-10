@@ -11,22 +11,19 @@
 <div class="container">
 <spring:url var="action" value="/ims/createItem_final" />
 <form:form method="POST" action="${action}" modelAttribute="aItem">
-
     <div style="color:Green"> <h3>Web</h3></div>
     <table class="category"> 
         <tr>
-           <td style="width: 100%; clear: both;"><label>Show on Bedrosians:</label>
-              <form:radiobutton path="showonwebsite" value="Y" />Yes
-              <form:radiobutton path="showonwebsite" value="N" />No
+           <td class="label_same_row">Show on Bedrosians:
+               <form:checkbox path="showonwebsite" value="N" />No
            </td>
         </tr>
         <tr>
            <td style="width: 100%; clear: both;"><form:errors path="showonwebsite" cssClass="error" /></td>               
       </tr>
         <tr>   
-           <td><label>Show on AlysEdwards:</label>
-              <form:radiobutton path="showonalysedwards" value="Y" />Yes
-              <form:radiobutton path="showonalysedwards" value="N" />No
+           <td class="label_same_row">Show on AlysEdwards:
+               <form:checkbox path="showonalysedwards" value="N" />No
            </td>
         </tr>
    </table>
