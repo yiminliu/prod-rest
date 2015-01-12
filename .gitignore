@@ -11,6 +11,7 @@
 # Target
 target/
 <<<<<<< HEAD
+<<<<<<< HEAD
 /bin
 /lucene
 /target
@@ -18,4 +19,12 @@ target/
 /.classpath
 /.project
 =======
+>>>>>>> refs/remotes/origin/develop
+=======
+/bin
+/lucene
+/target
+/.settings
+/.classpath
+/.project
 >>>>>>> refs/remotes/origin/develop

@@ -1,10 +1,10 @@
 #!/bin/sh
 #
 
-PROJECT_NAME=bedlogic
+PROJECT_NAME=bedims-uitest
 
 CURRENT_DIR=`pwd`
-INSTALL_DIR_ROOT=/opt/bedlogic
+INSTALL_DIR_ROOT=/opt/bedims-uitest
 INSTALL_DIR_NAME=release-`date +%Y%m%d-%H%M%S`
 PREVIOUS_LATEST=
 
@@ -33,7 +33,7 @@ fi
 
 # Install into unique dir encoded by timestamp
 sudo mkdir $INSTALL_DIR_NAME
-sudo cp $CURRENT_DIR/target/bedlogic.war $INSTALL_DIR_NAME
+sudo cp $CURRENT_DIR/target/bedims-uitest.war $INSTALL_DIR_NAME
 if [ -L $INSTALL_DIR_ROOT/latest ];
 then
     sudo stop $PROJECT_NAME

@@ -1,3 +1,4 @@
+
 Bedrosians IMS UI TEST
 =============
 
@@ -99,3 +100,11 @@ BedLogic makes use of the following third-party open source libraries:
 * JUnit (http://junit.org) - Testing framework
 * Mockito (http://code.google.com/p/mockito/) - Mocking framework
 * SLF4J (http://www.slf4j.org) and Logback (http://logback.qos.ch) - Logging api via SLF4J, and implementation via Logback.
+=======
+Bed IMS UI TEST
+=============
+
+Bedrosians IMS UI TEST
+
+
+>>>>>>> refs/remotes/origin/develop
