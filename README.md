@@ -1,7 +1,7 @@
-BedLogic
+Bedrosians IMS UI TEST
 =============
 
-Bedrosians Business Logic Service written in Java
+Bedrosians IMS UI TEST written in Java
 
 
 ## Dev Environment
@@ -38,37 +38,37 @@ sudo update-alternatives --config javaws
 
 ```sh
 # clone repo
-git clone ssh://git@vcs.bedrosians.com:2222/bedrosians/bedlogic.git
+git clone ssh://git@vcs.bedrosians.com:2222/bedrosians/bedims-uitest.git
 
-cd bedlogic
+cd bedims-uitest
 ```
 
-* Installation - Build, Install, and Run. Installation directory is /opt/bedlogic
+* Installation - Build, Install, and Run. Installation directory is /opt/bedims-uitest
 
 ```sh
-cd bedlogic
-setup/installbedlogic.sh
+cd bedims-uitest
+setup/installbedims-uitest.sh
 ```
 
 * Upgrade
 
 ```sh
-cd bedlogic
+cd bedims-uitest
 git pull
-setup/installbedlogic.sh
+setup/installbedims-uitest.sh
 ```
 
 * Start/Stop/Statuc
 
 ```sh
 # Start
-sudo start bedlogic
+sudo start bedims-uitest
 
 # Stop
-sudo stop bedlogic
+sudo stop bedims-uitest
 
 # Status
-sudo status bedlogic
+sudo status bedims-uitest
 ```
 
 ## Development
