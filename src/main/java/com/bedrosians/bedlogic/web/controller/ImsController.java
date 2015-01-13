@@ -418,6 +418,10 @@ public class ImsController {
        //@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')")
        @RequestMapping(value = "/cloneItem", method = RequestMethod.GET)
        public String cloneItem(@ModelAttribute("item") Ims item, Model model, BindingResult bindingResult) {
+    	  validator.validateItemCode(item.getItemcode(), DBOperation.SEARCH, bindingResult);
+      	  if (bindingResult.hasErrors()) {
+               return "ims/cloneItemForm";
+      	  } 
     	   Ims retrievedItem = null;
       	   try {
       		  retrievedItem = imsService.getItemByItemCode(item.getItemcode());
