@@ -31,7 +31,7 @@ public class HomeController {
  
 	}
  
-	@RequestMapping(value = "/j_spring_security_check", method = RequestMethod.POST)
+	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public ModelAndView login(@RequestParam(value = "error", required = false) String error,
 		                      @RequestParam(value = "logout", required = false) String logout,
 		                      HttpSession session) {
