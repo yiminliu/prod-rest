@@ -1,14 +1,49 @@
-bedims-uitest
+BedLogic Tests
 ==============
 
-The testing server IP is 192.168.56.10. Replace with your dns/IP if it is different.
+CURL commands to test bedlogic resource endpoints. Commands assume bedlogic server IP is 192.168.56.10. Replace with your dns/IP if it is different.
 
-Landing page URL
--------------------
-http://192.168.56.10:8080/bedlogic/ims/index
+For keymark account type, replace <usercode> by your user code.
 
-The above URL will take you to the IMS UI Testing starting page. 
+Hello
+---------
 
-Create/Update/Clone/Delete Item require users login with particular permissions. "admin/password" can be used as the testing login.
+```sh
+# Guest User
+curl --basic -u "guest:" --get "http://192.168.56.23:8080/bedlogic/v2/hello"
+```
 
-Search Item requires no login currently.  
+
+Products Search
+---------------
+
+# Guest User
+curl --basic -u "guest:" --get "http://192.168.56.10:8080/bedlogic/v2/ims?itemcode=AECBUB217NR,CRDBARBRU440"
+curl --basic -u "guest:" --get "http://192.168.56.10:8080/bedlogic/v2/ims?colorhues=White&size=12X9"
+curl --basic -u "guest:" --get "http://192.168.56.10:8080/bedlogic/v2/ims?seriesname=builder"
+curl --basic -u "guest:" --get "http://192.168.56.10:8080/bedlogic/v2/ims?inactivecd=N&showonwebsite=Y"
+curl --basic -u "guest:" --get "http://192.168.56.10:8080/bedlogic/v2/ims?size=12X9,10X8,4X8"
+curl --basic -u "guest:" --get "http://192.168.56.10:8080/bedlogic/v2/ims?lengthmax=2&lengthmin=1"
+curl --basic -u "guest:" --get "http://192.168.56.10:8080/bedlogic/v2/ims?seriescolor=Beige&countryorigin=China&category=BRECCIA"
+curl --basic -u "guest:" --get "http://192.168.56.10:8080/bedlogic/v2/ims?seriesname=Parquet&colorhues=Beige&lengthmax=20&countryorigin=China&matcategory=Trim&materialstyle=SF&materialclass=CTMNF&inactivecd=N"
+
+# Keymark User
+curl --basic -u "keymark:<usercode>" --get "http://192.168.56.10:8080/bedlogic/v2/ims?itemcode=AECBUB217NR,CRDBARBRU440"
+curl --basic -u "keymark:<usercode>" --get "http://192.168.56.10:8080/bedlogic/v2/ims?colorhues=White&size=12X9"
+curl --basic -u "keymark:<usercode>" --get "http://192.168.56.10:8080/bedlogic/v2/ims?seriesname=builder"
+curl --basic -u "keymark:<usercode>" --get "http://192.168.56.10:8080/bedlogic/v2/ims?inactivecd=N&showonwebsite=Y"
+curl --basic -u "keymark:<usercode>" --get "http://192.168.56.10:8080/bedlogic/v2/ims?seriesname=Parquet&colorhues=Beige&lengthmax=20&countryorigin=China&matcategory=Trim&materialstyle=SF&materialclass=CTMNF&inactivecd=N"
+
+# Bad usertype/usercode:
+curl --basic -u "guest:x" --get "http://192.168.56.10:8080/bedlogic/v2/ims?itemcode=AECBUB217NR"
+curl --basic -u "keymark:" --get "http://192.168.56.10:8080/bedlogic/v2/ims?itemcode=AECBUB217NR"
+curl --basic -u "badusertype:" --get "http://192.168.56.10:8080/bedlogic/v2/ims?itemcode=AECBUB217NR"
+
+Item Creation
+-----------------
+curl -H "Accept: application/json" -H "Content-type: application/json" -i --user keymark:JBED -X POST http://192.168.56.10:8080/bedlogic/v2/ims -d '{"itemcode":"CRDBARBTEST","itemcategory":"ATHENA","itemdesc":{"itemdesc1":"2x2 Athena Mosaic on 12x12 SHT Ash"}}' 
+
+
+Item Update
+-----------------
+curl -H "Accept: application/json" -H "Content-type: application/json" -i --user keymark:JBED -X PUT http://192.168.56.10:8080/bedlogic/v2/ims -d '{"itemcode":"CRDBARBTEST","itemcategory":"AT","itemdesc":{"itemdesc1":"update"}}' 
