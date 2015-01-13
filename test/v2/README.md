@@ -5,7 +5,7 @@ The testing server IP is 192.168.56.10. Replace with your dns/IP if it is differ
 
 Landing page URL
 -------------------
-http://192.168.56.10:8080/bedlogic/ims/index
+http://192.168.56.10:8080/ims/index
 
 The above URL will take you to the IMS UI Testing starting page. 
 
