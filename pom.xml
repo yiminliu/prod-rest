@@ -4,12 +4,11 @@
 
     <modelVersion>4.0.0</modelVersion>
    
- 
-    <groupId>com.bedrosians.bedlogic</groupId>
-    <artifactId>bedlogic</artifactId>
+    <groupId>com.bedrosians.bedims-uitest</groupId>
+    <artifactId>bedims-uitest</artifactId>
     <packaging>war</packaging>
     <version>0.0.1</version>
-    <name>bedlogic</name>   
+    <name>bedims-uitest</name>   
     <!-- <url>http://cvs.bedrosians.com</url>-->
         
   	<!-- JBoss repository for Hibernate -->
@@ -22,9 +21,10 @@
  
     <properties>
        <basedir>/</basedir> 
-       <baseUri>/home/yiminliu/</baseUri>
+       <baseUri>/</baseUri>
        <jdkLevel>1.7</jdkLevel>
        <maven-plugin.version>3.1</maven-plugin.version>
+       <jetty.version>9.3.0.M1</jetty.version>  
        <org.springframework-version>4.0.5.RELEASE</org.springframework-version>
        <spring-security.version>3.2.4.RELEASE</spring-security.version>
        <aspectj.version>1.6.11</aspectj.version>
@@ -41,12 +41,11 @@
        <slf4j.version>1.7.5</slf4j.version>
        <logback.version>1.1.2</logback.version>
        <logback-ext-spring.version>0.1.2</logback-ext-spring.version>
-       <jetty.version>6.1.10</jetty.version>  
        <skipTests>true</skipTests>
     </properties>
     
     <build>
-        <finalName>bedlogic</finalName>
+        <finalName>bedims-uitest</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -65,53 +64,12 @@
                 <version>2.12.4</version>
             </plugin>
             <plugin>
-                <groupId>org.mortbay.jetty</groupId>
-                <artifactId>maven-jetty-plugin</artifactId>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
                 <version>${jetty.version}</version>
                 <configuration>
-                  <scanIntervalSeconds>10</scanIntervalSeconds>
-                  <war>${basedir}/target/bedlogic.war</war>
-                  <!-- new -->
-                  <!--<webAppConfig>
-                       <defaultsDescriptor>${basedir}/src/main/webapp/WEB-INF/web.xml</defaultsDescriptor>
-                  </webAppConfig>
-                  <webApp> 
-                     <contextPath>/bedlogic</contextPath>
-                  </webApp>
-                  <jettyXml>${baseUri}/src/main/resources/config/jetty.xml</jettyXml>
-                  <properties>
-                    <property>
-                      <name>logback.configurationFile</name>
-                      <value>${baseUri}/resources/logback.xml</value>
-                   </property>
-                  </properties>-->
-                  <reload>manual</reload>
-                    <connectors>
-                        <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-                            <port>8080</port>
-                        </connector>
-                    </connectors>
+                  <jettyXml>jetty.xml</jettyXml>
                 </configuration>
-                <executions>
-                  <execution>
-                    <id>start-jetty</id>
-                    <phase>pre-integration-test</phase>
-                    <goals>
-                       <goal>run</goal>
-                    </goals>
-                      <configuration>
-                         <scanIntervalSeconds>0</scanIntervalSeconds>
-                         <daemon>true</daemon>
-                      </configuration>
-                   </execution>
-                   <execution>
-                      <id>stop-jetty</id>
-                      <phase>post-integration-test</phase>
-                      <goals>
-                        <goal>stop</goal>
-                      </goals>
-                   </execution>
-                 </executions>
             </plugin>
         </plugins>
     </build>
@@ -336,6 +294,7 @@
            <version>${hibernate.version}</version>
         </dependency>
             	
+        <!-- Joda -->    	
         <dependency>
 	        <groupId>joda-time</groupId>
 	        <artifactId>joda-time-hibernate</artifactId>
