@@ -60,7 +60,7 @@
     <table> 
       <tr style="float:middle;"> 
         <td>
-            <input type="submit" value="Continue >>"/>
+            <input type="submit" value="Next >"/>
         </td>
       </tr>
     </table> 

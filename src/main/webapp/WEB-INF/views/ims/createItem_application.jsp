@@ -105,13 +105,12 @@
      <table> 
       <tr style="float:middle;"> 
         <td>
-            <input type="submit" value="Continue >>"/>
+            <input type="submit" value="Next >"/>
         </td>
       </tr>
     </table> 
 </form:form>
 <%@ include file="/WEB-INF/includes/footer.jsp"%>
-</div><!-- container -->
 </div><!-- container -->
 </body>
 </html>
