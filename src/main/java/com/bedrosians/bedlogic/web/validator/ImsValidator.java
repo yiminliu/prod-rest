@@ -62,8 +62,8 @@ public class ImsValidator implements Validator {
 	 private void checkItemCodeAvailability(String itemCode, DBOperation action, Errors errors) {
 	    if(imsService.itemCodeIsTaken(itemCode) && (action.equals(DBOperation.CREATE)  || action.equals(DBOperation.CLONE))) 
 	       errors.rejectValue("itemcode", "item.itemcode.taken", "Item code is taken, please use a different item code");
-	    else if(!imsService.itemCodeIsTaken(itemCode) && (action.equals(DBOperation.UPDATE) || action.equals(DBOperation.DELETE)))		
-		      errors.rejectValue("itemcode", "item.itemcode.not_found", "No Item found for this item code.");
+	    else if(!imsService.itemCodeIsTaken(itemCode) && (action.equals(DBOperation.UPDATE) || action.equals(DBOperation.DELETE) || action.equals(DBOperation.SEARCH)))		
+		   errors.rejectValue("itemcode", "item.itemcode.not_found", "No item found for this item code. Try again.");
 	 }
 	 
 	 private void checkItemDescription(String data, Errors errors) {
