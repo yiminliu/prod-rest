@@ -80,7 +80,9 @@ public class ImsServiceImpl implements ImsService {
 			   System.out.println("Error occured during getItems(), due to: " +  hbe.getMessage() + ". Root cause -- " + hbe.getCause().getMessage());	
 			else
 			   System.out.println("Error occured during getItems(), due to: " +  hbe.getMessage());
-			throw new DatabaseOperationException("Error occured during getItems(). ", hbe);
+			//if(hbe instanceof org.hibernate.ObjectNotFoundException && hbe.getMessage() != null && !hbe.getMessage().contains("No row with the given identifier exists: [com.bedrosians.bedlogic.domain.ims.KeymarkVendor#0])")) //swallow this particular exception
+			//if(!(hbe instanceof org.hibernate.ObjectNotFoundException)) //swallow this particular exception caused by not-found associated entity
+		    throw new DatabaseOperationException("Error occured during getItems(). ", hbe);
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
@@ -104,7 +106,9 @@ public class ImsServiceImpl implements ImsService {
 		  	   System.out.println("Error occured during getItems(), due to: " +  hbe.getMessage() + ". Root cause -- " + hbe.getCause().getMessage());	
 		   	else
 		   	   System.out.println("Error occured during getItems(), due to: " +  hbe.getMessage());
-			throw new DatabaseOperationException("Error occured during getItems(). ", hbe);
+			//if(hbe instanceof org.hibernate.ObjectNotFoundException && hbe.getMessage() != null && !hbe.getMessage().contains("No row with the given identifier exists: [com.bedrosians.bedlogic.domain.ims.KeymarkVendor#0])")) //swallow this particular exception
+		  	//if(!(hbe instanceof org.hibernate.ObjectNotFoundException)) //swallow this particular exception caused by not-found associated entity
+		    throw new DatabaseOperationException("Error occured during getItems(). ", hbe);
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)

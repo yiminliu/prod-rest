@@ -90,7 +90,7 @@ public class Vendor implements java.io.Serializable {
 	}
 
 	@JsonIgnore
-	@OneToOne(fetch = FetchType.EAGER)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="vendor_id", insertable = false, updatable = false)
 	public KeymarkVendor getKeymarkVendor() {
 		return keymarkVendor;
