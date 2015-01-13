@@ -425,7 +425,7 @@ public class Ims implements java.io.Serializable {
 	}
 	*/
 	
-	
+	@JsonIgnore
 	@Transient
 	public List<String> getColors() {
 		if(colors == null || colors.isEmpty())
@@ -434,6 +434,7 @@ public class Ims implements java.io.Serializable {
 		//return ImsDataUtil.convertColorCategoryToStringList(colorcategory);
 	}
 	
+	@JsonIgnore
 	@Transient
 	public String getColorHueString() {
 		//return colorHueString;

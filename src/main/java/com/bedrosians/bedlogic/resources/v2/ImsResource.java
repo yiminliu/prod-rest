@@ -44,7 +44,7 @@ import com.bedrosians.bedlogic.util.enums.DBOperation;
 */
 
 @Controller
-@Path("/imss")
+@Path("/ims")
 public class ImsResource
 {
     private static final ApiName APINAME = ApiName.IMS;
