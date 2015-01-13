@@ -241,8 +241,8 @@ public class Vendor implements java.io.Serializable {
 
 	@Transient
 	public String getVendorName() {
-		//return vendorName;
-		return (keymarkVendor == null)? null : keymarkVendor.getName();
+		return vendorName;
+		//return (keymarkVendor == null)? null : keymarkVendor.getName();
 	}
 
 	public void setVendorName(String vendorName) {
@@ -251,8 +251,8 @@ public class Vendor implements java.io.Serializable {
 
 	@Transient
 	public String getVendorName2() {
-		//return this.vendorName2;
-		return (keymarkVendor == null)? null : keymarkVendor.getDbaname();
+		return this.vendorName2;
+		//return (keymarkVendor == null)? null : keymarkVendor.getDbaname();
 	}
 
 	public void setVendorName2(String vendorName2) {
