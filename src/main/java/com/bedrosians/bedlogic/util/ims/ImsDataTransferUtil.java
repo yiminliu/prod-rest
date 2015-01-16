@@ -112,7 +112,7 @@ public class ImsDataTransferUtil {
       		   int sizeOfItemVendors = itemToDB.getNewVendorSystem().size();
   			   for(int i = 0; i < inputItemVendors.size(); i++){
   				   Vendor vendor = inputItemVendors.get(i);
-  				 ImsDataUtil.setCalculatedVendorData(itemFromInput, vendor);
+  				   ImsDataUtil.setCalculatedVendorData(itemFromInput, vendor);
   				   if(vendor.getVendorOrder() == 1 && (vendor.getVendorId() == null || vendor.getVendorId().getId() == null || vendor.getVendorId().getId() == 0))
   					  throw new InputParamException("Error: No vendor ID is provided.");
   				   //Populate vendor info in ims table
@@ -160,11 +160,10 @@ public class ImsDataTransferUtil {
   			if(legancyVendorInfo.getVendorpriceunit() != null) itemToDB.getNewVendorSystem().get(0).setVendorPriceUnit(legancyVendorInfo.getVendorpriceunit());
   			if(legancyVendorInfo.getVendordiscpct() != null) itemToDB.getNewVendorSystem().get(0).setVendorDiscountPct(legancyVendorInfo.getVendordiscpct());
   		    if(legancyVendorInfo.getVendorroundaccuracy() != null) itemToDB.getNewVendorSystem().get(0).setVendorPriceRoundAccuracy(legancyVendorInfo.getVendorroundaccuracy());
-  		    if(legancyVendorInfo.getVendornetprice() != null) itemToDB.getNewVendorSystem().get(0).setVendorNetPrice(legancyVendorInfo.getVendornetprice());
-  	        if(legancyVendorInfo.getVendormarkuppct() != null) itemToDB.getNewVendorSystem().get(0).setVendorMarkupPct(legancyVendorInfo.getVendormarkuppct());
+  		    if(legancyVendorInfo.getVendormarkuppct() != null) itemToDB.getNewVendorSystem().get(0).setVendorMarkupPct(legancyVendorInfo.getVendormarkuppct());
   		    if(legancyVendorInfo.getVendorfreightratecwt() != null) itemToDB.getNewVendorSystem().get(0).setVendorFreightRateCwt(legancyVendorInfo.getVendorfreightratecwt());
-  		    if(legancyVendorInfo.getVendorlandedbasecost() != null) itemToDB.getNewVendorSystem().get(0).setVendorLandedBaseCost(legancyVendorInfo.getVendorlandedbasecost());
   		    itemToDB.getNewVendorSystem().get(0).setVendorOrder(1);
+  		    ImsDataUtil.setCalculatedVendorData(itemFromInput, legancyVendorInfo);
   			//vendor.setVendorOrder(1);
   			//itemToDB.addNewVendorSystem(vendor);
   		}
