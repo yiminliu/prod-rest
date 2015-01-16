@@ -87,9 +87,7 @@ public class LoggingAspect {
 	public void afterThrowing(JoinPoint joinPoint, Throwable throwable) {
 		Class<? extends Object> clazz = joinPoint.getTarget().getClass();
 		String name = joinPoint.getSignature().getName();
-		// logger.log(LogLevel.ERROR, clazz, throwable, AFTER_THROWING,
-		// loggingHelper.getUserStamp(), name, throwable
-		// .getMessage(), constructArgString(clazz, joinPoint.getArgs()));
+	    logger.log(LogLevel.ERROR, clazz, throwable, AFTER_THROWING, /* loggingHelper.getUserStamp(),*/ name, throwable.getMessage(), constructArgString(clazz, joinPoint.getArgs()));
 		logger.log(LogLevel.ERROR, clazz, throwable, AFTER_THROWING_NO_PARAMS, ""/*loggingHelper.getUserStamp()*/, name, throwable.getMessage());
 	}
 
@@ -171,8 +169,8 @@ public class LoggingAspect {
 		} else if (arg instanceof Ims) {
 			Ims ims = (Ims) arg;
 			clazz = ims.getClass().getSimpleName();
-			id = ims.getItemcode();
-			descriptor = "";//product.getItemdesc() == null? "" : product.getItemdesc().getItemdesc1();
+			id = "ItemCode--" + ims.getItemcode();
+			descriptor = "Description--" + ims.getItemdesc().getItemdesc1();
 		} else if (arg instanceof HttpServletRequest || arg instanceof HttpServletResponse) {
 			return buffer.toString();
 		} else {
