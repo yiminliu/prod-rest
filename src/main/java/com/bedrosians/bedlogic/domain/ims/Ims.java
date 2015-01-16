@@ -26,6 +26,7 @@ import javax.validation.constraints.Size;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Fetch;
@@ -101,7 +102,7 @@ public class Ims implements java.io.Serializable {
 	private String productline;
 	private Integer itemgroupnbr;
 	private Date priorlastupdated;	
-	private Long version;
+	private Long version = 0L;
 	
 	//----- Embedded Components ---------//
 	private Description itemdesc;
@@ -497,6 +498,8 @@ public class Ims implements java.io.Serializable {
 	}
 	
 	@OneToOne(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+	//@OneToOne(fetch = FetchType.EAGER, mappedBy = "item")
+	//@Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.MERGE, org.hibernate.annotations.CascadeType.EVICT, org.hibernate.annotations.CascadeType.DELETE})
 	@Fetch(FetchMode.JOIN)
 	//@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	@IndexedEmbedded
@@ -634,7 +637,7 @@ public class Ims implements java.io.Serializable {
 	public Long getVersion() {
 		return version;
 	}
-	private void setVersion(Long version) {
+	public void setVersion(Long version) {
 		this.version = version;
 	}
 	

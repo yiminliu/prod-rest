@@ -98,7 +98,7 @@ public class ImsDataTransferUtil {
   		     (operation.equals(DBOperation.UPDATE) && (itemToDB.getNewVendorSystem() == null || itemToDB.getNewVendorSystem().isEmpty()))){ //existing item, but brand new ItemVendors
   			  for(Vendor vendor : inputItemVendors){
   			      if(vendor != null && !vendor.isEmpty()){
-  			    	setCalculatedVendorData(itemFromInput, vendor); 
+  			    	ImsDataUtil.setCalculatedVendorData(itemFromInput, vendor); 
   				     itemToDB.addNewVendorSystem(vendor);	
   				     //Populate vendor info in ims
   				     if((legancyVendorInfo == null || legancyVendorInfo.getVendornbr1() == null || legancyVendorInfo.getVendornbr1() == 0) && vendor.getVendorOrder() == 1){
@@ -112,7 +112,7 @@ public class ImsDataTransferUtil {
       		   int sizeOfItemVendors = itemToDB.getNewVendorSystem().size();
   			   for(int i = 0; i < inputItemVendors.size(); i++){
   				   Vendor vendor = inputItemVendors.get(i);
-  				   setCalculatedVendorData(itemFromInput, vendor);
+  				 ImsDataUtil.setCalculatedVendorData(itemFromInput, vendor);
   				   if(vendor.getVendorOrder() == 1 && (vendor.getVendorId() == null || vendor.getVendorId().getId() == null || vendor.getVendorId().getId() == 0))
   					  throw new InputParamException("Error: No vendor ID is provided.");
   				   //Populate vendor info in ims table
@@ -169,43 +169,7 @@ public class ImsDataTransferUtil {
   			//itemToDB.addNewVendorSystem(vendor);
   		}
     }	
- 
-  	public static void setCalculatedVendorData(Ims item, Vendor vendor){
-  	   if(vendor.getVendorListPrice() != null){ //calculate net price
-			  if(vendor.getVendorDiscountPct() != null){
-		         BigDecimal netPrice = new BigDecimal(vendor.getVendorListPrice().floatValue() * ((100 - vendor.getVendorDiscountPct())/100.00));
-		         vendor.setVendorNetPrice(netPrice);
-		         if(item.getUnits() != null && item.getUnits().getStdratio() != null && item.getUnits().getBasewgtperunit() != null){
-		            BigDecimal landedBaseCost = new BigDecimal(netPrice.floatValue() * 
-		    		                                         ((100 + vendor.getVendorMarkupPct())/100.00/item.getUnits().getStdratio()) + 
-		    		                                         vendor.getVendorFreightRateCwt() *
-		    		                                         item.getUnits().getBasewgtperunit().floatValue()/100.00);
-		            vendor.setVendorLandedBaseCost(landedBaseCost);
-		         }   
-			 }   
-			 else 
-			   vendor.setVendorNetPrice(vendor.getVendorListPrice());
-	    }
-  	} 	
-  	
-  	public static void setCalculatedVendorData(Ims item, VendorInfo vendorInfo){
-   	   if(vendorInfo.getVendorlistprice() != null){ //calculate net price
- 			  if(vendorInfo.getVendordiscpct() != null){
- 		         BigDecimal netPrice = new BigDecimal(vendorInfo.getVendorlistprice().floatValue() * ((100 - vendorInfo.getVendordiscpct())/100.00));
- 		         vendorInfo.setVendornetprice(netPrice);
- 		         if(item.getUnits() != null && item.getUnits().getStdratio() != null && item.getUnits().getBasewgtperunit() != null){
- 		            BigDecimal landedBaseCost = new BigDecimal(netPrice.floatValue() * 
- 		    		                                         ((100 + vendorInfo.getVendormarkuppct())/100.00/item.getUnits().getStdratio()) + 
- 		    		                                         vendorInfo.getVendorfreightratecwt() *
- 		    		                                         item.getUnits().getBasewgtperunit().floatValue()/100.00);
- 		           vendorInfo.setVendorlandedbasecost(landedBaseCost);
- 		         }   
- 			 }   
- 			 else 
- 				vendorInfo.setVendornetprice(vendorInfo.getVendorlistprice());
- 	   }
-   	} 	
-
+   	
   	private static synchronized void transferImsNewFeature(Ims itemToDB, Ims itemFromInput, DBOperation operation) {
 		ImsNewFeature inputNewFeature = itemFromInput.getNewFeature();
 	    if(inputNewFeature != null && !inputNewFeature.isEmpty()){
@@ -634,7 +598,7 @@ public class ImsDataTransferUtil {
 			  itemToDB.getVendors().setVendorroundaccuracy(itemFromInput.getVendors().getVendorroundaccuracy());
 		   if(itemFromInput.getVendors().getVendorxrefcd() != null)
 			  itemToDB.getVendors().setVendorxrefcd(itemFromInput.getVendors().getVendorxrefcd());
-		   setCalculatedVendorData(itemFromInput, itemFromInput.getVendors());
+		   ImsDataUtil.setCalculatedVendorData(itemFromInput, itemFromInput.getVendors());
 		}
 		//units
 		if(itemFromInput.getUnits() != null && !itemFromInput.getUnits().isDefault()){

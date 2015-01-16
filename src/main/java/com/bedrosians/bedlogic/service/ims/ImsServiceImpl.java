@@ -3,7 +3,6 @@ package com.bedrosians.bedlogic.service.ims;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -36,12 +35,14 @@ import com.bedrosians.bedlogic.domain.ims.embeddable.Units;
 import com.bedrosians.bedlogic.domain.ims.embeddable.VendorInfo;
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
 import com.bedrosians.bedlogic.exception.BedDAOException;
+import com.bedrosians.bedlogic.exception.DataNotFoundException;
 import com.bedrosians.bedlogic.exception.DatabaseOperationException;
 import com.bedrosians.bedlogic.exception.InputParamException;
 import com.bedrosians.bedlogic.util.FormatUtil;
 import com.bedrosians.bedlogic.util.JsonUtil;
 import com.bedrosians.bedlogic.util.JsonWrapper.ItemWrapper;
 import com.bedrosians.bedlogic.util.enums.DBOperation;
+import com.bedrosians.bedlogic.util.ims.ImsDataTransferUtil;
 import com.bedrosians.bedlogic.util.ims.ImsDataUtil;
 import com.bedrosians.bedlogic.util.ims.ImsValidator;
 import com.bedrosians.bedlogic.util.logger.aspect.LogLevel;
@@ -176,7 +177,6 @@ public class ImsServiceImpl implements ImsService {
 		       throw new BedDAOException("Error occured during getWrappedItems, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
 		  	else
 		  	   throw new BedDAOException("Error occured during getWrappedItems, due to: " +  hbe.getMessage());
-		
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
@@ -197,12 +197,12 @@ public class ImsServiceImpl implements ImsService {
 	@Loggable(value = LogLevel.INFO)
 	@Override
 	public String createItem(JSONObject jsonObj) throws BedDAOBadParamException, BedDAOException{  	
-		String itemCode = JsonUtil.validateItemCode(jsonObj);
+		JsonUtil.validateItemCode(jsonObj);
 		String id;
      	Ims itemFromInput = (Ims)JsonUtil.jsonObjectToPOJO(jsonObj, new Ims());
-     	//itemFromInput.setItemcode(itemFromInput.getItemcode().toUpperCase());
      	id = createOrUpdateItem(itemFromInput, DBOperation.CREATE);
      	/*
+     	itemFromInput.setItemcode(itemCode.toUpperCase());
      	Ims itemToCreate = new Ims(itemCode);
      	itemToCreate = ImsDataUtil.transformItem(itemToCreate, itemFromInput, DBOperation.CREATE);
      	ImsValidator.validateNewItem(itemToCreate);
@@ -251,7 +251,12 @@ public class ImsServiceImpl implements ImsService {
  		   }
      	}   
      	try{
-		   id = imsDao.createItem(item);
+     	   if(DBOperation.UPDATE.equals(operation)){
+     		  imsDao.updateItem(item);
+     		  id = item.getItemcode();
+     	   }
+     	   else 
+		      id = imsDao.createItem(item);
 		}
 		catch(HibernateException hbe){
 			if(hbe.getCause() != null)
@@ -263,7 +268,7 @@ public class ImsServiceImpl implements ImsService {
    	    catch(Exception e){
 		  e.printStackTrace();
 		  if(e != null && e.getMessage() != null){
-			  if(e.getMessage().contains("constraint [item_code]") || e.getMessage().contains("constraint [ims_code]"))
+			  if(e.getMessage().contains("constraint [item_code]") || e.getMessage().contains("constraint [ims_code]") || e.getMessage().contains("constraint [ims_id]"))
 				  throw new InputParamException("Invalid item code, since it is already existing in the database", e);
 		      else if(e.getMessage().contains("constraint [vendor_apv_fkey]"))
 			      throw new InputParamException("Invalid vendor number (ID), since it cannot be found in the vendor table", e);
@@ -281,55 +286,57 @@ public class ImsServiceImpl implements ImsService {
    }
 	
 	//--------------------------------Update DB Operation --------------------------//
-	
-	@Loggable(value = LogLevel.INFO)
+	/*@Loggable(value = LogLevel.INFO)
 	@Override
-	@Transactional(readOnly = false, propagation=Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ) 
 	public synchronized void updateItem(JSONObject jsonObj) throws BedDAOBadParamException, BedDAOException{
 		String itemCode = JsonUtil.validateItemCode(jsonObj);
 		Ims itemFromInput = (Ims)JsonUtil.jsonObjectToPOJO(jsonObj, new Ims());
-		//itemFromInput.setItemcode(itemFromInput.getItemcode().toUpperCase());
-     	 
-	    Ims itemToUpdate = null;
+		createOrUpdateItem(itemFromInput, DBOperation.UPDATE);
+   	}
+	*/	
+	@Loggable(value = LogLevel.INFO)
+	@Override
+	@Transactional(readOnly = false, propagation=Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ) 
+	public synchronized void updateItem(JSONObject jsonObj){
+		String itemCode = JsonUtil.validateItemCode(jsonObj);
+		Ims itemFromInput = (Ims)JsonUtil.jsonObjectToPOJO(jsonObj, new Ims());
+		itemFromInput.setItemcode(itemFromInput.getItemcode().toUpperCase());
+     	Ims itemToUpdate = null;
 		Session session = getSession();	
 		try{
-			itemToUpdate = imsDao.getItemByItemCode(session, itemCode.trim());
+			itemToUpdate = imsDao.getItemByItemCode(session, itemCode.trim().toUpperCase());
 		}
 	    catch(HibernateException hbe){
 		    hbe.printStackTrace();
-		    throw new BedDAOException("Error occured during updateProduct() due to: " + hbe.getMessage(), hbe);
+		    throw new DatabaseOperationException("Error occured during updateProduct() due to: " + hbe.getMessage(), hbe);
 	    }
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-		  	   throw new BedDAOException("Error occured during updateItem(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+		  	   throw new DatabaseOperationException("Error occured during updateItem(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
 		  	else
-		  	   throw new BedDAOException("Error occured during updateItem(), due to: " +  e.getMessage());	
+		  	   throw new DatabaseOperationException("Error occured during updateItem(), due to: " +  e.getMessage());	
 		}
 		if(itemToUpdate == null)
-	       throw new BedDAOException("No data found for the given item code: " + itemCode);	
-		
-		//imsServiceMVC.createItem(itemFromInput, DBOperation.UPDATE);
- 
-		itemToUpdate = ImsDataUtil.transformItem(itemToUpdate, itemFromInput, DBOperation.UPDATE);
-  	    ImsValidator.validateNewItem(itemToUpdate);
+	       throw new DataNotFoundException("No data found for the given item code: " + itemCode);	
+		itemToUpdate = ImsDataTransferUtil.transferItemInfo(itemToUpdate, itemFromInput, DBOperation.UPDATE);
+  	    //ImsValidator.validateNewItem(itemToUpdate);
     	try{
-		      imsDao.updateItem(session,itemToUpdate);
+	       imsDao.updateItem(session,itemToUpdate);
 	 	}
     	catch(HibernateException hbe){
-     	      if(hbe.getCause() != null)
- 		         throw new BedDAOException("Error occured during updateItem, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
- 		      else
- 		  	     throw new BedDAOException("Error occured during updateItem, due to: " +  hbe.getMessage());	
+     	   if(hbe.getCause() != null)
+ 		      throw new DatabaseOperationException("Error occured during updateItem, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+ 		   else
+ 		  	  throw new DatabaseOperationException("Error occured during updateItem, due to: " +  hbe.getMessage());	
  	    }	
     	catch(Exception e){
-			  if(e.getMessage().contains("constraint [vendor_apv_fkey]"))
-			     throw new BedDAOBadParamException("Invalid vendor number (ID), since it cannot be found in the vendor table");
-			  if(e.getCause() != null)
-		         throw new BedDAOException("Error occured during updateItem(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
-		  	  else
-			     throw new BedDAOException("Error occured during updateItem(), due to: " +  e.getMessage());	
+		   if(e.getMessage().contains("constraint [vendor_apv_fkey]"))
+			  throw new DatabaseOperationException("Invalid vendor number (ID), since it cannot be found in the vendor table");
+		   if(e.getCause() != null)
+		      throw new DatabaseOperationException("Error occured during updateItem(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+		   else
+			  throw new DatabaseOperationException("Error occured during updateItem(), due to: " +  e.getMessage());	
 		   }
-		   	   
 	}
 	
 	//--------------------------------Deletion DB Operation --------------------------//
@@ -453,7 +460,12 @@ public class ImsServiceImpl implements ImsService {
 	/************************* Util Methods ************************/
 	
 	private synchronized Session getSession(){
-	    	return sessionFactory.getCurrentSession();
+		try {
+		    return sessionFactory.getCurrentSession();
+		}
+		catch(Exception e) {
+		   return sessionFactory.openSession();		
+		}
 	}
 
 	public List<Vendor> getNewVendorSystem(){
@@ -492,8 +504,10 @@ public class ImsServiceImpl implements ImsService {
 		    	  //}   
 		       }
 		    }
-		    item.setColorhues(null);
-		    colorhues = ImsDataUtil.convertColorListToColorHueObjects(item.getColors()); //For both clone and update, if colorhue changed, we need to get new values for colorhues
+		    if(item.getColors() != null){ 
+		       item.setColorhues(null);
+		       colorhues = ImsDataUtil.convertColorListToColorHueObjects(item.getColors()); //For both clone and update, if colorhue changed, we need to get new values for colorhues
+		    }   
 		 }	
 		 else 
 		    return; // no colorhue changed for update/clone operation, therefore, no need to make change	
@@ -601,7 +615,7 @@ private Ims processApplicationsString(Ims item){
    } 	
     
 //NEW.vendorlandedbasecost := (NEW.vendornetprice * (100.00 + NEW.vendormarkuppct) / 100.00 / tUnitRatio) + (NEW.vendorfreightratecwt * NEW.basewgtperunit / 100);
-private Ims processVendor(Ims item, DBOperation dBOperation){
+private void processVendor(Ims item, DBOperation dBOperation){
 	List<Vendor> vendors = item.getNewVendorSystem();
  	item.setNewVendorSystem(null);
  	if(vendors != null && !vendors.isEmpty()){
@@ -609,13 +623,14 @@ private Ims processVendor(Ims item, DBOperation dBOperation){
  		for(Vendor vendor : vendors){
  			if(vendor.getId() != null){ //populated legacy vendor fields
  			   //if(vendor.getId().equals(item.getVendors().getVendornbr1()) && (DBOperation.UPDATE.equals(dBOperation) || DBOperation.CLONE.equals(dBOperation)))	
- 		       item.addNewVendorSystem(vendor);
+ 			   ImsDataUtil.setCalculatedVendorData(item, vendor);
+ 			   item.addNewVendorSystem(vendor);
        		   if(vendor.getVendorOrder() == 1)
        			  lagancyVendor = ImsDataUtil.convertNewVendorToLegancyVendorInfo(vendor); 
        		   else if(vendor.getVendorOrder() == 2)
        			  lagancyVendor.setVendornbr2(vendor.getId()); 
  			}  
- 			if(vendor.getVendorListPrice() != null){ //calculate net price
+ 			/*if(vendor.getVendorListPrice() != null){ //calculate net price
 				if(vendor.getVendorDiscountPct() != null){
 			       BigDecimal netPrice = new BigDecimal(vendor.getVendorListPrice().floatValue() * ((100 - vendor.getVendorDiscountPct())/100.00));
 			       vendor.setVendorNetPrice(netPrice);
@@ -630,28 +645,12 @@ private Ims processVendor(Ims item, DBOperation dBOperation){
 				else 
 				   vendor.setVendorNetPrice(vendor.getVendorListPrice());
 			} //NEW.vendornetprice := NEW.vendorlistprice * (100.00 - NEW.vendordiscpct1) * (100.00 - NEW.vendordiscpct2) * (100.00 - NEW.vendordiscpct3) / 1000000;
- 			  //NEW.vendornetprice := round(NEW.vendornetprice, CAST (NEW.vendorroundaccuracy AS INTEGER));
+ 			  //NEW.vendornetprice := round(NEW.vendornetprice, CAST (NEW.vendorroundaccuracy AS INTEGER));*/
  		}	
        	item.setVendors(lagancyVendor);  
    	}
  	
-	/*List<Vendor> vendors = item.getNewVendorSystem();
-	for(Vendor vendor : vendors){
-		if(vendor.getVendorListPrice() != null){
-			if(vendor.getVendorDiscountPct() != null){
-		       BigDecimal netPrice = new BigDecimal(vendor.getVendorListPrice().floatValue() * ((100 - vendor.getVendorDiscountPct())/100));
-		       vendor.setVendorNetPrice(netPrice);
-			}   
-			else 
-				vendor.setVendorNetPrice(vendor.getVendorListPrice());
-		}	
-		  //BigDecimal netPrice = new BigDecimal(vendor.getVendorListPrice().floatValue() * vendor.getVendorFreightRateCwt());
-		  //vendor.setVendorNetPrice(netPrice);
-		//vendors.add(vendor);
-	}*/
- 
-	return item;
-} 	
+ } 	
 
     private void processIcons(Ims item, DBOperation dBOperation){
 	   IconCollection icons = item.getIconDescription();

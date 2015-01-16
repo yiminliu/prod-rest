@@ -53,7 +53,7 @@ public class VendorId implements Serializable{
 
 	public int hashCode() {
 		int result = 17;
-    	result = 37 * result + (getItemCode() == null ? 0 : this.getItemCode().hashCode());
+    	result = 37 * result + (getItemCode() == null ? 0 : this.getItemCode().trim().hashCode());
 		result = 37 * result + (getId() == null? 1 : getId().intValue());
 		return result;
 	}
@@ -69,7 +69,7 @@ public class VendorId implements Serializable{
 
 		return ((this.getItemCode() == castOther.getItemCode()) || 
 				(this.getItemCode() != null && castOther.getItemCode() != null && 
-				this.getItemCode().equals(castOther.getItemCode()))) && 
+				this.getItemCode().trim().equals(castOther.getItemCode().trim()))) && 
 				(this.getId() == castOther.getId());
 	}
 }

@@ -47,7 +47,7 @@ public class VendorInfo  implements java.io.Serializable {
 			this.vendorxrefcd = vendorxrefcd;
 		}
 
-		@Column(name = "vendornbr", precision = 6, scale = 0)
+		@Column(name = "vendornbr")
 		public Integer getVendornbr() {
 			return this.vendornbr;
 		}
@@ -58,7 +58,7 @@ public class VendorInfo  implements java.io.Serializable {
 
 		@Field(index=Index.YES, analyze=Analyze.NO, store=Store.YES)
 		@NumericField
-		@Column(name = "vendornbr1", precision = 6, updatable=false)
+		@Column(name = "vendornbr1")
 		public Integer getVendornbr1() {
 			return this.vendornbr1;
 		}
@@ -139,7 +139,7 @@ public class VendorInfo  implements java.io.Serializable {
 			this.vendorroundaccuracy = vendorroundaccuracy;
 		}
 
-		@Column(name = "vendornetprice", precision = 9, scale = 4, updatable=false)
+		@Column(name = "vendornetprice")
 		public BigDecimal getVendornetprice() {
 			return this.vendornetprice;
 		}
@@ -166,7 +166,7 @@ public class VendorInfo  implements java.io.Serializable {
 			this.vendorfreightratecwt = vendorfreightratecwt;
 		}
 
-		@Column(name = "vendorlandedbasecost", precision = 13, scale = 6, updatable=false)
+		@Column(name = "vendorlandedbasecost")
 		public BigDecimal getVendorlandedbasecost() {
 			return this.vendorlandedbasecost;
 		}

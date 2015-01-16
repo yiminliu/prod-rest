@@ -21,6 +21,7 @@ public interface ImsDao extends GenericDao<Ims, String>{
    public List<Ims> getItems(LinkedHashMap<String,List<String>> queryParams);
    public String createItem(Ims ims);
    public void updateItem(Session session, Ims ims);
+   public void updateItem(Ims ims);
    public void deleteItem(Ims ims);	
    public void deleteItem(Session session, Ims ims);	
 }

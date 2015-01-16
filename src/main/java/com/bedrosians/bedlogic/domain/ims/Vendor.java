@@ -200,7 +200,7 @@ public class Vendor implements java.io.Serializable {
 		this.leadTime = leadTime;
 	}
 
-	@Column(name = "landed_base_cost", precision = 13, scale = 6, updatable=false)
+	@Column(name = "landed_base_cost")
 	public BigDecimal getVendorLandedBaseCost() {
 		return this.vendorLandedBaseCost;
 	}

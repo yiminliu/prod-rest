@@ -439,6 +439,28 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 		update(session, ims);
 	}
 	
+	@Override
+	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
+	public void updateItem(Ims item){
+		Session session = sessionFactory.getCurrentSession();
+		Ims existingItem = loadById(session, item.getItemcode());
+		item.setVersion(existingItem.getVersion());
+		if((item.getNewFeature() != null && !item.getNewFeature().isEmpty()) && (existingItem.getNewFeature() != null && existingItem.getNewFeature().getVersion() != null)){
+			item.setItemcode(existingItem.getItemcode());
+			item.getNewFeature().setVersion(existingItem.getNewFeature().getVersion());
+		}	
+		if(existingItem.getNewFeature() != null && !item.getNewFeature().isEmpty())
+		   session.evict(existingItem.getNewFeature());
+		//if(existingItem.getColorhues() != null)
+		//   session.evict(existingItem.getColorhues());
+		//if(existingItem.getNewVendorSystem() != null)
+		//   session.evict(existingItem.getNewVendorSystem());
+		//if(existingItem.getIconDescription() != null)
+		//   session.evict(existingItem.getIconDescription());
+		session.evict(existingItem);
+		update(session, item);
+	}
+	
 	//------------------------------- deletion DB operation -------------------------//
 	
 	@Override

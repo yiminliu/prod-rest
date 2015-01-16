@@ -2,7 +2,6 @@ package com.bedrosians.bedlogic.util;
 
 import java.io.File;
 import java.io.IOException;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,11 +12,10 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
-
 import org.codehaus.jettison.json.JSONObject;
 
 import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
-
+import com.bedrosians.bedlogic.exception.InputParamException;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 public class JsonUtil {
@@ -39,7 +37,7 @@ public class JsonUtil {
 		return object;
 	}
 	
-	public static Object jsonObjectToPOJO(JSONObject jsonObj, Object obj) throws BedDAOBadParamException {
+	public static Object jsonObjectToPOJO(JSONObject jsonObj, Object obj) {
 		Object object = null; 
  		ObjectMapper mapper = new ObjectMapper();
 		try{
@@ -48,19 +46,19 @@ public class JsonUtil {
 		}
         catch (JsonGenerationException e) {
 	      	e.printStackTrace();
-	      	throw new BedDAOBadParamException("JsonGenerationException occured while jsonObjectToPOJO(): " + e.getMessage());
+	      	throw new InputParamException("JsonGenerationException occured while jsonObjectToPOJO(): " + e.getMessage());
         } 
 		catch (JsonMappingException e) { 
 		    e.printStackTrace();
-		    throw new BedDAOBadParamException("JsonMappingException occured while jsonObjectToPOJO(): " + e.getMessage());
+		    throw new InputParamException("JsonMappingException occured while jsonObjectToPOJO(): " + e.getMessage());
         }
 		catch (JsonParseException e) { 
 		    e.printStackTrace();
-		    throw new BedDAOBadParamException("JsonParseException occured while jsonObjectToPOJO(): " + e.getMessage());
+		    throw new InputParamException("JsonParseException occured while jsonObjectToPOJO(): " + e.getMessage());
         }
 		catch(IOException e){
 			e.printStackTrace();
-			throw new BedDAOBadParamException("IOException occured while jsonObjectToPOJO(): " + e.getMessage());
+			throw new InputParamException("IOException occured while jsonObjectToPOJO(): " + e.getMessage());
 		}
 		return object;
 	}
@@ -184,12 +182,12 @@ public class JsonUtil {
     	return itemCode;	         
     }
 	
-	public static String validateItemCode(JSONObject jsonObj) throws BedDAOBadParamException{
+	public static String validateItemCode(JSONObject jsonObj){
 		String itemCode = getItemCode(jsonObj);
 		if(itemCode == null || itemCode.trim().length() < 1)
-		   throw new BedDAOBadParamException("Item code cannot be empty.");
+		   throw new InputParamException("Item code cannot be empty.");
 		if(itemCode.length() > 18)
-		   throw new BedDAOBadParamException("Item code cannot be longer that 18 characters.");
+		   throw new InputParamException("Item code cannot be longer that 18 characters.");
 		return itemCode.toUpperCase();
 	}
 	
