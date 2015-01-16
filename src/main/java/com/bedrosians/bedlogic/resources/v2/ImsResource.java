@@ -22,9 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.bedrosians.bedlogic.domain.ims.Ims;
-import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
-import com.bedrosians.bedlogic.exception.BedDAOException;
-import com.bedrosians.bedlogic.exception.BedDAOExceptionMapper;
+import com.bedrosians.bedlogic.exception.BedException;
+import com.bedrosians.bedlogic.exception.BedExceptionMapper;
 import com.bedrosians.bedlogic.exception.BedResException;
 import com.bedrosians.bedlogic.exception.BedResExceptionMapper;
 import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
@@ -58,7 +57,7 @@ public class ImsResource
       * @param UriInfo represents query condition in the form of name/value pairs. If no query is specified, all active items will be returned.
       * Number of resulting records can be specified by setting a value for "maxResults" and if "exactmatch" is set to true, no pattern matching will be performed for all queries.
       * @return Response object contains the status and a json object.
-      * @exception BedResUnAuthorizedException, BedDAOBadParamException, BedDAOBadException and BedResException on input error and server side condition errors as well.
+      * @exception.
      */
      @GET
      @Produces({MediaType.APPLICATION_JSON})
@@ -85,13 +84,9 @@ public class ImsResource
         {
            response = BedResExceptionMapper.MapToResponse(e);
         }
-        catch (BedDAOBadParamException e)
+        catch (BedException e)
         {
-           response = BedDAOExceptionMapper.MapToResponse(e);
-        }
-        catch (BedDAOException e)
-        {
-           response = BedDAOExceptionMapper.MapToResponse(e);
+           response = BedExceptionMapper.MapToResponse(e);
         }
         catch (BedResException e)
         {
@@ -105,7 +100,7 @@ public class ImsResource
      /** This method retrieves an item for the given item code.
        * @param itemcode string.
        * @return Response object to include the status and a json object.
-       * @exception BedDAOBadParamException, BedDAOBadException and BedResException on input error and server side condition errors as well.
+       * @exception
      */
      @GET
      @Path("{itemcode}")
@@ -128,13 +123,13 @@ public class ImsResource
             //Return json reponse
             response = Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();
           }
-          catch (BedDAOBadParamException e)
+    	  catch (BedResUnAuthorizedException e)
           {
-             response = BedDAOExceptionMapper.MapToResponse(e);
+            response = BedResExceptionMapper.MapToResponse(e);
           }
-          catch (BedDAOException e)
+          catch (BedException e)
           {
-             response = BedDAOExceptionMapper.MapToResponse(e);
+            response = BedExceptionMapper.MapToResponse(e);
           }
           catch (BedResException e)
           {
@@ -148,7 +143,7 @@ public class ImsResource
        * This method creates a item based on the given information.
        * @param Json object containing the information to create a new item.
        * @return Json object representing the status and created item code.
-       * @exception BedDAOBadParamException, BedDAOBadException and BedResException on input error and server side condition errors as well.
+       * @exception
        */
        @POST
        @Produces(MediaType.APPLICATION_JSON)
@@ -172,19 +167,18 @@ public class ImsResource
              //Return json reponse
              response = Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();
           }
-          catch (BedDAOBadParamException e)
-          {
-             response = BedDAOExceptionMapper.MapToResponse(e);
-          }
-          catch (BedDAOException e)
-          {
-             response = BedDAOExceptionMapper.MapToResponse(e);
-          }
-          catch (BedResException e)
+          catch (BedResUnAuthorizedException e)
           {
              response = BedResExceptionMapper.MapToResponse(e);
           }
-
+          catch (BedException e)
+          {
+             response = BedExceptionMapper.MapToResponse(e);
+          }
+          catch (BedResException e)
+          {
+              response = BedResExceptionMapper.MapToResponse(e);
+          }
           return response;
        }
 
@@ -192,7 +186,7 @@ public class ImsResource
          * This method updates an item based on the given item info.
          * @param A Json object containing item information to update.
          * @return Response object to include the status.
-         * @exception BedDAOBadParamException, BedDAOBadException and BedResException on input error and server side condition errors as well.
+         * @exception
          */
          @PUT
          @Produces(MediaType.APPLICATION_JSON)
@@ -212,19 +206,11 @@ public class ImsResource
                // Return json reponse
                response = Response.ok(MediaType.APPLICATION_JSON).build();
             }
-            catch (BedDAOBadParamException e)
+            catch (BedException e)
             {
-               response = BedDAOExceptionMapper.MapToResponse(e);
+               response = BedExceptionMapper.MapToResponse(e);
             }
-            catch (BedDAOException e)
-            {
-               response = BedDAOExceptionMapper.MapToResponse(e);
-            }
-            catch (BedResException e)
-            {
-               response = BedResExceptionMapper.MapToResponse(e);
-            }
-
+           
             return response;
         }
 
@@ -232,7 +218,7 @@ public class ImsResource
            * This method deletes an item based on the given item code.
            * @param A Json object containing product information to update.
            * @return Json object representing the status.
-           * @exception BedDAOBadParamException, BedDAOBadException and BedResException on input error and server side condition errors as well.
+           * @exception
            */
            @DELETE
            @Produces({MediaType.APPLICATION_JSON})
@@ -252,19 +238,11 @@ public class ImsResource
                  //Return json reponse
                  response = Response.ok(MediaType.APPLICATION_JSON).build();
               }
-              catch (BedDAOBadParamException e)
+              catch (BedException e)
               {
-                 response = BedDAOExceptionMapper.MapToResponse(e);
+                 response = BedExceptionMapper.MapToResponse(e);
               }
-              catch (BedDAOException e)
-              {
-                 response = BedDAOExceptionMapper.MapToResponse(e);
-              }
-              catch (BedResException e)
-              {
-                 response = BedResExceptionMapper.MapToResponse(e);
-              }
-
+             
               return response;
           }
 
@@ -272,11 +250,10 @@ public class ImsResource
              * This method deletes an item based on the given item code.
              * @param Item code string.
              * @return Json object representing the status.
-             * @exception BedDAOBadParamException, BedDAOBadException and BedResException on input error and server side condition errors as well.
+             * @exception
              */
              @DELETE
              @Path("{itemcode}")
-             //@Path("/")
              @Produces({MediaType.APPLICATION_JSON})
              public Response deleteItemByItemCode(@Context HttpHeaders requestHeaders, @PathParam("itemcode") final String itemCode)
              {
@@ -294,19 +271,11 @@ public class ImsResource
                    //response = Response.ok(MediaType.APPLICATION_JSON).build();
                    response = Response.noContent().build();
                 }
-                catch (BedDAOBadParamException e)
+                catch (BedException e)
                 {
-                   response = BedDAOExceptionMapper.MapToResponse(e);
+                   response = BedExceptionMapper.MapToResponse(e);
                 }
-                catch (BedDAOException e)
-                {
-                   response = BedDAOExceptionMapper.MapToResponse(e);
-                }
-                catch (BedResException e)
-                {
-                   response = BedResExceptionMapper.MapToResponse(e);
-                }
-
+                
                 return response;
              }
 

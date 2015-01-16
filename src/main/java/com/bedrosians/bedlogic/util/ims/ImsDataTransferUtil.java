@@ -40,10 +40,12 @@ public class ImsDataTransferUtil {
 		if(itemToDB == null) 
 		   itemToDB = new Ims(itemFromInput.getItemcode().toUpperCase());		
 		transferProperty(itemToDB, itemFromInput, operation);
-		if(operation != null && operation.equals(DBOperation.CREATE))
-	  	   transferComponent(itemToDB, itemFromInput);
-		else if(operation != null && operation.equals(DBOperation.UPDATE))		
-		   transferComponentForUpdate(itemToDB, itemFromInput);
+		if(operation != null){
+		   if(operation.equals(DBOperation.CREATE))
+	  	      transferComponent(itemToDB, itemFromInput);
+		   else if(operation.equals(DBOperation.UPDATE))		
+		      transferComponentForUpdate(itemToDB, itemFromInput);
+		}   
 		transferAssociation(itemToDB, itemFromInput, operation);	
 		return itemToDB;
 	}
@@ -98,7 +100,7 @@ public class ImsDataTransferUtil {
   		     (operation.equals(DBOperation.UPDATE) && (itemToDB.getNewVendorSystem() == null || itemToDB.getNewVendorSystem().isEmpty()))){ //existing item, but brand new ItemVendors
   			  for(Vendor vendor : inputItemVendors){
   			      if(vendor != null && !vendor.isEmpty()){
-  			    	ImsDataUtil.setCalculatedVendorData(itemFromInput, vendor); 
+  			    	 vendor = ImsDataUtil.setCalculatedVendorData(itemFromInput, vendor); 
   				     itemToDB.addNewVendorSystem(vendor);	
   				     //Populate vendor info in ims
   				     if((legancyVendorInfo == null || legancyVendorInfo.getVendornbr1() == null || legancyVendorInfo.getVendornbr1() == 0) && vendor.getVendorOrder() == 1){
@@ -329,15 +331,15 @@ public class ImsDataTransferUtil {
 			if(itemFromInput.getTaxclass() != null) itemToDB.setTaxclass(itemFromInput.getTaxclass());
 			if(itemFromInput.getUpdatecode() != null) itemToDB.setUpdatecode(itemFromInput.getUpdatecode());
 			if(itemFromInput.getProductline() != null) itemToDB.setProductline(itemFromInput.getProductline());
-			//if(itemFromInput.getPriorlastupdated() != null) itemToDB.setPriorlastupdated(itemFromInput.getPriorlastupdated());
-			if(operation.equals(DBOperation.UPDATE))
-			   itemToDB.setPriorlastupdated(new Date());
-			//if(itemFromInput.getSubtype() != null) itemToDB.setSubtype(itemFromInput.getSubtype());
-			//if(itemFromInput.getType() != null) itemToDB.setType(itemFromInput.getType());
+			if(operation.equals(DBOperation.UPDATE)) itemToDB.setPriorlastupdated(new Date());
 			if(itemFromInput.getColorcategory() != null && !itemFromInput.getColorcategory().isEmpty())
 				itemToDB.setColorcategory(itemFromInput.getColorcategory());
 			else if(itemFromInput.getColorhues() != null || !itemFromInput.getColorhues().isEmpty())
 			   	itemToDB.setColorcategory(ImsDataUtil.convertColorHuesToColorCategory(itemFromInput.getColorhues()));
+			
+			//if(itemFromInput.getSubtype() != null) itemToDB.setSubtype(itemFromInput.getSubtype());
+			//if(itemFromInput.getType() != null) itemToDB.setType(itemFromInput.getType());
+			//if(itemFromInput.getPriorlastupdated() != null) itemToDB.setPriorlastupdated(itemFromInput.getPriorlastupdated());
 		  }
 		  catch(Exception e){
 				  throw new InputParamException("Error occured while transferProperty(): " + e.getMessage(), e.getCause());	
@@ -608,7 +610,6 @@ public class ImsDataTransferUtil {
 		   itemToDB.getUnits().setOrdratio(ImsDataUtil.getBaseToOrderRatio(itemFromInput));
 		   itemToDB.getUnits().setStdunit(ImsDataUtil.getStandardSellUnit(itemFromInput));
 		   itemToDB.getUnits().setStdratio(ImsDataUtil.getBaseToSellRatio(itemFromInput));
-		  
 		   //---base unit----//	
 		   if(itemFromInput.getUnits().getBaseisfractqty() != null)
 			  itemToDB.getUnits().setBaseisfractqty(itemFromInput.getUnits().getBaseisfractqty());

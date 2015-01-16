@@ -1,6 +1,5 @@
 package com.bedrosians.bedlogic.service.ims;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -33,8 +32,7 @@ import com.bedrosians.bedlogic.domain.ims.KeymarkVendor;
 import com.bedrosians.bedlogic.domain.ims.Vendor;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Units;
 import com.bedrosians.bedlogic.domain.ims.embeddable.VendorInfo;
-import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
-import com.bedrosians.bedlogic.exception.BedDAOException;
+
 import com.bedrosians.bedlogic.exception.DataNotFoundException;
 import com.bedrosians.bedlogic.exception.DatabaseOperationException;
 import com.bedrosians.bedlogic.exception.InputParamException;
@@ -131,7 +129,7 @@ public class ImsServiceImpl implements ImsService {
     
 	@Loggable(value = LogLevel.INFO)
 	@Override
-	public List<Ims> getItems(MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException, BedDAOException{
+	public List<Ims> getItems(MultivaluedMap<String, String> queryParams){
 		if(queryParams == null || queryParams.isEmpty()){
 			queryParams = new MultivaluedMapImpl();
 			queryParams.put("inactivecode", Arrays.asList(new String[]{"N"}));
@@ -143,15 +141,15 @@ public class ImsServiceImpl implements ImsService {
 		catch(HibernateException hbe){
 			hbe.printStackTrace();
 			if(hbe.getCause() != null)
-		       throw new BedDAOException("Error occured during getItems(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+		       throw new DatabaseOperationException("Error occured during getItems(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
 		  	else
-		  	   throw new BedDAOException("Error occured during getItems(), due to: " +  hbe.getMessage());
+		  	   throw new DatabaseOperationException("Error occured during getItems(), due to: " +  hbe.getMessage(), hbe);
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-		  	   throw new BedDAOException("Error occured during getItems(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+		  	   throw new DatabaseOperationException("Error occured during getItems(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
 		  	else
-		  	   throw new BedDAOException("Error occured during getItems(), due to: " +  e.getMessage());	
+		  	   throw new DatabaseOperationException("Error occured during getItems(), due to: " +  e.getMessage(), e);	
 		}
 		List<Ims> processedItems = new ArrayList<>();
 		for(Ims ims : itemList){
@@ -162,7 +160,7 @@ public class ImsServiceImpl implements ImsService {
 	
 	@Loggable(value = LogLevel.INFO)
 	@Override
-	public List<ItemWrapper> getWrappedItems(MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException, BedDAOException{
+	public List<ItemWrapper> getWrappedItems(MultivaluedMap<String, String> queryParams){
 		if(queryParams == null || queryParams.isEmpty()){
 			queryParams = new MultivaluedMapImpl();
 			queryParams.put("inactivecode", Arrays.asList(new String[]{"N"}));
@@ -174,15 +172,15 @@ public class ImsServiceImpl implements ImsService {
 		catch(HibernateException hbe){
 			hbe.printStackTrace();
 			if(hbe.getCause() != null)
-		       throw new BedDAOException("Error occured during getWrappedItems, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+		       throw new DatabaseOperationException("Error occured during getWrappedItems, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
 		  	else
-		  	   throw new BedDAOException("Error occured during getWrappedItems, due to: " +  hbe.getMessage());
+		  	   throw new DatabaseOperationException("Error occured during getWrappedItems, due to: " +  hbe.getMessage(), hbe);
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-		  	   throw new BedDAOException("Error occured during getWrappedItems, due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+		  	   throw new DatabaseOperationException("Error occured during getWrappedItems, due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
 		  	else
-		  	   throw new BedDAOException("Error occured during getWrappedItems, due to: " +  e.getMessage());	
+		  	   throw new DatabaseOperationException("Error occured during getWrappedItems, due to: " +  e.getMessage(), e);	
 		}
 		List<ItemWrapper> productWrapperList = new ArrayList<ItemWrapper>(itemList.size());
 		for(Ims ims : itemList){
@@ -196,38 +194,12 @@ public class ImsServiceImpl implements ImsService {
 	
 	@Loggable(value = LogLevel.INFO)
 	@Override
-	public String createItem(JSONObject jsonObj) throws BedDAOBadParamException, BedDAOException{  	
+	public String createItem(JSONObject jsonObj) {  	
 		JsonUtil.validateItemCode(jsonObj);
-		String id;
+		String itemCode;
      	Ims itemFromInput = (Ims)JsonUtil.jsonObjectToPOJO(jsonObj, new Ims());
-     	id = createOrUpdateItem(itemFromInput, DBOperation.CREATE);
-     	/*
-     	itemFromInput.setItemcode(itemCode.toUpperCase());
-     	Ims itemToCreate = new Ims(itemCode);
-     	itemToCreate = ImsDataUtil.transformItem(itemToCreate, itemFromInput, DBOperation.CREATE);
-     	ImsValidator.validateNewItem(itemToCreate);
-   	    try{
-		   id = imsDao.createItem(itemToCreate);
-		}
-		catch(HibernateException hbe){
-		   hbe.printStackTrace();
-		   if(hbe.getCause() != null)
-		      throw new BedDAOException("Error occured during createItem(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
-		   else
-		  	  throw new BedDAOException("Error occured during createItem(), due to: " +  hbe.getMessage());	
-	    }	
-   	    catch(Exception e){
-		  e.printStackTrace();
-		  if(e != null && e.getMessage().contains("constraint [item_code]"))
-			  throw new BedDAOBadParamException("Invalid item code, since it is already existing in the database");
-		  else if(e.getMessage().contains("constraint [vendor_apv_fkey]"))
-			  throw new BedDAOBadParamException("Invalid vendor number (ID), since it cannot be found in the vendor table");
-		  else if(e.getCause() != null)
-	  	     throw new BedDAOException("Error occured during createItem(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
-	  	  else
-	  	     throw new BedDAOException("Error occured during createItem(), due to: " +  e.getMessage());	
-      }*/
-	  return id;		 	
+     	itemCode = createOrUpdateItem(itemFromInput, DBOperation.CREATE);
+     	return itemCode;		 	
     }
 	
 	@Loggable(value = LogLevel.INFO)
@@ -286,14 +258,7 @@ public class ImsServiceImpl implements ImsService {
    }
 	
 	//--------------------------------Update DB Operation --------------------------//
-	/*@Loggable(value = LogLevel.INFO)
-	@Override
-	public synchronized void updateItem(JSONObject jsonObj) throws BedDAOBadParamException, BedDAOException{
-		String itemCode = JsonUtil.validateItemCode(jsonObj);
-		Ims itemFromInput = (Ims)JsonUtil.jsonObjectToPOJO(jsonObj, new Ims());
-		createOrUpdateItem(itemFromInput, DBOperation.UPDATE);
-   	}
-	*/	
+	
 	@Loggable(value = LogLevel.INFO)
 	@Override
 	@Transactional(readOnly = false, propagation=Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ) 
@@ -336,7 +301,7 @@ public class ImsServiceImpl implements ImsService {
 		      throw new DatabaseOperationException("Error occured during updateItem(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
 		   else
 			  throw new DatabaseOperationException("Error occured during updateItem(), due to: " +  e.getMessage());	
-		   }
+		}
 	}
 	
 	//--------------------------------Deletion DB Operation --------------------------//
@@ -370,16 +335,16 @@ public class ImsServiceImpl implements ImsService {
 	
 	@Loggable(value = LogLevel.INFO)
 	@Override
-	synchronized public void deleteItem(JSONObject jsonObj) throws BedDAOBadParamException, BedDAOException{
+	synchronized public void deleteItem(JSONObject jsonObj){
 		String itemCode = JsonUtil.validateItemCode(jsonObj);
 		deleteItemByItemCode(itemCode);
 	}
 	
 	@Loggable(value = LogLevel.INFO)
 	@Override
-	synchronized public void deleteItem(Ims item) throws BedDAOBadParamException, BedDAOException{
+	synchronized public void deleteItem(Ims item){
 		 if(item.getItemcode() == null || item.getItemcode().length() == 0)
-	    	 throw new BedDAOBadParamException("Item code should not be empty");
+	    	 throw new InputParamException("Item code should not be empty");
 		imsDao.deleteItem(item);
 	}
 
@@ -388,7 +353,7 @@ public class ImsServiceImpl implements ImsService {
 	@Loggable(value = LogLevel.INFO)
 	@Override
 	@Transactional(readOnly = false, propagation=Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ) 
-	public synchronized void deactivateItem(Ims itemFromInput) throws BedDAOBadParamException, BedDAOException{
+	public synchronized void deactivateItem(Ims itemFromInput){
 		Ims itemToUpdate = null;
 		Session session = getSession();
 		try{
@@ -396,16 +361,16 @@ public class ImsServiceImpl implements ImsService {
 		}
 	    catch(HibernateException hbe){
 		    hbe.printStackTrace();
-		    throw new BedDAOException("Error occured during updateProduct() due to: " + hbe.getMessage(), hbe);
+		    throw new DatabaseOperationException("Error occured during updateProduct() due to: " + hbe.getMessage(), hbe);
 	    }
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-		  	   throw new BedDAOException("Error occured during updateItem(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+		  	   throw new DatabaseOperationException("Error occured during updateItem(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
 		  	else
-		  	   throw new BedDAOException("Error occured during updateItem(), due to: " +  e.getMessage());	
+		  	   throw new DatabaseOperationException("Error occured during updateItem(), due to: " +  e.getMessage());	
 		}
 		if(itemToUpdate == null)
-	       throw new BedDAOException("No data found for the given item code: " + itemFromInput.getItemcode());	 
+	       throw new DataNotFoundException("No data found for the given item code: " + itemFromInput.getItemcode());	 
 		
 		itemToUpdate.setInactivecode("Y");
   	    ImsValidator.validateNewItem(itemToUpdate);
@@ -414,18 +379,18 @@ public class ImsServiceImpl implements ImsService {
 	 	}
     	catch(HibernateException hbe){
      	      if(hbe.getCause() != null)
- 		         throw new BedDAOException("Error occured during updateItem, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+ 		         throw new DatabaseOperationException("Error occured during updateItem, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
  		      else
- 		  	     throw new BedDAOException("Error occured during updateItem, due to: " +  hbe.getMessage());	
+ 		  	     throw new DatabaseOperationException("Error occured during updateItem, due to: " +  hbe.getMessage(), hbe);	
  	    }	
     	catch(Exception e){
 			  if(e.getMessage().contains("constraint [vendor_apv_fkey]"))
-			     throw new BedDAOBadParamException("Invalid vendor number (ID), since it cannot be found in the vendor table");
+			     throw new InputParamException("Invalid vendor number (ID), since it cannot be found in the vendor table", e);
 			  if(e.getCause() != null)
-		         throw new BedDAOException("Error occured during updateItem(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+		         throw new DatabaseOperationException("Error occured during updateItem(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
 		  	  else
-			     throw new BedDAOException("Error occured during updateItem(), due to: " +  e.getMessage());	
-		   }	   
+			     throw new DatabaseOperationException("Error occured during updateItem(), due to: " +  e.getMessage(), e);	
+	    }	   
 	}
 
 	/************************* Keymark Vender DB Operation ************************/
@@ -623,30 +588,14 @@ private void processVendor(Ims item, DBOperation dBOperation){
  		for(Vendor vendor : vendors){
  			if(vendor.getId() != null){ //populated legacy vendor fields
  			   //if(vendor.getId().equals(item.getVendors().getVendornbr1()) && (DBOperation.UPDATE.equals(dBOperation) || DBOperation.CLONE.equals(dBOperation)))	
- 			   ImsDataUtil.setCalculatedVendorData(item, vendor);
+ 			   vendor = ImsDataUtil.setCalculatedVendorData(item, vendor);
  			   item.addNewVendorSystem(vendor);
        		   if(vendor.getVendorOrder() == 1)
        			  lagancyVendor = ImsDataUtil.convertNewVendorToLegancyVendorInfo(vendor); 
        		   else if(vendor.getVendorOrder() == 2)
        			  lagancyVendor.setVendornbr2(vendor.getId()); 
  			}  
- 			/*if(vendor.getVendorListPrice() != null){ //calculate net price
-				if(vendor.getVendorDiscountPct() != null){
-			       BigDecimal netPrice = new BigDecimal(vendor.getVendorListPrice().floatValue() * ((100 - vendor.getVendorDiscountPct())/100.00));
-			       vendor.setVendorNetPrice(netPrice);
-			       if(item.getUnits() != null && item.getUnits().getStdratio() != null && item.getUnits().getBasewgtperunit() != null){
-			          BigDecimal landedBaseCost = new BigDecimal(netPrice.floatValue() * 
-			    		                                         ((100 + vendor.getVendorMarkupPct())/100.00/item.getUnits().getStdratio()) + 
-			    		                                         vendor.getVendorFreightRateCwt() *
-			    		                                         item.getUnits().getBasewgtperunit().floatValue()/100.00);
-			          vendor.setVendorLandedBaseCost(landedBaseCost);
-			       }   
-				}   
-				else 
-				   vendor.setVendorNetPrice(vendor.getVendorListPrice());
-			} //NEW.vendornetprice := NEW.vendorlistprice * (100.00 - NEW.vendordiscpct1) * (100.00 - NEW.vendordiscpct2) * (100.00 - NEW.vendordiscpct3) / 1000000;
- 			  //NEW.vendornetprice := round(NEW.vendornetprice, CAST (NEW.vendorroundaccuracy AS INTEGER));*/
- 		}	
+  		}	
        	item.setVendors(lagancyVendor);  
    	}
  	

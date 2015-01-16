@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bedrosians.bedlogic.dao.user.KeymarkUcUserDao;
 import com.bedrosians.bedlogic.domain.user.KeymarkUcUser;
-import com.bedrosians.bedlogic.exception.BedDAOException;
+import com.bedrosians.bedlogic.exception.DatabaseOperationException;
 
 
 @Service("keymarkUcUserService")
@@ -34,7 +34,7 @@ public class KeymarkUcUserServiceImpl implements KeymarkUcUserService{
 	
 	@Override
 	@Transactional(readOnly=true)
-	public KeymarkUcUser getUserByUserCode(String userCode)throws BedDAOException {
+	public KeymarkUcUser getUserByUserCode(String userCode)throws DatabaseOperationException {
 		KeymarkUcUser user = null;
 		Session session = sessionFactory.openSession();
 	    try {
@@ -42,7 +42,7 @@ public class KeymarkUcUserServiceImpl implements KeymarkUcUserService{
 	    }
 	    catch(HibernateException hbe){
 			hbe.printStackTrace();
-			throw new BedDAOException("Error occured during getUserByUserCode due to: " + hbe.getMessage(), hbe);
+			throw new DatabaseOperationException("Error occured during getUserByUserCode due to: " + hbe.getMessage(), hbe);
 		}
 	    return user;
 	}

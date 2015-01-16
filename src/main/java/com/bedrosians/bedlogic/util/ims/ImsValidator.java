@@ -7,22 +7,20 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Units;
-import com.bedrosians.bedlogic.exception.BedDAOBadParamException;
-import com.bedrosians.bedlogic.exception.DatabaseOperationException;
 import com.bedrosians.bedlogic.exception.InputParamException;
 
 
 public class ImsValidator {
 
-	public static void validateQueryParams(MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException{
+	public static void validateQueryParams(MultivaluedMap<String, String> queryParams) {
 		validateForNullParams(queryParams);	
 	}
 	
-	public static void validateInsertUpdateParams( MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException{
+	public static void validateInsertUpdateParams( MultivaluedMap<String, String> queryParams) {
 		validateForNullParams(queryParams);		
 	}
 	
-	public static void validateNewItem(Ims item) throws BedDAOBadParamException{
+	public static void validateNewItem(Ims item){
 		if(item == null)
 		   throw new InputParamException("Item should not be null.");
 		validateItemCode(item);
@@ -39,7 +37,7 @@ public class ImsValidator {
 		   throw new InputParamException("Item code cannot be empty and should be less than 18 characters"         );
 		item.setItemcode(item.getItemcode().toUpperCase());
 		//if(!product.getItemcode().matches("^[a-zA-Z0-9-]*$"))
-		//   throw new BedDAOBadParamException("Product code cannot contain any special characters, other than letters, numbers and dashes");
+		//   throw new InputParamException("Product code cannot contain any special characters, other than letters, numbers and dashes");
 	}
 	
 	public static void validateRequiredProperties(Ims item){
@@ -49,34 +47,34 @@ public class ImsValidator {
 		   throw new InputParamException("Missing ItemCategory!");
 	}
 		 
-	private static void validateForNullParams(MultivaluedMap<String, String> queryParams) throws BedDAOBadParamException{
+	private static void validateForNullParams(MultivaluedMap<String, String> queryParams) {
 		if(queryParams == null || queryParams.isEmpty())
-		   throw new BedDAOBadParamException("Please enter valid query parameters!");	
+		   throw new InputParamException("Please enter valid query parameters!");	
 	}
 	
-	public static void validateFieldLength(Ims item) throws BedDAOBadParamException{
+	public static void validateFieldLength(Ims item){
 		if(item.getMaterial() != null && item.getMaterial().getMaterialclass() != null && item.getMaterial().getMaterialclass().length() > 5)
-		   throw new BedDAOBadParamException("Matrial class code should not be longer that 5 characters.");
+		   throw new InputParamException("Matrial class code should not be longer that 5 characters.");
 		if(item.getMaterial() != null && item.getMaterial().getMaterialstyle() != null && item.getMaterial().getMaterialstyle().length() > 7 )
-		   throw new BedDAOBadParamException("Matrial style should not be longer that 7 characters.");
+		   throw new InputParamException("Matrial style should not be longer that 7 characters.");
 		if(item.getItemdesc() != null && item.getItemdesc().getItemdesc1() != null && item.getItemdesc().getItemdesc1().length() > 35)
-		   throw new BedDAOBadParamException("Description should not be longer that 35 characters.");
+		   throw new InputParamException("Description should not be longer that 35 characters.");
 		if(item.getPurchasers() != null && item.getPurchasers().getPurchaser() != null && item.getPurchasers().getPurchaser().length() > 10)
-		   throw new BedDAOBadParamException("Purchaser should not be longer that 10 characters.");
+		   throw new InputParamException("Purchaser should not be longer that 10 characters.");
 		if(item.getPurchasers() != null && item.getPurchasers().getPurchaser2() != null && item.getPurchasers().getPurchaser2().length() > 10)
-		   throw new BedDAOBadParamException("Purchaser2 should not be longer that 10 characters.");
+		   throw new InputParamException("Purchaser2 should not be longer that 10 characters.");
 		if(item.getIconsystem() != null && item.getIconsystem().length() > 20)
-		   throw new BedDAOBadParamException("Icons should not be longer than 20 charactors.");
+		   throw new InputParamException("Icons should not be longer than 20 charactors.");
 		if(item.getPrice() != null && item.getPrice().getPricegroup() != null && item.getPrice().getPricegroup().length() > 2)
-		   throw new BedDAOBadParamException("Pricegroup length should be two charactors or less.");
+		   throw new InputParamException("Pricegroup length should be two charactors or less.");
 		if(item.getItemgroupnbr() != null && item.getItemgroupnbr() > 99)
-		   throw new BedDAOBadParamException("Itemgroupnbr length should be two digits or less.");
+		   throw new InputParamException("Itemgroupnbr length should be two digits or less.");
 		//if(product.getVendors().getVendornbr1() != null && (product.getVendors().getVendornbr1() < 1 || String.valueOf(product.getVendors().getVendornbr1()).length() > 6))
-		//   throw new BedDAOBadParamException("Vendor number should not be empty and not longer than 6.");
+		//   throw new InputParamException("Vendor number should not be empty and not longer than 6.");
 		//if(product.getNewVendorSystem() != null && !product.getNewVendorSystem().isEmpty()){
 		//	for(ProductVendor vendor : product.getNewVendorSystem()){
 		//		if((vendor.getItemVendorId() != null) && (vendor.getItemVendorId().getVendorId() < 1 || String.valueOf(vendor.getItemVendorId().getVendorId()).length() > 6))
-		//				throw new BedDAOBadParamException("Vendor number should not be empty and not longer than 6.");
+		//				throw new InputParamException("Vendor number should not be empty and not longer than 6.");
 		//	}
 		//}			   
 		validateCharacter("lottype", item.getLottype()); 
@@ -99,25 +97,25 @@ public class ImsValidator {
 		   validateCharacter("thermal shock", item.getTestSpecification().getThermalshock());
 	}
 	
-	public static void validateCharacter(String name, Character value) throws BedDAOBadParamException {
+	public static void validateCharacter(String name, Character value) {
 		if(value != null && !(value instanceof Character))
-		   throw new BedDAOBadParamException(name + " should be Character type.");
+		   throw new InputParamException(name + " should be Character type.");
 	}
 	
-	public static void validateCharacter(String name, String value) throws BedDAOBadParamException {
+	public static void validateCharacter(String name, String value) {
 		if(value != null && value.length() > 1)
-		   throw new BedDAOBadParamException(name + " is " + value + ". It should be one character.");
+		   throw new InputParamException(name + " is " + value + ". It should be one character.");
 	}	
 
-	public static void validateDates(Date startDate, Date endDate) throws BedDAOBadParamException{
+	public static void validateDates(Date startDate, Date endDate) {
 		if(startDate == null && endDate != null)
-			throw new BedDAOBadParamException("Start date is missing.");
+			throw new InputParamException("Start date is missing.");
 		if (startDate != null && endDate != null && startDate.after(endDate))
-			throw new BedDAOBadParamException("End date should not be earlier than start date.");
+			throw new InputParamException("End date should not be earlier than start date.");
 	}
 	
 	//Validate new product against the item table CHECK constraints
-	public static void validateNewItemUnit(Ims item) throws BedDAOBadParamException{
+	public static void validateNewItemUnit(Ims item) {
 	    if(item.getUnits() == null || item.getUnits().isDefault() || item.getUnits().getBasewgtperunit() == null) 
 	       return;
 	
@@ -125,38 +123,37 @@ public class ImsValidator {
 	    validateStandardSellUnit(item);
 	    Units units = item.getUnits();
 	 	if(item.getUnits().getBaseunit() == null || item.getUnits().getBaseunit().trim().length() < 1)
-		  // throw new BedDAOBadParamException("BaseUnit cannot be null.");
-			item.getUnits().setBaseunit("PCS");
+		   item.getUnits().setBaseunit("PCS");
 		
 		if((units.getBaseunit() != null && units.getBaseunit().length() > 4) || 
 		   (units.getUnit1unit() != null && units.getUnit1unit().length() > 4) ||
 		   (units.getUnit2unit() != null && units.getUnit2unit().length() > 4) ||
 		   (units.getUnit3unit() != null && units.getUnit3unit().length() > 4) ||
 		   (units.getUnit4unit() != null && units.getUnit4unit().length() > 4))
-			throw new BedDAOBadParamException("Unit cannot be longer than four characters.");
+			throw new InputParamException("Unit cannot be longer than four characters.");
 		//db constraint ims_check 1
 		if((units.getUnit1unit() == null || units.getUnit1unit().trim().length() == 0) && (units.getUnit1ratio() != null && units.getUnit1ratio() > 0))
-			throw new BedDAOBadParamException("Unit1 ratio should be 0, since unit1 unit is empty.");
+			throw new InputParamException("Unit1 ratio should be 0, since unit1 unit is empty.");
 		if((units.getUnit1unit() != null && units.getUnit1unit().length() > 0) && units.getUnit1ratio() <= 0)
-			throw new BedDAOBadParamException("Please provide Unit1 ratio.");
+			throw new InputParamException("Please provide Unit1 ratio.");
 		
 		//db constraint ims_check 2
 		if((units.getUnit2unit() == null || units.getUnit2unit().trim().length() == 0) && (units.getUnit2ratio() != null && units.getUnit2ratio() > 0))
-			throw new BedDAOBadParamException("Unit2 ratio should be 0, since unit2 unit is empty.");
+			throw new InputParamException("Unit2 ratio should be 0, since unit2 unit is empty.");
 		if((units.getUnit2unit() != null && units.getUnit2unit().length() > 0) && units.getUnit2ratio() <= 0)
-			throw new BedDAOBadParamException("Please provide Unit2 ratio.");
+			throw new InputParamException("Please provide Unit2 ratio.");
 	
 		//db constraint ims_check 3
 		if((units.getUnit3unit() == null || units.getUnit3unit().trim().length() == 0) && (units.getUnit3ratio()  != null && units.getUnit3ratio() > 0))
-			throw new BedDAOBadParamException("Unit3 ratio should be 0, since unit3 unit is empty.");
+			throw new InputParamException("Unit3 ratio should be 0, since unit3 unit is empty.");
 		if((units.getUnit3unit() != null && units.getUnit3unit().trim().length() > 0) && units.getUnit3ratio() <= 0)
-			throw new BedDAOBadParamException("Please provide Unit3 ratio.");
+			throw new InputParamException("Please provide Unit3 ratio.");
 				
 		//db constraint ims_check 4
 		if((units.getUnit4unit() == null || units.getUnit4unit().trim().length() == 0) && (units.getUnit4ratio() != null && units.getUnit4ratio() > 0))
-			throw new BedDAOBadParamException("Unit4 ratio should be 0, since unit4 unit is empty.");
+			throw new InputParamException("Unit4 ratio should be 0, since unit4 unit is empty.");
 		if((units.getUnit4unit() != null && units.getUnit4unit().trim().length() > 0) && units.getUnit4ratio() <= 0)
-			throw new BedDAOBadParamException("Please provide Unit4 ratio.");		   
+			throw new InputParamException("Please provide Unit4 ratio.");		   
 		
 	 	//db constraint ims_check 5
 		  /*CONSTRAINT ims_check5 CHECK (((((((((((((((((((
@@ -184,53 +181,47 @@ public class ImsValidator {
 		        	(listpricemarginpct <> (100)::numeric))
 		  */
          if(item.getVendors().getVendorpriceunit() == null || item.getVendors().getVendorpriceunit().length() == 0 || item.getVendors().getVendorpriceunit().length() > 4){
-        	 throw new BedDAOBadParamException("According to item table requirments, Vendor price unit shoud not be null and its length shoud be 4 or less characters.");
+        	 throw new InputParamException("According to item table requirments, Vendor price unit shoud not be null and its length shoud be 4 or less characters.");
          }
          if(!item.getVendors().getVendorpriceunit().equalsIgnoreCase(item.getUnits().getBaseunit()) && 
         	!item.getVendors().getVendorpriceunit().equalsIgnoreCase(item.getUnits().getUnit1unit()) &&
         	!item.getVendors().getVendorpriceunit().equalsIgnoreCase(item.getUnits().getUnit2unit()) &&
         	!item.getVendors().getVendorpriceunit().equalsIgnoreCase(item.getUnits().getUnit3unit()) &&
         	!item.getVendors().getVendorpriceunit().equalsIgnoreCase(item.getUnits().getUnit4unit())) {
-        	/* System.out.println("Vendorpriceunit = " + item.getVendors().getVendorpriceunit());
-        	 System.out.println("Base unit = " + item.getUnits().getBaseunit());
-        	 System.out.println("Unit 1 unit = " + item.getUnits().getUnit1unit());
-        	 System.out.println("Unit 2 unit = " + item.getUnits().getUnit2unit());
-        	 System.out.println("Unit 3 unit = " + item.getUnits().getUnit3unit());
-        	 System.out.println("Unit 4 unit = " + item.getUnits().getUnit4unit());*/
-           throw new BedDAOBadParamException("According to item table requirments, vendor price unit should match one of the unit's packaging unit."); 	 
+            throw new InputParamException("According to item table requirments, vendor price unit should match one of the unit's packaging unit."); 	 
          }
          if(item.getVendors().getVendorlistprice() == null){
-           	throw new BedDAOBadParamException("According to item table requirments, Vendor list price should not be null.");  
+           	throw new InputParamException("According to item table requirments, Vendor list price should not be null.");  
          }
          if(item.getVendors().getVendordiscpct() == null || item.getVendors().getVendordiscpct2() == null || item.getVendors().getVendordiscpct3() == null){
-        	 throw new BedDAOBadParamException("According to item table requirments, Vendor discount percent (1--3) should not be null.");  
+        	 throw new InputParamException("According to item table requirments, Vendor discount percent (1--3) should not be null.");  
          }
          if(item.getVendors().getVendorroundaccuracy() == null || item.getVendors().getVendorroundaccuracy() < 0 || item.getVendors().getVendorroundaccuracy() > 100){
-        	 throw new BedDAOBadParamException("According to item table requirments, Vendor round accuracy should be 0 to 100.");   
+        	 throw new InputParamException("According to item table requirments, Vendor round accuracy should be 0 to 100.");   
          }
          if(item.getVendors().getVendornetprice() == null){
-        	 throw new BedDAOBadParamException("According to item table requirments, Vendor net price should not be null.");  
+        	 throw new InputParamException("According to item table requirments, Vendor net price should not be null.");  
          }
          if(item.getVendors().getVendormarkuppct() == null){
-        	 throw new BedDAOBadParamException("According to item table requirments, Vendor markup percent should not be null.");  
+        	 throw new InputParamException("According to item table requirments, Vendor markup percent should not be null.");  
          }
          if(item.getVendors().getVendorfreightratecwt() == null){
-        	 throw new BedDAOBadParamException("According to item table requirments, Vendor freight rate cwt should not be null.");   
+        	 throw new InputParamException("According to item table requirments, Vendor freight rate cwt should not be null.");   
          }
          if(item.getVendors().getVendorlandedbasecost() == null){
-        	 throw new BedDAOBadParamException("According to item table requirments, Vendor landed base cost should not be null.");
+        	 throw new InputParamException("According to item table requirments, Vendor landed base cost should not be null.");
          }
          if(item.getPrice().getSellpricemarginpct() == null || item.getPrice().getSellpricemarginpct().longValue() < 0 || item.getPrice().getSellpricemarginpct().longValue() > 100){
-        	throw new BedDAOBadParamException("According to item table requirments, Sell price margine percent should not be null and shoud be 0 to 100..");
+        	throw new InputParamException("According to item table requirments, Sell price margine percent should not be null and shoud be 0 to 100..");
          }
          if(item.getPrice().getListpricemarginpct() == null || item.getPrice().getListpricemarginpct().longValue() < 0 || item.getPrice().getListpricemarginpct().longValue() > 100){
-        	 throw new BedDAOBadParamException("According to item table requirments, List price margine percent should not be null and shoud be 0 to 100.");
+        	 throw new InputParamException("According to item table requirments, List price margine percent should not be null and shoud be 0 to 100.");
          }
          if(item.getPrice().getListpricemarginpct().longValue() >= 100) {
-        	 throw new BedDAOBadParamException("According to item table requirments, List price margine percent should be 0 to 100.");
+        	 throw new InputParamException("According to item table requirments, List price margine percent should be 0 to 100.");
          }		
          if((item.getPrice().getSellpriceroundaccuracy() == null) || item.getPrice().getSellpriceroundaccuracy() < 0 || item.getPrice().getSellpriceroundaccuracy() > 100){
-        	throw new BedDAOBadParamException("According to item table requirments, List price round accuracy should be 0 to 100.");
+        	throw new InputParamException("According to item table requirments, List price round accuracy should be 0 to 100.");
          }
           
 		//item check 6
@@ -239,10 +230,10 @@ public class ImsValidator {
 	       (item.getUnits().getUnit2unit() != null && validateUnitName(item.getUnits().getUnit2unit())) ||
 	       (item.getUnits().getUnit3unit() != null && validateUnitName(item.getUnits().getUnit3unit())) ||
 	       (item.getUnits().getUnit4unit() != null && validateUnitName(item.getUnits().getUnit4unit())))
-	    	 throw new BedDAOBadParamException("Unit or unit ratio is wrong.");
+	    	 throw new InputParamException("Unit or unit ratio is wrong.");
 	}
 	
-	public static void validateStandardOrderUnit(Ims item) throws BedDAOBadParamException{
+	public static void validateStandardOrderUnit(Ims item){
 	    int count = 0;
 	    if(item.getUnits() != null){
 		   if(item.getUnits().getBaseisstdord() != null && (item.getUnits().getBaseisstdord() == 'Y' || item.getUnits().getBaseisstdord() == 'y')) 
@@ -256,13 +247,13 @@ public class ImsValidator {
 		   if(item.getUnits().getUnit4isstdord() != null && (item.getUnits().getUnit4isstdord() == 'Y' || item.getUnits().getUnit4isstdord() == 'y')) 
 			   count++;
 		   if(count < 1)
-		      throw new BedDAOBadParamException("ERROR: Missing Std Order Unit!.");	
+		      throw new InputParamException("ERROR: Missing Std Order Unit!.");	
 		   if(count > 1)
-			  throw new BedDAOBadParamException("ERROR: Multiple Std Order Unit!!.");	
+			  throw new InputParamException("ERROR: Multiple Std Order Unit!!.");	
 	    }   
 	}    	
 	
-	public static void validateStandardSellUnit(Ims item) throws BedDAOBadParamException{
+	public static void validateStandardSellUnit(Ims item) {
 	    int count = 0;
 	    if(item.getUnits() != null){
 		   if(item.getUnits().getBaseisstdsell() != null && (item.getUnits().getBaseisstdsell() == 'Y' || item.getUnits().getBaseisstdsell() == 'y')) 
@@ -276,9 +267,9 @@ public class ImsValidator {
 		   if(item.getUnits().getUnit4isstdsell() != null && (item.getUnits().getUnit4isstdsell() == 'Y' || item.getUnits().getUnit4isstdsell() == 'y')) 
 			   count++;
 		   if(count < 1)
-			 throw new BedDAOBadParamException("ERROR: Missing Std Sell Unit!.");	
+			 throw new InputParamException("ERROR: Missing Std Sell Unit!.");	
 		   if(count > 1)
-			 throw new BedDAOBadParamException("ERROR: Multiple Std Sell Unit!!.");
+			 throw new InputParamException("ERROR: Multiple Std Sell Unit!!.");
 	    }   
 	}    	
 		

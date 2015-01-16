@@ -4,8 +4,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MediaType;
 
 
-import com.bedrosians.bedlogic.exception.*;
-
 public class BedDAOExceptionMapper
 {
     public static Response MapToResponse(BedDAOException theException)
