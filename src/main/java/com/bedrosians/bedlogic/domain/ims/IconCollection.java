@@ -387,5 +387,23 @@ public class IconCollection implements java.io.Serializable {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "IconCollection ["
+				+ "itemCode=" + itemCode + ", madeInCountry="
+				+ madeInCountry + ", exteriorProduct=" + exteriorProduct
+				+ ", adaAccessibility=" + adaAccessibility + ", throughColor="
+				+ throughColor + ", colorBody=" + colorBody + ", inkJet="
+				+ inkJet + ", glazed=" + glazed + ", unglazed=" + unglazed
+				+ ", rectifiedEdge=" + rectifiedEdge + ", chiseledEdge="
+				+ chiseledEdge + ", versaillesPattern=" + versaillesPattern
+				+ ", recycled=" + recycled + ", postRecycled=" + postRecycled
+				+ ", preRecycled=" + preRecycled + ", leadPoint=" + leadPoint
+				+ ", greenFriendly=" + greenFriendly
+				+ ", coefficientOfFriction=" + coefficientOfFriction + "]";
+	}
+	
+	
 	
 }

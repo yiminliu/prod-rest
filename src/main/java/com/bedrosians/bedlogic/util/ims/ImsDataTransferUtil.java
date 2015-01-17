@@ -1,13 +1,11 @@
 package com.bedrosians.bedlogic.util.ims;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
+import com.bedrosians.bedlogic.dao.ims.ColorHueDao;
+import com.bedrosians.bedlogic.dao.ims.ColorHueDaoImpl;
 import com.bedrosians.bedlogic.domain.ims.ColorHue;
 import com.bedrosians.bedlogic.domain.ims.IconCollection;
 import com.bedrosians.bedlogic.domain.ims.Ims;
@@ -18,7 +16,6 @@ import com.bedrosians.bedlogic.domain.ims.embeddable.Cost;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Dimensions;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Material;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Notes;
-import com.bedrosians.bedlogic.domain.ims.embeddable.PackagingInfo;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Price;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Purchasers;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Series;
@@ -26,14 +23,12 @@ import com.bedrosians.bedlogic.domain.ims.embeddable.SimilarItemCode;
 import com.bedrosians.bedlogic.domain.ims.embeddable.TestSpecification;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Units;
 import com.bedrosians.bedlogic.domain.ims.embeddable.VendorInfo;
-import com.bedrosians.bedlogic.domain.ims.enums.MpsCode;
-import com.bedrosians.bedlogic.domain.ims.enums.OriginCountry;
 import com.bedrosians.bedlogic.exception.InputParamException;
 import com.bedrosians.bedlogic.util.enums.DBOperation;
 
 
 public class ImsDataTransferUtil {
-
+	
 	public static Ims transferItemInfo(Ims itemToDB, Ims itemFromInput, DBOperation operation){
 		if(itemFromInput == null)
 	       throw new InputParamException("The input is empty, nothing to " + operation.getDescription());	
@@ -54,7 +49,7 @@ public class ImsDataTransferUtil {
 	  try{
 	 	 transferImsNewFeature(itemToDB, itemFromInput, operation); 
 		 transferIconCollection(itemToDB, itemFromInput, operation);
-		 transferColorHues(itemToDB, itemFromInput, operation);
+		 //transferColorHues(itemToDB, itemFromInput, operation);
 		 transferNewVendorSystem(itemToDB, itemFromInput, operation);
 	  }
 	  catch(Exception e){
@@ -79,13 +74,26 @@ public class ImsDataTransferUtil {
 		  }
 	 	  /*** update existing colorHue ***/
 		  else if(operation.equals(DBOperation.UPDATE)){
-		    for(int i = 0; i < inputColorHues.size(); i++){
-			    ColorHue colorHue = inputColorHues.get(i);
-			    if(i >= itemToDB.getColorhues().size())
-				   itemToDB.getColorhues().add(i, new ColorHue(itemToDB.getItemcode(), itemToDB)); 
-			    if(colorHue.getColorHue() != null) 
-				   itemToDB.getColorhues().get(i).setColorHue(colorHue.getColorHue());
-		    }	   
+			  int inputColorHueSize = inputColorHues.size();
+			  int existingColorHueSize = itemToDB.getColorhues().size();
+			  if(inputColorHueSize < itemToDB.getColorhues().size()) {
+				 ColorHueDao colorHueDao = new ColorHueDaoImpl(); 
+				 while(inputColorHueSize < existingColorHueSize){
+			        for(ColorHue colorHue: itemToDB.getColorhues()){
+			           //if(!item.getColors().contains(colorHue.getColorHue())){
+		    		    //colorhues.remove(colorHue);
+		    		    colorHue.setItem(null);
+		    		    colorHueDao.deleteColorHue(colorHue, true);
+			        }    
+		    	 }   
+		       }
+			   for(int i = 0; i < inputColorHues.size(); i++){
+			       ColorHue colorHue = inputColorHues.get(i);
+			       if(i >= itemToDB.getColorhues().size())
+				      itemToDB.getColorhues().add(i, new ColorHue(itemToDB.getItemcode(), itemToDB)); 
+			       if(colorHue.getColorHue() != null) 
+				      itemToDB.getColorhues().get(i).setColorHue(colorHue.getColorHue());
+		       }	   
 		  }
 	  }
 	}

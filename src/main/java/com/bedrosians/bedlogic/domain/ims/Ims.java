@@ -19,14 +19,12 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.Version;
-//import javax.validation.constraints.Size;
 
 import javax.validation.constraints.Size;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Fetch;
@@ -121,7 +119,6 @@ public class Ims implements java.io.Serializable {
   	private Cost cost;
   	private SimilarItemCode relateditemcodes;
   	private VendorInfo vendors = new VendorInfo();
-  	//private PriorVendor priorVendor;
   	
 	//------- Associations --------//
   	//@OrderBy("vendorOrder ASC") 
@@ -130,7 +127,6 @@ public class Ims implements java.io.Serializable {
     private IconCollection iconDescription;
 	private List<ColorHue> colorhues =  new CopyOnWriteArrayList<>();
 	private List<String> colors =  new ArrayList<>();
-  	//private List<Note> newNoteSystem = new ArrayList<>();
      	
 	private String colorHueString;
 	
@@ -432,7 +428,6 @@ public class Ims implements java.io.Serializable {
 		if(colors == null || colors.isEmpty())
 		   colors = ImsDataUtil.convertColorCategoryToStringList(colorcategory);	
 		return colors;
-		//return ImsDataUtil.convertColorCategoryToStringList(colorcategory);
 	}
 	
 	@JsonIgnore
@@ -498,8 +493,6 @@ public class Ims implements java.io.Serializable {
 	}
 	
 	@OneToOne(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-	//@OneToOne(fetch = FetchType.EAGER, mappedBy = "item")
-	//@Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.MERGE, org.hibernate.annotations.CascadeType.EVICT, org.hibernate.annotations.CascadeType.DELETE})
 	@Fetch(FetchMode.JOIN)
 	//@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	@IndexedEmbedded
@@ -569,7 +562,7 @@ public class Ims implements java.io.Serializable {
 	//@LazyCollection(LazyCollectionOption.FALSE)
 	@Cache(usage=CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 	@IndexedEmbedded(depth=1)
-	@OneToMany(fetch=FetchType.EAGER, mappedBy="item", cascade={CascadeType.ALL, CascadeType.REMOVE})//, orphanRemoval=true)
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="item", cascade={CascadeType.ALL, CascadeType.REMOVE}, orphanRemoval=true)
 	@Fetch(FetchMode.SUBSELECT)
 	public List<ColorHue> getColorhues() {
 		return this.colorhues;
@@ -585,51 +578,6 @@ public class Ims implements java.io.Serializable {
 			colorhues = new ArrayList<ColorHue>();
 		colorhues.add(colorhue);
 	}
-   
-	/*
-	//@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "ims", cascade = CascadeType.ALL)
-	public List<Note> getNewNoteSystem() {
-		return this.newNoteSystem;
-	}
-
-	public void setNewNoteSystem(List<Note> newNoteSystem) {
-		this.newNoteSystem = newNoteSystem;
-	}
-
-	public void addNote(Note note){
-		if(getNewNoteSystem() != null && getNewNoteSystem().size() < 5)
-			initNotes(5);
-		note.setItem(this);
-		String noteType = note.getNoteType();
-		switch(noteType){
-		   case "po": case "po_note":
-			   getNewNoteSystem().set(0, note);
-			   break;
-		   case "buyer": case "buyer_note":
-	    	   getNewNoteSystem().set(1, note);
-			   break;	
-		   case "invoice": case "invoice_note":
-			   getNewNoteSystem().set(2, note);
-			   break;
-		   case "internal": case "internal_note":
-			   getNewNoteSystem().set(4, note);
-			   break;	
-		   case "additional": case "additional_note":
-			   getNewNoteSystem().set(3, note);
-			   break;	   
-		}
-	}
-
-	public void initNotes(int numberOfNotes){
-		newNoteSystem = Arrays.asList(new Note[numberOfNotes]);
-		for(int i = 0; i < numberOfNotes; i++) {
-			Note note = new Note();
-			note.setItem(this);
-			newNoteSystem.set(i, note);
-		}
-	}	
-	*/
 	
 	@JsonIgnore
 	@Version
@@ -754,30 +702,57 @@ public class Ims implements java.io.Serializable {
 			return false;
 		return true;
 	}
-
 	@Override
 	public String toString() {
-		return "Product "
-				+ "[itemcd=" + itemcode 
-				+ ", productNewFeature=" + newFeature 
-				+ ", abccode=" + abccode 
-				+ ", category=" + itemcategory 
-				+ ", inactivecd=" + inactivecode
-				+ ", itemgroupnbr=" + itemgroupnbr 
-				+ ", itemtypecode=" + itemtypecode 
-				+ ", printlabel=" + printlabel 
-				+ ", productline=" + productline 
-				+ ", updatecode=" + updatecode 
-				+ ", origin=" + countryorigin
-				+ ", shadevariation=" + shadevariation 
-				+ ", showonwebsite=" + showonwebsite
-				+ ", colorcategory=" + colorcategory 
-				+ ", showonalysedwards=" + showonalysedwards 
-				+ ", offshade=" + offshade 
-				+ ", itemcd2=" + itemcode2 
-				+ ", icons=" + iconsystem 
-				+ ", inventoryItemcd=" + inventoryitemcode 
-				+ "]";
+		return "Ims ["
+				+ "itemcode=" + itemcode + ", "
+				+ "itemcategory=" + itemcategory + ", "
+				+ "countryorigin=" + countryorigin + ", "
+				+ "inactivecode=" + inactivecode + ", "
+				+ "shadevariation=" + shadevariation
+				+ ", colorcategory=" + colorcategory + 
+				", showonwebsite=" + showonwebsite + 
+				", iconsystem=" + iconsystem
+				+ ", itemtypecode=" + itemtypecode + 
+				", abccode=" + abccode
+				+ ", itemcode2=" + itemcode2 + 
+				", inventoryitemcode=" + inventoryitemcode + 
+				", showonalysedwards=" + showonalysedwards + 
+				", offshade=" + offshade
+				+ ", printlabel=" + printlabel + 
+				", taxclass=" + taxclass
+				+ ", lottype=" + lottype + 
+				", updatecode=" + updatecode
+				+ ", directship=" + directship + 
+				", dropdate=" + dropdate
+				+ ", productline=" + productline + 
+				", itemgroupnbr=" + itemgroupnbr + 
+				", priorlastupdated=" + priorlastupdated
+				+ ", version=" + version + 
+				", itemdesc=" + itemdesc
+				+ ", series=" + series + 
+				", material=" + material
+				+ ", dimensions=" + dimensions + 
+				", price=" + price
+				+ ", testSpecification=" + testSpecification + 
+				", purchasers=" + purchasers + 
+				", packaginginfo=" + packaginginfo + 
+				", notes=" + notes + 
+				", applications=" + applications + 
+				", usage=" + usage
+				+ ", units=" + units + 
+				", cost=" + cost + 
+				", relateditemcodes=" + relateditemcodes + 
+				", vendors=" + vendors
+				+ ", newVendorSystem=" + newVendorSystem + 
+				", newFeature=" + newFeature + 
+				", iconDescription=" + iconDescription
+				+ ", colorhues=" + colorhues + 
+				", colors=" + colors
+				+ ", colorHueString=" + colorHueString + 
+				"]";
 	}
+
+	
 
 }

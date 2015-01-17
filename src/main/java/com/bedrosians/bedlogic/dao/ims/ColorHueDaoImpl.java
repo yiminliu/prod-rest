@@ -64,8 +64,11 @@ public class ColorHueDaoImpl extends GenericDaoImpl<ColorHue, String> implements
 	@Override
 	@Loggable(value = LogLevel.INFO)
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
-	public void deleteColorHue(ColorHue colorHue){
-		delete(sessionFactory.getCurrentSession(), colorHue); 
+	public void deleteColorHue(ColorHue colorHue, boolean newSession){
+		if(newSession)
+			delete(sessionFactory.openSession(), colorHue); 
+		else
+		    delete(sessionFactory.getCurrentSession(), colorHue);
 	}
-
+	
 }

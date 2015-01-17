@@ -688,4 +688,41 @@ public class KeymarkVendor implements java.io.Serializable {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "KeymarkVendor [vendorNumber=" + vendorNumber + ", name=" + name
+				+ ", addr1=" + addr1 + ", addr2=" + addr2 + ", city=" + city
+				+ ", statecd=" + statecd + ", zip=" + zip + ", countrycd="
+				+ countrycd + ", email=" + email + ", fax=" + fax + ", phone="
+				+ phone + ", alwaysonhold=" + alwaysonhold + ", codea1="
+				+ codea1 + ", codea2=" + codea2 + ", coden1=" + coden1
+				+ ", coden2=" + coden2 + ", daysoffloat=" + daysoffloat
+				+ ", discountpct=" + discountpct + ", fobcd=" + fobcd
+				+ ", glacct=" + glacct + ", inactivecd=" + inactivecd
+				+ ", lastChgipaddr=" + lastChgipaddr + ", lastChgusercd="
+				+ lastChgusercd + ", memodesc=" + memodesc + ", notes1="
+				+ notes1 + ", notes2=" + notes2 + ", notes3=" + notes3
+				+ ", notes4=" + notes4 + ", notes5=" + notes5 + ", ourcustcd="
+				+ ourcustcd + ", paymentdate=" + paymentdate + ", pmttermscd="
+				+ pmttermscd + ", preflevel=" + preflevel + ", printmemodesc="
+				+ printmemodesc + ", printnoteonchk=" + printnoteonchk
+				+ ", estrcvbydays=" + estrcvbydays + ", cancelbydays="
+				+ cancelbydays + ", shipviacd=" + shipviacd + ", t99cd="
+				+ t99cd + ", t99fedid=" + t99fedid + ", vendorfreightratecwt="
+				+ vendorfreightratecwt + ", vendorchargeamt=" + vendorchargeamt
+				+ ", otherfreightratecwt=" + otherfreightratecwt
+				+ ", othermarkuppct=" + othermarkuppct + ", vendormarkuppct="
+				+ vendormarkuppct + ", otherchargeamt=" + otherchargeamt
+				+ ", t99Avail=" + t99Avail + ", t99Actual=" + t99Actual
+				+ ", filingCode=" + filingCode + ", dbaname=" + dbaname
+				+ ", t99fedidisssnbr=" + t99fedidisssnbr + ", setupby="
+				+ setupby + ", setupdate=" + setupdate + ", accountnbr="
+				+ accountnbr + ", pinnbr=" + pinnbr + ", passwd=" + passwd
+				+ ", import_=" + import_ + ", poEmail=" + poEmail
+				+ ", cashflowdays=" + cashflowdays + ", excfromcashflow="
+				+ excfromcashflow + ", ecutopia=" + ecutopia
+				+ ", portToStockDays=" + portToStockDays + "]";
+	}
+
+	
 }

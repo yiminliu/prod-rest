@@ -67,10 +67,7 @@ public class VendorId implements Serializable{
 			return false;
 		VendorId castOther = (VendorId) other;
 
-		return ((this.getItemCode() == castOther.getItemCode()) || 
-				(this.getItemCode() != null && castOther.getItemCode() != null && 
-				this.getItemCode().trim().equals(castOther.getItemCode().trim()))) && 
-				(this.getId() == castOther.getId());
+		return ((this.getItemCode() != null && castOther.getItemCode() != null && this.getItemCode().trim().equals(castOther.getItemCode().trim()))) && (this.getId() == castOther.getId());
 	}
 }
 

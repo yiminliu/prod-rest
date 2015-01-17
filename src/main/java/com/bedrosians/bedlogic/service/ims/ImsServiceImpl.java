@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bedrosians.bedlogic.dao.ims.ColorHueDao;
+import com.bedrosians.bedlogic.dao.ims.ColorHueDaoImpl;
 import com.bedrosians.bedlogic.dao.ims.ImsDao;
 import com.bedrosians.bedlogic.dao.ims.KeymarkVendorDao;
 import com.bedrosians.bedlogic.domain.ims.ColorHue;
@@ -32,7 +33,6 @@ import com.bedrosians.bedlogic.domain.ims.KeymarkVendor;
 import com.bedrosians.bedlogic.domain.ims.Vendor;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Units;
 import com.bedrosians.bedlogic.domain.ims.embeddable.VendorInfo;
-
 import com.bedrosians.bedlogic.exception.DataNotFoundException;
 import com.bedrosians.bedlogic.exception.DatabaseOperationException;
 import com.bedrosians.bedlogic.exception.InputParamException;
@@ -76,18 +76,16 @@ public class ImsServiceImpl implements ImsService {
 		}
 		catch(HibernateException hbe){
 			if(hbe.getCause() != null)
-			   System.out.println("Error occured during getItems(), due to: " +  hbe.getMessage() + ". Root cause -- " + hbe.getCause().getMessage());	
+				throw new DatabaseOperationException("Error occured during getItems(), due to: " +  hbe.getMessage() + ". Root cause -- " + hbe.getCause().getMessage(), hbe);	
 			else
-			   System.out.println("Error occured during getItems(), due to: " +  hbe.getMessage());
-			throw new DatabaseOperationException("Error occured during getItems(). ", hbe);
+				throw new DatabaseOperationException("Error occured during getItems(), due to: " +  hbe.getMessage(), hbe);
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-			   System.out.println("Error occured during getItems(), due to: " +  e.getMessage() + ". Root cause -- " + e.getCause().getMessage());	
+				throw new DatabaseOperationException("Error occured during getItems(), due to: " +  e.getMessage() + ". Root cause -- " + e.getCause().getMessage(), e);	
 			else
-			   System.out.println("Error occured during getItems(), due to: " +  e.getMessage());
-			throw new DatabaseOperationException("Error occured during getItems(). ", e);
-	}
+				throw new DatabaseOperationException("Error occured during getItems(), due to: " +  e.getMessage(), e);
+	    }
 		return FormatUtil.process(item);
 	}
     
@@ -100,18 +98,15 @@ public class ImsServiceImpl implements ImsService {
 		}
 		catch(HibernateException hbe){
 		  	if(hbe.getCause() != null)
-		  	   System.out.println("Error occured during getItems(), due to: " +  hbe.getMessage() + ". Root cause -- " + hbe.getCause().getMessage());	
+		  		throw new DatabaseOperationException("Error occured during getItems(), due to: " +  hbe.getMessage() + ". Root cause -- " + hbe.getCause().getMessage(), hbe);	
 		   	else
-		   	   System.out.println("Error occured during getItems(), due to: " +  hbe.getMessage());
-			throw new DatabaseOperationException("Error occured during getItems(). ", hbe);
+		   		throw new DatabaseOperationException("Error occured during getItems(), due to: " +  hbe.getMessage(), hbe);
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-			   System.out.println("Error occured during getItems(), due to: " +  e.getMessage() + ". Root cause -- " + e.getCause().getMessage());	
+				throw new DatabaseOperationException("Error occured during getItems(), due to: " +  e.getMessage() + ". Root cause -- " + e.getCause().getMessage(), e);	
 		   	else
-		   	   System.out.println("Error occured during getItems(), due to: " +  e.getMessage());
-			throw new DatabaseOperationException("Error occured during getItems(). ", e);
-			
+		   		throw new DatabaseOperationException("Error occured during getItems(), due to: " +  e.getMessage(), e);			
 		}
 		List<Ims> processedItems = new ArrayList<>();
 		for(Ims item : itemList){
@@ -121,13 +116,6 @@ public class ImsServiceImpl implements ImsService {
 	}
 	
     @Loggable(value = LogLevel.INFO)
-    @Override
-    @Transactional(readOnly = true)
-	public List<Ims> getActiveAndShownOnWebsiteItems() {
-    	return imsDao.getActiveAndShownOnWebsiteItems();
-	}
-    
-	@Loggable(value = LogLevel.INFO)
 	@Override
 	public List<Ims> getItems(MultivaluedMap<String, String> queryParams){
 		if(queryParams == null || queryParams.isEmpty()){
@@ -189,7 +177,13 @@ public class ImsServiceImpl implements ImsService {
 		return productWrapperList;
 	}
 	
-    
+	@Loggable(value = LogLevel.INFO)
+    @Override
+    @Transactional(readOnly = true)
+	public List<Ims> getActiveAndShownOnWebsiteItems() {
+    	return imsDao.getActiveAndShownOnWebsiteItems();
+	}
+	
 	//--------------------------------Creation DB Operation --------------------------//
 	
 	@Loggable(value = LogLevel.INFO)
@@ -223,12 +217,7 @@ public class ImsServiceImpl implements ImsService {
  		   }
      	}   
      	try{
-     	   if(DBOperation.UPDATE.equals(operation)){
-     		  imsDao.updateItem(item);
-     		  id = item.getItemcode();
-     	   }
-     	   else 
-		      id = imsDao.createItem(item);
+     	   id = imsDao.createItem(item);
 		}
 		catch(HibernateException hbe){
 			if(hbe.getCause() != null)
@@ -284,6 +273,7 @@ public class ImsServiceImpl implements ImsService {
 		if(itemToUpdate == null)
 	       throw new DataNotFoundException("No data found for the given item code: " + itemCode);	
 		itemToUpdate = ImsDataTransferUtil.transferItemInfo(itemToUpdate, itemFromInput, DBOperation.UPDATE);
+		transferColorHues(itemToUpdate, itemFromInput, DBOperation.UPDATE);
   	    //ImsValidator.validateNewItem(itemToUpdate);
     	try{
 	       imsDao.updateItem(session,itemToUpdate);
@@ -375,7 +365,7 @@ public class ImsServiceImpl implements ImsService {
 		itemToUpdate.setInactivecode("Y");
   	    ImsValidator.validateNewItem(itemToUpdate);
     	try{
-		      imsDao.updateItem(session,itemToUpdate);
+		    imsDao.updateItem(session,itemToUpdate);
 	 	}
     	catch(HibernateException hbe){
      	      if(hbe.getCause() != null)
@@ -465,7 +455,7 @@ public class ImsServiceImpl implements ImsService {
 		    	  //if(!item.getColors().contains(colorHue.getColorHue())){
 		    		  //colorhues.remove(colorHue);
 		    		  colorHue.setItem(null);
-		    		  colorHueDao.deleteColorHue(colorHue);
+		    		  colorHueDao.deleteColorHue(colorHue, true);
 		    	  //}   
 		       }
 		    }
@@ -485,88 +475,14 @@ public class ImsServiceImpl implements ImsService {
  	     item.setColorcategory(ImsDataUtil.convertColorHuesToColorCategory(colorhues));
  	  }
    }
-/*
-private void processColorHuesForUpdate(Session session, Ims item, DBOperation dBOperation){
-	List<ColorHue> colorhues = item.getColorhues();
-	if(!ImsDataUtil.colorHuesAndColorsEquals(colorhues, item.getColors()))
-		session.delete(colorhues);
-	if(item.getColors() != null && !item.getColors().isEmpty() && (dBOperation.equals(DBOperation.CLONE) || dBOperation.equals(DBOperation.UPDATE)))
-   	   colorhues = ImsDataUtil.convertColorListToColorHueObjects(item.getColors());	
-	//else if(colorhues != null && dBOperation.equals(DBOperation.UPDATE))
-	//   session.delete(item.getColorhues());
- 	if(colorhues != null && !colorhues.isEmpty()){
- 	   item.setColorhues(null);
- 	   for(ColorHue colorhue : colorhues){
- 		   item.addColorhue(colorhue);
- 	   }
- 	   item.setColorcategory(ImsDataUtil.convertColorHuesToColorCategory(colorhues));
- 	}
-}
-*/
 
-    private void processApplications(Ims item){
-	   List<String> usage = item.getUsage();
-       if(usage != null){
+   private void processApplications(Ims item){
+	  List<String> usage = item.getUsage();
+      if(usage != null){
  		 item.setApplications(ImsDataUtil.convertUsageToApplications(usage));
  	   }   
     }
 
-/*
-private Ims processApplications(Ims item){
-	Applications app = item.getApplications();
- 	if(app != null){
- 	   List<String> residential = app.getResidentialList();
- 	   List<String> lightCommercial = app.getLightcommercialList();
- 	   List<String> commercial = app.getCommercialList();
-	
-	   if(residential != null)
-		  app.setResidential(ImsDataUtil.convertUsageToApplicationString(residential));
-	   if(lightCommercial != null)
-		  app.setLightcommercial(ImsDataUtil.convertUsageToApplicationString(lightCommercial));
-	   if(commercial != null)
-		  app.setCommercial(ImsDataUtil.convertUsageToApplicationString(commercial));
- 	}   
-	item.setApplications(app);
-	return item;
-}
-/*
-private Ims processApplications(Ims item){
-	Applications app = item.getApplications();
- 	if(app != null){
- 	   String residential = app.getResidential();
-	   String lightCommercial = app.getLightcommercial();
-	   String commercial = app.getCommercial();
-	
-	   if(residential != null)
-		  app.setResidential(residential.replace(",", ":"));
-	   if(lightCommercial != null)
-		  app.setLightcommercial(lightCommercial.replace(",", ":"));
-	   if(commercial != null)
-		  app.setCommercial(commercial.replace(",", ":"));
- 	}   
-	item.setApplications(app);
-	return item;
-}
-*/
-/*
-private Ims processApplicationsString(Ims item){
-	Applications app = item.getApplications();
- 	if(app != null){
- 	   String residential = app.getResidential();
-	   String lightCommercial = app.getLightcommercial();
-	   String commercial = app.getCommercial();
-	
-	   if(residential != null)
-		  app.setResidential(residential.replace(",", ":"));
-	   if(lightCommercial != null)
-		  app.setLightcommercial(lightCommercial.replace(",", ":"));
-	   if(commercial != null)
-		  app.setCommercial(commercial.replace(",", ":"));
- 	}   
-	item.setApplications(app);
-	return item;
-} 	
-*/
     private Ims processPackgeUnits(Ims item){
 	   Units units = item.getUnits();
  	   if(units != null){
@@ -579,13 +495,12 @@ private Ims processApplicationsString(Ims item){
 	   return item;
    } 	
     
-//NEW.vendorlandedbasecost := (NEW.vendornetprice * (100.00 + NEW.vendormarkuppct) / 100.00 / tUnitRatio) + (NEW.vendorfreightratecwt * NEW.basewgtperunit / 100);
-private void processVendor(Ims item, DBOperation dBOperation){
-	List<Vendor> vendors = item.getNewVendorSystem();
- 	item.setNewVendorSystem(null);
- 	if(vendors != null && !vendors.isEmpty()){
- 		VendorInfo lagancyVendor = new VendorInfo(); 
- 		for(Vendor vendor : vendors){
+   private void processVendor(Ims item, DBOperation dBOperation){
+	  List<Vendor> vendors = item.getNewVendorSystem();
+ 	  item.setNewVendorSystem(null);
+  	  if(vendors != null && !vendors.isEmpty()){
+ 		 VendorInfo lagancyVendor = new VendorInfo(); 
+ 		 for(Vendor vendor : vendors){
  			if(vendor.getId() != null){ //populated legacy vendor fields
  			   //if(vendor.getId().equals(item.getVendors().getVendornbr1()) && (DBOperation.UPDATE.equals(dBOperation) || DBOperation.CLONE.equals(dBOperation)))	
  			   vendor = ImsDataUtil.setCalculatedVendorData(item, vendor);
@@ -597,11 +512,10 @@ private void processVendor(Ims item, DBOperation dBOperation){
  			}  
   		}	
        	item.setVendors(lagancyVendor);  
-   	}
- 	
- } 	
+   	  }
+   } 	
 
-    private void processIcons(Ims item, DBOperation dBOperation){
+   private void processIcons(Ims item, DBOperation dBOperation){
 	   IconCollection icons = item.getIconDescription();
        if(icons != null && !icons.isEmpty()){
  	      if(dBOperation.equals(DBOperation.CLONE))
@@ -613,7 +527,7 @@ private void processVendor(Ims item, DBOperation dBOperation){
  	      item.setIconDescription(null);	
     }
 
-    public boolean validateVendorId(Integer vendorId){
+   public boolean validateVendorId(Integer vendorId){
 	   List<Integer> keymarkVendorIdList = null;
 	   keymarkVendorIdList = keymarkVendorDao.getKeymarkVendorIdList();
 	   for(Integer id : keymarkVendorIdList){
@@ -622,6 +536,44 @@ private void processVendor(Ims item, DBOperation dBOperation){
 		      return true;
 	   }
 	   return false;
-    }
+   }
+   
+   private synchronized void transferColorHues(Ims itemToDB, Ims itemFromInput, DBOperation operation) {
+	   List<ColorHue> inputColorHues = itemFromInput.getColorhues();
+	   //if colorhues is not available in input data, then obtain it from colorCategory in input data
+	   if((inputColorHues == null || inputColorHues.isEmpty()) && itemFromInput.getColorcategory() != null && !itemFromInput.getColorcategory().isEmpty()){
+		  inputColorHues = ImsDataUtil.convertColorCategoryToColorHueObjects(itemFromInput.getColorcategory());
+	   }
+	   if(inputColorHues != null && !inputColorHues.isEmpty()){
+		  /*** create new colorHue ***/ 
+	 	 if(operation.equals(DBOperation.CREATE) || //Brand new item
+		   (operation.equals(DBOperation.UPDATE) && (itemToDB.getColorhues() == null || itemToDB.getColorhues().isEmpty()))){ //existing item, but brand new ColorHue
+		    for(ColorHue color : inputColorHues){	
+ 		        if(color != null && color.getColorHue() != null && !color.getColorHue().isEmpty())
+		           itemToDB.addColorhue(color);	
+	        }
+		  }
+	 	  /*** update existing colorHue ***/
+		  else if(operation.equals(DBOperation.UPDATE)){
+			  int inputColorHueSize = inputColorHues.size();
+			  int existingColorHueSize = itemToDB.getColorhues().size();
+			  List<ColorHue> cl = itemToDB.getColorhues();
+			  if(inputColorHueSize < itemToDB.getColorhues().size()) {
+				 for(int i=inputColorHueSize;  i< existingColorHueSize; i++){
+			      	 ColorHue colorHue = cl.get(i);
+			         colorHue.setItem(null);
+		    	     colorHueDao.deleteColorHue(colorHue, true);
+		    	 }   
+		       }
+			   for(int i = 0; i < inputColorHues.size(); i++){
+			       ColorHue colorHue = inputColorHues.get(i);
+			       if(i >= itemToDB.getColorhues().size())
+				      itemToDB.getColorhues().add(i, new ColorHue(itemToDB.getItemcode(), itemToDB)); 
+			       if(colorHue.getColorHue() != null) 
+				      itemToDB.getColorhues().get(i).setColorHue(colorHue.getColorHue());
+		       }	   
+		  }
+	  }
+	}
 }
 

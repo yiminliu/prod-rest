@@ -16,6 +16,6 @@ public interface ColorHueDao extends GenericDao<ColorHue, String>{
    public String createColorHue(Session session, ColorHue colorHue);
    public void createColorHues(Set<ColorHue> colorHues);
    public void updateColorHue(ColorHue colorHue);
-   public void deleteColorHue(ColorHue colorHue);	
+   public void deleteColorHue(ColorHue colorHue, boolean newSession);	
 
 }
