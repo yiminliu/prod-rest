@@ -10,7 +10,7 @@ public class DatabaseOperationException extends BedException {
 	
     public DatabaseOperationException() { 
     	super();
-    	this.errorMessage = "Database Operation Failed"; 
+    	this.message = "Database Operation Failed"; 
     	if(errorType == null)
     	   errorType = "Database Operation Exception"; 	
     }

@@ -7,7 +7,7 @@ public class BedException extends RuntimeException  implements Serializable
 	protected static final long serialVersionUID = -34724706273251377L;
 	protected String errorCode;
 	protected String errorType;
-	protected String errorMessage;
+	protected String message;
 	protected String rootErrorMessage;
 	protected Throwable rootError;
     
@@ -16,14 +16,14 @@ public class BedException extends RuntimeException  implements Serializable
     }
     
     public BedException(String message) { 
-       errorMessage = (errorType == null) ? "" : errorType + ": " + message + "\n\r";
+       message = (errorType == null) ? "" : errorType + ": " + message + "\n\r";
     }
     
     public BedException(String message, Throwable rootError) { 
     	if(rootError != null)
-    	   errorMessage = message + " Cause: " + rootError.getMessage();
+    	   this.message = message + " Cause: " + rootError.getMessage();
     	else
-    	   errorMessage = message + "\n\r";
+    	   this.message = message + "\n\r";
     	this.rootError = rootError;
     }
 
@@ -44,12 +44,12 @@ public class BedException extends RuntimeException  implements Serializable
 		this.errorType = errorType;
 	}
 
-	public String getErrorMessage() {
-		return errorMessage;
+	public String getMessage() {
+		return message;
 	}
 
-	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 	public String getRootErrorMessage() {

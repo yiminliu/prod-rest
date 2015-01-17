@@ -10,7 +10,7 @@ public class DatabaseConnectionException extends BedException {
 	
     public DatabaseConnectionException() { 
     	super();
-    	this.errorMessage = "Database Connection Failed"; 
+    	this.message = "Database Connection Failed"; 
     	if(errorType == null)
     	   errorType = "DatabaseConnectionException"; 	
     }

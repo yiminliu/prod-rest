@@ -9,7 +9,7 @@ public class InputParamException extends BedException {
 	private static final long serialVersionUID = -3447273251377L;
     public InputParamException() {
     	super();
-    	this.errorMessage = "Input Parameter Error";
+    	this.message = "Input Parameter Error";
     	if(errorType == null)
     	   errorType = "Input Parameter Error";
     }

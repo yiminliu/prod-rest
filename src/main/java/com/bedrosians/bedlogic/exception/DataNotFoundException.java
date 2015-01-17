@@ -15,7 +15,7 @@ public class DataNotFoundException extends BedException {
     
     public DataNotFoundException(String message) { 
        errorType = "Data Not Found Exception";	
-       errorMessage = "No Data Found: " + message + "\n\r";
+       this.message = "No Data Found: " + message + "\n\r";
     }
     
     public DataNotFoundException(String message, Throwable cause) { 
