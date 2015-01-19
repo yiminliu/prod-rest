@@ -4,9 +4,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import com.bedrosians.bedlogic.dao.ims.ColorHueDao;
-import com.bedrosians.bedlogic.dao.ims.ColorHueDaoImpl;
-import com.bedrosians.bedlogic.domain.ims.ColorHue;
 import com.bedrosians.bedlogic.domain.ims.IconCollection;
 import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.domain.ims.ImsNewFeature;
@@ -49,7 +46,7 @@ public class ImsDataTransferUtil {
 	  try{
 	 	 transferImsNewFeature(itemToDB, itemFromInput, operation); 
 		 transferIconCollection(itemToDB, itemFromInput, operation);
-		 //transferColorHues(itemToDB, itemFromInput, operation);
+		 //transferColorHues(itemToDB, itemFromInput, operation); //this is handled in the service class, due to delete db operation is involved
 		 transferNewVendorSystem(itemToDB, itemFromInput, operation);
 	  }
 	  catch(Exception e){
@@ -57,47 +54,6 @@ public class ImsDataTransferUtil {
 	  }	
     }
 	
-    private static synchronized void transferColorHues(Ims itemToDB, Ims itemFromInput, DBOperation operation) {
-	   List<ColorHue> inputColorHues = itemFromInput.getColorhues();
-	   //if colorhues is not available in input data, then obtain it from colorCategory in input data
-	   if((inputColorHues == null || inputColorHues.isEmpty()) && itemFromInput.getColorcategory() != null && !itemFromInput.getColorcategory().isEmpty()){
-		  inputColorHues = ImsDataUtil.convertColorCategoryToColorHueObjects(itemFromInput.getColorcategory());
-	   }
-	   if(inputColorHues != null && !inputColorHues.isEmpty()){
-		  /*** create new colorHue ***/ 
-	 	 if(operation.equals(DBOperation.CREATE) || //Brand new item
-		   (operation.equals(DBOperation.UPDATE) && (itemToDB.getColorhues() == null || itemToDB.getColorhues().isEmpty()))){ //existing item, but brand new ColorHue
-		    for(ColorHue color : inputColorHues){	
-  		        if(color != null && color.getColorHue() != null && !color.getColorHue().isEmpty())
-		           itemToDB.addColorhue(color);	
-	        }
-		  }
-	 	  /*** update existing colorHue ***/
-		  else if(operation.equals(DBOperation.UPDATE)){
-			  int inputColorHueSize = inputColorHues.size();
-			  int existingColorHueSize = itemToDB.getColorhues().size();
-			  if(inputColorHueSize < itemToDB.getColorhues().size()) {
-				 ColorHueDao colorHueDao = new ColorHueDaoImpl(); 
-				 while(inputColorHueSize < existingColorHueSize){
-			        for(ColorHue colorHue: itemToDB.getColorhues()){
-			           //if(!item.getColors().contains(colorHue.getColorHue())){
-		    		    //colorhues.remove(colorHue);
-		    		    colorHue.setItem(null);
-		    		    colorHueDao.deleteColorHue(colorHue, true);
-			        }    
-		    	 }   
-		       }
-			   for(int i = 0; i < inputColorHues.size(); i++){
-			       ColorHue colorHue = inputColorHues.get(i);
-			       if(i >= itemToDB.getColorhues().size())
-				      itemToDB.getColorhues().add(i, new ColorHue(itemToDB.getItemcode(), itemToDB)); 
-			       if(colorHue.getColorHue() != null) 
-				      itemToDB.getColorhues().get(i).setColorHue(colorHue.getColorHue());
-		       }	   
-		  }
-	  }
-	}
-  
     private static synchronized void transferNewVendorSystem(Ims itemToDB, Ims itemFromInput, DBOperation operation) {
     	List<Vendor> inputItemVendors = itemFromInput.getNewVendorSystem();
 		VendorInfo legancyVendorInfo = itemFromInput.getVendors();
