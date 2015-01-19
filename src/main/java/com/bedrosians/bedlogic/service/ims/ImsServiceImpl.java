@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bedrosians.bedlogic.dao.ims.ColorHueDao;
-import com.bedrosians.bedlogic.dao.ims.ColorHueDaoImpl;
 import com.bedrosians.bedlogic.dao.ims.ImsDao;
 import com.bedrosians.bedlogic.dao.ims.KeymarkVendorDao;
 import com.bedrosians.bedlogic.domain.ims.ColorHue;
@@ -221,14 +220,12 @@ public class ImsServiceImpl implements ImsService {
 		}
 		catch(HibernateException hbe){
 			if(hbe.getCause() != null)
-			   System.out.println("Error occured during createOrUpdateItem(), due to: " +  hbe.getMessage() + ". Root cause -- " + hbe.getCause().getMessage());	
+				throw new DatabaseOperationException("Error occured during createOrUpdateItem(), due to: " +  hbe.getMessage() + ". Root cause -- " + hbe.getCause().getMessage());	
 			else
-			   System.out.println("Error occured during createOrUpdateItem(), due to: " +  hbe.getMessage());
-			throw new DatabaseOperationException("Error occured during createOrUpdateItem(). ", hbe);
+				throw new DatabaseOperationException("Error occured during createOrUpdateItem(), due to: " +  hbe.getMessage());
 	    }	
    	    catch(Exception e){
-		  e.printStackTrace();
-		  if(e != null && e.getMessage() != null){
+	       if(e != null && e.getMessage() != null){
 			  if(e.getMessage().contains("constraint [item_code]") || e.getMessage().contains("constraint [ims_code]") || e.getMessage().contains("constraint [ims_id]"))
 				  throw new InputParamException("Invalid item code, since it is already existing in the database", e);
 		      else if(e.getMessage().contains("constraint [vendor_apv_fkey]"))
@@ -237,11 +234,9 @@ public class ImsServiceImpl implements ImsService {
 		    	  throw new DatabaseOperationException("Error occured during createItem(), due to: " + e.getMessage(), e);
 		  }
 		  if(e.getCause() != null)
-			 System.out.println("Error occured during createOrUpdateItem(), due to: " +  e.getMessage() + ". Root cause -- " + e.getCause().getMessage());	
+			  throw new DatabaseOperationException("Error occured during createOrUpdateItem(), due to: " +  e.getMessage() + ". Root cause -- " + e.getCause().getMessage());	
 		  else
-			 System.out.println("Error occured during createOrUpdateItem(), due to: " +  e.getMessage());
-		  throw new DatabaseOperationException("Error occured during createOrUpdateItem(). ", e);
-	
+			  throw new DatabaseOperationException("Error occured during createOrUpdateItem(), due to: " +  e.getMessage());
       }
 	  return id;	
    }
@@ -309,17 +304,15 @@ public class ImsServiceImpl implements ImsService {
 		}
 		catch(HibernateException hbe){
 			if(hbe.getCause() != null)
-			   System.out.println("Error occured during deleteItemByItemCode(), due to: " +  hbe.getMessage() + ". Root cause -- " + hbe.getCause().getMessage());	
+				throw new DatabaseOperationException("Error occured during deleteItemByItemCode(), due to: " +  hbe.getMessage() + ". Root cause -- " + hbe.getCause().getMessage());	
 			else
-			   System.out.println("Error occured during deleteItemByItemCode(), due to: " +  hbe.getMessage());
-			throw new DatabaseOperationException("Error occured during deleteItemByItemCode(). ", hbe);
+				throw new DatabaseOperationException("Error occured during deleteItemByItemCode(), due to: " +  hbe.getMessage());
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-			   System.out.println("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage() + ". Root cause -- " + e.getCause().getMessage());	
+				throw new DatabaseOperationException("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage() + ". Root cause -- " + e.getCause().getMessage());	
 			else
-			   System.out.println("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage());
-			throw new DatabaseOperationException("Error occured during deleteItemByItemCode(). ", e);
+				throw new DatabaseOperationException("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage());
 		}
 	}
 	
@@ -447,24 +440,24 @@ public class ImsServiceImpl implements ImsService {
     private void processColorHues(Ims item, DBOperation dBOperation){
 	   List<ColorHue> colorhues = item.getColorhues();
 	   if(dBOperation.equals(DBOperation.CLONE) || dBOperation.equals(DBOperation.UPDATE)){
-	      if(!ImsDataUtil.colorHuesAndColorsEquals(item.getColorhues(), item.getColors())){
-		     if(dBOperation.equals(DBOperation.UPDATE)){ //For update, if colorhue changed, we need to remove old ones
-		       //item.setColorhues(null);
-		       //item.getColorhues().clear();
-		       for(ColorHue colorHue: colorhues){
-		    	  //if(!item.getColors().contains(colorHue.getColorHue())){
-		    		  //colorhues.remove(colorHue);
-		    		  colorHue.setItem(null);
-		    		  colorHueDao.deleteColorHue(colorHue, true);
-		    	  //}   
-		       }
-		    }
-		    if(item.getColors() != null){ 
-		       item.setColorhues(null);
-		       colorhues = ImsDataUtil.convertColorListToColorHueObjects(item.getColors()); //For both clone and update, if colorhue changed, we need to get new values for colorhues
-		    }   
-		 }	
-		 else 
+	      if(item.getColors() != null && !ImsDataUtil.colorHuesAndColorsEquals(item.getColorhues(), item.getColors())){
+		     //For clone orvupdate, if colorhue changed, we need to remove extra ones to have they have the same number of records and then to update color hues
+		     int newColorHueSize = item.getColors().size();
+			 int existingColorHueSize = item.getColorhues().size();
+		     //when the number of existing color hues > that of the new color hues, we need to remove the extra number of color hues 
+			 if(item.getColors().size() < item.getColorhues().size()) {
+				for(int i=existingColorHueSize-1;  i>=newColorHueSize; i--){
+				    ColorHue colorHue = item.getColorhues().get(i);
+				    item.getColorhues().remove(i);
+				    colorHueDao.deleteColorHue(colorHue, true);
+			    }   
+			  }			
+		      if(item.getColors() != null){ 
+		         item.setColorhues(null);
+		         colorhues = ImsDataUtil.convertColorListToColorHueObjects(item.getColors()); //For both clone and update, if colorhue changed, we need to get new values for colorhues
+		     }   
+		  }	
+		  else 
 		    return; // no colorhue changed for update/clone operation, therefore, no need to make change	
 	  }
   	  if(colorhues != null && !colorhues.isEmpty()){
@@ -558,11 +551,12 @@ public class ImsServiceImpl implements ImsService {
 			  int inputColorHueSize = inputColorHues.size();
 			  int existingColorHueSize = itemToDB.getColorhues().size();
 			  List<ColorHue> cl = itemToDB.getColorhues();
-			  if(inputColorHueSize < itemToDB.getColorhues().size()) {
-				 for(int i=inputColorHueSize;  i< existingColorHueSize; i++){
+			  //when the number of existing color hues > that of the new color hues, we need to remove the extra number of color hues 
+			  if(inputColorHueSize < existingColorHueSize) {
+				 for(int i=existingColorHueSize-1;  i>=inputColorHueSize; i--){
 			      	 ColorHue colorHue = cl.get(i);
-			         colorHue.setItem(null);
-		    	     colorHueDao.deleteColorHue(colorHue, true);
+			      	 itemToDB.getColorhues().remove(i);
+			  	     colorHueDao.deleteColorHue(colorHue, true);
 		    	 }   
 		       }
 			   for(int i = 0; i < inputColorHues.size(); i++){
