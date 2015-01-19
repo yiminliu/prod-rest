@@ -59,7 +59,7 @@ public class ColorHue implements java.io.Serializable {
 
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "item_code")
+	@JoinColumn(name = "item_code", nullable=false)
 	//@ContainedIn
 	public Ims getItem() {
 		return this.item;
