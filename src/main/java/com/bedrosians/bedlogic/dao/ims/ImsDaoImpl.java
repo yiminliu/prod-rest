@@ -48,6 +48,8 @@ import com.bedrosians.bedlogic.domain.ims.enums.SurfaceApplication;
 import com.bedrosians.bedlogic.domain.ims.enums.SurfaceFinish;
 import com.bedrosians.bedlogic.domain.ims.enums.SurfaceType;
 import com.bedrosians.bedlogic.util.ims.ImsQueryUtil;
+import com.bedrosians.bedlogic.util.logger.aspect.LogLevel;
+import com.bedrosians.bedlogic.util.logger.aspect.Loggable;
 
 
 @Repository("imsDao")
@@ -65,6 +67,7 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
      * Note: it's not set "Read Only" because it could be called by update()
      */
 	@Override
+	@Loggable(value = LogLevel.INFO)
 	public Ims getItemByItemCode(Session session, final String itemCode) {
 		session.setCacheMode(CacheMode.REFRESH);
     	Query query = session.createQuery("From Ims where itemcode = :itemCode");
@@ -73,6 +76,7 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 		return (Ims)query.uniqueResult();
 	}
 	
+	@Loggable(value = LogLevel.INFO)
 	public Ims getItemByItemCode(final String itemCode) {
     	Query query = getSession().createQuery("From Ims where itemcode = :itemCode");
 		query.setString("itemCode", itemCode);
@@ -81,6 +85,7 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 	}
 	
 	@Override
+    @Loggable(value = LogLevel.INFO)
 	@Transactional(readOnly=true)
 	public List<String> getItemCodeList(){
 		Query query = getSession().createQuery("Select itemcode From Ims");
@@ -91,6 +96,7 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 	 * This method only gets a proxy of the persistent entity, without hitting the database
 	 */
 	@Override
+	@Loggable(value = LogLevel.INFO)
 	public Ims loadItemByItemCode(Session session, final String itemCode) {
        return loadById(session, itemCode);
 	}
@@ -101,8 +107,9 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 	 *  itemcode and materialcategory depend on the input exactmatch flag. If 'exactmatch' in input, use LIKE, otherwise, use exact match 
 	 */
 	@Override
-	@Transactional(readOnly=true, propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED)
 	@SuppressWarnings("unchecked")
+	@Loggable(value = LogLevel.INFO)
+	@Transactional(readOnly=true, propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED)
 	public List<Ims> getItemsByQueryParameters(MultivaluedMap<String, String> queryParams){
 	   if(queryParams == null) 
 		  return null;
@@ -235,8 +242,9 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 
 	
 	@Override
-	@Transactional(readOnly=true, propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED)
 	@SuppressWarnings("unchecked")
+	@Loggable(value = LogLevel.INFO)
+	@Transactional(readOnly=true, propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED)
 	public List<Ims> getItems(LinkedHashMap<String,List<String>> queryParams){
 	   if(queryParams == null) 
 		  return null;
@@ -382,9 +390,10 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 	
 	//The purpose of this method is to compare the performance of Hibernate Search and regular Hibernate query 
 	@Override
-	@Transactional(readOnly=true, propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED)
 	@SuppressWarnings("unchecked")
-    public List<Ims> getActiveAndShownOnWebsiteItems(){
+	@Loggable(value = LogLevel.INFO)
+	@Transactional(readOnly=true, propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED)
+	public List<Ims> getActiveAndShownOnWebsiteItems(){
 	   List<Ims> ims = null;
 	   FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 		
@@ -401,9 +410,10 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 	}
     
 	@Override
-	@Transactional(readOnly=true, propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED)
 	@SuppressWarnings("unchecked")
-    public List<Ims> getItemsByKeyword(String keyword){
+	@Loggable(value = LogLevel.INFO)
+	@Transactional(readOnly=true, propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED)
+	public List<Ims> getItemsByKeyword(String keyword){
 	   List<Ims> items = null;
 	   FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 	   //create query builder	
@@ -425,6 +435,7 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 	//------------------------------- creation DB operation -------------------------//
 	
 	@Override
+	@Loggable(value = LogLevel.INFO)
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 	public String createItem(Ims item){
 		//return (String)save(sessionFactory.getCurrentSession(), ims); 
@@ -435,11 +446,13 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 	//------------------------------- update DB operation ---------------------------//
 	
 	@Override
+	@Loggable(value = LogLevel.INFO)
 	public void updateItem(Session session, Ims ims){
 		update(session, ims);
 	}
 	
 	@Override
+	@Loggable(value = LogLevel.INFO)
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
 	public void updateItem(Ims item){
 		Session session = sessionFactory.getCurrentSession();
@@ -464,6 +477,7 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 	//------------------------------- deletion DB operation -------------------------//
 	
 	@Override
+	@Loggable(value = LogLevel.INFO)
 	@Transactional(readOnly=false, propagation=Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
 	public void deleteItem(Ims item){
 		Session session = sessionFactory.getCurrentSession();
@@ -472,6 +486,7 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 	}
 	
 	@Override
+	@Loggable(value = LogLevel.INFO)
 	public void deleteItem(Session session, Ims ims){
 		delete(session, ims); 
 	}

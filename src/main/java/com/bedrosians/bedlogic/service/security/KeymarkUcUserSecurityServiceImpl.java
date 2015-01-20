@@ -13,6 +13,8 @@ import com.bedrosians.bedlogic.service.user.KeymarkUcUserService;
 import com.bedrosians.bedlogic.usercode.UserCodeParser;
 import com.bedrosians.bedlogic.util.enums.ApiName;
 import com.bedrosians.bedlogic.util.enums.DBOperation;
+import com.bedrosians.bedlogic.util.logger.aspect.LogLevel;
+import com.bedrosians.bedlogic.util.logger.aspect.Loggable;
 
 @Service("keymarkUcUserSecurityService")
 @Scope(value = "singleton")
@@ -30,6 +32,7 @@ public class KeymarkUcUserSecurityServiceImpl implements KeymarkUcUserSecuritySe
 	KeymarkUcUser keymarkUcUser = null;
 	
 	@Override
+	@Loggable(LogLevel.INFO)
 	public void doSecurityCheck(String userType, String userCode, String password, boolean isPasswordBasedAuth, ApiName apiName, DBOperation permission){
 		switch(userType) {
 		   case "guest": case "Guest":
@@ -42,6 +45,7 @@ public class KeymarkUcUserSecurityServiceImpl implements KeymarkUcUserSecuritySe
 	}
 	 
 	@Override
+	@Loggable(LogLevel.INFO)
     public void doUserSecurityCheck(HttpHeaders requestHeaders, ApiName apName, DBOperation operation) {
 		 //Check usercode
        UserCodeParser  userCodeParser = new UserCodeParser(requestHeaders);
@@ -57,6 +61,7 @@ public class KeymarkUcUserSecurityServiceImpl implements KeymarkUcUserSecuritySe
 	 }
 	 
 	@Override
+	@Loggable(LogLevel.INFO)
 	public void doSecurityCheck(String userType, String userCode, ApiName apiName, DBOperation operation) throws UnauthorizedException{
 		switch(userType) {
 		   case "guest": case "Guest":

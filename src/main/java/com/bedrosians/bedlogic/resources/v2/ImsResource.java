@@ -33,6 +33,8 @@ import com.bedrosians.bedlogic.service.security.KeymarkUcUserSecurityService;
 import com.bedrosians.bedlogic.util.JsonWrapper.ItemWrapper;
 import com.bedrosians.bedlogic.util.enums.ApiName;
 import com.bedrosians.bedlogic.util.enums.DBOperation;
+import com.bedrosians.bedlogic.util.logger.aspect.LogLevel;
+import com.bedrosians.bedlogic.util.logger.aspect.Loggable;
 
 
 /**
@@ -61,6 +63,7 @@ public class ImsResource
      */
      @GET
      @Produces({MediaType.APPLICATION_JSON})
+     @Loggable(value = LogLevel.INFO)
      public Response getItems(@Context HttpHeaders requestHeaders, @Context UriInfo uriInfo)
      {
         Response response = null;
@@ -79,10 +82,6 @@ public class ImsResource
 
             //Return json reponse
             response = Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();
-        }
-        catch (BedResUnAuthorizedException e)
-        {
-           response = BedResExceptionMapper.MapToResponse(e);
         }
         catch (BedException e)
         {
@@ -105,6 +104,7 @@ public class ImsResource
      @GET
      @Path("{itemcode}")
      @Produces({MediaType.APPLICATION_JSON})
+     @Loggable(value = LogLevel.INFO)
      public Response getItemsByItemCode(@Context HttpHeaders requestHeaders, @PathParam("itemcode") final String itemCode)
      {
 
@@ -122,10 +122,6 @@ public class ImsResource
 
             //Return json reponse
             response = Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();
-          }
-    	  catch (BedResUnAuthorizedException e)
-          {
-            response = BedResExceptionMapper.MapToResponse(e);
           }
           catch (BedException e)
           {
@@ -148,6 +144,7 @@ public class ImsResource
        @POST
        @Produces(MediaType.APPLICATION_JSON)
        @Consumes(MediaType.APPLICATION_JSON)
+       @Loggable(value = LogLevel.INFO)
        public Response createItem(@Context HttpHeaders requestHeaders, JSONObject inputJsonObj)
        {
           Response response;
@@ -167,10 +164,6 @@ public class ImsResource
              //Return json reponse
              response = Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();
           }
-          catch (BedResUnAuthorizedException e)
-          {
-             response = BedResExceptionMapper.MapToResponse(e);
-          }
           catch (BedException e)
           {
              response = BedExceptionMapper.MapToResponse(e);
@@ -182,101 +175,98 @@ public class ImsResource
           return response;
        }
 
-       /**
-         * This method updates an item based on the given item info.
-         * @param A Json object containing item information to update.
-         * @return Response object to include the status.
-         * @exception
-         */
-         @PUT
-         @Produces(MediaType.APPLICATION_JSON)
-         @Consumes(MediaType.APPLICATION_JSON)
-         public Response updateItem(@Context HttpHeaders requestHeaders, JSONObject inputJsonObj)
-         {
-            Response response;
+     /**
+       * This method updates an item based on the given item info.
+       * @param A Json object containing item information to update.
+       * @return Response object to include the status.
+       * @exception
+       */
+       @PUT
+       @Produces(MediaType.APPLICATION_JSON)
+       @Consumes(MediaType.APPLICATION_JSON)
+       @Loggable(value = LogLevel.INFO)
+       public Response updateItem(@Context HttpHeaders requestHeaders, JSONObject inputJsonObj)
+       {
+          Response response;
+          try
+          {
+              //Check user security
+              keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, APINAME, DBOperation.UPDATE);
+              //Update an item based on the input json data
+              imsService.updateItem(inputJsonObj);
 
-            try
-            {
-               //Check user security
-               keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, APINAME, DBOperation.UPDATE);
-
-               //Update an item based on the input json data
-               imsService.updateItem(inputJsonObj);
-
-               // Return json reponse
-               response = Response.ok(MediaType.APPLICATION_JSON).build();
-            }
-            catch (BedException e)
-            {
-               response = BedExceptionMapper.MapToResponse(e);
-            }
-           
-            return response;
-        }
-
-         /**
-           * This method deletes an item based on the given item code.
-           * @param A Json object containing product information to update.
-           * @return Json object representing the status.
-           * @exception
-           */
-           @DELETE
-           @Produces({MediaType.APPLICATION_JSON})
-           @Consumes(MediaType.APPLICATION_JSON)
-           public Response deleteItem(@Context HttpHeaders requestHeaders, JSONObject inputJsonObj)
-           {
-              Response response;
-
-              try
-              {
-                 //Check user security
-                 keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, APINAME, DBOperation.DELETE);
-
-                 //delete an item from database with the given item info
-                 imsService.deleteItem(inputJsonObj);
-
-                 //Return json reponse
-                 response = Response.ok(MediaType.APPLICATION_JSON).build();
-              }
-              catch (BedException e)
-              {
-                 response = BedExceptionMapper.MapToResponse(e);
-              }
-             
-              return response;
+              // Return json reponse
+              response = Response.ok(MediaType.APPLICATION_JSON).build();
           }
+          catch (BedException e)
+          {
+             response = BedExceptionMapper.MapToResponse(e);
+          }
+           
+          return response;
+       }
 
-          /**
-             * This method deletes an item based on the given item code.
-             * @param Item code string.
-             * @return Json object representing the status.
-             * @exception
-             */
-             @DELETE
-             @Path("{itemcode}")
-             @Produces({MediaType.APPLICATION_JSON})
-             public Response deleteItemByItemCode(@Context HttpHeaders requestHeaders, @PathParam("itemcode") final String itemCode)
-             {
-                Response response;
+     /**
+       * This method deletes an item based on the given item code.
+       * @param A Json object containing product information to update.
+       * @return Json object representing the status.
+       * @exception
+       */
+       @DELETE
+       @Produces({MediaType.APPLICATION_JSON})
+       @Consumes(MediaType.APPLICATION_JSON)
+       @Loggable(value = LogLevel.INFO)
+       public Response deleteItem(@Context HttpHeaders requestHeaders, JSONObject inputJsonObj)
+       {
+          Response response;
+          try
+          {
+             //Check user security
+             keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, APINAME, DBOperation.DELETE);
+             //delete an item from database with the given item info
+             imsService.deleteItem(inputJsonObj);
+             //Return json reponse
+             response = Response.ok(MediaType.APPLICATION_JSON).build();
+          }
+          catch (BedException e)
+          {
+             response = BedExceptionMapper.MapToResponse(e);
+          }
+             
+          return response;
+       }
 
-                try
-                {
-                   //Check user security
-                   keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, APINAME, DBOperation.DELETE);
+     /**
+       * This method deletes an item based on the given item code.
+       * @param Item code string.
+       * @return Json object representing the status.
+       * @exception
+       */
+       @DELETE
+       @Path("{itemcode}")
+       @Produces({MediaType.APPLICATION_JSON})
+       @Loggable(value = LogLevel.INFO)
+       public Response deleteItemByItemCode(@Context HttpHeaders requestHeaders, @PathParam("itemcode") final String itemCode)
+       {
+          Response response;
+          try
+          {
+             //Check user security
+             keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, APINAME, DBOperation.DELETE);
 
-                   //delete an item from database based on the given item code
-                   imsService.deleteItemByItemCode(itemCode);
+             //delete an item from database based on the given item code
+             imsService.deleteItemByItemCode(itemCode);
 
-                   //Return json reponse
-                   //response = Response.ok(MediaType.APPLICATION_JSON).build();
-                   response = Response.noContent().build();
-                }
-                catch (BedException e)
-                {
-                   response = BedExceptionMapper.MapToResponse(e);
-                }
+             //Return json reponse
+             //response = Response.ok(MediaType.APPLICATION_JSON).build();
+             response = Response.noContent().build();
+          }
+          catch (BedException e)
+          {
+             response = BedExceptionMapper.MapToResponse(e);
+          }
                 
-                return response;
-             }
+          return response;
+       }
 
 }
