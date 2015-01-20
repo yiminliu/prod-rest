@@ -1,7 +1,7 @@
-Bedrosians IMS UI TEST
+BedLogic
 =============
 
-Bedrosians IMS UI TEST written in Java
+Bedrosians Business Logic Service written in Java
 
 
 ## Dev Environment
@@ -23,12 +23,12 @@ https://github.com/beachsidecoders/beachside-dev-central/blob/master/virtualbox/
 
 http://vcs.bedrosians.com/bedrosians/bedrosians-dev-central/blob/master/vcs/git.md
 
-* Install maven, jdk 6, and curl
+* Install maven, jdk 7, and curl
 
 ```sh
-sudo apt-get install -y maven2 openjdk-6-jdk curl
+sudo apt-get install -y maven2 openjdk-7-jdk curl
 
-# Choose java-6 jre if it's not already selected
+# Choose java-7 jre if it's not already selected
 sudo update-alternatives --config java
 sudo update-alternatives --config javac
 sudo update-alternatives --config javaws
@@ -88,7 +88,7 @@ mvn jetty:run
 
 ## Verify
 
-See test/README.md
+See test/v2/README.md
 
 ## Acknowledgements
 BedLogic makes use of the following third-party open source libraries:
