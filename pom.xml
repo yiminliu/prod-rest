@@ -367,6 +367,9 @@
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>${jetty.version}</version>
                 <configuration>
+                  <webApp> 
+                     <contextPath>/bedlogic</contextPath>
+                  </webApp>
                   <jettyXml>./src/main/resources/config/jetty.xml</jettyXml>
                 </configuration>
             </plugin>
