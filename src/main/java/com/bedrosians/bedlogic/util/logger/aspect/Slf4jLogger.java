@@ -111,7 +111,7 @@ public class Slf4jLogger implements Logger {
   }
 
   public org.slf4j.Logger getLogger(Class<?> clazz) {
-    return LoggerFactory.getLogger("aspect");
+ 	return LoggerFactory.getLogger(clazz==null? "aspect" : clazz.getSimpleName());  
   }
 
 }
