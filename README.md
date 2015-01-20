@@ -46,8 +46,8 @@ cd bedims-uitest
 * Installation - Build, Install, and Run. Installation directory is /opt/bedlogic
 
 ```sh
-cd bedims-uitest
-setup/installbedims-uitest.sh
+cd bedlogic
+setup/installbedlogic.sh
 ```
 
 * Upgrade
