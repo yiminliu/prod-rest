@@ -63,6 +63,7 @@ public class ImsResource
      */
      @GET
      @Produces({MediaType.APPLICATION_JSON})
+     @Loggable(value = LogLevel.INFO)
      public Response getItems(@Context HttpHeaders requestHeaders, @Context UriInfo uriInfo)
      {
         Response response = null;
@@ -103,6 +104,7 @@ public class ImsResource
      @GET
      @Path("{itemcode}")
      @Produces({MediaType.APPLICATION_JSON})
+     @Loggable(value = LogLevel.INFO)
      public Response getItemsByItemCode(@Context HttpHeaders requestHeaders, @PathParam("itemcode") final String itemCode)
      {
 
@@ -142,6 +144,7 @@ public class ImsResource
        @POST
        @Produces(MediaType.APPLICATION_JSON)
        @Consumes(MediaType.APPLICATION_JSON)
+       @Loggable(value = LogLevel.INFO)
        public Response createItem(@Context HttpHeaders requestHeaders, JSONObject inputJsonObj)
        {
           Response response;
@@ -181,6 +184,7 @@ public class ImsResource
        @PUT
        @Produces(MediaType.APPLICATION_JSON)
        @Consumes(MediaType.APPLICATION_JSON)
+       @Loggable(value = LogLevel.INFO)
        public Response updateItem(@Context HttpHeaders requestHeaders, JSONObject inputJsonObj)
        {
           Response response;
@@ -211,6 +215,7 @@ public class ImsResource
        @DELETE
        @Produces({MediaType.APPLICATION_JSON})
        @Consumes(MediaType.APPLICATION_JSON)
+       @Loggable(value = LogLevel.INFO)
        public Response deleteItem(@Context HttpHeaders requestHeaders, JSONObject inputJsonObj)
        {
           Response response;
@@ -240,6 +245,7 @@ public class ImsResource
        @DELETE
        @Path("{itemcode}")
        @Produces({MediaType.APPLICATION_JSON})
+       @Loggable(value = LogLevel.INFO)
        public Response deleteItemByItemCode(@Context HttpHeaders requestHeaders, @PathParam("itemcode") final String itemCode)
        {
           Response response;
