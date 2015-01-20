@@ -10,7 +10,7 @@ Hello
 
 ```sh
 # Guest User
-curl --basic -u "guest:" --get "http://192.168.56.23:8080/bedlogic/v2/hello"
+curl --basic -u "guest:" --get "http://192.168.56.10:8080/bedlogic/v2/hello"
 ```
 
 
@@ -41,9 +41,9 @@ curl --basic -u "badusertype:" --get "http://192.168.56.10:8080/bedlogic/v2/ims?
 
 Item Creation
 -----------------
-curl -H "Accept: application/json" -H "Content-type: application/json" -i --user keymark:JBED -X POST http://192.168.56.10:8080/bedlogic/v2/ims -d '{"itemcode":"CRDBARBTEST","itemcategory":"ATHENA","itemdesc":{"itemdesc1":"2x2 Athena Mosaic on 12x12 SHT Ash"}}' 
+curl -H "Accept: application/json" -H "Content-type: application/json" -i --user keymark:JBED -X POST http://192.168.56.10:8080/bedlogic/v2/ims -d '{"itemcode":"TEST","itemcategory":"ATHENA","itemdesc":{"itemdesc1":"2x2 Athena Mosaic on 12x12 SHT Ash"}}' 
 
 
 Item Update
 -----------------
-curl -H "Accept: application/json" -H "Content-type: application/json" -i --user keymark:JBED -X PUT http://192.168.56.10:8080/bedlogic/v2/ims -d '{"itemcode":"CRDBARBTEST","itemcategory":"AT","itemdesc":{"itemdesc1":"update"}}' 
+curl -H "Accept: application/json" -H "Content-type: application/json" -i --user keymark:JBED -X PUT http://192.168.56.10:8080/bedlogic/v2/ims -d '{"itemcode":"TEST","itemcategory":"AT","itemdesc":{"itemdesc1":"update"}}' 
