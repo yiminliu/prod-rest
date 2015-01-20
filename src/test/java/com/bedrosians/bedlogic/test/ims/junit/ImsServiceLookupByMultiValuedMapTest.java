@@ -1,13 +1,10 @@
 package com.bedrosians.bedlogic.test.ims.junit;
 
-import java.io.StringWriter;
-import java.io.Writer;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.core.MultivaluedMap;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -19,11 +16,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import com.bedrosians.bedlogic.domain.ims.Ims;
-import com.bedrosians.bedlogic.domain.ims.Vendor;
 import com.bedrosians.bedlogic.domain.ims.enums.Grade;
 import com.bedrosians.bedlogic.domain.ims.enums.MpsCode;
 import com.bedrosians.bedlogic.domain.ims.enums.Status;
-import com.bedrosians.bedlogic.domain.ims.ColorHue;
 import com.bedrosians.bedlogic.models.Products;
 import com.bedrosians.bedlogic.service.ims.ImsService;
 import com.bedrosians.bedlogic.util.JsonWrapper.ItemListWrapper;
@@ -47,7 +42,6 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	private ImsService imsService;
 	@Autowired
 	//private IndexUtil indexUtil;
-	
 	
 	private static String testItemId = null;
 	private static String testItemId2 = null;
@@ -537,7 +531,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	        catch(Exception e){
 	        	e.printStackTrace();
 	        }
-	       //System.out.println("items   = " + jsonStr);
+	       System.out.println("output   = " + jsonStr);
 	 }
 	
 	@Test

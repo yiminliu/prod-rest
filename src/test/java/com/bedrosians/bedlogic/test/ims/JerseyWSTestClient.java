@@ -44,7 +44,7 @@ public class JerseyWSTestClient {
 	   //testGetItemByColorHues(colorHue);
 	   //testGetItemByMultipleColorCategories(new String[]{colorHue, "GREEN", "YELLOW"});
 	   //testGetItemByMultipleColorHues(new String[]{colorHue, "GREEN", "YELLOW"});
-	   testGetItemByOriginCountry(originCountry);
+	   //testGetItemByOriginCountry(originCountry);
 	   //testGetItemsWIthMultipleMaterialStyles();
 	   //testGetAllItems();
 		//testGetAllActiveItems();
@@ -91,7 +91,7 @@ public class JerseyWSTestClient {
 	   System.out.println("Response type = " + response.getType());
 	   System.out.println("Response data : "+ response.toString());
 	   String s = response.getEntity(String.class);
-	   //System.out.println("Output = " + s);
+	   System.out.println("Output = " + s);
 	}
 	
 	private static void testGetItemByMultipleItemCodes(){
@@ -241,7 +241,7 @@ public class JerseyWSTestClient {
 		   System.out.println("Response data : "+ response.toString());
 		   
 		   String s = response.getEntity(String.class);
-		  // System.out.println("Output = " + s);
+		   System.out.println("Output = " + s);
 		   long totalTime = System.currentTimeMillis() - startTime;
 		   System.out.println("Method execution time = " + totalTime);
 	}

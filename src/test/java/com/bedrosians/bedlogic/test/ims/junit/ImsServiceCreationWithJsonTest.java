@@ -4,7 +4,6 @@ package com.bedrosians.bedlogic.test.ims.junit;
 import java.math.BigDecimal;
 import java.util.Random;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jettison.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,11 +22,9 @@ import com.bedrosians.bedlogic.util.ims.ImsDataUtil;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(locations = "/Bedlogic-test-context.xml")
 @ContextConfiguration(locations = {"/application_context/bedlogic-context.xml", "/application_context/bedlogic-persistence.xml"})
 @TransactionConfiguration(defaultRollback = false)
 public class ImsServiceCreationWithJsonTest {
-	
 	
 	@Autowired
 	ImsService imsService;
@@ -43,7 +40,7 @@ public class ImsServiceCreationWithJsonTest {
 	public void testItemCodeWithJsonObject() throws Exception {
 		JSONObject params = new JSONObject(jStringWithItemCode);
         String id = imsService.createItem(params);
-        //assertNotNull(id); 
+        assertNotNull(id); 
 	}
 
 	 @Test
@@ -333,7 +330,7 @@ public class ImsServiceCreationWithJsonTest {
 	        assertEquals("Italy", item.getCountryorigin());
 	        assertEquals("N", item.getInactivecode());
 	        assertEquals("2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)", item.getItemdesc().getFulldesc());    
-		    assertEquals("[BEIGE]", item.getColorhues().toString());
+		    //assertEquals("[BEIGE]", item.getColorhues().toString());
 		    //assertTrue(item.getColorhues().contains("BEIGE"));
 		    assertEquals("F", item.getItemtypecode());
 		    //assertEquals("test", item.getType());
@@ -393,7 +390,7 @@ public class ImsServiceCreationWithJsonTest {
 	        assertNotNull(id);
 	        Ims item = imsService.getItemByItemCode(id);
 	        assertEquals("First", item.getNewFeature().getGrade().getDescription());
-	        assertEquals("Good", item.getNewFeature().getStatus().getDescription());
+	        assertEquals("GOOD", item.getNewFeature().getStatus().getDescription());
 	        
 	        assertEquals("Red Body", item.getNewFeature().getBody().getDescription());
 	        assertEquals("Tumbled", item.getNewFeature().getEdge().getDescription());
@@ -754,7 +751,7 @@ public class ImsServiceCreationWithJsonTest {
 			//	assertEquals("red".toUpperCase(), hue.getColorDescription().getDescription().toUpperCase());
 	        //item new features
 	        assertEquals("First", item.getNewFeature().getGrade().getDescription());
-	        assertEquals("Good", item.getNewFeature().getStatus().getDescription());
+	        assertEquals("GOOD", item.getNewFeature().getStatus().getDescription());
 	        assertEquals("Red Body", item.getNewFeature().getBody().getDescription());
 	        assertEquals("Tumbled", item.getNewFeature().getEdge().getDescription());
 	        assertEquals("Drop", item.getNewFeature().getMpsCode().getDescription());
@@ -792,12 +789,12 @@ public class ImsServiceCreationWithJsonTest {
 	 }
 	 
 	 String jStringWithItemCode = 
-			   "{\"itemcode\":\"newItemcode3\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
+			   "{\"itemcode\":\"newItemcode1\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
 	    		+ "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\"},"
 	    		+ "}";
 	 
 	 String jStringWithBasicInfo = 
-		     "{\"itemcode\":\"newItemcode19\","
+		     "{\"itemcode\":\"newItemcode\","
 		    + "\"itemcategory\":\"ATHENA\","
 		    + "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\"},"
  		    + "\"countryorigin\":\"Italy\","
@@ -889,7 +886,7 @@ public class ImsServiceCreationWithJsonTest {
  
 	 
 	 String jStringWithColorHues = 
-		     "{\"itemcode\":\"newItemcode23\","
+		     "{\"itemcode\":\"newItemcode1\","
 		    + "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\"},"
 		    + "\"itemcategory\":\"ATHENA\","
  		    + "\"countryorigin\":\"Italy\","
@@ -902,7 +899,7 @@ public class ImsServiceCreationWithJsonTest {
     		+ "}";
  
 	 String jStringWithMultipleColorHues = 
-		     "{\"itemcode\":\"newItemcode24\","
+		     "{\"itemcode\":\"newItemcode3\","
 		    + "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\"},"
 		    + "\"itemcategory\":\"ATHENA\","
  		    + "\"countryorigin\":\"Italy\","
@@ -1000,7 +997,7 @@ public class ImsServiceCreationWithJsonTest {
 	 
 	 String jStringWithUnitAndNewVendor = 
 			    "{"
-			    + "\"itemcode\":\"newItemcode29\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
+			    + "\"itemcode\":\"newItemcode2\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
 	    		+ "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\"},"
 	    		+ "\"units\":"
 	    		+ "{\"stdunit\":\"SHT\",\"stdratio\":1.0,\"ordunit\":\"SHT\",\"ordratio\":1.0,"
@@ -1026,9 +1023,9 @@ public class ImsServiceCreationWithJsonTest {
 	    		+ "                     {\"vendorOrder\":3,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorNetPrice\":4.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"vendorId\":529554}],"
 	    		+ "}";
 	 
-	 String jStringWithNewFeature = "{\"itemcode\":\"newItemcode25\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
+	 String jStringWithNewFeature = "{\"itemcode\":\"newItemcode\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
 	    		+ "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\"},"
-	     		+ "\"newFeature\":{\"grade\":\"First\",\"status\":\"Good\",\"body\":\"Red_Body\",\"edge\":\"Tumbled\",\"mpsCode\":\"Drop\",\"designLook\":\"Wood\",\"designStyle\":\"Modern\",\"surfaceApplication\":\"Silk\",\"surfaceType\":\"Cross_Cut\",\"surfaceFinish\":\"Antiquated\",\"warranty\":3,\"recommendedGroutJointMin\":\"1\",\"recommendedGroutJointMax\":\"2\",\"createdDate\":\"2014-05-14\",\"launchedDate\":null,\"droppedDate\":null,\"lastModifiedDate\":null},"
+	     		+ "\"newFeature\":{\"grade\":\"First\",\"status\":\"GOOD\",\"body\":\"Red_Body\",\"edge\":\"Tumbled\",\"mpsCode\":\"Drop\",\"designLook\":\"Wood\",\"designStyle\":\"Modern\",\"surfaceApplication\":\"Silk\",\"surfaceType\":\"Cross_Cut\",\"surfaceFinish\":\"Antiquated\",\"warranty\":3,\"recommendedGroutJointMin\":\"1\",\"recommendedGroutJointMax\":\"2\",\"createdDate\":\"2014-05-14\",\"launchedDate\":null,\"droppedDate\":null,\"lastModifiedDate\":null},"
 	    		+ "}";
 	 
 	 String jStringWithNewNotes = "{\"itemcode\":\"newItemcode41\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
@@ -1072,7 +1069,7 @@ public class ImsServiceCreationWithJsonTest {
 	       		+ "}";
 	 	 
 	 String jStringFullItemInfo = 
-			   "{\"itemcode\":\"newItemcode22\","
+			   "{\"itemcode\":\"newItemcode\","
 			    + "\"itemcategory\":\"ATHENA\","
 			    + "\"countryorigin\":\"Italy\","
 			    + "\"inactivecode\":\"N\","
@@ -1108,10 +1105,6 @@ public class ImsServiceCreationWithJsonTest {
 	    		+ "\"applications\":{\"residential\":\"FR:WR:CR:SR:PR\",\"lightcommercial\":\"FL:WL:CL:SL:PL\",\"commercial\":\"FC:WC:CC:SC:PC\"},"
 	    		+ "\"units\":"
 	    		+ "{"
-	    		    //+ "\"stdunit\":\"SHT\","
-	    		    //+ "\"stdratio\":1.0,"
-	    		    //+ "\"ordunit\":\"SHT\","
-	    		    //+ "\"ordratio\":1.0,"
 	    	   	    + "\"baseunit\":\"SHT\","
 	    	   	    + "\"baseisstdsell\":\"Y\","
 	    	   	    + "\"baseisstdord\":\"Y\","
@@ -1126,14 +1119,14 @@ public class ImsServiceCreationWithJsonTest {
 	    		+ "\"unit3unit\":\"test\",\"unit3ratio\":10.0,\"unit3isstdsell\":\"N\",\"unit3isstdord\":\"N\",\"unit3isfractqty\":\"N\",\"unit3ispackunit\":\"N\",\"unit3upc\":12345,\"unit3upcdesc\":\"test\",\"unit3wgtperunit\":10.0000,"
 	    		+ "\"unit4unit\":\"test\",\"unit4ratio\":10.0,\"unit4isstdsell\":\"N\",\"unit4isstdord\":\"N\",\"unit4isfractqty\":\"N\",\"unit4ispackunit\":\"N\",\"unit4upc\":12353,\"unit4upcdesc\":\"test\",\"unit4wgtperunit\":20.0000},"
 	     		//+ "\"vendors\":{\"vendornbr\":0,\"vendornbr1\":134585,\"vendornbr2\":0,\"vendorxrefcd\":\"ATM40\",\"vendorlistprice\":4.1500,\"vendorpriceunit\":\"SHT\",\"vendorfob\":\"\",\"vendordiscpct\":0.0,\"vendorroundaccuracy\":2,\"vendornetprice\":4.1500,\"vendormarkuppct\":0.0,\"vendorfreightratecwt\":0.0,\"dutypct\":0.0,\"leadtime\":60,\"vendorLandedBaseCost\":4.1500,\"vendordiscpct2\":0.0,\"vendordiscpct3\":0.0},"
-	     		+ "\"newVendorSystem\":[{\"vendorOrder\":1,\"vendorName\":\"TestVendor1\",\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorNetPrice\":4.0500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"id\":134585},"
-	    		+ "                     {\"vendorOrder\":2,\"vendorName\":\"TestVendor2\",\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.2500,\"vendorNetPrice\":4.0600,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"id\":271520},"
-	    		+ "                     {\"vendorOrder\":3,\"vendorName\":\"TestVendor3\",\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.3500,\"vendorNetPrice\":4.0700,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"id\":453680},"
+	     		+ "\"newVendorSystem\":[{\"vendorOrder\":1,\"vendorName\":\"TestVendor1\",\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"leadTime\":60,\"dutyPct\":0.0,\"id\":134585},"
+	    		+ "                     {\"vendorOrder\":2,\"vendorName\":\"TestVendor2\",\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.2500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"leadTime\":60,\"dutyPct\":0.0,\"id\":271520},"
+	    		+ "                     {\"vendorOrder\":3,\"vendorName\":\"TestVendor3\",\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.3500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"leadTime\":60,\"dutyPct\":0.0,\"id\":453680},"
  		        + "                     ],"
 	    	
 	        	//+ "\"vendors\":{\"vendornbr\":0,\"vendornbr1\":134585,\"vendornbr2\":0,\"vendornbr3\":0,\"vendorxrefcd\":\"ATM40\",\"vendorlistprice\":4.1500,\"vendorpriceunit\":\"SHT\",\"vendorfob\":\"\",\"vendordiscpct\":0.0,\"vendorroundaccuracy\":2,\"vendornetprice\":4.1500,\"vendormarkuppct\":0.0,\"vendorfreightratecwt\":0.0,\"dutypct\":0.0,\"leadtime\":60,\"vendorLandedBaseCost\":4.1500,\"vendordiscpct2\":0.0,\"vendordiscpct3\":0.0},
 	    		+ "\"cost\":{\"cost1\":1.0000,\"priorcost\":1.0000},"
-	    		//+ "\"imsNewFeature\":{\"grade\":\"First\",\"status\":\"Good\",\"body\":\"Red_Body\",\"edge\":\"Tumbled\",\"mpsCode\":\"Drop\",\"designLook\":\"Wood\",\"designStyle\":\"Modern\",\"surfaceApplication\":\"Silk\",\"surfaceType\":\"Cross_Cut\",\"surfaceFinish\":\"Antiquated\",\"warranty\":3,\"recommendedGroutJointMin\":\"1\",\"recommendedGroutJointMax\":\"2\",\"createdDate\":\"2014-05-14\",\"launchedDate\":null,\"droppedDate\":null,\"lastModifiedDate\":null},"
+	    		//+ "\"imsNewFeature\":{\"grade\":\"First\",\"status\":\"GOOD\",\"body\":\"Red_Body\",\"edge\":\"Tumbled\",\"mpsCode\":\"Drop\",\"designLook\":\"Wood\",\"designStyle\":\"Modern\",\"surfaceApplication\":\"Silk\",\"surfaceType\":\"Cross_Cut\",\"surfaceFinish\":\"Antiquated\",\"warranty\":3,\"recommendedGroutJointMin\":\"1\",\"recommendedGroutJointMax\":\"2\",\"createdDate\":\"2014-05-14\",\"launchedDate\":null,\"droppedDate\":null,\"lastModifiedDate\":null},"
 	    		//+ "\"notes\":{\"ponotes\":\"test po note\",\"notes1\":\"test notes1\",\"notes2\":\"test note2\",\"notes3\":\"test notes3\"},"
 	    		 + "\"notes\":{\"ponotes\":\"test po note\",\"buyernotes\":\"test note1\",\"internalnotes\":\"test note2\",\"invoicenotes\":\"test note3\"},"
     			//+ "\"newNoteSystem\":[{\"noteType\":\"po\",\"note\":\"test Po note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"buyer\",\"note\":\"test buyer note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"invoice\",\"note\":\"test invoice note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"additional\",\"note\":\"test additional note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"internal\",\"note\":\"test internal note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null}],"
@@ -1141,7 +1134,7 @@ public class ImsServiceCreationWithJsonTest {
 	 
 	 String jStringFullItemAndAssociationInfo = 
 			    //basic info
-			     "{\"itemcode\":\"newItemcode31\","
+			     "{\"itemcode\":\"newItemcode5\","
 			    + "\"itemcategory\":\"ATHENA\","
 			    + "\"countryorigin\":\"Italy\","
 			    + "\"inactivecode\":\"N\","
@@ -1187,8 +1180,7 @@ public class ImsServiceCreationWithJsonTest {
 	    		+ "\"cost\":{\"cost1\":0.0000,\"priorcost\":0.0000},"
 	       		//+ "\"iconsystem\":\"NNNNNNNNNNNNNNNNNNNN\","
 	    		+ "\"applications\":{\"residential\":\"FR:WR:CR:SR:PR\",\"lightcommercial\":\"FL:WL:CL:SL:PL\",\"commercial\":\"FC:WC:CC:SC:PC\"},"
-	    		+ "\"units\":{\"stdunit\":\"SHT\",\"stdratio\":1.0,\"ordunit\":\"SHT\",\"ordratio\":1.0,"
-	    		           + "\"baseunit\":\"SHT\",\"baseisstdsell\":\"Y\",\"baseisstdord\":\"Y\",\"baseisfractqty\":\"N\",\"baseispackunit\":\"Y\",\"baseupc\":0,\"baseupcdesc\":\"\",\"basevolperunit\":0.0000,\"basewgtperunit\":4.2000,"
+	    		+ "\"units\":{\"baseunit\":\"SHT\",\"baseisstdsell\":\"Y\",\"baseisstdord\":\"Y\",\"baseisfractqty\":\"N\",\"baseispackunit\":\"Y\",\"baseupc\":0,\"baseupcdesc\":\"\",\"basevolperunit\":0.0000,\"basewgtperunit\":4.2000,"
 	    		           + "\"unit1unit\":\"CTN\",\"unit1ratio\":4.0,\"unit1isstdsell\":\"N\",\"unit1isstdord\":\"N\",\"unit1isfractqty\":\"N\",\"unit1ispackunit\":\"Y\",\"unit1upc\":0,\"unit1upcdesc\":\"\",\"unit1wgtperunit\":17.4000,"
 	    		           + "\"unit2unit\":\"PLT\",\"unit2ratio\":240.0,\"unit2isstdsell\":\"N\",\"unit2isstdord\":\"N\",\"unit2isfractqty\":\"N\",\"unit2ispackunit\":\"N\",\"unit2upc\":0,\"unit2upcdesc\":\"\",\"unit2wgtperunit\":1070.0000,"
 	    		           + "\"unit3unit\":\"\",\"unit3ratio\":0.0,\"unit3isstdsell\":\"N\",\"unit3isstdord\":\"N\",\"unit3isfractqty\":\"N\",\"unit3ispackunit\":\"N\",\"unit3upc\":0,\"unit3upcdesc\":\"\",\"unit3wgtperunit\":0.0000,"
@@ -1215,11 +1207,11 @@ public class ImsServiceCreationWithJsonTest {
 		    	+ "\"vendorlandedbasecost\":4.1500,"
 		    	+ "\"vendordiscpct2\":0.0,"
 		    	+ "\"vendordiscpct3\":0.0},"*/
-	    		+ "\"newVendorSystem\":[{\"vendorOrder\":1,\"vendorName\":\"TestVendor1\",\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorNetPrice\":4.0500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"id\":134585},"
-	    		+ "                     {\"vendorOrder\":2,\"vendorName\":\"TestVendor2\",\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.2500,\"vendorNetPrice\":4.0600,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"id\":271520},"
-	    		+ "                     {\"vendorOrder\":3,\"vendorName\":\"TestVendor3\",\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.3500,\"vendorNetPrice\":4.0700,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"id\":453680},"
+	    		+ "\"newVendorSystem\":[{\"vendorOrder\":1,\"vendorName\":\"TestVendor1\",\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"id\":134585},"
+	    		+ "                     {\"vendorOrder\":2,\"vendorName\":\"TestVendor2\",\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.2500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"id\":271520},"
+	    		+ "                     {\"vendorOrder\":3,\"vendorName\":\"TestVendor3\",\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.3500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"id\":453680},"
  		        + "                     ],"
-	    		+ "\"newFeature\":{\"grade\":\"First\",\"status\":\"Good\",\"body\":\"Red_Body\",\"edge\":\"Tumbled\",\"mpsCode\":\"Drop\",\"designLook\":\"Wood\",\"designStyle\":\"Modern\",\"surfaceApplication\":\"Silk\",\"surfaceType\":\"Cross_Cut\",\"surfaceFinish\":\"Antiquated\",\"warranty\":3,\"recommendedGroutJointMin\":\"1\",\"recommendedGroutJointMax\":\"2\",\"createdDate\":\"2014-05-14\",\"launchedDate\":null,\"droppedDate\":null,\"lastModifiedDate\":null},"
+	    		+ "\"newFeature\":{\"grade\":\"First\",\"status\":\"GOOD\",\"body\":\"Red_Body\",\"edge\":\"Tumbled\",\"mpsCode\":\"Drop\",\"designLook\":\"Wood\",\"designStyle\":\"Modern\",\"surfaceApplication\":\"Silk\",\"surfaceType\":\"Cross_Cut\",\"surfaceFinish\":\"Antiquated\",\"warranty\":3,\"recommendedGroutJointMin\":\"1\",\"recommendedGroutJointMax\":\"2\",\"createdDate\":\"2014-05-14\",\"launchedDate\":null,\"droppedDate\":null,\"lastModifiedDate\":null},"
 	    		//+ "\"newNoteSystem\":[{\"noteType\":\"po\",\"text\":\"test Po note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"buyer\",\"text\":\"test buyer note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"invoice\",\"text\":\"test invoice note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"additional\",\"text\":\"test additional note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"internal\",\"text\":\"test internal note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null}],"
 	    		+ "\"iconDescription\":{\"madeInCountry\":\"USA\",\"exteriorProduct\":true,\"adaAccessibility\":true,\"throughColor\":false,\"colorBody\":true,\"inkJet\":false,\"glazed\":true,\"unglazed\":false,\"rectifiedEdge\":true,\"chiseledEdge\":false,\"versaillesPattern\":true,\"recycled\":false,\"postRecycled\":true,\"preRecycled\":false,\"leadPoint\":true,\"greenFriendly\":false,\"coefficientOfFriction\":true},"
 		        + "}";

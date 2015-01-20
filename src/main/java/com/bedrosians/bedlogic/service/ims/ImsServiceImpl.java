@@ -126,7 +126,6 @@ public class ImsServiceImpl implements ImsService {
 			itemList = imsDao.getItemsByQueryParameters(queryParams);
 		}
 		catch(HibernateException hbe){
-			hbe.printStackTrace();
 			if(hbe.getCause() != null)
 		       throw new DatabaseOperationException("Error occured during getItems(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
 		  	else
@@ -157,7 +156,6 @@ public class ImsServiceImpl implements ImsService {
 			itemList = imsDao.getItemsByQueryParameters(queryParams);
 		}
 		catch(HibernateException hbe){
-			hbe.printStackTrace();
 			if(hbe.getCause() != null)
 		       throw new DatabaseOperationException("Error occured during getWrappedItems, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
 		  	else
@@ -343,7 +341,6 @@ public class ImsServiceImpl implements ImsService {
 			itemToUpdate = imsDao.getItemByItemCode(session, itemFromInput.getItemcode().trim());
 		}
 	    catch(HibernateException hbe){
-		    hbe.printStackTrace();
 		    throw new DatabaseOperationException("Error occured during updateProduct() due to: " + hbe.getMessage(), hbe);
 	    }
 		catch(RuntimeException e){

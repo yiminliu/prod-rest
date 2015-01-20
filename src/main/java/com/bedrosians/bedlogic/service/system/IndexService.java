@@ -16,8 +16,9 @@ public class IndexService {
 	@Autowired
     private SessionFactory sessionFactory;
 	
-	/* This method is used to initialize Lucene indexes for the existing data in database.
-	 * The @PostConstruct annotation ensures the indexes are initialized when the app starts up*/
+   /** This method is used to initialize Lucene indexes for the existing data in database.
+	 * The @PostConstruct annotation ensures the indexes are initialized when the app starts up
+	 */
 	@PostConstruct
     public  boolean initializeIndex(){
     	FullTextSession fullTextSession = Search.getFullTextSession(sessionFactory.openSession());

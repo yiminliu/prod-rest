@@ -38,12 +38,12 @@ sudo update-alternatives --config javaws
 
 ```sh
 # clone repo
-git clone ssh://git@vcs.bedrosians.com:2222/bedrosians/bedims-uitest.git
+git clone ssh://git@vcs.bedrosians.com:2222/bedrosians/bedlogic.git
 
 cd bedims-uitest
 ```
 
-* Installation - Build, Install, and Run. Installation directory is /opt/bedims-uitest
+* Installation - Build, Install, and Run. Installation directory is /opt/bedlogic
 
 ```sh
 cd bedims-uitest
@@ -53,22 +53,22 @@ setup/installbedims-uitest.sh
 * Upgrade
 
 ```sh
-cd bedims-uitest
+cd bedlogic
 git pull
-setup/installbedims-uitest.sh
+setup/installbedlogic.sh
 ```
 
-* Start/Stop/Statuc
+* Start/Stop/Status
 
 ```sh
 # Start
-sudo start bedims-uitest
+sudo start bedlogic
 
 # Stop
-sudo stop bedims-uitest
+sudo stop bedlogic
 
 # Status
-sudo status bedims-uitest
+sudo status bedlogic
 ```
 
 ## Development
