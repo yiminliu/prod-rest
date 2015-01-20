@@ -10,12 +10,10 @@
 
 # Target
 target/
-<<<<<<< HEAD
 /bin
 /lucene
 /target
 /.settings
 /.classpath
 /.project
-=======
->>>>>>> refs/remotes/origin/develop
+
