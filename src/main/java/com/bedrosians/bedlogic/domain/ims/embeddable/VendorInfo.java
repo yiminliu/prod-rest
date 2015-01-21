@@ -12,6 +12,8 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.NumericField;
 import org.hibernate.search.annotations.Store;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Embeddable
 public class VendorInfo  implements java.io.Serializable {
 
@@ -194,6 +196,7 @@ public class VendorInfo  implements java.io.Serializable {
 		}
 		
 		@Transient
+		@JsonIgnore
 		public boolean isDefault(){
 		  return vendornbr1 == null && vendornbr2 == null && vendorlistprice == BigDecimal.ZERO && vendorfob == null && vendornetprice == BigDecimal.ZERO;
 		}
