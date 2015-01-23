@@ -18,6 +18,7 @@ Item Search
 ---------------
 
 # Guest User
+--get items
 curl --basic -u "guest:" --get "http://192.168.56.10:8080/bedlogic/v2/ims?itemcode=AECBUB217NR,CRDBARBRU440"
 curl --basic -u "guest:" --get "http://192.168.56.10:8080/bedlogic/v2/ims?colorhues=White&size=12X9"
 curl --basic -u "guest:" --get "http://192.168.56.10:8080/bedlogic/v2/ims?seriesname=builder"
@@ -26,6 +27,9 @@ curl --basic -u "guest:" --get "http://192.168.56.10:8080/bedlogic/v2/ims?size=1
 curl --basic -u "guest:" --get "http://192.168.56.10:8080/bedlogic/v2/ims?lengthmax=2&lengthmin=1"
 curl --basic -u "guest:" --get "http://192.168.56.10:8080/bedlogic/v2/ims?seriescolor=Beige&countryorigin=China&category=BRECCIA"
 curl --basic -u "guest:" --get "http://192.168.56.10:8080/bedlogic/v2/ims?seriesname=Parquet&colorhues=Beige&lengthmax=20&countryorigin=China&matcategory=Trim&materialstyle=SF&materialclass=CTMNF&inactivecd=N"
+
+--get an item by item code
+curl --basic -u "guest:" --get "http://192.168.56.10:8080/bedlogic/v2/ims/AECBUB217NR"
 
 # Keymark User
 curl --basic -u "keymark:<usercode>" --get "http://192.168.56.10:8080/bedlogic/v2/ims?itemcode=AECBUB217NR,CRDBARBRU440"
@@ -49,4 +53,4 @@ curl -H "Accept: application/json" -H "Content-type: application/json" -i --user
 
 Item Deletion
 -----------------
-curl -H "Accept: application/json" -H "Content-type: application/json" -i --user keymark:<usercode> -X DELETE http://192.168.56.10:8080/bedlogic/v2/ims -d '{"itemcode":"TEST"}' 
+curl -H "Accept: application/json" -H "Content-type: application/json" -i --user keymark:<usercode> -X DELETE http://192.168.56.10:8080/bedlogic/v2/ims/TEST 
