@@ -216,7 +216,7 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 	 	   	   case "dcof": case "scof": case  "scratchresistance": case "scratchResistance":   
 	 	   	       itemCriteria.add(Restrictions.eq(key, Float.parseFloat(value)));
 	 	   	       break;
-	 	   	   case "exactMatch": case "exactmatch": case "maxresults": case "maxResults":
+	 	   	   case "exactMatch": case "exactmatch": case "maxresults": case "maxResults": case "wrappedData":
  	   		       break;    
 	 	   	   default:     
 	 	   		   itemCriteria.add(Restrictions.eq(key, value).ignoreCase());

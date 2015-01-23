@@ -7,23 +7,23 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 public class ItemWrapper {
 
-	 private Ims ims;
+	 private Ims item;
 	 
 	 public ItemWrapper(){}
 	 
-	 public ItemWrapper(Ims ims){
+	 public ItemWrapper(Ims item){
 		ObjectMapper mapper = new  ObjectMapper(); 
 	    mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, true); //version2.0
-		this.ims = ims;
+		this.item = item;
 	 }
 	 
 	 @JsonProperty("item")
-	 public Ims getProduct() {
-	     return ims;
+	 public Ims getItem() {
+	     return item;
 	 }
 
-	 public void setProduct(Ims ims) {
-	     this.ims = ims;
+	 public void setItem(Ims item) {
+	     this.item = item;
 	 }
 	
 }
