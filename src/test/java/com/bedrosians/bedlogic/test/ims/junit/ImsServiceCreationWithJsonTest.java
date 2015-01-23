@@ -50,7 +50,7 @@ public class ImsServiceCreationWithJsonTest {
 	        String id = imsService.createItem(params);
 	        assertNotNull(id);
 	        
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	             
 	        assertEquals("ATHENA", item.getItemcategory());
 	        assertEquals("Italy", item.getCountryorigin());
@@ -77,7 +77,7 @@ public class ImsServiceCreationWithJsonTest {
 	        String id = imsService.createItem(params);
 	        assertNotNull(id);
 	       
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        
 	        assertEquals("11-13/16", item.getDimensions().getLength());
 	        assertEquals("11-13/16", item.getDimensions().getWidth());
@@ -95,7 +95,7 @@ public class ImsServiceCreationWithJsonTest {
 	        String id = imsService.createItem(params);
 	        assertNotNull(id);
 	       
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        
 	        assertEquals("18.3800", item.getPrice().getListprice().toString());
 	        assertEquals("18.3800", item.getPrice().getSellprice().toString());
@@ -118,7 +118,7 @@ public class ImsServiceCreationWithJsonTest {
 	        String id = imsService.createItem(params);
 	        assertNotNull(id);
 	       
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        
 	        assertEquals("Porcelain", item.getMaterial().getMaterialtype());
 	        assertEquals("CTSRC", item.getMaterial().getMaterialclass());
@@ -132,7 +132,7 @@ public class ImsServiceCreationWithJsonTest {
 	        JSONObject params = new JSONObject(jStringWithSeriesInfo);
 	        String id = imsService.createItem(params);
 	        assertNotNull(id);  
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        assertEquals("Athena", item.getSeries().getSeriesname());
 	        assertEquals("Ash", item.getSeries().getSeriescolor());
 	 }
@@ -144,7 +144,7 @@ public class ImsServiceCreationWithJsonTest {
 	        String id = imsService.createItem(params);
 	        assertNotNull(id);
 	       
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        
 	        assertEquals(Float.valueOf("0.1"), item.getTestSpecification().getWaterabsorption());
 	        assertEquals(Float.valueOf("0.2"), item.getTestSpecification().getScratchresistance());
@@ -167,7 +167,7 @@ public class ImsServiceCreationWithJsonTest {
 	        String id = imsService.createItem(params);
 	        assertNotNull(id);
 	       
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        assertEquals("FR:WR:CR:SR:PR", item.getApplications().getResidential());
 	        assertEquals("FL:WL:CL:SL:PL", item.getApplications().getLightcommercial());
 	        assertEquals("FC:WC:CC:SC:PC", item.getApplications().getCommercial());
@@ -182,7 +182,7 @@ public class ImsServiceCreationWithJsonTest {
 	        String id = imsService.createItem(params);
 	        assertNotNull(id);
 	       
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        System.out.println(item.getUsage());
 	        assertEquals("[FR, WR, CR, SR, PR, FL, WL, CL, SL, PL, FC, WC, CC, SC, PC]", item.getUsage().toString());
 	        assertEquals("FC:WC:CC:SC:PC", item.getApplications().getCommercial());
@@ -196,7 +196,7 @@ public class ImsServiceCreationWithJsonTest {
 	        String id = imsService.createItem(params);
 	        assertNotNull(id);
 	       
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	         assertEquals("test po note", item.getNotes().getPonotes());
 	        assertEquals("test note1", item.getNotes().getBuyernotes());
 	        assertEquals("test note2", item.getNotes().getInternalnotes());
@@ -210,7 +210,7 @@ public class ImsServiceCreationWithJsonTest {
 	        String id = imsService.createItem(params);
 	        assertNotNull(id);
 	       
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        
 	      //  assertEquals("Athena", item.getSeries().getSeriesname());
 	      //  assertEquals("Ash", item.getSeries().getSeriescolor());
@@ -225,7 +225,7 @@ public class ImsServiceCreationWithJsonTest {
 	        JSONObject params = new JSONObject(jStringWithColorCategory);
 	        String id = imsService.createItem(params);
 	        assertNotNull(id);    
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        assertEquals("BLACK:WHITE", item.getColorcategory());
 	        //assertEquals("[BLACK, WHITE]", item.getColorhues().toString());
 	        for(ColorHue colorHue : item.getColorhues()){
@@ -241,7 +241,7 @@ public class ImsServiceCreationWithJsonTest {
 	        String id = imsService.createItem(params);
 	        assertNotNull(id);
 	        
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        
 	        //series
 	        assertEquals("Athena", item.getSeries().getSeriesname());
@@ -361,7 +361,7 @@ public class ImsServiceCreationWithJsonTest {
 	        JSONObject params = new JSONObject(jStringWithColorHues);
 	        String id = imsService.createItem(params);
 	        assertNotNull(id);    
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        for(ColorHue colorHue : item.getColorhues()){
 		        assertEquals("BEIGE", colorHue.getColorHue());
 		        //    assertEquals(colorHue.getColorHue(), item.getColorcategory());
@@ -375,7 +375,7 @@ public class ImsServiceCreationWithJsonTest {
 	        JSONObject params = new JSONObject(jStringWithMultipleColorHues);
 	        String id = imsService.createItem(params);
 	        assertNotNull(id);    
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        for(ColorHue colorHue : item.getColorhues()){
 	            assertTrue("BEIGE".equals(colorHue.getColorHue()) || "RED".equals(colorHue.getColorHue()));
 	            assertTrue(item.getColorcategory().contains(colorHue.getColorHue()));
@@ -388,7 +388,7 @@ public class ImsServiceCreationWithJsonTest {
 	        JSONObject params = new JSONObject(jStringWithNewFeature);            
 	        String id = imsService.createItem(params);
 	        assertNotNull(id);
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        assertEquals("First", item.getNewFeature().getGrade().getDescription());
 	        assertEquals("GOOD", item.getNewFeature().getStatus().getDescription());
 	        
@@ -413,7 +413,7 @@ public class ImsServiceCreationWithJsonTest {
 	        //JSONObject params = new JSONObject(jStringWithNewVendorSystem);
 	        String id = imsService.createItem(params);
 	        assertNotNull(id);
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        assertEquals("SHT", item.getUnits().getBaseunit());
 	        assertEquals(Character.valueOf('Y'), item.getUnits().getBaseisstdsell());
 	        assertEquals(Character.valueOf('Y'), item.getUnits().getBaseisstdord());
@@ -469,7 +469,7 @@ public class ImsServiceCreationWithJsonTest {
 	        //JSONObject params = new JSONObject(jStringWithNewVendorSystem);
 	        String id = imsService.createItem(params);
 	        assertNotNull(id);
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        assertEquals("SHT", item.getUnits().getBaseunit());
 	        assertEquals(Character.valueOf('Y'), item.getUnits().getBaseisstdsell());
 	        assertEquals(Character.valueOf('Y'), item.getUnits().getBaseisstdord());
@@ -524,7 +524,7 @@ public class ImsServiceCreationWithJsonTest {
 	        String id = imsService.createItem(params);
 	        assertNotNull(id);
 	        System.out.println("newly created Item id  = " + id);
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        //for(Note note :)
 	        //assertEquals("First", item.getNewNoteSystem());
 	 }
@@ -536,7 +536,7 @@ public class ImsServiceCreationWithJsonTest {
 	        String id = imsService.createItem(params);
 	        assertNotNull(id);
 	        System.out.println("newly created Item id  = " + id);
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        IconCollection icon = item.getIconDescription();
 	        assertEquals("USA", icon.getMadeInCountry().getDescription());
 	        assertEquals(true, icon.getExteriorProduct());
@@ -586,7 +586,7 @@ public class ImsServiceCreationWithJsonTest {
 	        String id = imsService.createItem(params);
 	        assertNotNull(id);
 	        System.out.println("newly created Item id  = " + id);
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        
 	        IconCollection icon = item.getIconDescription();
 	        
@@ -638,7 +638,7 @@ public class ImsServiceCreationWithJsonTest {
 	        String id = imsService.createItem(params);
 	        assertNotNull(id);
 	        
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        
 	        //series
 	        assertEquals("Athena", item.getSeries().getSeriesname());

@@ -40,7 +40,7 @@ public class JerseyWSTestClient {
 	   
 		/******** Item search test *********/	
 	   //testGetItemByItemCode(testItemCode);
-	   //testGetItemByMultipleItemCodes();
+	   testGetItemByMultipleItemCodes();
 	   //testGetItemByColorHues(colorHue);
 	   //testGetItemByMultipleColorCategories(new String[]{colorHue, "GREEN", "YELLOW"});
 	   //testGetItemByMultipleColorHues(new String[]{colorHue, "GREEN", "YELLOW"});
@@ -108,6 +108,7 @@ public class JerseyWSTestClient {
 		   System.out.println("Response type = " + response.getType());
 		   System.out.println("Response data : "+ response.toString());
 		   String s = response.getEntity(String.class);
+		   response.close();
 		   System.out.println("Output = " + s);
 		}
 	

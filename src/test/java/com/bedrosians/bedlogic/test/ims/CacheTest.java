@@ -54,7 +54,7 @@ public class CacheTest {
 	      session.getTransaction().begin();
 	      System.out.println("Before 1st round Statistics().getEntityFetchCount() = "  + session.getStatistics().getEntityKeys());
          // item = itemDao.getItemById(session, "AECBUB218NR");
-	      item = imsService.getItemByItemCode("AECBUB218NR");
+	      item = imsService.getItem("AECBUB218NR");
           session.getTransaction().commit();
           session.close();
 	    }
@@ -89,7 +89,7 @@ public class CacheTest {
 	    	startTime = System.currentTimeMillis();
 	    	session.getTransaction().begin();
 	         // item = itemDao.getItemById(session, "AECBUB218NR       ");
-	     	item = imsService.getItemByItemCode("AECBUB218NR");
+	     	item = imsService.getItem("AECBUB218NR");
 	        System.out.println("2 round retrieved item = " + item);
 	        session.getTransaction().commit();
 	
@@ -183,7 +183,7 @@ public class CacheTest {
 	      session.getTransaction().begin();
 	      System.out.println("Before 1st round Statistics().getEntityFetchCount() = "  + session.getStatistics().getEntityKeys());
          // item = itemDao.getItemById(session, "AECBUB218NR");
-	      items = imsService.getItems(params);
+	      items = (List<Ims>)imsService.getItems(params, false);
           session.getTransaction().commit();
           System.out.println("1st round Statistics().getEntityFetchCount() = "  + session.getStatistics().getEntityKeys());
           session.close();
@@ -206,7 +206,7 @@ public class CacheTest {
 	    try{
 	    	startTime = System.currentTimeMillis();
 	    	session.getTransaction().begin();
-	    	items = imsService.getItems(params);
+	    	items = (List<Ims>)imsService.getItems(params, false);
 	        session.getTransaction().commit();
 	
 		}

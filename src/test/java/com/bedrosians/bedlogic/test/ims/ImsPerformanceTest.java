@@ -55,7 +55,7 @@ public class ImsPerformanceTest {
 	    	try{
 	           Session session = sessionFactory.openSession();
 	           session.getTransaction().begin();
-	           products = imsService.getWrappedItems(params);
+	           products = (List<ItemWrapper>)imsService.getItems(params, true);
                session.getTransaction().commit();
                session.close();
 	        }

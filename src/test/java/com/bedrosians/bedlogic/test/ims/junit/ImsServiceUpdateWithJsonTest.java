@@ -50,7 +50,7 @@ public class ImsServiceUpdateWithJsonTest {
 	        JSONObject params = new JSONObject(jStringColorHues);
 	        imsService.updateItem(params);
 	        
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        assertEquals("BLACK:RED:YELLOW", item.getColorcategory());
 	        for(ColorHue ch : item.getColorhues()){
 	        	assertTrue(ch.getColorHue().equals("RED") || ch.getColorHue().equals("BLACK") || ch.getColorHue().equals("YELLOW"));
@@ -63,7 +63,7 @@ public class ImsServiceUpdateWithJsonTest {
 	        JSONObject params = new JSONObject(jStringWithColorHues);
 	        imsService.updateItem(params);
 	        
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        assertEquals("GREEN", item.getColorcategory());
 	        for(ColorHue ch : item.getColorhues()){
 	        	assertTrue(ch.getColorHue().equals("GREEN"));
@@ -83,7 +83,7 @@ public class ImsServiceUpdateWithJsonTest {
 	        JSONObject params = new JSONObject(jStringMaterialInfo);
 	        imsService.updateItem(params);
 	        	        
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        
 	      
 	        //material
@@ -100,7 +100,7 @@ public class ImsServiceUpdateWithJsonTest {
 	        JSONObject params = new JSONObject(jStringWithDimensions);
 	        imsService.updateItem(params);
 	        	        
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        
 	        //dimensions
 	        assertEquals("11-13/16", item.getDimensions().getLength());
@@ -125,7 +125,7 @@ public class ImsServiceUpdateWithJsonTest {
 	        JSONObject params = new JSONObject(jStringWithPriceAndCost);
 	        imsService.updateItem(params);
 	        
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	              
 	        //price
             assertEquals("18.3800", item.getPrice().getListprice().toString());
@@ -149,7 +149,7 @@ public class ImsServiceUpdateWithJsonTest {
 	        JSONObject params = new JSONObject(jStringWithApplicationsInfo);
 	        imsService.updateItem(params);
 	        	        
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
    
 	        assertEquals("FR:WR:CR:SR:PR", item.getApplications().getResidential());
             assertEquals("FL:WL:CL:SL:PL", item.getApplications().getLightcommercial());
@@ -164,7 +164,7 @@ public class ImsServiceUpdateWithJsonTest {
 	        JSONObject params = new JSONObject(jStringWithUsageInfo);
 	        imsService.updateItem(params);
 	        	        
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
   
 	        assertEquals("FR:WR:CR:SR:PR", item.getApplications().getResidential());
             assertEquals("FL:WL:CL:SL:PL", item.getApplications().getLightcommercial());
@@ -181,7 +181,7 @@ public class ImsServiceUpdateWithJsonTest {
 	        JSONObject params = new JSONObject(jStringWithNotesInfo);
 	        imsService.updateItem(params);
 	        	        
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
  
 	        assertEquals("test1 po note", item.getNotes().getPonotes());
 	        assertEquals("test1 note1", item.getNotes().getBuyernotes());
@@ -196,7 +196,7 @@ public class ImsServiceUpdateWithJsonTest {
 	        JSONObject params = new JSONObject(jStringWithTestSpecs);
 	        imsService.updateItem(params);
 	        	        
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 
 	      //test spec
 		    assertEquals(Float.valueOf("0.5"), item.getTestSpecification().getWaterabsorption());
@@ -218,7 +218,7 @@ public class ImsServiceUpdateWithJsonTest {
 	        JSONObject params = new JSONObject(jStringFullItemInfo);
 	        imsService.updateItem(params);
 	        
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        
 	        //series
 	        assertEquals("update Athena", item.getSeries().getSeriesname());
@@ -334,7 +334,7 @@ public class ImsServiceUpdateWithJsonTest {
 	        JSONObject params = new JSONObject(jStringFullItemInfoWithouUnitAndPrice);
 	        imsService.updateItem(params);
 	        
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        
 	        //series
 	        assertEquals("Athena", item.getSeries().getSeriesname());
@@ -404,7 +404,7 @@ public class ImsServiceUpdateWithJsonTest {
 	        JSONObject params = new JSONObject(jStringWithColorHues);
 	        productService.updateItem(params);
 	          
-	        Ims item = productService.getItemByItemCode(id);
+	        Ims item = productService.getItem(id);
 	        for(ColorHue colorHue : item.getColorhues()){
 	            assertEquals("GREEN", colorHue.getColorHue());
 	            assertEquals(colorHue.getColorHue(), item.getColorcategory());
@@ -418,7 +418,7 @@ public class ImsServiceUpdateWithJsonTest {
 	        JSONObject params = new JSONObject(jStringWithMultipleColorHues);
 	        productService.updateItem(params);
 	        
-	        Ims item = productService.getItemByItemCode(id);
+	        Ims item = productService.getItem(id);
 	        for(ColorHue colorHue : item.getColorhues()){
 	            assertTrue("BEIGE".equals(colorHue.getColorHue()) || "RED".equals(colorHue.getColorHue()));
 	            assertTrue(item.getColorcategory().contains(colorHue.getColorHue()));
@@ -432,7 +432,7 @@ public class ImsServiceUpdateWithJsonTest {
 	        JSONObject params = new JSONObject(jStringWithNewFeature);            
 	        imsService.updateItem(params);
 	        
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        assertEquals("Second", item.getNewFeature().getGrade().getDescription());
 	        assertEquals("Better", item.getNewFeature().getStatus().getDescription());
 	        
@@ -458,7 +458,7 @@ public class ImsServiceUpdateWithJsonTest {
 	        JSONObject params = new JSONObject(jStringWithNewVendorSystem);
 	        imsService.updateItem(params);
 	        
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        assertEquals("PCS", item.getUnits().getBaseunit());
 	        //assertEquals(Character.valueOf('Y'), item.getUnits().getBaseisstdsell());
 	        assertEquals(Character.valueOf('Y'), item.getUnits().getBaseisstdord());
@@ -514,7 +514,7 @@ public class ImsServiceUpdateWithJsonTest {
 	        imsService.updateItem(params);
 	        
 	        System.out.println("newly Updated Item id  = " + id);
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        //for(Note note : item.getNewNoteSystem()){
 	            //assertTrue(note.g"First", item.getNewNoteSystem());
 	        //}    
@@ -527,7 +527,7 @@ public class ImsServiceUpdateWithJsonTest {
 	        imsService.updateItem(params);
 	        
 	        System.out.println("newly Updated Item id  = " + id);
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        IconCollection icon = item.getIconDescription();
 	        assertEquals("USA", icon.getMadeInCountry().getDescription());
 	        assertEquals("false", icon.getExteriorProduct());
@@ -578,7 +578,7 @@ public class ImsServiceUpdateWithJsonTest {
 	        imsService.updateItem(params);
 	        
 	        System.out.println("newly Updated Item id  = " + id);
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        IconCollection icon = item.getIconDescription();
 	        assertEquals("China", icon.getMadeInCountry().getDescription());
 	        assertEquals("No", icon.getExteriorProduct());
@@ -627,7 +627,7 @@ public class ImsServiceUpdateWithJsonTest {
 	        JSONObject params = new JSONObject(jStringFullItemAndAssociationInfo);
 	        imsService.updateItem(params);
 	        	        
-	        Ims item = imsService.getItemByItemCode(id);
+	        Ims item = imsService.getItem(id);
 	        
 	        //series
 	        assertEquals("Athena", item.getSeries().getSeriesname());

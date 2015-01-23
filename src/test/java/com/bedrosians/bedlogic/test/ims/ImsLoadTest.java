@@ -56,7 +56,7 @@ public class ImsLoadTest {
 	        try{
 	      	   Session session = sessionFactory.openSession();
 	           session.getTransaction().begin();
-	           ims = imsService.getItemByItemCode("AECBUB218NR");
+	           ims = imsService.getItem("AECBUB218NR");
                session.getTransaction().commit();
                session.close();
 	        }
@@ -100,7 +100,7 @@ public class ImsLoadTest {
 	    			   System.out.println("sub test round " + i);
 	    	      	   Session session = getSession();
 	    	           session.getTransaction().begin();
-	    	           ims = imsService.getItemByItemCode("AECBUB218NR");
+	    	           ims = imsService.getItem("AECBUB218NR");
 	                   
 	    	           session.getTransaction().commit();
 	                   session.close();
