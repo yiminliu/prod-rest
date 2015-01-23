@@ -65,7 +65,7 @@ public class ImsServiceImpl implements ImsService {
     @Loggable(value = LogLevel.INFO)
     @Override
     @Transactional(readOnly = true, isolation=Isolation.READ_COMMITTED)
-	public Ims getItemByItemCode(String itemCode){
+	public Ims getItem(String itemCode){
     	Ims item = null;
     	if(itemCode == null || itemCode.length() < 1)
     	   throw new InputParamException("Please enter a valid Item Code !");	
@@ -85,6 +85,8 @@ public class ImsServiceImpl implements ImsService {
 			else
 				throw new DatabaseOperationException("Error occured during getItems(), due to: " +  e.getMessage(), e);
 	    }
+		if(item == null)
+		       throw new DataNotFoundException("No data found for the given item code: " + itemCode);	
 		return FormatUtil.process(item);
 	}
     
@@ -114,39 +116,9 @@ public class ImsServiceImpl implements ImsService {
 		return processedItems;
 	}
 	
-    @Loggable(value = LogLevel.INFO)
-	@Override
-	public List<Ims> getItems(MultivaluedMap<String, String> queryParams){
-		if(queryParams == null || queryParams.isEmpty()){
-			queryParams = new MultivaluedMapImpl();
-			queryParams.put("inactivecode", Arrays.asList(new String[]{"N"}));
-		}
-		List<Ims> itemList = null;
-		try{
-			itemList = imsDao.getItemsByQueryParameters(queryParams);
-		}
-		catch(HibernateException hbe){
-			if(hbe.getCause() != null)
-		       throw new DatabaseOperationException("Error occured during getItems(), due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
-		  	else
-		  	   throw new DatabaseOperationException("Error occured during getItems(), due to: " +  hbe.getMessage(), hbe);
-		}
-		catch(RuntimeException e){
-			if(e.getCause() != null)
-		  	   throw new DatabaseOperationException("Error occured during getItems(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
-		  	else
-		  	   throw new DatabaseOperationException("Error occured during getItems(), due to: " +  e.getMessage(), e);	
-		}
-		List<Ims> processedItems = new ArrayList<>();
-		for(Ims ims : itemList){
-			processedItems.add(FormatUtil.process(ims));
-		}
-		return processedItems;
-	}
-	
 	@Loggable(value = LogLevel.INFO)
 	@Override
-	public List<ItemWrapper> getWrappedItems(MultivaluedMap<String, String> queryParams){
+	public List<?> getItems(MultivaluedMap<String, String> queryParams, boolean wrappedData){
 		if(queryParams == null || queryParams.isEmpty()){
 			queryParams = new MultivaluedMapImpl();
 			queryParams.put("inactivecode", Arrays.asList(new String[]{"N"}));
@@ -167,11 +139,14 @@ public class ImsServiceImpl implements ImsService {
 		  	else
 		  	   throw new DatabaseOperationException("Error occured during getWrappedItems, due to: " +  e.getMessage(), e);	
 		}
-		List<ItemWrapper> productWrapperList = new ArrayList<ItemWrapper>(itemList.size());
+		List<Object> list = new ArrayList<Object>(itemList.size());
 		for(Ims ims : itemList){
-			productWrapperList.add(new ItemWrapper(FormatUtil.process(ims)));
+		    if(wrappedData) 
+		    	list.add(new ItemWrapper(FormatUtil.process(ims)));	
+		    else 
+		    	list.add(FormatUtil.process(ims));				
 		}
-		return productWrapperList;
+		return list;
 	}
 	
 	@Loggable(value = LogLevel.INFO)

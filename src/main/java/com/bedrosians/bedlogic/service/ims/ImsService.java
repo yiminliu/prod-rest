@@ -14,11 +14,10 @@ import com.bedrosians.bedlogic.util.JsonWrapper.ItemWrapper;
 import com.bedrosians.bedlogic.util.enums.DBOperation;
 
 public interface ImsService {	
-	public Ims getItemByItemCode(String itemCode);	
+	public Ims getItem(String itemCode);
 	public List<Ims> getActiveAndShownOnWebsiteItems();
 	public List<Ims> getItems(LinkedHashMap<String, List<String>> queryParams);
-	public List<Ims> getItems(MultivaluedMap<String, String> queryParams);	
-	public List<ItemWrapper> getWrappedItems(MultivaluedMap<String, String> queryParams);		   	
+	public List<?> getItems(MultivaluedMap<String, String> queryParams, boolean wrappedData);	
 	public String createItem(JSONObject inputJsonObj);
 	public String createOrUpdateItem(Ims item, DBOperation operation);
 	public void updateItem(JSONObject inputJsonObj);			
