@@ -25,7 +25,7 @@
        <jdkLevel>1.7</jdkLevel>
        <maven-plugin.version>3.1</maven-plugin.version>
        <jersey.version>1.18.3</jersey.version>
-       <jetty.version>9.3.0.M1</jetty.version>  
+       <jetty.version>9.0.5.v20130815</jetty.version>  
        <slf4j.version>1.7.5</slf4j.version>
        <logback.version>1.1.2</logback.version>
        <logback-ext-spring.version>0.1.2</logback-ext-spring.version>
@@ -364,7 +364,7 @@
             </plugin>
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
-	            <artifactId>jetty-server</artifactId>
+	            <artifactId>jetty-maven-plugin</artifactId>
                 <version>${jetty.version}</version>
                 <configuration>
                   <webApp> 
