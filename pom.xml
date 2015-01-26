@@ -364,7 +364,7 @@
             </plugin>
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-maven-plugin</artifactId>
+	            <artifactId>jetty-server</artifactId>
                 <version>${jetty.version}</version>
                 <configuration>
                   <webApp> 
