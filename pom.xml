@@ -20,7 +20,7 @@
     </repositories>
  
     <properties>
-       <basedir>./bedlogic/</basedir> 
+       <basedir>/bedlogic/</basedir> 
        <baseUri>/</baseUri>
        <jdkLevel>1.7</jdkLevel>
        <maven-plugin.version>3.1</maven-plugin.version>
