@@ -19,7 +19,7 @@ public class IndexService {
    /** This method is used to initialize Lucene indexes for the existing data in database.
 	 * The @PostConstruct annotation ensures the indexes are initialized when the app starts up
 	 */
-	@PostConstruct
+	//@PostConstruct
     public  boolean initializeIndex(){
     	FullTextSession fullTextSession = Search.getFullTextSession(sessionFactory.openSession());
     	try{
