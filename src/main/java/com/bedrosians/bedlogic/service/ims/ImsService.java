@@ -20,7 +20,7 @@ public interface ImsService {
 	public List<?> getItems(MultivaluedMap<String, String> queryParams, boolean wrappedData);	
 	public String createItem(JSONObject inputJsonObj);
 	public String createOrUpdateItem(Ims item, DBOperation operation);
-	public void updateItem(JSONObject inputJsonObj);			
+	public Ims updateItem(JSONObject inputJsonObj);			
 	public void deleteItemByItemCode(String itemCode);
 	public void deleteItem(JSONObject inputJsonObj);
 	public void deleteItem(Ims ims);

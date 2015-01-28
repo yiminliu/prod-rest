@@ -219,7 +219,7 @@ public class ImsServiceImpl implements ImsService {
 	@Loggable(value = LogLevel.INFO)
 	@Override
 	@Transactional(readOnly = false, propagation=Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ) 
-	public synchronized void updateItem(JSONObject jsonObj){
+	public synchronized Ims updateItem(JSONObject jsonObj){
 		String itemCode = JsonUtil.validateItemCode(jsonObj);
 		Ims itemFromInput = (Ims)JsonUtil.jsonObjectToPOJO(jsonObj, new Ims());
 		itemFromInput.setItemcode(itemFromInput.getItemcode().toUpperCase());
@@ -260,6 +260,7 @@ public class ImsServiceImpl implements ImsService {
 		   else
 			  throw new DatabaseOperationException("Error occured during updateItem(), due to: " +  e.getMessage());	
 		}
+    	return itemToUpdate;
 	}
 	
 	//--------------------------------Deletion DB Operation --------------------------//
