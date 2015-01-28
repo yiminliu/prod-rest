@@ -25,8 +25,6 @@ import org.springframework.stereotype.Controller;
 import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.exception.BedException;
 import com.bedrosians.bedlogic.exception.BedExceptionMapper;
-import com.bedrosians.bedlogic.exception.BedResException;
-import com.bedrosians.bedlogic.exception.BedResExceptionMapper;
 import com.bedrosians.bedlogic.models.Products;
 import com.bedrosians.bedlogic.service.ims.ImsService;
 import com.bedrosians.bedlogic.service.security.KeymarkUcUserSecurityService;
@@ -84,11 +82,7 @@ public class ImsResource
         {
           response = bedExceptionMapper.toResponse(e);
         }
-        catch (BedResException e)
-        {
-           response = BedResExceptionMapper.MapToResponse(e);
-        }
-  	  return response;
+        return response;
     }
    
     /**
@@ -131,10 +125,6 @@ public class ImsResource
         {
            response = bedExceptionMapper.toResponse(e);
         }
-        catch (BedResException e)
-        {
-            response = BedResExceptionMapper.MapToResponse(e);
-        }
         return response;
      }
 
@@ -173,6 +163,7 @@ public class ImsResource
        */
        @PUT
        @Consumes(MediaType.APPLICATION_JSON)
+       @Produces({MediaType.APPLICATION_JSON})
        @Loggable(value = LogLevel.INFO)
        public Response updateItem(@Context HttpHeaders requestHeaders, JSONObject inputJsonObj)
        {
@@ -183,8 +174,10 @@ public class ImsResource
              keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, APINAME, DBOperation.UPDATE);
              //Update an item based on the input json data
              Ims item = imsService.updateItem(inputJsonObj);
-             //Create response
-             response = Response.ok(item, MediaType.APPLICATION_JSON).build();
+             Products result = new Products(new ItemWrapper(item));
+             String jsonStr = result.toJSONStringWithJackson("ims");
+             //Create json response
+             response = Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();
           }
           catch (BedException e)
           {

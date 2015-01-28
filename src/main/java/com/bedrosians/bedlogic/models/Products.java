@@ -4,8 +4,7 @@ import net.minidev.json.JSONObject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-
-import com.bedrosians.bedlogic.exception.BedResException;
+import com.bedrosians.bedlogic.exception.DataMappingException;
 
 
 public class Products
@@ -29,7 +28,7 @@ public class Products
         this.object = object;
     }
     
-    public String toJSONStringWithJackson(String rootName) throws BedResException
+    public String toJSONStringWithJackson(String rootName)
     {
        ObjectWriter writer = null;
        final ObjectMapper mapper = new ObjectMapper();
@@ -43,8 +42,7 @@ public class Products
    	   }
        catch(Exception e)
        {
-   	      e.printStackTrace();
-   	      throw new BedResException(e);
+   	      throw new DataMappingException("Error occurred during mapping data: toJSONStringWithJackson(). Due to -- "+ e.getMessage(),  e);
    	   }
        return json;
     }
