@@ -2,6 +2,7 @@ package com.bedrosians.bedlogic.dao.ims;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -72,7 +73,6 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 		session.setCacheMode(CacheMode.REFRESH);
     	Query query = session.createQuery("From Ims where itemcode = :itemCode");
 		query.setString("itemCode", itemCode);
-		//return (Ims)query.setCacheable(false).uniqueResult();
 		return (Ims)query.uniqueResult();
 	}
 	
@@ -80,16 +80,19 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 	public Ims getItemByItemCode(final String itemCode) {
     	Query query = getSession().createQuery("From Ims where itemcode = :itemCode");
 		query.setString("itemCode", itemCode);
+		query.setCacheable(false);
 		//return (Ims)getSession().get("Ims", itemCode,  LockMode.OPTIMISTIC); 
-		return (Ims)query.setCacheable(false).uniqueResult();
+		return (Ims)query.uniqueResult();
 	}
 	
 	@Override
+	@SuppressWarnings("unchecked")
     @Loggable(value = LogLevel.INFO)
 	@Transactional(readOnly=true)
 	public List<String> getItemCodeList(){
 		Query query = getSession().createQuery("Select itemcode From Ims");
-		return (List<String>)query.setCacheable(true).list();
+		query.setCacheable(true);
+		return Collections.checkedList(query.list(), String.class);
 	}
 	
 	/*
@@ -449,29 +452,6 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 	@Loggable(value = LogLevel.INFO)
 	public void updateItem(Session session, Ims ims){
 		update(session, ims);
-	}
-	
-	@Override
-	@Loggable(value = LogLevel.INFO)
-	@Transactional(readOnly=false, propagation=Propagation.REQUIRED)
-	public void updateItem(Ims item){
-		Session session = sessionFactory.getCurrentSession();
-		Ims existingItem = loadById(session, item.getItemcode());
-		item.setVersion(existingItem.getVersion());
-		if((item.getNewFeature() != null && !item.getNewFeature().isEmpty()) && (existingItem.getNewFeature() != null && existingItem.getNewFeature().getVersion() != null)){
-			item.setItemcode(existingItem.getItemcode());
-			item.getNewFeature().setVersion(existingItem.getNewFeature().getVersion());
-		}	
-		if(existingItem.getNewFeature() != null && !item.getNewFeature().isEmpty())
-		   session.evict(existingItem.getNewFeature());
-		//if(existingItem.getColorhues() != null)
-		//   session.evict(existingItem.getColorhues());
-		//if(existingItem.getNewVendorSystem() != null)
-		//   session.evict(existingItem.getNewVendorSystem());
-		//if(existingItem.getIconDescription() != null)
-		//   session.evict(existingItem.getIconDescription());
-		session.evict(existingItem);
-		update(session, item);
 	}
 	
 	//------------------------------- deletion DB operation -------------------------//
