@@ -5,7 +5,9 @@ import java.io.Serializable;
 public class BedException extends RuntimeException  implements Serializable
 {
 	protected static final long serialVersionUID = -34724706273251377L;
-	protected String errorCode;
+	protected Integer httpErrorCode;
+	protected String httpMessage;
+	protected String appErrorCode;
 	protected String errorType;
 	protected String message;
 	protected String rootErrorMessage;
@@ -27,12 +29,29 @@ public class BedException extends RuntimeException  implements Serializable
     	this.rootError = rootError;
     }
 
-	public String getErrorCode() {
-		return errorCode;
+    
+	public Integer getHttpErrorCode() {
+		return httpErrorCode;
 	}
 
-	public void setErrorCode(String errorCode) {
-		this.errorCode = errorCode;
+	public void setHttpErrorCode(Integer httpErrorCode) {
+		this.httpErrorCode = httpErrorCode;
+	}
+
+	public String getHttpMessage() {
+		return httpMessage;
+	}
+
+	public void setHttpMessage(String httpMessage) {
+		this.httpMessage = httpMessage;
+	}
+
+	public String getAppErrorCode() {
+		return appErrorCode;
+	}
+
+	public void setAppErrorCode(String appErrorCode) {
+		this.appErrorCode = appErrorCode;
 	}
 
 	public String getErrorType() {

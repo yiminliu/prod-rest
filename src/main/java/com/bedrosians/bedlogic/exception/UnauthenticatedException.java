@@ -8,6 +8,8 @@ public class UnauthenticatedException extends BedException {
 	private static final long serialVersionUID = -34724706273251377L;
     public UnauthenticatedException() { 
     	super(); 
+    	this.httpErrorCode = 401;
+    	this.httpMessage = "Authentication Failed";
     	this.message = "Authentication Failed"; 
     	if(errorType == null)
     	   errorType = "UnauthenticatedException"; 	

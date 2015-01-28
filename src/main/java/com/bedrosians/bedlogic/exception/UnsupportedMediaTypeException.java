@@ -9,6 +9,8 @@ public class UnsupportedMediaTypeException extends BedException {
 	private static final long serialVersionUID = -3447273251377L;
     public UnsupportedMediaTypeException() {
     	super();
+    	this.httpErrorCode = 415;
+    	this.httpMessage = "Unsupported Media Type";
     	this.message = "Unsupported Media Type";
     	if(errorType == null)
     	   errorType = "Unsupported Media Type";

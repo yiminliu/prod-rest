@@ -8,6 +8,8 @@ public class UnauthorizedException extends BedException {
 	private static final long serialVersionUID = -347886273251377L;
     public UnauthorizedException() { 
     	super(); 
+    	this.httpErrorCode = 403;
+        this.httpMessage = "Forbidden";
     	this.message = "Authorizatication Failed"; 
     	if(errorType == null)
     	   errorType = "Authorizatication"; 	

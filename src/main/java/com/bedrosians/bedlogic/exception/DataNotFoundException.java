@@ -9,6 +9,8 @@ public class DataNotFoundException extends BedException {
 
 	public DataNotFoundException() { 
     	super(); 
+    	this.httpErrorCode = 404;
+    	this.httpMessage = "Object Not Found";
     	if(errorType == null)
     	  errorType = "Data Not Found Exception";	
     }

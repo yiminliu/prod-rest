@@ -15,8 +15,7 @@ public class BedExceptionMapper implements ExceptionMapper<Exception>
     {
         int     code;
         String  message;
-        String  detailMessage;
-            
+              
         if (theException instanceof BedDAOBadParamException || theException instanceof InputParamException)
         {
             code = 400;
