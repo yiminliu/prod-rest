@@ -23,6 +23,7 @@
        <basedir>/</basedir> 
        <baseUri>/</baseUri>
        <jdkLevel>1.7</jdkLevel>
+       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
        <maven-plugin.version>3.1</maven-plugin.version>
        <jersey.version>1.18.3</jersey.version>
        <jetty.version>6.1.10</jetty.version>  
