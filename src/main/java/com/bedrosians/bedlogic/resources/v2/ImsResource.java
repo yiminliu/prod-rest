@@ -95,7 +95,7 @@ public class ImsResource
       * This method retrieves a list of items for the given query condition, or a list of all active items if no query condition is specified .
       * @param UriInfo represents query condition in the form of name/value pairs. If no query is specified, all active items will be returned.
       * Number of resulting records can be specified by setting a value for "maxResults" and if "exactmatch" is set to true, no pattern matching will be performed for all queries.
-      * @return Response object which contains the status of "200, OK" and a list of items in json format, or error status and message if exception occurs
+      * @return Response object which contains the status of "200, OK" and a list of items in json format in message body, or error status and message if exception occurs
       */
      @GET
      @Produces({MediaType.APPLICATION_JSON})
@@ -145,6 +145,7 @@ public class ImsResource
        */
        @POST
        @Consumes(MediaType.APPLICATION_JSON)
+       @Produces({MediaType.APPLICATION_JSON})
        @Loggable(value = LogLevel.INFO)
        public Response createItem(@Context HttpHeaders requestHeaders, JSONObject inputJsonObj)
        {
@@ -168,7 +169,7 @@ public class ImsResource
      /**
        * This method updates an item based on the given item info.
        * @param A Json object containing item information to update.
-       * @return Response object which contains a "204, No Content" status and no message body, or error status and message if exception occurs
+       * @return Response object which contains a "200, OK" status and a message body including the updated item in json format, or error status and message if exception occurs
        */
        @PUT
        @Consumes(MediaType.APPLICATION_JSON)
@@ -181,9 +182,9 @@ public class ImsResource
              //Check user security
              keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, APINAME, DBOperation.UPDATE);
              //Update an item based on the input json data
-             imsService.updateItem(inputJsonObj);
+             Ims item = imsService.updateItem(inputJsonObj);
              //Create response
-             response = Response.noContent().build();
+             response = Response.ok(item, MediaType.APPLICATION_JSON).build();
           }
           catch (BedException e)
           {
