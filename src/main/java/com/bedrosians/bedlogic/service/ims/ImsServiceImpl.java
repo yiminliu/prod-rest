@@ -13,6 +13,7 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
 import org.codehaus.jettison.json.JSONObject;
 import org.hibernate.CacheMode;
 import org.hibernate.HibernateException;
+import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,7 @@ import com.bedrosians.bedlogic.domain.ims.embeddable.VendorInfo;
 import com.bedrosians.bedlogic.exception.DataNotFoundException;
 import com.bedrosians.bedlogic.exception.DatabaseOperationException;
 import com.bedrosians.bedlogic.exception.InputParamException;
+import com.bedrosians.bedlogic.exception.UnauthorizedException;
 import com.bedrosians.bedlogic.util.FormatUtil;
 import com.bedrosians.bedlogic.util.JsonUtil;
 import com.bedrosians.bedlogic.util.JsonWrapper.ItemWrapper;
@@ -120,24 +122,27 @@ public class ImsServiceImpl implements ImsService {
 	@Override
 	public List<?> getItems(MultivaluedMap<String, String> queryParams, boolean wrappedData){
 		if(queryParams == null || queryParams.isEmpty()){
-			queryParams = new MultivaluedMapImpl();
-			queryParams.put("inactivecode", Arrays.asList(new String[]{"N"}));
+			throw new InputParamException("Query criteria is empty");
 		}
 		List<Ims> itemList = null;
 		try{
 			itemList = imsDao.getItemsByQueryParameters(queryParams);
 		}
 		catch(HibernateException hbe){
-			if(hbe.getCause() != null)
-		       throw new DatabaseOperationException("Error occured during getWrappedItems, due to: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
-		  	else
-		  	   throw new DatabaseOperationException("Error occured during getWrappedItems, due to: " +  hbe.getMessage(), hbe);
+			if(hbe.getCause() != null) {
+			   if(hbe.getCause().getMessage() != null && hbe.getCause().getMessage().contains("permission denied for relation"))	
+			      throw new UnauthorizedException("Permission denied error occured during getItems. Cause: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());  
+			   else	
+			      throw new DatabaseOperationException("Error occured during getWrappedItems(). Cause: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
+			}
+			else
+		  	   throw new DatabaseOperationException("Error occured during getWrappedItems. Cause: " +  hbe.getMessage(), hbe);
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-		  	   throw new DatabaseOperationException("Error occured during getWrappedItems, due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
+		  	   throw new DatabaseOperationException("Error occured during getWrappedItems. Cause: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
 		  	else
-		  	   throw new DatabaseOperationException("Error occured during getWrappedItems, due to: " +  e.getMessage(), e);	
+		  	   throw new DatabaseOperationException("Error occured during getWrappedItems. Cause: " +  e.getMessage(), e);	
 		}
 		List<Object> list = new ArrayList<Object>(itemList.size());
 		for(Ims ims : itemList){
@@ -192,10 +197,14 @@ public class ImsServiceImpl implements ImsService {
      	   id = imsDao.createItem(item);
 		}
 		catch(HibernateException hbe){
-			if(hbe.getCause() != null)
-				throw new DatabaseOperationException("Error occured during createOrUpdateItem(), due to: " +  hbe.getMessage() + ". Root cause -- " + hbe.getCause().getMessage());	
+			if(hbe.getCause() != null) {
+			   if(hbe.getCause().getMessage() != null && hbe.getCause().getMessage().contains("permission denied for relation"))	
+		    	  throw new UnauthorizedException("Permission denied error occured during createOrUpdateItem(). Cause: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());  
+		       else	
+			  	  throw new DatabaseOperationException("Error occured during createOrUpdateItem(). Cause:  " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+			}
 			else
-				throw new DatabaseOperationException("Error occured during createOrUpdateItem(), due to: " +  hbe.getMessage());
+				throw new DatabaseOperationException("Error occured during createOrUpdateItem(). Cause:  " +  hbe.getMessage());
 	    }	
    	    catch(Exception e){
 	       if(e != null && e.getMessage() != null){
@@ -204,12 +213,12 @@ public class ImsServiceImpl implements ImsService {
 		      else if(e.getMessage().contains("constraint [vendor_apv_fkey]"))
 			      throw new InputParamException("Invalid vendor number (ID), since it cannot be found in the vendor table", e);
 		      else
-		    	  throw new DatabaseOperationException("Error occured during createItem(), due to: " + e.getMessage(), e);
+		    	  throw new DatabaseOperationException("Error occured during createItem(). Cause: " + e.getMessage(), e);
 		  }
 		  if(e.getCause() != null)
-			  throw new DatabaseOperationException("Error occured during createOrUpdateItem(), due to: " +  e.getMessage() + ". Root cause -- " + e.getCause().getMessage());	
+			  throw new DatabaseOperationException("Error occured during createOrUpdateItem(). Cause: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
 		  else
-			  throw new DatabaseOperationException("Error occured during createOrUpdateItem(), due to: " +  e.getMessage());
+			  throw new DatabaseOperationException("Error occured during createOrUpdateItem(). Cause: " +  e.getMessage());
       }
 	  return id;	
    }
@@ -229,14 +238,21 @@ public class ImsServiceImpl implements ImsService {
 			itemToUpdate = imsDao.getItemByItemCode(session, itemCode.trim().toUpperCase());
 		}
 	    catch(HibernateException hbe){
-		    hbe.printStackTrace();
-		    throw new DatabaseOperationException("Error occured during updateProduct() due to: " + hbe.getMessage(), hbe);
+	     	if(hbe.getCause() != null) {
+	    	  if(hbe.getCause().getMessage() != null && hbe.getCause().getMessage().contains("permission denied for relation"))	
+	    		  throw new UnauthorizedException("Permission denied error occured during updateItem(). Cause: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());  
+	    	  else
+	    		  throw new DatabaseOperationException("Error occured during updateItem(). Cause: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+	    	}
+	    	else
+				throw new DatabaseOperationException("Error occured during updateItem(). Cause : " +  hbe.getMessage());
+
 	    }
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-		  	   throw new DatabaseOperationException("Error occured during updateItem(), due to: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
+		  	   throw new DatabaseOperationException("Error occured during updateItem(). Cause :  " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
 		  	else
-		  	   throw new DatabaseOperationException("Error occured during updateItem(), due to: " +  e.getMessage());	
+		  	   throw new DatabaseOperationException("Error occured during updateItem(). Cause : " +  e.getMessage());	
 		}
 		if(itemToUpdate == null)
 	       throw new DataNotFoundException("No data found for the given item code: " + itemCode);	
@@ -276,17 +292,28 @@ public class ImsServiceImpl implements ImsService {
 			Ims itemProxy = imsDao.loadById(session, itemCode);
 			imsDao.deleteItem(session, itemProxy);
 		}
-		catch(HibernateException hbe){
-			if(hbe.getCause() != null)
-				throw new DatabaseOperationException("Error occured during deleteItemByItemCode(), due to: " +  hbe.getMessage() + ". Root cause -- " + hbe.getCause().getMessage());	
+		catch(ObjectNotFoundException e){
+			if(e.getCause() != null)
+				throw new DataNotFoundException("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage() + ". Root cause -- " + e.getCause().getMessage());	
 			else
-				throw new DatabaseOperationException("Error occured during deleteItemByItemCode(), due to: " +  hbe.getMessage());
+				throw new DataNotFoundException("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage());
+		}
+		catch(HibernateException hbe){
+			if(hbe.getCause() != null) {
+				if(hbe.getCause().getMessage() != null && hbe.getCause().getMessage().contains("permission denied for relation"))	
+		    		  throw new UnauthorizedException("Permission denied error occured during deleteItemByItemCode(). Cause: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());  
+		    	  else
+			
+				throw new DatabaseOperationException("Error occured during deleteItemByItemCode(). Cause:  " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());	
+			}
+			else
+				throw new DatabaseOperationException("Error occured during deleteItemByItemCode(). Cause:  " +  hbe.getMessage());
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-				throw new DatabaseOperationException("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage() + ". Root cause -- " + e.getCause().getMessage());	
+				throw new DatabaseOperationException("Error occured during deleteItemByItemCode(). Cause:  " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage());	
 			else
-				throw new DatabaseOperationException("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage());
+				throw new DatabaseOperationException("Error occured during deleteItemByItemCode(). Cause:  " +  e.getMessage());
 		}
 	}
 	
