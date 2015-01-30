@@ -54,47 +54,17 @@ public class ImsResource
     private KeymarkUcUserSecurityService keymarkUcUserSecurityService;
     @Autowired
     private BedExceptionMapper bedExceptionMapper;
-
-    /** This method retrieves an item for the given item code.
-     * @param itemcode string.
-     * @return Response object which contains the status of "200, OK" and an item object in json format, or error status and message if exception occurs
-   */
-   @GET
-   @Path("{itemcode}")
-   @Produces({MediaType.APPLICATION_JSON})
-   @Loggable(value = LogLevel.INFO)
-   public Response getItem(@Context HttpHeaders requestHeaders, @PathParam("itemcode") final String itemCode)
-   {
-  	 Response response;
-  	 try
-       {
-          //Check user security
-          keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, APINAME, DBOperation.SEARCH);
-          //Retrieve data from database based on the given item code
-          Ims item = imsService.getItem(itemCode);
-          //Wrap the data
-          Products result = new Products(new ItemWrapper(item));
-          String jsonStr = result.toJSONStringWithJackson("ims");
-          //Create json response
-          response = Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();
-        }
-        catch (BedException e)
-        {
-          response = bedExceptionMapper.toResponse(e);
-        }
-        return response;
-    }
    
     /**
-      * This method retrieves a list of items for the given query condition, or a list of all active items if no query condition is specified .
-      * @param UriInfo represents query condition in the form of name/value pairs. If no query is specified, all active items will be returned.
+      * This method retrieves a list of items for the given query condition, or error message if it occurs. 
+      * @param UriInfo represents query parameters in the form of name/value pairs. It returns an input parameter exception if no any query condition is specified. 
       * Number of resulting records can be specified by setting a value for "maxResults" and if "exactmatch" is set to true, no pattern matching will be performed for all queries.
       * @return Response object which contains the status of "200, OK" and a list of items in json format in message body, or error status and message if exception occurs
       */
      @GET
      @Produces({MediaType.APPLICATION_JSON})
      @Loggable(value = LogLevel.INFO)
-     public Response getItems(@Context HttpHeaders requestHeaders, @Context UriInfo uriInfo)
+     public Response get(@Context HttpHeaders requestHeaders, @Context UriInfo uriInfo)
      { 
     	List<?> itemList = null;
         Response response = null;
@@ -128,6 +98,36 @@ public class ImsResource
         return response;
      }
 
+     /** This method retrieves an item for the given item code.
+      * @param itemcode string.
+      * @return Response object which contains the status of "200, OK" and an item object in json format, or error status and message if exception occurs
+    */
+    @GET
+    @Path("{itemcode}")
+    @Produces({MediaType.APPLICATION_JSON})
+    @Loggable(value = LogLevel.INFO)
+    public Response getByItemCode(@Context HttpHeaders requestHeaders, @PathParam("itemcode") final String itemCode)
+    {
+   	 Response response;
+   	 try
+        {
+           //Check user security
+           keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, APINAME, DBOperation.SEARCH);
+           //Retrieve data from database based on the given item code
+           Ims item = imsService.getItem(itemCode);
+           //Wrap the data
+           Products result = new Products(new ItemWrapper(item));
+           String jsonStr = result.toJSONStringWithJackson("ims");
+           //Create json response
+           response = Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();
+         }
+         catch (BedException e)
+         {
+           response = bedExceptionMapper.toResponse(e);
+         }
+         return response;
+     }
+    
      /**
        * This method creates a item based on the given information.
        * @param Json object containing the information to create a new item.
@@ -135,9 +135,8 @@ public class ImsResource
        */
        @POST
        @Consumes(MediaType.APPLICATION_JSON)
-       @Produces({MediaType.APPLICATION_JSON})
        @Loggable(value = LogLevel.INFO)
-       public Response createItem(@Context HttpHeaders requestHeaders, JSONObject inputJsonObj)
+       public Response create(@Context HttpHeaders requestHeaders, JSONObject inputJsonObj)
        {
           Response response;
           try
@@ -165,7 +164,7 @@ public class ImsResource
        @Consumes(MediaType.APPLICATION_JSON)
        @Produces({MediaType.APPLICATION_JSON})
        @Loggable(value = LogLevel.INFO)
-       public Response updateItem(@Context HttpHeaders requestHeaders, JSONObject inputJsonObj)
+       public Response update(@Context HttpHeaders requestHeaders, JSONObject inputJsonObj)
        {
           Response response;
           try
@@ -193,9 +192,8 @@ public class ImsResource
        */
        @DELETE
        @Path("{itemcode}")
-       @Consumes(MediaType.APPLICATION_JSON)
        @Loggable(value = LogLevel.INFO)
-       public Response deleteItem(@Context HttpHeaders requestHeaders, @PathParam("itemcode") final String itemCode)
+       public Response delete(@Context HttpHeaders requestHeaders, @PathParam("itemcode") final String itemCode)
        {
           Response response;
           try
