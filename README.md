@@ -90,6 +90,65 @@ mvn jetty:run
 
 See test/v2/README.md
 
+##Application WADL
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<application xmlns="http://wadl.dev.java.net/2009/02">
+    <doc xmlns:jersey="http://jersey.java.net/" jersey:generatedBy="Jersey: 1.18.3 12/01/2014 08:23 AM"/>
+    <grammars/>
+    <resources base="http://localhost:8080/bedlogic/v2/">
+        <resource path="/ims">
+            <method id="get" name="GET">
+                <response>
+                    <representation mediaType="application/json"/>
+                </response>
+            </method>
+            <method id="create" name="POST">
+                <request>
+                    <representation mediaType="application/json"/>
+                </request>
+                <response>
+                    <representation mediaType="*/*"/>
+                </response>
+            </method>
+            <method id="update" name="PUT">
+                <request>
+                    <representation mediaType="application/json"/>
+                </request>
+                <response>
+                    <representation mediaType="application/json"/>
+                </response>
+            </method>
+            <resource path="{itemcode}">
+                <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="itemcode" style="template" type="xs:string"/>
+                <method id="delete" name="DELETE">
+                    <response>
+                        <representation mediaType="*/*"/>
+                    </response>
+                </method>
+                <method id="getByItemCode" name="GET">
+                    <response>
+                        <representation mediaType="application/json"/>
+                    </response>
+                </method>
+            </resource>
+        </resource>
+        <resource path="/hello">
+            <method id="getHello" name="GET">
+                <response>
+                    <representation mediaType="application/json"/>
+                </response>
+            </method>
+            <resource path="/index">
+                <method id="createInitialLuceneIndex" name="GET">
+                    <response>
+                        <representation mediaType="*/*"/>
+                    </response>
+                </method>
+            </resource>
+        </resource>
+    </resources>
+</application>
+
 ## Acknowledgements
 BedLogic makes use of the following third-party open source libraries:
 
