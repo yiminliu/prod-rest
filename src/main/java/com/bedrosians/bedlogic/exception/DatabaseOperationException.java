@@ -9,8 +9,9 @@ public class DatabaseOperationException extends BedException {
 	private static final long serialVersionUID = -34724706273251377L;
 	
     public DatabaseOperationException() { 
-    	super();
-    	this.message = "Database Operation Failed"; 
+    	super(); 
+    	this.httpErrorCode = 500;
+    	this.httpMessage = "Database Operation Failed"; 
     	if(errorType == null)
     	   errorType = "Database Operation Exception"; 	
     }

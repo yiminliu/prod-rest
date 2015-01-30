@@ -16,19 +16,18 @@ public class BedException extends RuntimeException  implements Serializable
     public BedException() {
     	super();
     }
-    
+       
     public BedException(String message) { 
-       message = (errorType == null) ? "" : errorType + ": " + message + "\n\r";
+    	this();
+        message = (errorType == null) ? "" : errorType + ": " + message + "\n\r";
     }
     
-    public BedException(String message, Throwable rootError) { 
+    public BedException(String message, Throwable rootError) {
+    	this(message);
     	if(rootError != null)
-    	   this.message = message + " Cause: " + rootError.getMessage();
-    	else
-    	   this.message = message + "\n\r";
-    	this.rootError = rootError;
+    	   this.message = message;
+     	this.rootError = rootError;
     }
-
     
 	public Integer getHttpErrorCode() {
 		return httpErrorCode;

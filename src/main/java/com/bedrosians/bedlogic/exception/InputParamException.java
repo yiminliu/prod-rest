@@ -11,7 +11,7 @@ public class InputParamException extends BedException {
     	super();
     	httpErrorCode = 400;
         httpMessage = "Bad Request";
-    	this.message = "Input Parameter Error";
+    	message = "Input Parameter Error";
     	if(errorType == null)
     	   errorType = "Input Parameter Error";
     }
@@ -21,6 +21,6 @@ public class InputParamException extends BedException {
     }
     
     public InputParamException(String message, Throwable cause) { 
-       super("Input Parameter Error: " + message, cause);
+       super(message, cause);
     }
 }

@@ -47,7 +47,7 @@ public class BedExceptionMapper implements ExceptionMapper<Exception>
             message = "Internal Error";
         }
         
-        String                      jsonStr = String.format("{ \"error\" : { \"status\" : %1$s, \"message\" : \"%2$s\", \"detail message\" : \"%3$s\" } }", code, message, theException.getMessage());
+        String                      jsonStr = String.format("{ \"error\" : { \"status\" : %1$s, \"message\" : \"%2$s\", \"detail message\" : \"%3$s\" } }", code, message, ((BedException)theException).getMessage());
         Response.ResponseBuilder    responseBuilder = Response.status(code).entity(jsonStr).type(MediaType.APPLICATION_JSON);
         
         return responseBuilder.build();

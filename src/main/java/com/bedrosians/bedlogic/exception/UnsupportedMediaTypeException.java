@@ -11,8 +11,7 @@ public class UnsupportedMediaTypeException extends BedException {
     	super();
     	this.httpErrorCode = 415;
     	this.httpMessage = "Unsupported Media Type";
-    	this.message = "Unsupported Media Type";
-    	if(errorType == null)
+     	if(errorType == null)
     	   errorType = "Unsupported Media Type";
     }
     

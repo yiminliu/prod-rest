@@ -22,5 +22,4 @@ public class UnauthorizedException extends BedException {
     public UnauthorizedException(String errorMessage, Throwable cause) { 
     	super("Authorizatication Failed: " + errorMessage, cause);
     }
-
 }
