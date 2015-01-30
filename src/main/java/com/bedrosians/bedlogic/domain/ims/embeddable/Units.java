@@ -506,8 +506,8 @@ public class Units  implements java.io.Serializable {
 		this.unit4wgtperunit = unit4wgtperunit;
 	}
 
-	@Transient
 	@JsonIgnore
+	@Transient
 	public boolean isDefault(){
 		return stdunit == null && ordunit == null && unit1unit == null && unit2unit == null && unit3unit == null && unit4unit == null;
 	}
