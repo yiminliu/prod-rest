@@ -45,7 +45,7 @@ public class ColorHue implements java.io.Serializable {
 	
 	@JsonIgnore
 	@Id
-	@Column(name = "id", unique = true, nullable = false)
+	@Column(name = "ims_color_hue_id", unique = true, nullable = false)
 	@GeneratedValue(strategy=GenerationType.AUTO, generator="ims_color_hue_id_seq_gen")
 	@SequenceGenerator(name="ims_color_hue_id_seq_gen", sequenceName="ims_color_hue_id_seq")
 	@DocumentId
