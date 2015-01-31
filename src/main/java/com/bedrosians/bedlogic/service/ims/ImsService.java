@@ -12,17 +12,18 @@ import com.bedrosians.bedlogic.domain.ims.KeymarkVendor;
 import com.bedrosians.bedlogic.domain.ims.Vendor;
 import com.bedrosians.bedlogic.util.JsonWrapper.ItemWrapper;
 import com.bedrosians.bedlogic.util.enums.DBOperation;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public interface ImsService {	
 	public Ims getItem(String itemCode);
 	public List<Ims> getActiveAndShownOnWebsiteItems();
 	public List<Ims> getItems(LinkedHashMap<String, List<String>> queryParams);
 	public List<?> getItems(MultivaluedMap<String, String> queryParams, boolean wrappedData);	
-	public String createItem(JSONObject inputJsonObj);
+	public String createItem(ObjectNode inputJsonObj);
 	public String createOrUpdateItem(Ims item, DBOperation operation);
-	public Ims updateItem(JSONObject inputJsonObj);			
+	public Ims updateItem(ObjectNode inputJsonObj);			
 	public void deleteItemByItemCode(String itemCode);
-	public void deleteItem(JSONObject inputJsonObj);
+	public void deleteItem(ObjectNode inputJsonObj);
 	public void deleteItem(Ims ims);
 	public void deactivateItem(Ims itemFromInput);
     public boolean validateVendorId(Integer vendorId);

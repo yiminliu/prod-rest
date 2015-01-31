@@ -19,6 +19,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.codehaus.jettison.json.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -138,13 +141,14 @@ public class ImsResource
        @Loggable(value = LogLevel.INFO)
        public Response create(@Context HttpHeaders requestHeaders, JSONObject inputJsonObj)
        {
-          Response response;
+    	  Response response;
           try
           {
              //Check user security
              keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, APINAME, DBOperation.CREATE);
              //Create a new item using the given data in json format, and save it into database
-             String itemCode = imsService.createItem(inputJsonObj);
+             //String itemCode = imsService.createItem(inputJsonObj);
+             String itemCode = imsService.createItem(toObjectNode(inputJsonObj));
              //Create response
              response = Response.created(URI.create("/"+itemCode)).build();
           }
@@ -172,7 +176,7 @@ public class ImsResource
              //Check user security
              keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, APINAME, DBOperation.UPDATE);
              //Update an item based on the input json data
-             Ims item = imsService.updateItem(inputJsonObj);
+             Ims item = imsService.updateItem(toObjectNode(inputJsonObj));
              Products result = new Products(new ItemWrapper(item));
              String jsonStr = result.toJSONStringWithJackson("ims");
              //Create json response
@@ -211,4 +215,20 @@ public class ImsResource
           }
           return response;
        }
+       
+       private ObjectNode toObjectNode(JSONObject inputJsonObj)
+       {
+    	   ObjectNode objectNode = null;
+    	   try
+    	   {
+    	      ObjectMapper mapper = new ObjectMapper();
+    	      objectNode = (ObjectNode)mapper.readTree(inputJsonObj.toString());
+           }
+    	   catch(Exception e)
+    	   {
+    		   e.printStackTrace();
+    	   }
+    	   return objectNode;
+    	   }
+    	   
 }

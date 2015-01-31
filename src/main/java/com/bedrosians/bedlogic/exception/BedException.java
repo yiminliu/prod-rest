@@ -19,7 +19,7 @@ public class BedException extends RuntimeException  implements Serializable
        
     public BedException(String message) { 
     	this();
-        message = (errorType == null) ? "" : errorType + ": " + message + "\n\r";
+        this.message = message;
     }
     
     public BedException(String message, Throwable rootError) {

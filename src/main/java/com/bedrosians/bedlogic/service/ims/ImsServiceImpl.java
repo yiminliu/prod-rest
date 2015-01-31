@@ -46,6 +46,7 @@ import com.bedrosians.bedlogic.util.ims.ImsDataUtil;
 import com.bedrosians.bedlogic.util.ims.ImsValidator;
 import com.bedrosians.bedlogic.util.logger.aspect.LogLevel;
 import com.bedrosians.bedlogic.util.logger.aspect.Loggable;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @Service("imsService")
 public class ImsServiceImpl implements ImsService {
@@ -165,7 +166,7 @@ public class ImsServiceImpl implements ImsService {
 	
 	@Loggable(value = LogLevel.INFO)
 	@Override
-	public String createItem(JSONObject jsonObj) {  	
+	public String createItem(ObjectNode jsonObj) {  	
 		JsonUtil.validateItemCode(jsonObj);
 		String itemCode;
      	Ims itemFromInput = (Ims)JsonUtil.jsonObjectToPOJO(jsonObj, new Ims());
@@ -185,15 +186,9 @@ public class ImsServiceImpl implements ImsService {
      	processIcons(item, operation); 
      	processPackgeUnits(item);
      	processVendor(item, operation);
-     	if(DBOperation.CREATE.equals(operation) || DBOperation.CLONE.equals(operation)){ 
-     	   try{
-      	      ImsValidator.validateNewItem(item);
- 		   }
- 		   catch(Exception e){
- 			  throw new InputParamException("Input valiation error: "+e.getMessage(), e);
- 		   }
-     	}   
-     	try{
+     	if(DBOperation.CREATE.equals(operation) || DBOperation.CLONE.equals(operation))
+   	       ImsValidator.validateNewItem(item);
+ 	  	try{
      	   id = imsDao.createItem(item);
 		}
 		catch(HibernateException hbe){
@@ -228,7 +223,7 @@ public class ImsServiceImpl implements ImsService {
 	@Loggable(value = LogLevel.INFO)
 	@Override
 	@Transactional(readOnly = false, propagation=Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ) 
-	public synchronized Ims updateItem(JSONObject jsonObj){
+	public synchronized Ims updateItem(ObjectNode jsonObj){
 		String itemCode = JsonUtil.validateItemCode(jsonObj);
 		Ims itemFromInput = (Ims)JsonUtil.jsonObjectToPOJO(jsonObj, new Ims());
 		itemFromInput.setItemcode(itemFromInput.getItemcode().toUpperCase());
@@ -319,7 +314,7 @@ public class ImsServiceImpl implements ImsService {
 	
 	@Loggable(value = LogLevel.INFO)
 	@Override
-	synchronized public void deleteItem(JSONObject jsonObj){
+	synchronized public void deleteItem(ObjectNode jsonObj){
 		String itemCode = JsonUtil.validateItemCode(jsonObj);
 		deleteItemByItemCode(itemCode);
 	}
