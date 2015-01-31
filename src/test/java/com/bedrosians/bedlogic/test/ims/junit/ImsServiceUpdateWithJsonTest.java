@@ -17,6 +17,7 @@ import com.bedrosians.bedlogic.domain.ims.ColorHue;
 import com.bedrosians.bedlogic.domain.ims.IconCollection;
 import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.service.ims.ImsService;
+import com.bedrosians.bedlogic.util.JsonUtil;
 import com.bedrosians.bedlogic.util.ims.ImsDataUtil;
 
 import static org.junit.Assert.*;
@@ -48,7 +49,7 @@ public class ImsServiceUpdateWithJsonTest {
 	 public void testUpdateItemWithColorCategoryJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringColorHues);
-	        imsService.updateItem(params);
+	        imsService.updateItem(JsonUtil.toObjectNode(params));
 	        
 	        Ims item = imsService.getItem(id);
 	        assertEquals("BLACK:RED:YELLOW", item.getColorcategory());
@@ -61,7 +62,7 @@ public class ImsServiceUpdateWithJsonTest {
 	 public void testUpdateItemColorhuesWithJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithColorHues);
-	        imsService.updateItem(params);
+	        imsService.updateItem(JsonUtil.toObjectNode(params));
 	        
 	        Ims item = imsService.getItem(id);
 	        assertEquals("GREEN", item.getColorcategory());
@@ -74,14 +75,14 @@ public class ImsServiceUpdateWithJsonTest {
 	 public void testUpdateItemDesccriptionWithJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringDescription);
-	        imsService.updateItem(params); 
+	        imsService.updateItem(JsonUtil.toObjectNode(params)); 
 	}
 	
 	@Test
 	 public void testUpdateItemMaterialWithJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringMaterialInfo);
-	        imsService.updateItem(params);
+	        imsService.updateItem(JsonUtil.toObjectNode(params));
 	        	        
 	        Ims item = imsService.getItem(id);
 	        
@@ -98,7 +99,7 @@ public class ImsServiceUpdateWithJsonTest {
 	 public void testUpdateItemDimensionWithJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithDimensions);
-	        imsService.updateItem(params);
+	        imsService.updateItem(JsonUtil.toObjectNode(params));
 	        	        
 	        Ims item = imsService.getItem(id);
 	        
@@ -116,14 +117,14 @@ public class ImsServiceUpdateWithJsonTest {
 	 public void testUpdateItemPurchaserWithJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringDescription);
-	        imsService.updateItem(params);
+	        imsService.updateItem(JsonUtil.toObjectNode(params));
 	}
 	
 	@Test
 	 public void testUpdateItemPriceWithJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithPriceAndCost);
-	        imsService.updateItem(params);
+	        imsService.updateItem(JsonUtil.toObjectNode(params));
 	        
 	        Ims item = imsService.getItem(id);
 	              
@@ -147,7 +148,7 @@ public class ImsServiceUpdateWithJsonTest {
 	 public void testUpdateItemApplicationsWithJsonObject() throws Exception {
 	        System.out.println("testUpdateItemApplicationWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithApplicationsInfo);
-	        imsService.updateItem(params);
+	        imsService.updateItem(JsonUtil.toObjectNode(params));
 	        	        
 	        Ims item = imsService.getItem(id);
    
@@ -162,7 +163,7 @@ public class ImsServiceUpdateWithJsonTest {
 	 public void testUpdateItemWithUsage() throws Exception {
 	        System.out.println("testUpdateItemApplicationWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithUsageInfo);
-	        imsService.updateItem(params);
+	        imsService.updateItem(JsonUtil.toObjectNode(params));
 	        	        
 	        Ims item = imsService.getItem(id);
   
@@ -179,7 +180,7 @@ public class ImsServiceUpdateWithJsonTest {
 	 public void testUpdateItemWithNotes() throws Exception {
 	        System.out.println("testUpdateItemApplicationWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithNotesInfo);
-	        imsService.updateItem(params);
+	        imsService.updateItem(JsonUtil.toObjectNode(params));
 	        	        
 	        Ims item = imsService.getItem(id);
  
@@ -194,7 +195,7 @@ public class ImsServiceUpdateWithJsonTest {
 	 public void testUpdateItemTestSpecs() throws Exception {
 	        System.out.println("testUpdateItemTestSpecWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithTestSpecs);
-	        imsService.updateItem(params);
+	        imsService.updateItem(JsonUtil.toObjectNode(params));
 	        	        
 	        Ims item = imsService.getItem(id);
 
@@ -216,7 +217,7 @@ public class ImsServiceUpdateWithJsonTest {
 	 public void testUpdateItemWithBasicImsInfoJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringFullItemInfo);
-	        imsService.updateItem(params);
+	        imsService.updateItem(JsonUtil.toObjectNode(params));
 	        
 	        Ims item = imsService.getItem(id);
 	        
@@ -332,7 +333,7 @@ public class ImsServiceUpdateWithJsonTest {
 	 public void testUpdateItemWithAllImsInfoNoUnitAndPriceJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringFullItemInfoWithouUnitAndPrice);
-	        imsService.updateItem(params);
+	        imsService.updateItem(JsonUtil.toObjectNode(params));
 	        
 	        Ims item = imsService.getItem(id);
 	        
@@ -402,7 +403,7 @@ public class ImsServiceUpdateWithJsonTest {
 	 public void testUpdateItemWithColorHuesJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithColorHues: ");
 	        JSONObject params = new JSONObject(jStringWithColorHues);
-	        productService.updateItem(params);
+	        productService.updateItem(JsonUtil.toObjectNode(params));
 	          
 	        Ims item = productService.getItem(id);
 	        for(ColorHue colorHue : item.getColorhues()){
@@ -416,7 +417,7 @@ public class ImsServiceUpdateWithJsonTest {
 	 public void testUpdateItemWithMultipleColorHuesJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithColorHues: ");
 	        JSONObject params = new JSONObject(jStringWithMultipleColorHues);
-	        productService.updateItem(params);
+	        productService.updateItem(JsonUtil.toObjectNode(params));
 	        
 	        Ims item = productService.getItem(id);
 	        for(ColorHue colorHue : item.getColorhues()){
@@ -430,7 +431,7 @@ public class ImsServiceUpdateWithJsonTest {
 	 public void testUpdateItemWithNewFeatureByJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithNewFeature);            
-	        imsService.updateItem(params);
+	        imsService.updateItem(JsonUtil.toObjectNode(params));
 	        
 	        Ims item = imsService.getItem(id);
 	        assertEquals("Second", item.getNewFeature().getGrade().getDescription());
@@ -456,7 +457,7 @@ public class ImsServiceUpdateWithJsonTest {
 	        System.out.println("testUpdateItemWithUnitAndVendor: ");
 	        //JSONObject params = new JSONObject(jStringWithUnitAndVendor);
 	        JSONObject params = new JSONObject(jStringWithNewVendorSystem);
-	        imsService.updateItem(params);
+	        imsService.updateItem(JsonUtil.toObjectNode(params));
 	        
 	        Ims item = imsService.getItem(id);
 	        assertEquals("PCS", item.getUnits().getBaseunit());
@@ -511,7 +512,7 @@ public class ImsServiceUpdateWithJsonTest {
 	 public void testUpdateItemWithNewNotesJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithNewNotes: ");
 	        JSONObject params = new JSONObject(jStringWithNewNotes);
-	        imsService.updateItem(params);
+	        imsService.updateItem(JsonUtil.toObjectNode(params));
 	        
 	        System.out.println("newly Updated Item id  = " + id);
 	        Ims item = imsService.getItem(id);
@@ -524,7 +525,7 @@ public class ImsServiceUpdateWithJsonTest {
 	 public void testUpdateItemWithNewIconSystemJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithNewIcon: ");
 	        JSONObject params = new JSONObject(jStringWithNewIcons);
-	        imsService.updateItem(params);
+	        imsService.updateItem(JsonUtil.toObjectNode(params));
 	        
 	        System.out.println("newly Updated Item id  = " + id);
 	        Ims item = imsService.getItem(id);
@@ -575,7 +576,7 @@ public class ImsServiceUpdateWithJsonTest {
 	 public void testUpdateItemWithLagecyIconJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithNewIcon: ");
 	        JSONObject params = new JSONObject(jStringWithLagecyIcon);
-	        imsService.updateItem(params);
+	        imsService.updateItem(JsonUtil.toObjectNode(params));
 	        
 	        System.out.println("newly Updated Item id  = " + id);
 	        Ims item = imsService.getItem(id);
@@ -625,7 +626,7 @@ public class ImsServiceUpdateWithJsonTest {
 	 public void testUpdateItemWithAllImsAndAssociationsByJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringFullItemAndAssociationInfo);
-	        imsService.updateItem(params);
+	        imsService.updateItem(JsonUtil.toObjectNode(params));
 	        	        
 	        Ims item = imsService.getItem(id);
 	        

@@ -17,6 +17,7 @@ import com.bedrosians.bedlogic.domain.ims.ColorHue;
 import com.bedrosians.bedlogic.domain.ims.IconCollection;
 import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.service.ims.ImsService;
+import com.bedrosians.bedlogic.util.JsonUtil;
 import com.bedrosians.bedlogic.util.ims.ImsDataUtil;
 
 import static org.junit.Assert.*;
@@ -39,7 +40,7 @@ public class ImsServiceCreationWithJsonTest {
 	@Test
 	public void testItemCodeWithJsonObject() throws Exception {
 		JSONObject params = new JSONObject(jStringWithItemCode);
-        String id = imsService.createItem(params);
+        String id = imsService.createItem(JsonUtil.toObjectNode(params));
         assertNotNull(id); 
 	}
 
@@ -47,7 +48,7 @@ public class ImsServiceCreationWithJsonTest {
 	 public void testCreateItemWithBasicInfoJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithBasicInfo);
-	        String id = imsService.createItem(params);
+	        String id = imsService.createItem(JsonUtil.toObjectNode(params));
 	        assertNotNull(id);
 	        
 	        Ims item = imsService.getItem(id);
@@ -74,7 +75,7 @@ public class ImsServiceCreationWithJsonTest {
 	 public void testCreateItemWithDimensionsJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithDimensions: ");
 	        JSONObject params = new JSONObject(jStringWithDimensions);
-	        String id = imsService.createItem(params);
+	        String id = imsService.createItem(JsonUtil.toObjectNode(params));
 	        assertNotNull(id);
 	       
 	        Ims item = imsService.getItem(id);
@@ -92,7 +93,7 @@ public class ImsServiceCreationWithJsonTest {
 	 public void testCreateItemWithPricesJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithPriceInfo);
-	        String id = imsService.createItem(params);
+	        String id = imsService.createItem(JsonUtil.toObjectNode(params));
 	        assertNotNull(id);
 	       
 	        Ims item = imsService.getItem(id);
@@ -115,7 +116,7 @@ public class ImsServiceCreationWithJsonTest {
 	 public void testCreateItemWithMaterialJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithMaterialInfo);
-	        String id = imsService.createItem(params);
+	        String id = imsService.createItem(JsonUtil.toObjectNode(params));
 	        assertNotNull(id);
 	       
 	        Ims item = imsService.getItem(id);
@@ -130,7 +131,7 @@ public class ImsServiceCreationWithJsonTest {
 	 public void testCreateItemWithSeriesJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithSeriesInfo);
-	        String id = imsService.createItem(params);
+	        String id = imsService.createItem(JsonUtil.toObjectNode(params));
 	        assertNotNull(id);  
 	        Ims item = imsService.getItem(id);
 	        assertEquals("Athena", item.getSeries().getSeriesname());
@@ -141,7 +142,7 @@ public class ImsServiceCreationWithJsonTest {
 	 public void testCreateItemWithTestSpecsJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithTestInfo);
-	        String id = imsService.createItem(params);
+	        String id = imsService.createItem(JsonUtil.toObjectNode(params));
 	        assertNotNull(id);
 	       
 	        Ims item = imsService.getItem(id);
@@ -164,7 +165,7 @@ public class ImsServiceCreationWithJsonTest {
 	 public void testCreateItemWithApplicationsJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithApplicationsInfo);
-	        String id = imsService.createItem(params);
+	        String id = imsService.createItem(JsonUtil.toObjectNode(params));
 	        assertNotNull(id);
 	       
 	        Ims item = imsService.getItem(id);
@@ -179,7 +180,7 @@ public class ImsServiceCreationWithJsonTest {
 	 public void testCreateItemWithUsageJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithBasicInfo);
-	        String id = imsService.createItem(params);
+	        String id = imsService.createItem(JsonUtil.toObjectNode(params));
 	        assertNotNull(id);
 	       
 	        Ims item = imsService.getItem(id);
@@ -193,7 +194,7 @@ public class ImsServiceCreationWithJsonTest {
 	 public void testCreateItemWithNotesJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithNoteInfo);
-	        String id = imsService.createItem(params);
+	        String id = imsService.createItem(JsonUtil.toObjectNode(params));
 	        assertNotNull(id);
 	       
 	        Ims item = imsService.getItem(id);
@@ -207,7 +208,7 @@ public class ImsServiceCreationWithJsonTest {
 	 public void testCreateItemWithPackagingInfoJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithPackingInfo);
-	        String id = imsService.createItem(params);
+	        String id = imsService.createItem(JsonUtil.toObjectNode(params));
 	        assertNotNull(id);
 	       
 	        Ims item = imsService.getItem(id);
@@ -223,7 +224,7 @@ public class ImsServiceCreationWithJsonTest {
 	 public void testCreateItemWithColorCategoryJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithColorCategory: ");
 	        JSONObject params = new JSONObject(jStringWithColorCategory);
-	        String id = imsService.createItem(params);
+	        String id = imsService.createItem(JsonUtil.toObjectNode(params));
 	        assertNotNull(id);    
 	        Ims item = imsService.getItem(id);
 	        assertEquals("BLACK:WHITE", item.getColorcategory());
@@ -238,7 +239,7 @@ public class ImsServiceCreationWithJsonTest {
 	 public void testCreateItemWithAllImsInfoJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringFullItemInfo);
-	        String id = imsService.createItem(params);
+	        String id = imsService.createItem(JsonUtil.toObjectNode(params));
 	        assertNotNull(id);
 	        
 	        Ims item = imsService.getItem(id);
@@ -359,7 +360,7 @@ public class ImsServiceCreationWithJsonTest {
 	 public void testCreateItemWithColorHuesJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithColorHues: ");
 	        JSONObject params = new JSONObject(jStringWithColorHues);
-	        String id = imsService.createItem(params);
+	        String id = imsService.createItem(JsonUtil.toObjectNode(params));
 	        assertNotNull(id);    
 	        Ims item = imsService.getItem(id);
 	        for(ColorHue colorHue : item.getColorhues()){
@@ -373,7 +374,7 @@ public class ImsServiceCreationWithJsonTest {
 	 public void testCreateItemWithMultipleColorHuesJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithColorHues: ");
 	        JSONObject params = new JSONObject(jStringWithMultipleColorHues);
-	        String id = imsService.createItem(params);
+	        String id = imsService.createItem(JsonUtil.toObjectNode(params));
 	        assertNotNull(id);    
 	        Ims item = imsService.getItem(id);
 	        for(ColorHue colorHue : item.getColorhues()){
@@ -386,7 +387,7 @@ public class ImsServiceCreationWithJsonTest {
 	 public void testCreateItemWithNewFeatureByJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringWithNewFeature);            
-	        String id = imsService.createItem(params);
+	        String id = imsService.createItem(JsonUtil.toObjectNode(params));
 	        assertNotNull(id);
 	        Ims item = imsService.getItem(id);
 	        assertEquals("First", item.getNewFeature().getGrade().getDescription());
@@ -411,7 +412,7 @@ public class ImsServiceCreationWithJsonTest {
 	        System.out.println("testCreateItemWithUnitAndVendor: ");
 	        JSONObject params = new JSONObject(jStringWithUnitAndNewVendor);
 	        //JSONObject params = new JSONObject(jStringWithNewVendorSystem);
-	        String id = imsService.createItem(params);
+	        String id = imsService.createItem(JsonUtil.toObjectNode(params));
 	        assertNotNull(id);
 	        Ims item = imsService.getItem(id);
 	        assertEquals("SHT", item.getUnits().getBaseunit());
@@ -467,7 +468,7 @@ public class ImsServiceCreationWithJsonTest {
 	        System.out.println("testCreateItemWithUnitAndVendor: ");
 	        JSONObject params = new JSONObject(jStringWithUnitAndNewVendor);
 	        //JSONObject params = new JSONObject(jStringWithNewVendorSystem);
-	        String id = imsService.createItem(params);
+	        String id = imsService.createItem(JsonUtil.toObjectNode(params));
 	        assertNotNull(id);
 	        Ims item = imsService.getItem(id);
 	        assertEquals("SHT", item.getUnits().getBaseunit());
@@ -521,7 +522,7 @@ public class ImsServiceCreationWithJsonTest {
 	 public void testCreateItemWithNewNotesJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithNewNotes: ");
 	        JSONObject params = new JSONObject(jStringWithNewNotes);
-	        String id = imsService.createItem(params);
+	        String id = imsService.createItem(JsonUtil.toObjectNode(params));
 	        assertNotNull(id);
 	        System.out.println("newly created Item id  = " + id);
 	        Ims item = imsService.getItem(id);
@@ -533,7 +534,7 @@ public class ImsServiceCreationWithJsonTest {
 	 public void testCreateItemWithNewIconJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithNewIcon: ");
 	        JSONObject params = new JSONObject(jStringWithNewIcons);
-	        String id = imsService.createItem(params);
+	        String id = imsService.createItem(JsonUtil.toObjectNode(params));
 	        assertNotNull(id);
 	        System.out.println("newly created Item id  = " + id);
 	        Ims item = imsService.getItem(id);
@@ -583,7 +584,7 @@ public class ImsServiceCreationWithJsonTest {
 	 public void testCreateItemWithLagecyIconJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithNewIcon: ");
 	        JSONObject params = new JSONObject(jStringWithLagecyIcon);
-	        String id = imsService.createItem(params);
+	        String id = imsService.createItem(JsonUtil.toObjectNode(params));
 	        assertNotNull(id);
 	        System.out.println("newly created Item id  = " + id);
 	        Ims item = imsService.getItem(id);
@@ -635,7 +636,7 @@ public class ImsServiceCreationWithJsonTest {
 	 public void testCreateItemWithAllImsAndAssociationsByJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        JSONObject params = new JSONObject(jStringFullItemAndAssociationInfo);
-	        String id = imsService.createItem(params);
+	        String id = imsService.createItem(JsonUtil.toObjectNode(params));
 	        assertNotNull(id);
 	        
 	        Ims item = imsService.getItem(id);

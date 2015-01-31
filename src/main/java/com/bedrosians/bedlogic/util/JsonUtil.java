@@ -3,6 +3,8 @@ package com.bedrosians.bedlogic.util;
 import java.io.File;
 import java.io.IOException;
 
+import org.codehaus.jettison.json.JSONObject;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -106,5 +108,19 @@ public class JsonUtil {
 		   throw new InputParamException("Item code cannot be longer that 18 characters.");
 		return itemCode.toUpperCase();
 	}
-	
+
+	public static ObjectNode toObjectNode(JSONObject inputJsonObj)
+    {
+ 	   ObjectNode objectNode = null;
+ 	   try
+ 	   {
+ 	      ObjectMapper mapper = new ObjectMapper();
+ 	      objectNode = (ObjectNode)mapper.readTree(inputJsonObj.toString());
+        }
+ 	   catch(Exception e)
+ 	   {
+ 		   e.printStackTrace();
+ 	   }
+ 	   return objectNode;
+ 	   }
 }

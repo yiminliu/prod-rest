@@ -19,6 +19,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.codehaus.jettison.json.JSONObject;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -31,6 +32,7 @@ import com.bedrosians.bedlogic.exception.BedExceptionMapper;
 import com.bedrosians.bedlogic.models.Products;
 import com.bedrosians.bedlogic.service.ims.ImsService;
 import com.bedrosians.bedlogic.service.security.KeymarkUcUserSecurityService;
+import com.bedrosians.bedlogic.util.JsonUtil;
 import com.bedrosians.bedlogic.util.JsonWrapper.ItemWrapper;
 import com.bedrosians.bedlogic.util.enums.ApiName;
 import com.bedrosians.bedlogic.util.enums.DBOperation;
@@ -148,7 +150,7 @@ public class ImsResource
              keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, APINAME, DBOperation.CREATE);
              //Create a new item using the given data in json format, and save it into database
              //String itemCode = imsService.createItem(inputJsonObj);
-             String itemCode = imsService.createItem(toObjectNode(inputJsonObj));
+             String itemCode = imsService.createItem(JsonUtil.toObjectNode(inputJsonObj));
              //Create response
              response = Response.created(URI.create("/"+itemCode)).build();
           }
@@ -176,7 +178,7 @@ public class ImsResource
              //Check user security
              keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, APINAME, DBOperation.UPDATE);
              //Update an item based on the input json data
-             Ims item = imsService.updateItem(toObjectNode(inputJsonObj));
+             Ims item = imsService.updateItem(JsonUtil.toObjectNode(inputJsonObj));
              Products result = new Products(new ItemWrapper(item));
              String jsonStr = result.toJSONStringWithJackson("ims");
              //Create json response
@@ -215,20 +217,5 @@ public class ImsResource
           }
           return response;
        }
-       
-       private ObjectNode toObjectNode(JSONObject inputJsonObj)
-       {
-    	   ObjectNode objectNode = null;
-    	   try
-    	   {
-    	      ObjectMapper mapper = new ObjectMapper();
-    	      objectNode = (ObjectNode)mapper.readTree(inputJsonObj.toString());
-           }
-    	   catch(Exception e)
-    	   {
-    		   e.printStackTrace();
-    	   }
-    	   return objectNode;
-    	   }
     	   
 }

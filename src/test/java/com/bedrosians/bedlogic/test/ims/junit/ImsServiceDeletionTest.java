@@ -11,6 +11,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.service.ims.ImsService;
+import com.bedrosians.bedlogic.util.JsonUtil;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -29,17 +30,17 @@ public class ImsServiceDeletionTest {
 	
 	@Test
 	public void testDeleteItemByItemCode()throws Exception {
-	    imsService.deleteItemByItemCode("NEWITEMCODE1");
+	    imsService.deleteItemByItemCode("TEST1");
 	     System.out.println("testDeleteItem Done");
 	        
 	 }
 	
 	@Test
 	public void testDeleteItem()throws Exception {
-		Ims item = new Ims("NEWITEMCODE3");
-		String jStringItemInfo = "{\"itemcode\":\"newItemcode3\"}";
+		Ims item = new Ims("TEST2");
+		String jStringItemInfo = "{\"itemcode\":\"TEST2\"}";
 		JSONObject params = new JSONObject(jStringItemInfo);
-	    imsService.deleteItem(params);
+	    imsService.deleteItem(JsonUtil.toObjectNode(params));
 	     System.out.println("testDeleteItem Done");
 	        
 	 }
