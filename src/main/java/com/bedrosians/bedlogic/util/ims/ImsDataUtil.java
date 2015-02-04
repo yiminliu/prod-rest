@@ -13,6 +13,7 @@ import com.bedrosians.bedlogic.domain.ims.IconCollection;
 import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.domain.ims.ImsNewFeature;
 import com.bedrosians.bedlogic.domain.ims.Vendor;
+import com.bedrosians.bedlogic.domain.ims.VendorId;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Applications;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Cost;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Dimensions;
@@ -150,7 +151,8 @@ public class ImsDataUtil {
 	public static Vendor convertImsVendorInfoToItemVendor(final  VendorInfo vendorInfo){
 		Vendor vendor = new Vendor();
 		if(vendorInfo != null){
-			vendor.setId(vendorInfo.getVendornbr1());
+			vendor.setVendorId(new VendorId());
+			vendor.getVendorId().setId(vendorInfo.getVendornbr1());
 			vendor.setVendorXrefId(vendorInfo.getVendorxrefcd());
 			vendor.setVendorFob(vendorInfo.getVendorfob());
 			vendor.setDutyPct(vendorInfo.getDutypct());
