@@ -20,9 +20,6 @@ import javax.ws.rs.core.Response;
 
 import org.codehaus.jettison.json.JSONObject;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -111,18 +108,28 @@ public class ImsResource
     @Path("{itemcode}")
     @Produces({MediaType.APPLICATION_JSON})
     @Loggable(value = LogLevel.INFO)
-    public Response getByItemCode(@Context HttpHeaders requestHeaders, @PathParam("itemcode") final String itemCode)
+    public Response getByItemCode(@Context HttpHeaders requestHeaders, @Context UriInfo uriInfo, @PathParam("itemcode") final String itemCode)
     {
-   	 Response response;
-   	 try
+     	Ims item = null;
+   	    Response response = null;
+        Products result = null;
+        String jsonStr = null;
+   	    try
         {
            //Check user security
            keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, APINAME, DBOperation.SEARCH);
+           String wrappedData = ImsQueryUtil.getValue(uriInfo.getQueryParameters(), "wrappedData");
            //Retrieve data from database based on the given item code
-           Ims item = imsService.getItem(itemCode);
-           //Wrap the data
-           Products result = new Products(new ItemWrapper(item));
-           String jsonStr = result.toJSONStringWithJackson("ims");
+           item = imsService.getItem(itemCode);
+           //Convert the data to Json string
+           if("No".equalsIgnoreCase(wrappedData)){
+              result = new Products(item);
+           }
+           else{
+             //Wrap the data
+              result = new Products(new ItemWrapper(item));
+           }   
+           jsonStr = result.toJSONStringWithJackson("ims");
            //Create json response
            response = Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();
          }
