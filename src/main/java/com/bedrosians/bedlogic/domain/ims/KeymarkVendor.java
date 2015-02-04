@@ -11,8 +11,10 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Immutable;
 
 
+@Immutable
 @Entity
 @Table(name="apv")
 @Cache(usage=CacheConcurrencyStrategy.READ_ONLY)
@@ -86,7 +88,10 @@ public class KeymarkVendor implements java.io.Serializable {
     @Id
 	@Column(name = "vendornbr", unique = true, nullable = false, precision = 6, scale = 0)
     public Integer getvendorNumber() {
-		return this.vendorNumber;
+    	if(vendorNumber == 0)
+    	   return null;
+    	else
+		   return this.vendorNumber;
 	}
 
 	public void setvendorNumber(Integer vendorNumber) {
