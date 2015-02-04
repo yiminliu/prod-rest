@@ -121,7 +121,7 @@ public class Ims implements java.io.Serializable {
   	
 	//------- Associations --------//
   	//@OrderBy("vendorOrder ASC") 
-  	private List<Vendor> newVendorSystem = new CopyOnWriteArrayList<Vendor>();
+  	private List<Vendor> newVendorSystem = new CopyOnWriteArrayList<>();
   	private ImsNewFeature newFeature;
     private IconCollection iconDescription;
 	private List<ColorHue> colorhues =  new CopyOnWriteArrayList<>();
@@ -546,8 +546,7 @@ public class Ims implements java.io.Serializable {
 		   vendor.getVendorId().setItemCode(getItemcode());	
 		vendor.setIms(this);
 		if(getNewVendorSystem() == null)
-		   setNewVendorSystem(new ArrayList<Vendor>());	
-		//vendor.setVendorOrder(getNewVendorSystem().size() +1);
+		   setNewVendorSystem(new CopyOnWriteArrayList<Vendor>());	
 		getNewVendorSystem().add(vendor);
 	}
 	
@@ -627,7 +626,7 @@ public class Ims implements java.io.Serializable {
 			Purchasers purchasers, PackagingInfo packaginginfo, Notes notes,
 			Applications applications, List<String> usage, Units units,
 			Cost cost, VendorInfo vendors, SimilarItemCode relateditemcodes,
-			List<Vendor> newVendorSystem, ImsNewFeature imsNewFeature,
+			CopyOnWriteArrayList<Vendor> newVendorSystem, ImsNewFeature imsNewFeature,
 			IconCollection iconDescription) {
 		super();
 		this.itemcode = itemcode;
