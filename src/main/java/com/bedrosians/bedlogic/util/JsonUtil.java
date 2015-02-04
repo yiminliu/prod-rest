@@ -64,7 +64,7 @@ public class JsonUtil {
 		String jsonString = null; 
 		ObjectMapper mapper = new ObjectMapper();
 	    try{
-		    jsonString = mapper.writeValueAsString(obj.getClass());
+		    jsonString = mapper.writeValueAsString(obj);
 		}
         catch (JsonProcessingException e) { 
 		    throw new DataMappingException("JsonGenerationException occured during jsonObjectToPOJO(): " + e.getMessage(), e);
@@ -76,7 +76,7 @@ public class JsonUtil {
 		
 		ObjectMapper mapper = new ObjectMapper();
 		try{
-			mapper.writeValue(new File(fileName), obj.getClass());
+			mapper.writeValue(new File(fileName), obj);
 		}
 	    catch (JsonProcessingException e) { 
 		    throw new DataMappingException("JsonGenerationException occured during jsonObjectToPOJO(): " + e.getMessage(), e);
