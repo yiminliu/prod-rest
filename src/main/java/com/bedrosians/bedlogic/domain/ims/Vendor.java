@@ -36,7 +36,7 @@ public class Vendor implements java.io.Serializable {
 
 	private static final long serialVersionUID = -582265865921787L;
 	
-	private VendorId vendorId = new VendorId();
+	private VendorId vendorId;// = new VendorId();
 	private Integer vendorOrder;
 	private String vendorName;
 	private String vendorName2;
@@ -63,12 +63,12 @@ public class Vendor implements java.io.Serializable {
 		this.vendorId = vendorId;
 	}
 	
-	@JsonIgnore
+	//@JsonIgnore
 	//@IndexedEmbedded
 	@EmbeddedId
-	@AttributeOverrides({
-		@AttributeOverride(name = "itemCode", column = @Column(name = "item_code", nullable = false, length = 20)),
-		@AttributeOverride(name = "id", column = @Column(name = "vendor_id", nullable = false, precision = 10, scale = 0)) })
+	//@AttributeOverrides({
+		//@AttributeOverride(name = "itemCode", column = @Column(name = "item_code", nullable = false, length = 20)),
+		//@AttributeOverride(name = "id", column = @Column(name = "vendor_id", nullable = false, precision = 10, scale = 0)) })
     public VendorId getVendorId() {
 		return this.vendorId;
 	}
@@ -90,7 +90,8 @@ public class Vendor implements java.io.Serializable {
 	}
 
 	@JsonIgnore
-	@OneToOne(fetch = FetchType.EAGER)
+	//@OneToOne(fetch = FetchType.EAGER)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="vendor_id", insertable = false, updatable = false)
 	public KeymarkVendor getKeymarkVendor() {
 		return keymarkVendor;
@@ -100,14 +101,14 @@ public class Vendor implements java.io.Serializable {
 		this.keymarkVendor = keymarkVendor;
 	}
 
-	@Transient
-	public Integer getId(){
-		return this.vendorId.getId();
-	}
+	//@Transient
+	//public Integer getId(){
+	//	return this.vendorId.getId();
+	//}
 	
-	public void setId(Integer id){
-	   this.vendorId.setId(id);
-	}
+	//public void setId(Integer id){
+	//   this.vendorId.setId(id);
+	//}
 	
 	@Column(name = "vendor_order", length = 2)
 	public Integer getVendorOrder() {
@@ -238,11 +239,10 @@ public class Vendor implements java.io.Serializable {
 		this.version = version;
 	}
 	
-
 	@Transient
 	public String getVendorName() {
-		//return vendorName;
-		return (keymarkVendor == null)? null : keymarkVendor.getName();
+		return vendorName;
+		//return (keymarkVendor == null)? null : keymarkVendor.getName();
 	}
 
 	public void setVendorName(String vendorName) {
@@ -251,8 +251,8 @@ public class Vendor implements java.io.Serializable {
 
 	@Transient
 	public String getVendorName2() {
-		//return this.vendorName2;
-		return (keymarkVendor == null)? null : keymarkVendor.getDbaname();
+		return this.vendorName2;
+		//return (keymarkVendor == null)? null : keymarkVendor.getDbaname();
 	}
 
 	public void setVendorName2(String vendorName2) {
@@ -344,7 +344,7 @@ public class Vendor implements java.io.Serializable {
 	@Override
 	public String toString() {
 		return "Vendor ["
-				+ "vendorId=" + vendorId.getId() 
+				+ "vendorId=" + vendorId 
 				+ ", vendorName=" + vendorName
 				+ ", vendorName2=" + vendorName2 
 				+ ", vendorXrefId=" + vendorXrefId 
