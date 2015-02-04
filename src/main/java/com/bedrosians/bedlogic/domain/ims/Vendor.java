@@ -36,7 +36,7 @@ public class Vendor implements java.io.Serializable {
 
 	private static final long serialVersionUID = -582265865921787L;
 	
-	private VendorId vendorId;// = new VendorId();
+	private VendorId vendorId;
 	private Integer vendorOrder;
 	private String vendorName;
 	private String vendorName2;
@@ -100,15 +100,6 @@ public class Vendor implements java.io.Serializable {
 	public void setKeymarkVendor(KeymarkVendor keymarkVendor) {
 		this.keymarkVendor = keymarkVendor;
 	}
-
-	//@Transient
-	//public Integer getId(){
-	//	return this.vendorId.getId();
-	//}
-	
-	//public void setId(Integer id){
-	//   this.vendorId.setId(id);
-	//}
 	
 	@Column(name = "vendor_order", length = 2)
 	public Integer getVendorOrder() {
@@ -331,12 +322,11 @@ public class Vendor implements java.io.Serializable {
 		return Arrays.asList("vendorId", "vendorName", "vendorXrefId", "vendorPriceUnit", "vendorFob", "vendorlistprice", "vendorNetPrice", "vendorDiscountPct", 
 				               "vendorPriceRoundAccuracy" , "leadTime", "vendorFreightRateCwt", "dutyPct");
 	}
-
 	
 	@JsonIgnore
 	@Transient
 	public boolean isEmpty(){
-		return vendorId == null;
+		return vendorId == null || ((vendorId.getId() == null || vendorId.getId() == 0) && (vendorId.getItemCode() == null || vendorId.getItemCode().trim().isEmpty()));
 		//&& vendorName == null && vendorXrefId == null && vendorListPrice == null && 
 		//	   vendorNetPrice == null && vendorPriceUnit == null && vendorFob == null;
 	}

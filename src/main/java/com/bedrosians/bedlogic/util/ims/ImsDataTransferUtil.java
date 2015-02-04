@@ -102,8 +102,8 @@ public class ImsDataTransferUtil {
   				   if(vendor.getVendorPriceRoundAccuracy() != null) itemToDB.getNewVendorSystem().get(i).setVendorPriceRoundAccuracy(vendor.getVendorPriceRoundAccuracy());
   				   if(vendor.getVendorPriceUnit() != null) itemToDB.getNewVendorSystem().get(i).setVendorPriceUnit(vendor.getVendorPriceUnit());
   				   if(vendor.getVendorXrefId() != null) itemToDB.getNewVendorSystem().get(i).setVendorXrefId(vendor.getVendorXrefId());
-  				   if(needToAddNewVendor(itemToDB.getNewVendorSystem(), vendor))
-  					  itemToDB.addNewVendorSystem(vendor);
+  				   //if(needToAddNewVendor(itemToDB.getNewVendorSystem(), vendor))
+  					//  itemToDB.addNewVendorSystem(vendor);
   		        }
   		   }	   
   		}
