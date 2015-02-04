@@ -1,16 +1,12 @@
 package com.bedrosians.bedlogic.service.ims;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.ws.rs.core.MultivaluedMap;
 
-import com.sun.jersey.core.util.MultivaluedMapImpl;
-
-import org.codehaus.jettison.json.JSONObject;
 import org.hibernate.CacheMode;
 import org.hibernate.HibernateException;
 import org.hibernate.ObjectNotFoundException;
@@ -255,7 +251,7 @@ public class ImsServiceImpl implements ImsService {
 		transferColorHues(itemToUpdate, itemFromInput, DBOperation.UPDATE);
   	    //ImsValidator.validateNewItem(itemToUpdate);
     	try{
-	       imsDao.updateItem(session,itemToUpdate);
+           imsDao.updateItem(session,itemToUpdate);
 	 	}
     	catch(HibernateException hbe){
      	   if(hbe.getCause() != null)
@@ -288,10 +284,15 @@ public class ImsServiceImpl implements ImsService {
 			imsDao.deleteItem(session, itemProxy);
 		}
 		catch(ObjectNotFoundException e){
-			if(e.getCause() != null)
-				throw new DataNotFoundException("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage() + ". Root cause -- " + e.getCause().getMessage());	
-			else
-				throw new DataNotFoundException("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage());
+			if(e.getMessage().contains("No row with the given identifier exists: [com.bedrosians.bedlogic.domain.ims.KeymarkVendor#0]")){
+			   //swallow it, because the vendor number in ims table was not entered
+			} 
+			else {
+			   if(e.getCause() != null)
+				  throw new DataNotFoundException("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage() + ". Root cause -- " + e.getCause().getMessage());	
+			   else
+				  throw new DataNotFoundException("Error occured during deleteItemByItemCode(), due to: " +  e.getMessage());
+			}	   
 		}
 		catch(HibernateException hbe){
 			if(hbe.getCause() != null) {
@@ -489,14 +490,14 @@ public class ImsServiceImpl implements ImsService {
   	  if(vendors != null && !vendors.isEmpty()){
  		 VendorInfo lagancyVendor = new VendorInfo(); 
  		 for(Vendor vendor : vendors){
- 			if(vendor.getId() != null){ //populated legacy vendor fields
+ 			if(vendor.getVendorId().getId() != null){ //populated legacy vendor fields
  			   //if(vendor.getId().equals(item.getVendors().getVendornbr1()) && (DBOperation.UPDATE.equals(dBOperation) || DBOperation.CLONE.equals(dBOperation)))	
  			   vendor = ImsDataUtil.setCalculatedVendorData(item, vendor);
  			   item.addNewVendorSystem(vendor);
        		   if(vendor.getVendorOrder() == 1)
        			  lagancyVendor = ImsDataUtil.convertNewVendorToLegancyVendorInfo(vendor); 
        		   else if(vendor.getVendorOrder() == 2)
-       			  lagancyVendor.setVendornbr2(vendor.getId()); 
+       			  lagancyVendor.setVendornbr2(vendor.getVendorId().getId()); 
  			}  
   		}	
        	item.setVendors(lagancyVendor);  
@@ -564,5 +565,86 @@ public class ImsServiceImpl implements ImsService {
 		  }
 	  }
 	}
+   
+   private static synchronized void transferNewVendorSystem(Ims itemToDB, Ims itemFromInput, DBOperation operation) {
+   	List<Vendor> inputItemVendors = itemFromInput.getNewVendorSystem();
+		VendorInfo legancyVendorInfo = itemFromInput.getVendors();
+		/****** newVendorSystem data is included in input ******/
+ 		if(inputItemVendors != null && !inputItemVendors.isEmpty()){
+ 		   //// create new vendor record /////	
+ 		   if(operation.equals(DBOperation.CREATE)|| //brand new item
+ 		     (operation.equals(DBOperation.UPDATE) && (itemToDB.getNewVendorSystem() == null || itemToDB.getNewVendorSystem().isEmpty()))){ //existing item, but brand new ItemVendors
+ 			  for(Vendor vendor : inputItemVendors){
+ 			      if(vendor != null && !vendor.isEmpty()){
+ 			    	 vendor = ImsDataUtil.setCalculatedVendorData(itemFromInput, vendor); 
+ 				     itemToDB.addNewVendorSystem(vendor);	
+ 				     //Populate vendor info in ims
+ 				     if((legancyVendorInfo == null || legancyVendorInfo.getVendornbr1() == null || legancyVendorInfo.getVendornbr1() == 0) && (vendor.getVendorOrder() != null && vendor.getVendorOrder() == 1)){
+ 				         itemToDB.setVendors(ImsDataUtil.convertNewVendorToLegancyVendorInfo(vendor));	
+ 				     }
+ 				  }   
+ 			   }    
+ 		   }
+ 		   ///// update existing item vendor record /////
+          else if(operation.equals(DBOperation.UPDATE)){ //update existing item vendor
+     		   int sizeOfItemVendors = itemToDB.getNewVendorSystem().size();
+ 			   for(int i = 0; i < inputItemVendors.size(); i++){
+ 				   Vendor vendor = inputItemVendors.get(i);
+ 				   ImsDataUtil.setCalculatedVendorData(itemFromInput, vendor);
+ 				   //if((vendor.getVendorOrder() != null && vendor.getVendorOrder() == 1) && (vendor.getVendorId() == null || vendor.getVendorId().getId() == null || vendor.getVendorId().getId() == 0))
+ 				   //  throw new InputParamException("Error occured during transferNewVendorSystem(): No vendor ID is provided."); //commented out, due to the bad existing vendor data in ims table 
+ 				   //Populate vendor info in ims table
+ 				   if((legancyVendorInfo == null || legancyVendorInfo.getVendornbr1() == null || legancyVendorInfo.getVendornbr1() == 0) && (vendor.getVendorOrder() != null && vendor.getVendorOrder() == 1))
+ 				       itemToDB.setVendors(ImsDataUtil.convertNewVendorToLegancyVendorInfo(vendor));				 
+ 				   if(sizeOfItemVendors <= i){
+ 					  itemToDB.addNewVendorSystem(vendor); //there more vendor in the new item than the current one
+ 					  continue;
+ 				   }	  
+ 				   if(itemToDB.getNewVendorSystem().get(i).getVendorId() == null)
+ 					   itemToDB.getNewVendorSystem().get(i).setVendorId(vendor.getVendorId());
+ 				   if(vendor.getDutyPct() != null) itemToDB.getNewVendorSystem().get(i).setDutyPct(vendor.getDutyPct());
+ 				   if(vendor.getLeadTime() != null) itemToDB.getNewVendorSystem().get(i).setLeadTime(vendor.getLeadTime());
+ 				   if(vendor.getVendorDiscountPct() != null) itemToDB.getNewVendorSystem().get(i).setVendorDiscountPct(vendor.getVendorDiscountPct());
+ 				   if(vendor.getVendorFob() != null) itemToDB.getNewVendorSystem().get(i).setVendorFob(vendor.getVendorFob().trim());
+ 				   if(vendor.getVendorFreightRateCwt() != null)itemToDB.getNewVendorSystem().get(i).setVendorFreightRateCwt(vendor.getVendorFreightRateCwt());
+ 				   if(vendor.getVendorLandedBaseCost() != null) itemToDB.getNewVendorSystem().get(i).setVendorLandedBaseCost(vendor.getVendorLandedBaseCost());
+ 				   if(vendor.getVendorListPrice() != null) itemToDB.getNewVendorSystem().get(i).setVendorListPrice(vendor.getVendorListPrice());
+ 				   if(vendor.getVendorMarkupPct() != null) itemToDB.getNewVendorSystem().get(i).setVendorMarkupPct(vendor.getVendorMarkupPct());
+ 				   if(vendor.getVendorName() != null) itemToDB.getNewVendorSystem().get(i).setVendorName(vendor.getVendorName().trim());
+ 				   if(vendor.getVendorName2() != null) itemToDB.getNewVendorSystem().get(i).setVendorName2(vendor.getVendorName2().trim());
+ 				   if(vendor.getVendorNetPrice() != null) itemToDB.getNewVendorSystem().get(i).setVendorNetPrice(vendor.getVendorNetPrice());
+ 				   if(vendor.getVendorOrder() != null) itemToDB.getNewVendorSystem().get(i).setVendorOrder(vendor.getVendorOrder());
+ 				   if(vendor.getVendorPriceRoundAccuracy() != null) itemToDB.getNewVendorSystem().get(i).setVendorPriceRoundAccuracy(vendor.getVendorPriceRoundAccuracy());
+ 				   if(vendor.getVendorPriceUnit() != null) itemToDB.getNewVendorSystem().get(i).setVendorPriceUnit(vendor.getVendorPriceUnit());
+ 				   if(vendor.getVendorXrefId() != null) itemToDB.getNewVendorSystem().get(i).setVendorXrefId(vendor.getVendorXrefId());
+ 				   //Populate vendor info in ims
+			       if((legancyVendorInfo == null || legancyVendorInfo.getVendornbr1() == null || legancyVendorInfo.getVendornbr1() == 0) && vendor.getVendorOrder() == 1){
+				       itemToDB.setVendors(ImsDataUtil.convertNewVendorToLegancyVendorInfo(vendor));	
+				   }
+ 		        }
+ 		   }	   
+ 		}
+ 		/**** No newVendorSystem data is included in input. Populate Ims_Item_Vendor table with the ims vendors info ****/ 
+ 		else if((legancyVendorInfo != null && legancyVendorInfo.getVendornbr1() != null) && (inputItemVendors == null || inputItemVendors.isEmpty())){
+ 			//ProductVendor vendor = convertImslegancyVendorInfoToItemVendor(legancyVendorInfo);
+ 			if(itemToDB.getNewVendorSystem() == null || itemToDB.getNewVendorSystem().isEmpty())
+ 			   itemToDB.addNewVendorSystem(new Vendor());
+ 			if(legancyVendorInfo.getVendornbr1() != null) itemToDB.getNewVendorSystem().get(0).getVendorId().setId(legancyVendorInfo.getVendornbr1());
+ 			if(legancyVendorInfo.getVendorxrefcd() != null) itemToDB.getNewVendorSystem().get(0).setVendorXrefId(legancyVendorInfo.getVendorxrefcd());
+ 			if(legancyVendorInfo.getVendorfob() != null) itemToDB.getNewVendorSystem().get(0).setVendorFob(legancyVendorInfo.getVendorfob());
+ 			if(legancyVendorInfo.getDutypct() != null) itemToDB.getNewVendorSystem().get(0).setDutyPct(legancyVendorInfo.getDutypct());
+ 			if(legancyVendorInfo.getVendorlistprice() != null) itemToDB.getNewVendorSystem().get(0).setLeadTime(legancyVendorInfo.getLeadtime());
+ 			if(legancyVendorInfo.getVendorlistprice() != null) itemToDB.getNewVendorSystem().get(0).setVendorListPrice(legancyVendorInfo.getVendorlistprice());
+ 			if(legancyVendorInfo.getVendorpriceunit() != null) itemToDB.getNewVendorSystem().get(0).setVendorPriceUnit(legancyVendorInfo.getVendorpriceunit());
+ 			if(legancyVendorInfo.getVendordiscpct() != null) itemToDB.getNewVendorSystem().get(0).setVendorDiscountPct(legancyVendorInfo.getVendordiscpct());
+ 		    if(legancyVendorInfo.getVendorroundaccuracy() != null) itemToDB.getNewVendorSystem().get(0).setVendorPriceRoundAccuracy(legancyVendorInfo.getVendorroundaccuracy());
+ 		    if(legancyVendorInfo.getVendormarkuppct() != null) itemToDB.getNewVendorSystem().get(0).setVendorMarkupPct(legancyVendorInfo.getVendormarkuppct());
+ 		    if(legancyVendorInfo.getVendorfreightratecwt() != null) itemToDB.getNewVendorSystem().get(0).setVendorFreightRateCwt(legancyVendorInfo.getVendorfreightratecwt());
+ 		    itemToDB.getNewVendorSystem().get(0).setVendorOrder(1);
+ 		    ImsDataUtil.setCalculatedVendorData(itemFromInput, legancyVendorInfo);
+ 			//vendor.setVendorOrder(1);
+ 			//itemToDB.addNewVendorSystem(vendor);
+ 		}
+   }	
 }
 
