@@ -24,7 +24,7 @@ public class TestSpecification  implements java.io.Serializable {
 	private Float dcof;
 	private Character thermalshock;
 	private String bondstrength;
-	private Character greenfriendly;
+	private Character greenfriendly = 'N';
 	private Float moh;
 	private String leadpoint;
 	private Float preconsummer;
