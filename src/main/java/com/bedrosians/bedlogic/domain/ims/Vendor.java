@@ -36,7 +36,7 @@ public class Vendor implements java.io.Serializable {
 
 	private static final long serialVersionUID = -582265865921787L;
 	
-	private VendorId vendorId;
+	private VendorId vendorId = new VendorId();
 	private Integer vendorOrder;
 	private String vendorName;
 	private String vendorName2;
