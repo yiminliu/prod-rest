@@ -199,9 +199,9 @@ public class ImsValidator {
          if(item.getVendors().getVendorroundaccuracy() == null || item.getVendors().getVendorroundaccuracy() < 0 || item.getVendors().getVendorroundaccuracy() > 100){
         	 throw new InputParamException("According to item table requirments, Vendor round accuracy should be 0 to 100.");   
          }
-         if(item.getVendors().getVendornetprice() == null){
-        	 throw new InputParamException("According to item table requirments, Vendor net price should not be null.");  
-         }
+         //if(item.getVendors().getVendornetprice() == null){
+         //	 throw new InputParamException("According to item table requirments, Vendor net price should not be null.");  
+         // }
          if(item.getVendors().getVendormarkuppct() == null){
         	 throw new InputParamException("According to item table requirments, Vendor markup percent should not be null.");  
          }
