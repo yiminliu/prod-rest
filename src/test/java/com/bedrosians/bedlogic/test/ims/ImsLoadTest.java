@@ -6,10 +6,9 @@ import java.util.concurrent.Executors;
 
 import javax.ws.rs.core.MultivaluedMap;
 
-import junit.framework.Assert;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,13 +49,11 @@ public class ImsLoadTest {
 		//params.put("inactivecode", Arrays.asList(new String[]{"N"}));
 		//params.put("itemcode", Arrays.asList(new String[]{"AECBUB218NR"}));
 		params.put("maxResults", Arrays.asList(new String[]{"500"}));
-		
-		Ims ims = null;
 		for(int i = 0; i < 100; i++){
 	        try{
 	      	   Session session = sessionFactory.openSession();
 	           session.getTransaction().begin();
-	           ims = imsService.getItem("AECBUB218NR");
+	           imsService.getItem("AECBUB218NR");
                session.getTransaction().commit();
                session.close();
 	        }
