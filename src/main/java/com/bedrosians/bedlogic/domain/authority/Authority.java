@@ -16,11 +16,13 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Immutable;
 
 import com.bedrosians.bedlogic.domain.ims.enums.RoleDomain;
 import com.bedrosians.bedlogic.domain.user.User;
 
 
+@Immutable
 @Entity
 @Table(name = "authorities")
 @IdClass(AuthorityId.class)
