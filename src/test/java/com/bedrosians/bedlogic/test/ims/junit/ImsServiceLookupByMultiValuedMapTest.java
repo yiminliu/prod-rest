@@ -84,7 +84,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	
 	@BeforeClass
 	public static void setUpBeforeClass(){
-		testItemId = "TCRPET459N"; 
+		testItemId = "MKTPCKCRDEPI"; 
 		testItemId2 = "AECBUB217NR"; 
 		testDescription1 = "13X13 Breccia Beige";
 	    testFullDescription = "Tiles";

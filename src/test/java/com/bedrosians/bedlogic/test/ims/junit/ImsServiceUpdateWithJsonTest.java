@@ -37,7 +37,7 @@ public class ImsServiceUpdateWithJsonTest {
 	@Autowired
 	ImsService imsService;
 	
-	private String id = "newItemcode";
+	private String id = "TEST3";
 	
  	
 	@Before
@@ -452,6 +452,13 @@ public class ImsServiceUpdateWithJsonTest {
 	        //assertEquals(new Date(), item.getImsNewFeature().getLastModifiedDate());
 	 }
 	 
+	 @Test
+	 public void testUpdateItemWithUnitAndVendorJsonObject2() throws Exception {
+	        System.out.println("testUpdateItemWithUnitAndVendor: ");
+	        //JSONObject params = new JSONObject(jStringWithUnitAndVendor);
+	        JSONObject params = new JSONObject(jStringWithNewVendorSystem3);
+	        imsService.updateItem(JsonUtil.toObjectNode(params));
+	 }       
 	 @Test
 	 public void testUpdateItemWithUnitAndVendorJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithUnitAndVendor: ");
@@ -1020,7 +1027,7 @@ public class ImsServiceUpdateWithJsonTest {
 	
 	 
 	 String jStringColorHues = 
-			   "{\"itemcode\":\"NEWITEMCODE\","
+			   "{\"itemcode\":\"TEST3\","
 			    + "\"itemcategory\":\"ATHENA\","
 			    + "\"countryorigin\":\"Italy\","
 			    + "\"inactivecode\":\"N\","
@@ -1199,6 +1206,104 @@ public class ImsServiceUpdateWithJsonTest {
 	    		//+ "\"newNoteSystem\":[{\"noteType\":\"po\",\"note\":\"test Po note new \",\"lastModifiedDate\":null},{\"noteType\":\"buyer\",\"note\":\"test buyer note\",\"lastModifiedDate\":null},{\"noteType\":\"invoice\",\"note\":\"test invoice note\",\"lastModifiedDate\":null},{\"noteType\":\"additional\",\"note\":\"test additional note\",\"lastModifiedDate\":null},{\"noteType\":\"internal\",\"note\":\"test internal note\",\"lastModifiedDate\":null}],"
 	    		+ "\"iconDescription\":{\"madeInCountry\":\"China\",\"exteriorProduct\":false,\"adaAccessibility\":false,\"throughColor\":false,\"colorBody\":true,\"inkJet\":false,\"glazed\":true,\"unglazed\":false,\"rectifiedEdge\":true,\"chiseledEdge\":false,\"versaillesPattern\":true,\"recycled\":false,\"postRecycled\":true,\"preRecycled\":false,\"leadPoint\":true,\"greenFriendly\":false,\"coefficientOfFriction\":true},"
 		        + "}";
+	 
+	 String jStringWithNewVendorSystem2 = 
+			    "{"
+			    + "\"itemcode\":\"MKTPCKCRDEPI2\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
+	    		+ "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\"},"
+	    		//+ "\"vendors\":{\"vendornbr\":null,\"vendornbr1\":0,\"vendornbr2\":null,\"vendorxrefcd\":\"\",\"vendorlistprice\":35.94,\"vendorpriceunit\":\"SET\",\"vendorfob\":\"\",\"vendordiscpct\":0,\"vendorroundaccuracy\":2,\"vendornetprice\":35.94,\"vendormarkuppct\":0,\"vendorfreightratecwt\":0,\"dutypct\":0,\"leadtime\":0,\"vendorlandedbasecost\":35.94,\"vendordiscpct2\":0,\"vendordiscpct3\":0},"
+				
+	    		+ "\"newVendorSystem\":["
+	    		+   "{\"vendorId\":{\"id\":544394},"
+	    		//+ "\"vendorOrder\":1,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"K822751R\","
+	    		//+ "\"vendorListPrice\":12.7,\"vendorNetPrice\":12.7,\"vendorPriceUnit\":\"SM\",\"vendorFob\":null,"
+	    		//+ "\"vendorDiscountPct\":0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0,\"vendorFreightRateCwt\":0,"
+	    		//+ "\"vendorLandedBaseCost\":12.7,\"leadTime\":0,"
+	    		//+ "\"dutyPct\":0},"
+	    		+ "\"vendorOrder\":1,\"vendorName\":\"null\",\"vendorName2\":null,\"vendorXrefId\":\"ATM41\",\"vendorListPrice\":35.94,\"vendorNetPrice\":7.1500,\"vendorPriceUnit\":\"SET\",\"vendorFob\":\"\",\"vendorDiscountPct\":0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":11.0,\"vendorFreightRateCwt\":0,\"vendorLandedBaseCost\":35.94,\"leadTime\":60,\"dutyPct\":30.0},"
+	    		//+ "                     {\"vendorOrder\":2,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":6.1500,\"vendorNetPrice\":7.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"test\",\"vendorDiscountPct\":20.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":10.0,\"vendorFreightRateCwt\":12.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":20.0,\"vendorId\":{\"id\":0}},"
+	    		//+ "                     {\"vendorOrder\":3,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorNetPrice\":7.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"test\",\"vendorDiscountPct\":30.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":10.0,\"vendorFreightRateCwt\":13.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":10.0,\"vendorId\":{\"id\":null}},"
+	    		//+ "                     {\"vendorOrder\":null,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":null,\"vendorListPrice\":0,\"vendorNetPrice\":null,\"vendorPriceUnit\":null,\"vendorFob\":\"\",\"vendorDiscountPct\":null,\"vendorPriceRoundAccuracy\":null,\"vendorMarkupPct\":0,\"vendorFreightRateCwt\":0,\"vendorLandedBaseCost\":0,\"leadTime\":null,\"dutyPct\":null,\"vendorId\":{\"id\":null}},"
+        		 + "],"
+	    		+ "}";
+	 String jStringWithNewVendorSystem3 =
+		     "{"
+		     	+ "\"itemcode\":\"ELMARAGT1224\","
+		     	+ "\"itemcategory\":\"ARARAT\","
+		     	+ "\"countryorigin\":\"USA\","
+		     	//+ "\"inactivecode\":\"Y\","
+		     	//+ "\"shadevariation\":\"V1\","
+		     	//+ "\"colorcategory\":\"GRAY\","
+		     	//+ "\"showonwebsite\":\"N\",\"iconsystem\":\"NNNNNNNNNNYNNNNNNNNN\",\"itemtypecode\":\"#\",\"abccode\":\"D",\"itemcode2\":"",\"inventoryitemcode\":"","
+		     //	+ "\"showonalysedwards\":\"N\",\"offshade\":\"N\",\"printlabel\":"",\"taxclass\":\"T\",\"lottype\":"",\"updatecode\":\"CERA-TCR\",\"directship\":null,\"dropdate\":null,"
+		     	//+ "\"productline\":"",\"itemgroupnbr\":0,\"priorlastupdated\":1396137600000,\"itemdesc\":{\"fulldesc\":\"12x24 Ararat Field Tile Rectified Porcelain Matte Graphite\","
+		     	//+ "\"itemdesc1\":\"gwegb\"},"
+		     	//+ "\"series\":{\"seriesname\":"Ararat\",\"seriescolor\":\"grey\"},\"material\":{\"materialtype\":\"Porcelain\",\"materialcategory\":\"Tile\",\"materialclass\":\"CTSRC\","
+		     	//+ "\"materialstyle\":\"Beak\",\"materialfeature\":\"RE\"},"
+		     	//+ "\"dimensions\":{\"nominallength\":24,\"nominalwidth\":12,\"sizeunits\":\"E\",\"thickness\":\"5\/16\",\"thicknessunit\":\"E\",\"length\":\"23-5\/16\",\"width\":\"11-1\/2\","
+		     	//+ "\"nominalthickness\":0},"
+		     	//+ "\"price\":{\"listprice\":4.48,\"sellprice\":4.48,\"pricegroup\":\"",\"priceunit\":"S\/F",\"sellpricemarginpct\":2,\"sellpriceroundaccuracy\":2,\"listpricemarginpct\":0,"
+		     	//	+ "\"minmarginpct\":15,\"futuresell\":0,\"tempprice\":1.99,\"tempdatefrom\":1406703600000,\"tempdatethru\":1419840000000,\"priorlistprice\":5.75,\"priorsellprice\":4.55,"default":false},"
+		     	//+ "\"testSpecification\":{\"waterabsorption\":null,\"scratchresistance\":null,\"frostresistance\":null,\"chemicalresistance\":null,\"peiabrasion\":null,\"scofwet\":null,"
+		     	//+ "\"scofdry\":null,\"breakingstrength\":null,\"scratchstandard\":"",\"breakingstandard\":"","
+		     	//+ "\"restricted\":\"N\",\"warpage\":null,\"wedging\":null,\"dcof\":null,\"thermalshock\":null,\"bondstrength\":"","
+		     	//+ "\"greenfriendly\":\"N\",\"moh\":null,\"leadpoint\":\"N\",\"preconsummer\":0,\"posconsummer\":0},"
+		     	//+ ""purchasers":{"purchaser":"terth","purchaser2":"GFIL"},"
+		     	//+ ""packaginginfo":{"boxPieces":6,"boxSF":11.62115,"boxWeight":43.199997,"palletBox":44,"palletSF":511.3306,"palletWeight":1900.7999},"
+		     	//+ ""notes":{"ponotes":"","buyernotes":"","invoicenotes":"","internalnotes":""},"
+		   		//+ ""applications":{"residential":"FR:WR:CR:SR:PR","lightcommercial":"WL:CL:SL:PL","commercial":"WC:CC:SC:PC","residentialList":null,"lightcommercialList":null,"commercialList":null},"usage":["FR","WR","SR","PR","CR","WL","SL","PL","CL","WC","SC","PC","CC"],"
+	/*	   		+ "\"units\":{"
+		   		//+ "\"stdunit\":\"S/F\","
+		   		//+ "\"stdratio\":0.5163,"
+		   		//+ "\"ordunit\":\"S/M\","
+		   		//+ "\"ordratio\":5.5574,
+		   		//+ "\"baseunit\":\"PCS\",\"baseisstdsell\":null,\"baseisstdord\":null,\"baseisfractqty\":null,\"baseispackunit\":\"Y\",\"baseupc\":null,\"baseupcdesc\":\"\",\"basevolperunit\":0,\"basewgtperunit\":7.2,"
+		   		+ "\"unit1unit\":\"CTN\",\"unit1ratio\":6,\"unit1isstdsell\":null,\"unit1isstdord\":null,\"unit1isfractqty\":null,"
+		   		//+ "\"unit1ispackunit\":\"Y\","
+		   		//+ "\"unit1upc\":null,\"unit1upcdesc\":\"\","
+		   		+ "\"unit1wgtperunit\":43.8,"
+		   		+ "\"unit2unit\":\"PLT\",\"unit2ratio\":264,\"unit2isstdsell\":null,\"unit2isstdord\":null,\"unit2isfractqty\":null,\"unit2ispackunit\":\"Y\",\"unit2upc\":null,\"unit2upcdesc\":\"\",\"unit2wgtperunit\":1954,"
+		   		//+ "\"unit3unit\":\"S/M\","
+		   		+ "\"unit3ratio\":5.5574,\"unit3isstdsell\":null,\"unit3isstdord\":\"Y\",\"unit3isfractqty\":\"Y\",\"unit3ispackunit\":null,\"unit3upc\":0,\"unit3upcdesc\":\"\",\"unit3wgtperunit\":0,"
+		   		//+ "\"unit4unit\":\"S/F\","
+		   		+ "\"unit4ratio\":0.5163,\"unit4isstdsell\":\"Y\",\"unit4isstdord\":null,\"unit4isfractqty\":\"Y\",\"unit4ispackunit\":null,\"unit4upc\":0,\"unit4upcdesc\":\"\",\"unit4wgtperunit\":0},"
+		*/   									
+		   		//+ ""cost":{"cost1":0,"priorcost":0,"futurecost":0,"poincludeinvendorcost":"Y","nonstockcostpct":0,"costrangepct":null},"relateditemcodes":null,"
+		   		+ "\"vendors\":{\"vendornbr\":null,\"vendornbr1\":544394,\"vendornbr2\":null,\"vendorxrefcd\":\"K822751R\",\"vendorlistprice\":12.7,\"vendorpriceunit\":\"S/M\",\"vendorfob\":\"\","
+		   		+ "\"vendordiscpct\":0,\"vendorroundaccuracy\":2,\"vendornetprice\":12.7,\"vendormarkuppct\":0,\"vendorfreightratecwt\":0,\"dutypct\":0,\"leadtime\":0,\"vendorlandedbasecost\":2.2852,\"vendordiscpct2\":0,\"vendordiscpct3\":0},"
+		   		+ "\"newVendorSystem\":"
+		   		+ "["
+		   		+ "{\"vendorId\":{\"id\":544394},\"vendorOrder\":1,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"K822751R\",\"vendorListPrice\":12.7,\"vendorNetPrice\":12.7,\"vendorPriceUnit\":\"S/M\",\"vendorFob\":\"\",\"vendorDiscountPct\":0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0,\"vendorFreightRateCwt\":0,\"vendorLandedBaseCost\":12.7,\"leadTime\":0,\"dutyPct\":0},"
+		   		+ "{\"vendorId\":{\"id\":null},\"vendorOrder\":2,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"\",\"vendorListPrice\":0,\"vendorNetPrice\":null,\"vendorPriceUnit\":\"0\",\"vendorFob\":\"\",\"vendorDiscountPct\":null,\"vendorPriceRoundAccuracy\":null,\"vendorMarkupPct\":0,\"vendorFreightRateCwt\":0,\"vendorLandedBaseCost\":0,\"leadTime\":null,\"dutyPct\":null},"
+		   		+ "{\"vendorId\":{\"id\":null},\"vendorOrder\":3,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"\",\"vendorListPrice\":0,\"vendorNetPrice\":null,\"vendorPriceUnit\":\"0\",\"vendorFob\":\"\",\"vendorDiscountPct\":null,\"vendorPriceRoundAccuracy\":null,\"vendorMarkupPct\":0,\"vendorFreightRateCwt\":0,\"vendorLandedBaseCost\":0,\"leadTime\":null,\"dutyPct\":null}"
+		   		+ "],"
+		   				
+		   		//+ ""newFeature":{"grade":"Second","status":"BETTER","body":"Double_Loaded","edge":"Rectified","mpsCode":"New_Product","designLook":"Wood","designStyle":"Contemporary","surfaceApplication":"Ink_Jet","surfaceType":"Abrasive","surfaceFinish":"Antiquated","warranty":3,"recommendedGroutJointMin":"1","recommendedGroutJointMax":"1","createdDate":1423008000000,"launchedDate":null,"droppedDate":null,"lastModifiedDate":null},"iconDescription":{"madeInCountry":"Italy","exteriorProduct":null,"adaAccessibility":null,"throughColor":null,"colorBody":null,"inkJet":null,"glazed":null,"unglazed":"Yes","rectifiedEdge":null,"chiseledEdge":null,"versaillesPattern":null,"recycled":null,"postRecycled":null,"preRecycled":null,"leadPoint":null,"greenFriendly":null,"coefficientOfFriction":null},"colorhues":[{"colorHue":"GRAY"}]}
+		   		//+ "],"
+	    		+ "}";
+	 /*
+			 + "itemcode":"MKTPCKCRDEPI6","itemcategory":"PACKOUT","countryorigin":"Italy","inactivecode":"Y","shadevariation":"V1","colorcategory":"CLEAR","showonwebsite":"N","iconsystem":"NNNNNNNNNNNNNNNNNNNN","itemtypecode":"#","abccode":"SO","itemcode2":"","inventoryitemcode":"","showonalysedwards":"N","offshade":"N","printlabel":"","taxclass":"A","lottype":"","updatecode":"ALLD-ALD","directship":null,"dropdate":null,"productline":"","itemgroupnbr":0,"priorlastupdated":null,"itemdesc":{"fulldesc":"Packout CRD Epic 8x40 (1 box)","itemdesc1":"Packout CRD Epic 8x40 (1 box)"},"series":{"seriesname":"Dynasty","seriescolor":"redwood"},
+			 "material":{"materialtype":"Brick","materialcategory":"Medallion","materialclass":"SAMPL","materialstyle":"Beak","materialfeature":""},
+			 "dimensions":{"nominallength":11,"nominalwidth":11,"sizeunits":"E","thickness":"1","thicknessunit":"M","length":"11","width":"11","nominalthickness":0},
+			 "price":{"listprice":59.9,"sellprice":35,"pricegroup":"","priceunit":"SET","sellpricemarginpct":2,"sellpriceroundaccuracy":2,"listpricemarginpct":0,"minmarginpct":0,"futuresell":0,"tempprice":0,"tempdatefrom":null,"tempdatethru":null,"priorlistprice":null,"priorsellprice":null,"default":false},
+			 "testSpecification":{"waterabsorption":null,"scratchresistance":null,"frostresistance":null,"chemicalresistance":null,"peiabrasion":null,"scofwet":null,"scofdry":null,"breakingstrength":null,"scratchstandard":"","breakingstandard":"","restricted":"N","warpage":null,"wedging":null,"dcof":null,"thermalshock":null,"bondstrength":"","greenfriendly":"N","moh":0,"leadpoint":"N","preconsummer":0,"posconsummer":0},
+			 "purchasers":{"purchaser":"EDDIEB","purchaser2":""},
+			 "packaginginfo":{"boxPieces":0,"boxSF":0,"boxWeight":0,"palletBox":0,"palletSF":0,"palletWeight":0},
+			 "notes":{"ponotes":"","buyernotes":"","invoicenotes":"","internalnotes":""},
+			 "applications":{"residential":"","lightcommercial":"","commercial":"","residentialList":null,"lightcommercialList":null,"commercialList":null},
+			 "usage":[""],
+			 "units":{"stdunit":"SET","stdratio":1,"ordunit":"SET","ordratio":1,"baseunit":"SET","baseisstdsell":"Y","baseisstdord":"Y","baseisfractqty":null,"baseispackunit":"Y","baseupc":0,"baseupcdesc":"","basevolperunit":0,"basewgtperunit":45,"unit1unit":"","unit1ratio":0,"unit1isstdsell":null,"unit1isstdord":null,"unit1isfractqty":null,"unit1ispackunit":null,"unit1upc":0,"unit1upcdesc":"","unit1wgtperunit":0,"unit2unit":"","unit2ratio":0,"unit2isstdsell":null,"unit2isstdord":null,"unit2isfractqty":null,"unit2ispackunit":null,"unit2upc":0,"unit2upcdesc":"","unit2wgtperunit":0,"unit3unit":"","unit3ratio":0,"unit3isstdsell":null,"unit3isstdord":null,"unit3isfractqty":null,"unit3ispackunit":null,"unit3upc":0,"unit3upcdesc":"","unit3wgtperunit":0,"unit4unit":"","unit4ratio":0,"unit4isstdsell":null,"unit4isstdord":null,"unit4isfractqty":null,"unit4ispackunit":null,"unit4upc":0,"unit4upcdesc":"","unit4wgtperunit":0},
+			 "cost":{"cost1":0,"priorcost":0,"futurecost":0,"poincludeinvendorcost":"Y","nonstockcostpct":75,"costrangepct":null},"relateditemcodes":null,
+			 "vendors":{"vendornbr":null,"vendornbr1":0,"vendornbr2":null,"vendorxrefcd":"","vendorlistprice":35.94,"vendorpriceunit":"SET","vendorfob":"","vendordiscpct":0,"vendorroundaccuracy":2,"vendornetprice":35.94,"vendormarkuppct":0,"vendorfreightratecwt":0,"dutypct":0,"leadtime":0,"vendorlandedbasecost":35.94,"vendordiscpct2":0,"vendordiscpct3":0},
+			 "newVendorSystem":[
+			                    {"vendorOrder":1,"vendorName":null,"vendorName2":null,"vendorXrefId":"","vendorListPrice":35.94,"vendorNetPrice":35.94,"vendorPriceUnit":"SET","vendorFob":"","vendorDiscountPct":0,"vendorPriceRoundAccuracy":2,"vendorMarkupPct":0,"vendorFreightRateCwt":0,"vendorLandedBaseCost":35.94,"leadTime":0,"dutyPct":0,"id":0},
+			                    {"vendorOrder":2,"vendorName":null,"vendorName2":null,"vendorXrefId":"","vendorListPrice":0,"vendorNetPrice":null,"vendorPriceUnit":"0","vendorFob":"","vendorDiscountPct":null,"vendorPriceRoundAccuracy":null,"vendorMarkupPct":0,"vendorFreightRateCwt":0,"vendorLandedBaseCost":0,"leadTime":null,"dutyPct":null,"id":null},
+			                    {"vendorOrder":3,"vendorName":null,"vendorName2":null,"vendorXrefId":"","vendorListPrice":0,"vendorNetPrice":null,"vendorPriceUnit":"0","vendorFob":"","vendorDiscountPct":null,"vendorPriceRoundAccuracy":null,"vendorMarkupPct":0,"vendorFreightRateCwt":0,"vendorLandedBaseCost":0,"leadTime":null,"dutyPct":null,"id":null},
+			                    {"vendorOrder":null,"vendorName":null,"vendorName2":null,"vendorXrefId":null,"vendorListPrice":0,"vendorNetPrice":null,"vendorPriceUnit":null,"vendorFob":"","vendorDiscountPct":null,"vendorPriceRoundAccuracy":null,"vendorMarkupPct":0,"vendorFreightRateCwt":0,"vendorLandedBaseCost":0,"leadTime":null,"dutyPct":null,"id":null}],
+			                    "newFeature":{"grade":null,"status":"BEST","body":null,"edge":null,"mpsCode":"New_Product","designLook":null,"designStyle":null,"surfaceApplication":null,"surfaceType":null,"surfaceFinish":null,"warranty":null,"recommendedGroutJointMin":null,"recommendedGroutJointMax":null,"createdDate":1422921600000,"launchedDate":null,"droppedDate":null,"lastModifiedDate":null},
+			                    "iconDescription":{"madeInCountry":null,"exteriorProduct":null,"adaAccessibility":null,"throughColor":null,"colorBody":null,"inkJet":null,"glazed":null,"unglazed":null,"rectifiedEdge":null,"chiseledEdge":null,"versaillesPattern":null,"recycled":null,"postRecycled":null,"preRecycled":null,"leadPoint":null,"greenFriendly":null,"coefficientOfFriction":null},
+			                    "colorhues":[{"colorHue":"CLEAR"}]}
+     */
 	 @Test
 		public void testNothing(){
 		}
