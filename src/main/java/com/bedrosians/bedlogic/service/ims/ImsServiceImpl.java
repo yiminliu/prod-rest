@@ -432,12 +432,12 @@ public class ImsServiceImpl implements ImsService {
        else
  	      item.setNewFeature(null);
     }
-
+	
     private void processColorHues(Ims item, DBOperation dBOperation){
 	   List<ColorHue> colorhues = item.getColorhues();
-	   if(dBOperation.equals(DBOperation.CLONE) || dBOperation.equals(DBOperation.UPDATE)){
+	   if(dBOperation.equals(DBOperation.CLONE) || dBOperation.equals(DBOperation.UPDATE)){ //this section may be seldom used, because this method is only called by "create item" currently 
 	      if(item.getColors() != null && !ImsDataUtil.colorHuesAndColorsEquals(item.getColorhues(), item.getColors())){
-		     //For clone orvupdate, if colorhue changed, we need to remove extra ones to have they have the same number of records and then to update color hues
+		     //For clone or update, if colorhue changed, we need to remove extra ones to let they have the same number of records and then to update color hues
 		     int newColorHueSize = item.getColors().size();
 			 int existingColorHueSize = item.getColorhues().size();
 		     //when the number of existing color hues > that of the new color hues, we need to remove the extra number of color hues 
@@ -530,7 +530,7 @@ public class ImsServiceImpl implements ImsService {
    private synchronized void transferColorHues(Ims itemToDB, Ims itemFromInput, DBOperation operation) {
 	   List<ColorHue> inputColorHues = itemFromInput.getColorhues();
 	   //if colorhues is not available in input data, then obtain it from colorCategory in input data
-	   if((inputColorHues == null || inputColorHues.isEmpty()) && itemFromInput.getColorcategory() != null && !itemFromInput.getColorcategory().isEmpty()){
+	   if((inputColorHues == null || inputColorHues.isEmpty()) && itemFromInput.getColorcategory() != null && !(itemFromInput.getColorcategory().isEmpty())){
 		  inputColorHues = ImsDataUtil.convertColorCategoryToColorHueObjects(itemFromInput.getColorcategory());
 	   }
 	   if(inputColorHues != null && !inputColorHues.isEmpty()){
