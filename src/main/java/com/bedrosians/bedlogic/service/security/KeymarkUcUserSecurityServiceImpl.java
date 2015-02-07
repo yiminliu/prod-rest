@@ -40,7 +40,7 @@ public class KeymarkUcUserSecurityServiceImpl implements KeymarkUcUserSecuritySe
 		   case "keymark":	
 			   validateUserInfo(userCode, password, isPasswordBasedAuth, apiName, permission);
 		   default:
-			   throw new InputParamException ("Unsupported user type");	   
+			   throw new UnauthorizedException("Unsupported user type");	   
 		}
 	}
 	 
@@ -73,7 +73,7 @@ public class KeymarkUcUserSecurityServiceImpl implements KeymarkUcUserSecuritySe
 			   validateUserInfo(userCode, "", false, apiName, operation);
 			   break;
 		   default:
-			   throw new InputParamException ("Unsupported user type");				      
+			   throw new UnauthorizedException("Unsupported user type");				      
 		}
 	}
 	

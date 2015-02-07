@@ -6,7 +6,10 @@ import java.util.List;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.SecurityContext;
-import sun.misc.BASE64Decoder;
+
+import org.apache.commons.codec.binary.Base64;
+
+import com.bedrosians.bedlogic.exception.UnauthorizedException;
 
 public class BasicAuthParser
 {
@@ -20,30 +23,26 @@ public class BasicAuthParser
             String[] authorizationHeader = authorizationList.get(0).split("\\p{Space}+");
             if (authorizationHeader.length == 2 && SecurityContext.BASIC_AUTH.equalsIgnoreCase(authorizationHeader[0]))
             {
-                BASE64Decoder decoder = new BASE64Decoder();
-                try
-                {
-                    byte[]      decodedBytes = decoder.decodeBuffer(authorizationHeader[1]);
-                    String      decodedString = new String(decodedBytes);
-                    String[]    authInfoArray = decodedString.split(":");
+            	Base64 decoder = new Base64();
+                byte[]      decodedBytes = decoder.decode(authorizationHeader[1].getBytes());
+                String      decodedString = new String(decodedBytes);
+                String[]    authInfoArray = decodedString.split(":");
                     
-                    if (authInfoArray.length == 1)
-                    {
-                        authInfo = new HashMap<String,String>();
-                        authInfo.put("user", authInfoArray[0]);
-                        authInfo.put("password", "");
-                    }
-                    else if (authInfoArray.length == 2)
-                    {
-                        authInfo = new HashMap<String,String>();
-                        authInfo.put("user", authInfoArray[0]);
-                        authInfo.put("password", authInfoArray[1]);
-                    }
-                }
-                catch (java.io.IOException e)
+                if (authInfoArray.length == 1)
                 {
+                    authInfo = new HashMap<String,String>();
+                    authInfo.put("user", authInfoArray[0]);
+                    authInfo.put("password", "");
                 }
+                else if (authInfoArray.length == 2)
+                {
+                    authInfo = new HashMap<String,String>();
+                    authInfo.put("user", authInfoArray[0]);
+                    authInfo.put("password", authInfoArray[1]);
+                }                
             }
+            else
+               throw new UnauthorizedException("User information format is incorrect.");
         }
         
         return authInfo;
