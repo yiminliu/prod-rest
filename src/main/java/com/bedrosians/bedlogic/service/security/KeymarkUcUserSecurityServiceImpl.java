@@ -10,7 +10,6 @@ import com.bedrosians.bedlogic.domain.user.KeymarkUcUser;
 import com.bedrosians.bedlogic.exception.InputParamException;
 import com.bedrosians.bedlogic.exception.UnauthorizedException;
 import com.bedrosians.bedlogic.service.user.KeymarkUcUserService;
-import com.bedrosians.bedlogic.usercode.UserCodeParser;
 import com.bedrosians.bedlogic.util.enums.ApiName;
 import com.bedrosians.bedlogic.util.enums.DBOperation;
 import com.bedrosians.bedlogic.util.logger.aspect.LogLevel;
