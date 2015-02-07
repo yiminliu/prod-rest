@@ -10,8 +10,8 @@ import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.bedrosians.bedlogic.service.security.UserCodeParser;
 import com.bedrosians.bedlogic.service.system.IndexService;
-import com.bedrosians.bedlogic.usercode.UserCodeParser;
 import com.bedrosians.bedlogic.exception.BedResException;
 import com.bedrosians.bedlogic.exception.BedResExceptionMapper;
 import com.bedrosians.bedlogic.exception.BedResUnAuthorizedException;
