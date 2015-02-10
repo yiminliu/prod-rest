@@ -217,7 +217,9 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 		    	   itemCriteria.add(Restrictions.gt("dimensions.nominalwidth", 0F));
 		    	   break;
 	 	   	   case "nominallength": case "nominalLength": case "nominalwidth": case "nominalWidth":	
+	 	   		   try{
 	 	   		   itemCriteria.add(Restrictions.eq("dimensions" + "." +key, Float.parseFloat(value)));
+	 	   		   }catch(Exception e){System.out.println("value=" + value); e.printStackTrace();}
 	 	   		   break;
 	  	   	   case "pricemax": case "priceMax":
 	 	   		   itemCriteria.add(Restrictions.le("price.sellprice", new BigDecimal(value))); 
@@ -537,10 +539,10 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 		  case "inactivecd": case "inactiveCode":
 			 key = "inactivecode";
 	    	 break;	    
-		  case "length": case "nomlength": case "nomLength": case "nominalLength":
+		  case "length": case "nomlength": case "nomLength": case "nominalLength": case "dimensions.nominallength":
    		     key = "nominallength";
    		     break;
-	 	  case "width": case "nomwidth": case "nomLwidth": case "nominalWidth":
+	 	  case "width": case "nomwidth": case "nomLwidth": case "nominalWidth": case "dimensions.nominalwidth":
    		     key = "nominalwidth";
    		     break;
 		  case "thickness": case "nomthickness": case "nomThickness": case "nominalthickness": case "nominalThickness":
