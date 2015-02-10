@@ -19,6 +19,7 @@ public interface ImsDao extends GenericDao<Ims, String>{
    public List<Ims> getActiveAndShownOnWebsiteItems();
    public List<Ims> getItemsByQueryParameters(MultivaluedMap<String, String> queryParams);
    public List<Ims> getItems(LinkedHashMap<String,List<String>> queryParams);
+   public List<Ims> getItemsByPatternMatch(String keyword, String fieldNames);
    public String createItem(Ims ims);
    public void updateItem(Session session, Ims ims);
    public void deleteItem(Ims ims);	

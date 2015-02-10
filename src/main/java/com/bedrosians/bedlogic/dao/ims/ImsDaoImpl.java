@@ -163,13 +163,24 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
 	        		colorHueCriteria.add(Restrictions.eq(key, value));
 		        continue;
 		    }  
-		    if("itemdesc.fulldesc".equalsIgnoreCase(key) || "itemdesc.itemdesc1".equalsIgnoreCase(key) || "colorcategory".equalsIgnoreCase(key)){
-		      	if(values.size() > 1)	
+		    if("colorcategory".equalsIgnoreCase(key)){
+		      	if(values.size() > 1) {	
 	     		   itemCriteria = generateWildcardDisjunctionCriteria(itemCriteria, key, values);
+	     		   continue;
+		      	}  
 	     		else
-			       itemCriteria.add(Restrictions.ilike(key, value, MatchMode.ANYWHERE));
-			    continue;
-		    }  	
+			       //itemCriteria.add(Restrictions.ilike(key, value, MatchMode.ANYWHERE));
+	     		   return getItemsByPatternMatch(value, key);	
+			}  
+		    if("itemdesc.fulldesc".equalsIgnoreCase(key) || "itemdesc.itemdesc1".equalsIgnoreCase(key)){
+		      	if(values.size() > 1) {	
+	     		   itemCriteria = generateWildcardDisjunctionCriteria(itemCriteria, key, values);
+	     		   continue;
+		      	}  
+	     		else
+			       //itemCriteria.add(Restrictions.ilike(key, value, MatchMode.ANYWHERE));
+	     		   return getItemsByPatternMatch(value, "itemdesc.itemdesc1,itemdesc.fulldesc");	
+		    }  
 	        //----- take care of multiple values case other than "size" ------//
 	 	   	if(!"size".equals(key) && (values.size() > 1)){
 	 	   	    itemCriteria =  generateEqualsDisjunctionCriteria(itemCriteria, key, values); //Case insensitive
@@ -243,6 +254,27 @@ public class ImsDaoImpl extends GenericDaoImpl<Ims, String> implements ImsDao {
         return ims;	
     }
 
+	@Override
+	@Transactional(readOnly=true, propagation=Propagation.REQUIRED, isolation=Isolation.READ_COMMITTED)
+	@SuppressWarnings("unchecked")
+    public List<Ims> getItemsByPatternMatch(String keyword, String fieldNames){
+	   List<Ims> items = null; 
+	   FullTextSession fullTextSession = Search.getFullTextSession(getSession());
+	   //create query builder	
+	   QueryBuilder queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(Ims.class).get();
+	   // create native Lucene keyword query
+	   org.apache.lucene.search.Query luceneQuery = queryBuilder.keyword()
+		   	                                        .fuzzy()
+                                                    .withThreshold(0.75f)
+                                                    .onFields(fieldNames.split(","))
+		   	                                        .matching(keyword)
+		   	                                        .createQuery();
+	   // wrap Lucene query in a javax.persistence.Query
+	   org.hibernate.Query fullTextQuery = fullTextSession.createFullTextQuery(luceneQuery, Ims.class).setCacheable(true);
+	   // retrieve item list
+	   items = (List<Ims>)fullTextQuery.list();     
+	   return items;
+	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
