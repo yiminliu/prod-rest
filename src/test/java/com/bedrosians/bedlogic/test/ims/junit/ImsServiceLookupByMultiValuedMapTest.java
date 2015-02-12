@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.glassfish.jersey.internal.util.collection.MultivaluedStringMap;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -23,7 +24,6 @@ import com.bedrosians.bedlogic.models.Products;
 import com.bedrosians.bedlogic.service.ims.ImsService;
 import com.bedrosians.bedlogic.util.JsonWrapper.ItemListWrapper;
 import com.bedrosians.bedlogic.util.JsonWrapper.ItemWrapper;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 import static org.junit.Assert.*;
 
@@ -188,7 +188,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	@Test
 	public void testGetItemByIdPatternMatch(){	
 		System.out.println("test if the Item is returned by searching its ID...");
-		MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+		MultivaluedMap<String,String> params = new MultivaluedStringMap();
         params.put("itemcode", Arrays.asList(new String[]{"tcrd"}));
        // params.put("exactMatch", Arrays.asList(new String[]{"true"}));
         List<Ims> items = null;
@@ -219,7 +219,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	@Test
 	public void testGetItemByItemCodeWithEaxctMatch(){	
 		System.out.println("test if the Item is returned by searching its ID...");
-		MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+		MultivaluedMap<String,String> params = new MultivaluedStringMap();
         params.put("itemcode", Arrays.asList(new String[]{"TCRD"}));
         params.put("exactMatch", Arrays.asList(new String[]{"True"}));
         List<Ims> items = null;
@@ -250,7 +250,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	public void testGetAllActiveItems(){
 		
 		System.out.println("test if the Item is returned by searching its ID...");
-		MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+		MultivaluedMap<String,String> params = new MultivaluedStringMap();
 		params.put("inactivecode", Arrays.asList(new String[]{"N"}));
 		List<Ims> items = null;
         try{
@@ -282,7 +282,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	public void testGetAllActiveAndShowOnWebsiteItems(){
 		
 		System.out.println("testGetAllActiveAndShowOnWebsiteItems...");
-		MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+		MultivaluedMap<String,String> params = new MultivaluedStringMap();
 		params.put("inactivecode", Arrays.asList(new String[]{"N"}));
 		params.put("showonwebsite", Arrays.asList(new String[]{"Y"}));
 		List<Ims> items = null;
@@ -317,7 +317,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	public void testGetActiveItemsWithMaxResult(){
 		
 		System.out.println("test if the Item is returned by ActiveItemsWithMaxResultSetting...");
-		MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+		MultivaluedMap<String,String> params = new MultivaluedStringMap();
 		params.put("inactivecode", Arrays.asList(new String[]{"N"}));
 		params.put("maxResults", Arrays.asList(new String[]{"5"}));
 		List<Ims> items = null;
@@ -351,7 +351,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	public void testDistinctItems(){
 		
 		System.out.println("test if the Item Are Distinct...");
-		MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+		MultivaluedMap<String,String> params = new MultivaluedStringMap();
 		//params.put("inactivecode", Arrays.asList(new String[]{"N"}));
 		params.put("maxResults", Arrays.asList(new String[]{"500"}));
 		List<Ims> items = null;
@@ -397,7 +397,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	public void testGetAllInActiveItems(){
 		
 		System.out.println("test if the Item is returned by searching its ID...");
-		MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+		MultivaluedMap<String,String> params = new MultivaluedStringMap();
 		params.put("inactivecode", Arrays.asList(new String[]{"Y", "D"}));
 		List<Ims> items = null;
         try{
@@ -430,10 +430,12 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	@Test
     public void testGetItemByDesciption() throws Exception {
 	        System.out.println("testGetItemByDescription: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	        //params.put(" exactMatch", Arrays.asList(new String[]{"true"}));
-	        params.put("fulldesc", Arrays.asList(new String[]{testFullDescription}));
-	        List<ItemWrapper> items = null;//imsService.getWrappedItems(params);
+	        //params.put("fulldesc", Arrays.asList(new String[]{testFullDescription}));
+	        params.put("itemdesc1", Arrays.asList(new String[]{testFullDescription}));
+		       
+	        List<ItemWrapper> items = (List<ItemWrapper>)imsService.getItems(params, true);
 	        assertTrue("should not be null", items != null && !items.isEmpty());
 	        String jsonStr = null;
 	        System.out.println("number of Items retrieved: "+ items == null? 0 :items.size());
@@ -457,7 +459,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	@Test
     public void testGetItemByCategory() throws Exception {
 	        System.out.println("testGetItemByCategory: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	        //params.put(" exactMatch", Arrays.asList(new String[]{"true"}));
 	        params.put("itemcategory", Arrays.asList(new String[]{testCategory}));
 	        List<Ims> items = (List<Ims>)imsService.getItems(params, false);
@@ -481,7 +483,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	@Test
     public void testGetItemsByMultiCategories() throws Exception {
 	        System.out.println("testGetItemByCategory: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	        //params.put(" exactMatch", Arrays.asList(new String[]{"true"}));
 	        params.put("itemcategory", Arrays.asList(new String[]{testCategory, testCategory2}));
 	        List<Ims> items = (List<Ims>)imsService.getItems(params, false);
@@ -506,7 +508,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	@Test
     public void testGetItemByMaterialCategory() throws Exception {
 	        System.out.println("testGetItemByMaterialCategory: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	        params.put("materialCategory", Arrays.asList(new String[]{testMaterialCategory}));
 	        List<Ims> items = (List<Ims>)imsService.getItems(params, false); 
 	        String jsonStr = null;
@@ -530,7 +532,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	@Test
     public void testGetItemByMultiMaterialCategory() throws Exception {
 	        System.out.println("testGetItemByMaterialCategory: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	        //params.put(" exactMatch", Arrays.asList(new String[]{"true"}));
 	        params.put("materialCategory", Arrays.asList(new String[]{testMaterialCategory, testMaterialCategory2}));
 	        List<Ims> items = (List<Ims>)imsService.getItems(params, false); 
@@ -555,7 +557,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	@Test
     public void testGetItemByMaterialStyle() throws Exception {
 	        System.out.println("testGetItemBytestMaterialStyle: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	        //params.put(" exactMatch", Arrays.asList(new String[]{"true"}));
 	        params.put("materialstyle", Arrays.asList(new String[]{testMaterialStyle}));
 	        List<Ims> items = (List<Ims>)imsService.getItems(params, false); 
@@ -580,7 +582,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	@Test
     public void testGetItemByMaterialStyle2() throws Exception {
 	        System.out.println("testGetItemBytestMaterialStyle: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	        params.put("materialstyle", Arrays.asList(new String[]{testMaterialStyle2}));
 	        List<Ims> items = (List<Ims>)imsService.getItems(params, false); 
 	        String jsonStr = null;
@@ -604,7 +606,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	@Test
     public void testGetItemByMultiMaterialStyles() throws Exception {
 	        System.out.println("testGetItemBytestMaterialStyle: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	        //params.put(" exactMatch", Arrays.asList(new String[]{"true"}));
 	        params.put("materialstyle", Arrays.asList(new String[]{testMaterialStyle, testMaterialStyle2}));
 	        List<Ims> items = (List<Ims>)imsService.getItems(params, false); 
@@ -629,7 +631,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	@Test
     public void testGetItemByMaterialClass() throws Exception {
 	        System.out.println("testGetItemBytestMaterialClass: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	        //params.put(" exactMatch", Arrays.asList(new String[]{"true"}));
 	        params.put("materialclass", Arrays.asList(new String[]{testMaterialClass}));
 	        List<Ims> items = (List<Ims>)imsService.getItems(params, false); 
@@ -654,7 +656,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	@Test
     public void testGetItemByMaterialClass2() throws Exception {
 	        System.out.println("testGetItemBytestMaterialClass: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	        params.put("materialclass", Arrays.asList(new String[]{testMaterialClass2}));
 	        List<Ims> items = (List<Ims>)imsService.getItems(params, false); 
 	        String jsonStr = null;
@@ -678,7 +680,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	@Test
     public void testGetItemByMultipleMaterialClasses() throws Exception {
 	        System.out.println("testGetItemBytestMaterialClass: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	        //params.put(" exactMatch", Arrays.asList(new String[]{"true"}));
 	        params.put("materialclass", Arrays.asList(new String[]{testMaterialClass, testMaterialClass2}));
 	        //params.put("maxResults", Arrays.asList(new String[]{"2000"}));
@@ -704,7 +706,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	@Test
     public void testGetItemByMaterialType() throws Exception {
 	        System.out.println("testGetItemBytestMaterialType: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	        params.put("materialtype", Arrays.asList(new String[]{testMaterialType}));
 	        List<Ims> items = (List<Ims>)imsService.getItems(params, false); 
 	        assertTrue("should not be null", items != null && !items.isEmpty());
@@ -728,7 +730,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	@Test
     public void testGetItemByMaterialType2() throws Exception {
 	        System.out.println("testGetItemBytestMaterialType: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	        params.put("materialtype", Arrays.asList(new String[]{testMaterialType2}));
 	        List<Ims> items = (List<Ims>)imsService.getItems(params, false);
 	        assertTrue("should not be null", items != null && !items.isEmpty());
@@ -752,7 +754,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	@Test
     public void testGetItemByMultipleMaterialTypes() throws Exception {
 	        System.out.println("testGetItemBytestMaterialType: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	        params.put("materialtype", Arrays.asList(new String[]{testMaterialType, testMaterialType2}));
 	        List<Ims> items = (List<Ims>)imsService.getItems(params, false); 
 	        assertTrue("should not be null", items != null && !items.isEmpty());
@@ -777,7 +779,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	@Test
     public void testGetItemBySeriesName() throws Exception {
 	        System.out.println("testGetItemBySeriesName: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	        //params.put(" exactMatch", Arrays.asList(new String[]{"true"}));
 	        params.put("seriesname", Arrays.asList(new String[]{testSeriesName}));
 	        List<Ims> items = (List<Ims>)imsService.getItems(params, false);
@@ -801,7 +803,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	@Test
     public void testGetItemByMultipleSeriesName() throws Exception {
 	        System.out.println("testGetItemMultipleBySeriesName: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	        //params.put(" exactMatch", Arrays.asList(new String[]{"true"}));
 	        params.put("seriesname", Arrays.asList(new String[]{testSeriesName, testSeriesName2, testSeriesName3,}));
 	        List<Ims> items = (List<Ims>)imsService.getItems(params, false);
@@ -825,7 +827,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	@Test
 	 public void testGetItemBySize() throws Exception {
 	        System.out.println("testGetItemBySize: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	        params.put("size", Arrays.asList(new String[]{"10X8"}));
 		    List<Ims> items = (List<Ims>)imsService.getItems(params, false);
 		    assertTrue("should not be null", items != null && !items.isEmpty());
@@ -851,7 +853,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	 @Test
 	 public void testGetItemByMultipleSize() throws Exception {
 	        System.out.println("testGetItemBySize: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	        params.put("size", Arrays.asList(new String[]{"12X9", "10X8",  "4X8"}));
 		    List<Ims> items = (List<Ims>)imsService.getItems(params, false);
 		    assertTrue("should not be null", items != null && !items.isEmpty());
@@ -878,7 +880,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	 @Test
 	    public void testGetItemByLengthAndWidth() throws Exception {
 	        System.out.println("testGetItemByLengthAndWidth: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	        params.put("length", Arrays.asList(new String[]{"12"}));
 	        params.put("width", Arrays.asList(new String[]{"9"}));
 		    List<Ims> items = (List<Ims>)imsService.getItems(params, false);
@@ -903,7 +905,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	 @Test
 	 public void testGetItemByMinLength() throws Exception {
 	        System.out.println("testGetItemByMultivaluedMap: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	     	params.put("lengthmin", Arrays.asList(new String[]{"120"}));
 		
 	        List<Ims> items = (List<Ims>)imsService.getItems(params, false);
@@ -927,7 +929,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	 @Test
 	 public void testGetItemByMaxLength() throws Exception {
 	        System.out.println("testGetItemByMaxLength: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	     	params.put("lengthmax", Arrays.asList(new String[]{"2"}));
 	        List<Ims> items = (List<Ims>)imsService.getItems(params, false);
 	        assertTrue("should not be null", items != null && !items.isEmpty());
@@ -950,7 +952,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	 @Test
 	    public void testGetItemByMaxLengthAndMaxWidth() throws Exception {
 	        System.out.println("testGetItemByMaxLength: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	     	params.put("lengthmax", Arrays.asList(new String[]{"2"}));
 	     	params.put("widthmax", Arrays.asList(new String[]{"1"}));
 	        List<Ims> items = (List<Ims>)imsService.getItems(params, false);
@@ -975,7 +977,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	 @Test
 	    public void testGetItemByMaxAndMinLength() throws Exception {
 	        System.out.println("testGetItemByMaxLength: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	     	params.put("lengthmax", Arrays.asList(new String[]{"2"}));
 	     	params.put("lengthMin", Arrays.asList(new String[]{"1"}));
 	        List<Ims> items = (List<Ims>)imsService.getItems(params, false);
@@ -1001,7 +1003,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	 @Test
      public void testGetItemByColor() throws Exception {
 	        System.out.println("testGetItemByColor: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	        params.put("color", Arrays.asList(new String[]{testColor}));
 	        List<Ims> items = (List<Ims>)imsService.getItems(params, false);
 	        assertTrue("should not be null", items != null && !items.isEmpty());
@@ -1025,7 +1027,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	 @Test
      public void testGetItemByColor_multiple() throws Exception {
 	        System.out.println("testGetItemByColor: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	        params.put("color", Arrays.asList(new String[]{testColor, "YELLOW"}));
 	        List<Ims> items = (List<Ims>)imsService.getItems(params, false);
 	        assertTrue("should not be null", items != null && !items.isEmpty());
@@ -1048,7 +1050,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	 @Test
      public void testGetItemByColorCategory() throws Exception {
 	        System.out.println("testGetItemByColorcategory: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	        params.put("colorcategory", Arrays.asList(new String[]{testColorCategory}));
 	        List<Ims> items = (List<Ims>)imsService.getItems(params, false);
 	        assertTrue("should not be null", items != null && !items.isEmpty());
@@ -1075,7 +1077,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	 @Test
      public void testGetItemByColorHue() throws Exception {
 	        System.out.println("testGetItemByColorHue: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	        params.put("colorhues", Arrays.asList(new String[]{testColorHue}));
 	        List<Ims> items = (List<Ims>)imsService.getItems(params, false);
 	        assertTrue("should not be null", items != null && !items.isEmpty());
@@ -1109,7 +1111,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	 @Test
 	 public void testGetItemByStatus() throws Exception {
 	        System.out.println("testGetItemBynewFeature: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	      	params.put("status", Arrays.asList(new String[]{"Good"}));
 	        List<Ims> items = (List<Ims>)imsService.getItems(params, false);
 	        
@@ -1133,7 +1135,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	 @Test
 	 public void testGetItemByGrade() throws Exception {
 	        System.out.println("testGetItemBynewFeature: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	       	params.put("grade", Arrays.asList(new String[]{"First"}));
 	        List<Ims> items = (List<Ims>)imsService.getItems(params, false);
 	        //assertTrue("should not be null", items != null && !items.isEmpty());
@@ -1157,7 +1159,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	 @Test
 	 public void testGetItemByMpsCode() throws Exception {
 	        System.out.println("testGetItemBynewFeature: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	      	params.put("mpsCode", Arrays.asList(new String[]{"Active_Product"}));
 	        List<Ims> items = (List<Ims>)imsService.getItems(params, false);
 	        String jsonStr = null;
@@ -1180,7 +1182,7 @@ public class ImsServiceLookupByMultiValuedMapTest {
 	 @Test
      public void testGetItemByMultiPrameters() throws Exception {
 	        System.out.println("testGetItemByMultivaluedMap: ");
-	        MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	        MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	        //params.put("colorhues", Arrays.asList(new String[]{testColorHue}));
 			//params.put("category", Arrays.asList(new String[]{testCategory}));
 		    params.put("materialtype", Arrays.asList(new String[]{testMaterialType}));

@@ -4,19 +4,22 @@ package com.bedrosians.bedlogic.test.ims;
 import java.net.URI;
 import java.util.Arrays;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
-import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.ClientResponse;
+import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+import org.glassfish.jersey.internal.util.collection.MultivaluedStringMap;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
+import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
+
+
 
 public class JerseyWSTestClient {
 
@@ -26,12 +29,12 @@ public class JerseyWSTestClient {
 	private static final String testItemCode = "AECBUB218NR".toUpperCase();
 	private static final String colorHue = "RED";
 	private static final String originCountry = "USA";
-	private static WebResource service =null;
+	private static WebTarget service =null;
 	private static Client client = null;
 	
 	private static final String username = "keymark"; //"SCOT";
 	private static final String password = "JBED"; //"SCOTT10";
-	private static final HTTPBasicAuthFilter authFilter = new HTTPBasicAuthFilter(username, password);
+	//private static final HTTPBasicAuthFilter authFilter = new HTTPBasicAuthFilter(username, password);
 		 
 	  
 	public static void main(String[] args) {
@@ -40,7 +43,7 @@ public class JerseyWSTestClient {
 	   
 		/******** Item search test *********/	
 	   //testGetItemByItemCode(testItemCode);
-	   testGetItemByMultipleItemCodes();
+	  // testGetItemByMultipleItemCodes();
 	   //testGetItemByColorHues(colorHue);
 	   //testGetItemByMultipleColorCategories(new String[]{colorHue, "GREEN", "YELLOW"});
 	   //testGetItemByMultipleColorHues(new String[]{colorHue, "GREEN", "YELLOW"});
@@ -69,9 +72,9 @@ public class JerseyWSTestClient {
 	
 	/*********************** static initiation *********************/
 	private static void init(){
-	   ClientConfig config = new DefaultClientConfig();
-	   config.getClasses().add(JacksonJsonProvider.class);
-	   client = Client.create(config);
+	   ClientConfig config = new ClientConfig();
+	   config.getClasses().add(JacksonJaxbJsonProvider.class);
+	   client = ClientBuilder.newClient(config); 
 	}
 	
 	/*********************** Individual test cases ****************************/
@@ -79,70 +82,77 @@ public class JerseyWSTestClient {
 	private static void testGetItemByItemCode(String itemCode){
 	   System.out.println("testGetItemByItemCode");
 	   //service = client.resource(getByIdTestURI(""));
-	   service = client.resource(getTestBaseURI());
+	   service = client.target(getTestBaseURI());
 	   service.queryParam("itemcode", itemCode);
-	   service.type(mediaTypeJson);
-	   service.accept(mediaTypeJson);
-	   System.out.println("Resource URL = " + service.getURI().toASCIIString());
-	   client.addFilter(new HTTPBasicAuthFilter("guest", ""));
-	   ClientResponse response = service.get(ClientResponse.class);
-		  
+	   service.request(mediaTypeJson);
+	   //service.accept(mediaTypeJson);
+	   //System.out.println("Resource URL = " + service.getURI().toASCIIString());
+	   HttpAuthenticationFeature authFeature = HttpAuthenticationFeature.universal("guest", "");
+	   client.register(authFeature);
+	   Response response = service.request().accept(MediaType.APPLICATION_JSON).get();
+	     
 	   System.out.println("Response status =" + response.getStatus());
-	   System.out.println("Response type = " + response.getType());
+	   //System.out.println("Response type = " + response.getType());
 	   System.out.println("Response data : "+ response.toString());
-	   String s = response.getEntity(String.class);
+	   String s = response.readEntity(String.class);
 	   System.out.println("Output = " + s);
 	}
-	
+	/*
 	private static void testGetItemByMultipleItemCodes(){
 		   System.out.println("testGetItemByMultipleItemCode");
-		   service = client.resource(getTestBaseURI());
+		   service = client.target(getTestBaseURI());
 		   service.queryParam("itemcode", "{NEWITEMCODE1,CRDBARBRU440}");
-		   service.type(mediaTypeJson);
-		   service.accept(mediaTypeJson);
-		   System.out.println("Resource URL = " + service.getURI().toASCIIString());
-		   client.addFilter(new HTTPBasicAuthFilter("guest", ""));
+		   service.request(mediaTypeJson);
+		   //service.accept(mediaTypeJson);
+		   //System.out.println("Resource URL = " + service.getURI().toASCIIString());
+		
+		   HttpAuthenticationFeature authFeature = HttpAuthenticationFeature.universal("guest", "");
+		   client.register(authFeature);
+		   
 		   ClientResponse response = service.get(ClientResponse.class);
 			  
 		   System.out.println("Response status =" + response.getStatus());
-		   System.out.println("Response type = " + response.getType());
+		   //System.out.println("Response type = " + response.getType());
 		   System.out.println("Response data : "+ response.toString());
-		   String s = response.getEntity(String.class);
+		   String s = response.readEntity(String.class);
 		   response.close();
 		   System.out.println("Output = " + s);
 		}
-	
-	
+	*/
+	/*
 	private static void testGetItemByOriginCountry(String country){
 	  	   System.out.println("testGetItemByOriginCountry");
-	  	   MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	  	   MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	       params.put("inactivecd", Arrays.asList(new String[]{"N"}));
 	       params.put("origin", Arrays.asList(new String[]{country}));
 	    
-		   service = client.resource(getTestBaseURI());
-		   service.type(mediaTypeJson);
-		   service.accept(mediaTypeJson);
+		   service = client.target(getTestBaseURI());
+		   service.request(mediaTypeJson);
+		   //service.accept(mediaTypeJson);
 		   System.out.println("Resource URL = " + service.getURI().toASCIIString());
-		   client.addFilter(new HTTPBasicAuthFilter("guest", ""));
-		   ClientResponse response = service.queryParams(params).get(ClientResponse.class);
+		   HttpAuthenticationFeature authFeature = HttpAuthenticationFeature.universal("guest", "");
+		   client.register(authFeature);
+		   Response response = service.queryParams(params).get(ClientResponse.class);
 			  
 		   System.out.println("Response header : "+ response.getHeaders());
 		   System.out.println("Response data : "+ response.toString());
 		   
-		   String s = response.getEntity(String.class);
+		   String s = response.readEntity(String.class);
 		   System.out.println("Output = " + s);
 	}
-	
+	*/
+	/*
 	private static void testGetItemByColorCategory(String colorHue){
 	  	   System.out.println("testGetItemByColorCategory");
 	  	   long startTime = System.currentTimeMillis();
-	  	   MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	  	   MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	       params.put("inactivecd", Arrays.asList(new String[]{"N"}));
 	       params.put("colorcategory", Arrays.asList(new String[]{colorHue}));
 	    
-		   service = client.resource(getTestBaseURI());
-		   client.addFilter(new HTTPBasicAuthFilter("guest", ""));
-		   service.type(mediaTypeJson);
+		   service = client.target(getTestBaseURI());
+		   HttpAuthenticationFeature authFeature = HttpAuthenticationFeature.universal("guest", "");
+		   client.register(authFeature);
+		   service.request(mediaTypeJson);
 		   service.accept(mediaTypeJson);
 		   System.out.println("Resource URL = " + service.getURI().toASCIIString());
 		   ClientResponse response = service.queryParams(params).get(ClientResponse.class);
@@ -150,45 +160,49 @@ public class JerseyWSTestClient {
 		   //System.out.println("Response header : "+ response.getHeaders());
 		   System.out.println("Response data : "+ response.toString());
 		   
-		   String s = response.getEntity(String.class);
+		   String s = response.readEntity(String.class);
 		   //System.out.println("Output = " + s);
 		   long totalTime = System.currentTimeMillis() - startTime;
 		   System.out.println("Method execution time = " + totalTime + "\n");
 	 }
-	
+	*/
+	/*
 	private static void testGetItemByMultipleColorCategories(String[] colorHues){
 	  	   System.out.println("testGetItemByMultipleColorCategories");
 	  	   long startTime = System.currentTimeMillis();
-	  	   MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	  	   MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	       params.put("inactivecd", Arrays.asList(new String[]{"N"}));
 	       params.put("colorcategory", Arrays.asList(colorHues));
 	    
 		   service = client.resource(getTestBaseURI());
-		   service.type(mediaTypeJson);
+		   service.request(mediaTypeJson);
 		   service.accept(mediaTypeJson);
 		   System.out.println("Resource URL = " + service.getURI().toASCIIString());
-		   client.addFilter(new HTTPBasicAuthFilter("guest", ""));
+		   HttpAuthenticationFeature authFeature = HttpAuthenticationFeature.universal("guest", "");
+		   client.register(authFeature);
 		   ClientResponse response = service.queryParams(params).get(ClientResponse.class);
 			  
 		   //System.out.println("Response header : "+ response.getHeaders());
 		   System.out.println("Response data : "+ response.toString());
 		   
-		   String s = response.getEntity(String.class);
+		   String s = response.readEntity(String.class);
 		   //System.out.println("Output = " + s);
 		   long totalTime = System.currentTimeMillis() - startTime;
 		   System.out.println("Method execution time = " + totalTime + "\n");
 	 }
-	
+	*/
+	/*
 	private static void testGetItemByColorHues(String colorHue){
 	  	   System.out.println("testGetItemByColorHues");
 	  	   long startTime = System.currentTimeMillis();
-	  	   MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	  	   MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	       params.put("inactivecd", Arrays.asList(new String[]{"N"}));
 	       params.put("colorhues", Arrays.asList(new String[]{colorHue}));
 	    
-		   service = client.resource(getTestBaseURI());
-		   client.addFilter(new HTTPBasicAuthFilter("guest", ""));
-		   service.type(mediaTypeJson);
+		   service = client.target(getTestBaseURI());
+		   HttpAuthenticationFeature authFeature = HttpAuthenticationFeature.universal("guest", "");
+		   client.register(authFeature);
+		   service.request(mediaTypeJson);
 		   service.accept(mediaTypeJson);
 		   System.out.println("Resource URL = " + service.getURI().toASCIIString());
 		   ClientResponse response = service.queryParams(params).get(ClientResponse.class);
@@ -196,44 +210,48 @@ public class JerseyWSTestClient {
 		   //System.out.println("Response header : "+ response.getHeaders());
 		   System.out.println("Response data : "+ response.toString());
 		   
-		   String s = response.getEntity(String.class);
+		   String s = response.readEntity(String.class);
 		   //System.out.println("Output = " + s);
 		   long totalTime = System.currentTimeMillis() - startTime;
 		   System.out.println("Method execution time = " + totalTime + "\n");
 	 }
-	
+	*/
+	/*
 	private static void testGetItemByMultipleColorHues(String[] colorHues){
 	  	   System.out.println("testGetItemByMultipleColorHues");
 	  	   long startTime = System.currentTimeMillis();
-	  	   MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	  	   MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	       params.put("inactivecd", Arrays.asList(new String[]{"N"}));
 	       params.put("colorhues", Arrays.asList(colorHues));
 	    
-		   service = client.resource(getTestBaseURI());
-		   service.type(mediaTypeJson);
+		   service = client.target(getTestBaseURI());
+		   service.request(mediaTypeJson);
 		   service.accept(mediaTypeJson);
 		   System.out.println("Resource URL = " + service.getURI().toASCIIString());
-		   client.addFilter(new HTTPBasicAuthFilter("guest", ""));
+		   HttpAuthenticationFeature authFeature = HttpAuthenticationFeature.universal("guest", "");
+		   client.register(authFeature);
 		   ClientResponse response = service.queryParams(params).get(ClientResponse.class);
 			  
 		   //System.out.println("Response header : "+ response.getHeaders());
 		   System.out.println("Response data : "+ response.toString());
-		   String s = response.getEntity(String.class);
+		   String s = response.readEntity(String.class);
 		   //System.out.println("Output = " + s);
 		   long totalTime = System.currentTimeMillis() - startTime;
 		   System.out.println("Method execution time = " + totalTime + "\n");
 	 }
-	 
+	 */
+	/*
 	 private static void testGetItemsWIthMultipleMaterialStyles(){
 	  	   System.out.println("testGetItemsWIthMultipleMaterialStyles");
 	  	 long startTime = System.currentTimeMillis();
-	  	   MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	  	   MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	       params.put("inactivecd", Arrays.asList(new String[]{"N"}));
 	       params.put("materialstyle", Arrays.asList(new String[]{"SFCR", "FL"}));
-		   service = client.resource(getTestBaseURI());
-		   service.type(mediaTypeJson);
+		   service = client.target(getTestBaseURI());
+		   service.request(mediaTypeJson);
 		   service.accept(mediaTypeJson);
-		   client.addFilter(new HTTPBasicAuthFilter("guest", ""));
+		   HttpAuthenticationFeature authFeature = HttpAuthenticationFeature.universal("guest", "");
+		   client.register(authFeature);
 		   System.out.println("Resource URL = " + service.getURI().toASCIIString());
 		   ClientResponse response = service.queryParams(params).get(ClientResponse.class);
 		   
@@ -246,33 +264,35 @@ public class JerseyWSTestClient {
 		   long totalTime = System.currentTimeMillis() - startTime;
 		   System.out.println("Method execution time = " + totalTime);
 	}
-	 
+	 */
+	/*
 	private static void testGetAllActiveItems(){
 	  	   System.out.println("testGetActiveAllItems");
-	  	   MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+	  	   MultivaluedMap<String,String> params = new MultivaluedStringMap();
 	       params.put("inactivecd", Arrays.asList(new String[]{"N"}));
 	      
-		   service = client.resource(getTestBaseURI());
+		   service = client.target(getTestBaseURI());
 		   service.type(mediaTypeJson);
 		   service.accept(mediaTypeJson);
 		   System.out.println("Resource URL = " + service.getURI().toASCIIString());
 		   ClientResponse response = service.queryParams(params).get(ClientResponse.class);
 		   
 		   System.out.println("Response status : "+ response.getStatus());
-		   System.out.println("Response type : "+ response.getType());
+		   //System.out.println("Response type : "+ response.getType());
 		   System.out.println("Response data : "+ response.toString());
 		   
-		   String s = response.getEntity(String.class);
+		   String s = response.readEntity(String.class);
 		  // System.out.println("Output = " + s);
 		}
-	
+	*/
+	/*
 	private static void testCreateItemWithJsonString(){
 	    client.addFilter(authFilter);
 	    //client.addFilter(new HTTPBasicAuthFilter("keymark", "JBED"));
 	    //service.header("Authorization", "Basic " + "base64encoded_SCOT:SCOTT10");
 	    //client.addFilter(new LoggingFilter());
 	    
-	    service = client.resource(getTestBaseURI());
+	    service = client.target(getTestBaseURI());
 		service.type(mediaTypeJson);
 		service.accept(mediaTypeJson);
 		System.out.println("Resource URL = " + service.getURI().toASCIIString());
@@ -284,14 +304,15 @@ public class JerseyWSTestClient {
 		 System.out.println("Response type : "+ response.getType());
 		 System.out.println("Response data : "+ response.toString());
 		   
-		 String s = response.getEntity(String.class);
+		 String s = response.readEntity(String.class);
 		 System.out.println("Output = " + s);
     }	
-	
+	*/
+	/*
     private static void testUpdateItemWithJsonString(){
 	    
 	    client.addFilter(authFilter);
-	    service = client.resource(getTestBaseURI());
+	    service = client.target(getTestBaseURI());
 		service.type(mediaTypeJson);
 		service.accept(mediaTypeJson);
 		System.out.println("Resource URL = " + service.getURI().toASCIIString());
@@ -299,20 +320,22 @@ public class JerseyWSTestClient {
 	    //ClientResponse response = service.header("Authorization", "Basic " + "base64encoded_userid:password").type("application/json").accept("application/json").post(ClientResponse.class, input);
 		ClientResponse response = service.type("application/json").accept("application/json").put(ClientResponse.class, jStringWithBasicInfoForUpdate);
 		System.out.println("Response status : "+ response.getStatus());
-		System.out.println("Response type : "+ response.getType());
+		//System.out.println("Response type : "+ response.getType());
 		System.out.println("Response data : "+ response.toString());
 		   
-		String s = response.getEntity(String.class);
+		String s = response.readEntity(String.class);
 		System.out.println("Output = " + s);
     }	
-
+*/
+	/*
 	private static void testDeleteItemByItemCode(){
 		   
-	    final HTTPBasicAuthFilter authFilter = new HTTPBasicAuthFilter(username, password);
+	    HttpAuthenticationFeature authFeature = HttpAuthenticationFeature.universal(username, password);
+		   client.register(authFeature);
 	    client.addFilter(authFilter);
 	    //service.header("Authorization", "Basic " + "base64encoded_SCOT:SCOTT10");
 	    //client.addFilter(new LoggingFilter());   
-	    service = client.resource(getTestBaseURI());
+	    service = client.target(getTestBaseURI());
 	    //service = client.resource(getByIdTestURI(""));
 		//service.type(mediaTypeJson);
 		//service.accept(mediaTypeJson);
@@ -324,13 +347,13 @@ public class JerseyWSTestClient {
 		ClientResponse response = service.type("application/json").accept("application/json").delete(ClientResponse.class);
 		
 		System.out.println("Response status : "+ response.getStatus());
-	    System.out.println("Response type : "+ response.getType());
+	    //System.out.println("Response type : "+ response.getType());
 		System.out.println("Response data : "+ response.toString());
 		   
-		String s = response.getEntity(String.class);
+		String s = response.readEntity(String.class);
 		System.out.println("Output = " + s);
 	}	
-	
+	*/
 	static String jStringWithBasicInfo = 
 		     "{\"itemcode\":\"newItemcode33\","
 		    + "\"itemcategory\":\"ATHENA\","
@@ -383,9 +406,9 @@ public class JerseyWSTestClient {
      		+ "\"productline\":\"CERA\","
   		+ "}";
 	
-	
+	/*
 	private static void testUpdateWithJsonString(){
-		service = client.resource(getTestBaseURI());
+		service = client.target(getTestBaseURI());
 	    //service.path(rootPath).path(appPath).accept(mediaTypeJson);
 	    String input = "{ \"itemCode\" : \"AECBUB217NR\", "
 				+ "\"itemdesc1\" : \"a test desc\", "
@@ -404,7 +427,7 @@ public class JerseyWSTestClient {
 	    
 	      // service.type("application/json");
 		   //service.accept("application/json");
-		   System.out.println("Resource URL = " + service.getURI().toASCIIString());
+		  // System.out.println("Resource URL = " + service.getURI().toASCIIString());
 		   //service.method("PUT");
 		   ClientResponse response = service.type("application/json").accept("application/json").put(ClientResponse.class, input);
 		  
@@ -412,10 +435,10 @@ public class JerseyWSTestClient {
 		   System.out.println("Response type : "+ response.getType());
 		   System.out.println("Response data : "+ response.toString());
 		   
-		   String s = response.getEntity(String.class);
+		   String s = response.readEntity(String.class);
 		   System.out.println("Output = " + s);
 	}	
-	
+	*/
 	private static URI getTestBaseURI() {
 	   return UriBuilder.fromUri("http://localhost:8080/" + rootPath + "/" + appPath).build();
 	  // return UriBuilder.fromUri("http://beta.bedrosians.com/api" + "/" + appPath).build();

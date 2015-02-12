@@ -6,6 +6,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.glassfish.jersey.internal.util.collection.MultivaluedStringMap;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.Test;
@@ -22,7 +23,7 @@ import com.bedrosians.bedlogic.domain.ims.ImsNewFeature;
 import com.bedrosians.bedlogic.domain.user.KeymarkUcUser;
 import com.bedrosians.bedlogic.service.ims.ImsService;
 import com.bedrosians.bedlogic.service.user.KeymarkUcUserService;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/application_context/bedlogic-context.xml", "/application_context/bedlogic-persistence.xml"})
@@ -44,7 +45,7 @@ public class CacheTest {
 	public void testCacheWithProductId(){
     	long startTime = System.currentTimeMillis();
     	long totalTime = 0l;
-		MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+		MultivaluedMap<String,String> params = new MultivaluedStringMap();
 		//params.put("inactivecode", Arrays.asList(new String[]{"N"}));
 		//params.put("itemcode", Arrays.asList(new String[]{"AECBUB218NR"}));
 		params.put("maxResults", Arrays.asList(new String[]{"500"}));
@@ -120,7 +121,7 @@ public class CacheTest {
 	public void testCacheWithProductIdMatch(){
     	long startTime = System.currentTimeMillis();
     	long totalTime = 0l;
-		MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+		MultivaluedMap<String,String> params = new MultivaluedStringMap();
 		//params.put("inactivecode", Arrays.asList(new String[]{"N"}));
 		params.put("itemcode", Arrays.asList(new String[]{"TCRD"}));
 		params.put("maxResults", Arrays.asList(new String[]{"500"}));
@@ -173,7 +174,7 @@ public class CacheTest {
 	public void testCacheWithProductOrigin(){
     	long startTime = System.currentTimeMillis();
     	long totalTime = 0l;
-		MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+		MultivaluedMap<String,String> params = new MultivaluedStringMap();
 		//params.put("inactivecode", Arrays.asList(new String[]{"N"}));
 		params.put("origin", Arrays.asList(new String[]{"USA"}));
 		params.put("maxResults", Arrays.asList(new String[]{"500"}));

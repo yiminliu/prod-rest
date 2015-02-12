@@ -11,6 +11,7 @@ import java.util.TreeSet;
 
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.glassfish.jersey.internal.util.collection.MultivaluedStringMap;
 import org.hibernate.SessionFactory;
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,7 +26,7 @@ import com.bedrosians.bedlogic.dao.ims.ImsDao;
 import com.bedrosians.bedlogic.domain.ims.ColorHue;
 import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.util.ims.ImsDataUtil;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/application_context/bedlogic-context.xml", "/application_context/bedlogic-persistence.xml"})
@@ -47,7 +48,7 @@ public class ColorHueOperationTest {
 		
 		Set<ColorHue> colorHues = new HashSet<>();
 		List<Ims> items = null;
-		MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+		MultivaluedMap<String,String> params = new MultivaluedStringMap();
 		params.put("inactivecode", Arrays.asList(new String[]{"N"}));
 		//params.put("itemcode", Arrays.asList(new String[]{"MKTPCKCRDEPI"}));
 		params.put("maxResults", Arrays.asList(new String[]{"50000"}));
@@ -79,7 +80,7 @@ public class ColorHueOperationTest {
      	long totalTime;
 		List<Ims> items = null;
 		int numOfColorHues = 0;
-		MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+		MultivaluedMap<String,String> params = new MultivaluedStringMap();
 		params.put("inactivecode", Arrays.asList(new String[]{"N"}));
 		//params.put("itemcode", Arrays.asList(new String[]{"MIS15"}));
 		params.put("maxResults", Arrays.asList(new String[]{"50000"}));

@@ -1,6 +1,5 @@
 package com.bedrosians.bedlogic.test.ims.junit;
 
-import org.codehaus.jettison.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +11,8 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.service.ims.ImsService;
 import com.bedrosians.bedlogic.util.JsonUtil;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -30,7 +31,7 @@ public class ImsServiceDeletionTest {
 	
 	@Test
 	public void testDeleteItemByItemCode()throws Exception {
-	    imsService.deleteItemByItemCode("TEST1");
+	    imsService.deleteItemByItemCode("MKTPCKCRDEPI");
 	     System.out.println("testDeleteItem Done");
 	        
 	 }
@@ -39,8 +40,11 @@ public class ImsServiceDeletionTest {
 	public void testDeleteItem()throws Exception {
 		Ims item = new Ims("TEST2");
 		String jStringItemInfo = "{\"itemcode\":\"TEST2\"}";
-		JSONObject params = new JSONObject(jStringItemInfo);
-	    imsService.deleteItem(JsonUtil.toObjectNode(params));
+		//JSONObject params = new JSONObject(jStringItemInfo);
+		ObjectNode params= new ObjectNode(JsonNodeFactory.instance);
+		params.put("itemcode","TEST2");
+	    imsService.deleteItem(params);
+	    //imsService.deleteItem(JsonUtil.toObjectNode(params));
 	     System.out.println("testDeleteItem Done");
 	        
 	 }

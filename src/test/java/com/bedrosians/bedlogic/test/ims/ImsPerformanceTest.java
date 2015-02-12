@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.glassfish.jersey.internal.util.collection.MultivaluedStringMap;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.Test;
@@ -16,7 +17,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import com.bedrosians.bedlogic.dao.ims.ImsDao;
 import com.bedrosians.bedlogic.service.ims.ImsService;
 import com.bedrosians.bedlogic.service.user.KeymarkUcUserService;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/application_context/bedlogic-context.xml", "/application_context/bedlogic-persistence.xml"})
@@ -42,7 +43,7 @@ public class ImsPerformanceTest {
 	public void testPerformanceWithProductOriginByMultiSessions(){
     	long startTime = System.currentTimeMillis();
     	long totalTime = 0l;
-		MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+		MultivaluedMap<String,String> params = new MultivaluedStringMap();
 		//params.put("inactivecode", Arrays.asList(new String[]{"N"}));
 		params.put("origin", Arrays.asList(new String[]{"USA"}));
 		params.put("maxResults", Arrays.asList(new String[]{"500"}));

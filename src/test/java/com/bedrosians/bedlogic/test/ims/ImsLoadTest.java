@@ -6,6 +6,7 @@ import java.util.concurrent.Executors;
 
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.glassfish.jersey.internal.util.collection.MultivaluedStringMap;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.Assert;
@@ -20,7 +21,6 @@ import com.bedrosians.bedlogic.dao.ims.ImsDao;
 import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.service.ims.ImsService;
 import com.bedrosians.bedlogic.service.user.KeymarkUcUserService;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 //@RunWith(ConcurrentJunitRunner.class)
@@ -45,7 +45,7 @@ public class ImsLoadTest {
 	public void testLoadWithMultiSessions(){
     	long startTime = System.currentTimeMillis();
     	long totalTime = 0l;
-		MultivaluedMap<String,String> params = new MultivaluedMapImpl();
+		MultivaluedMap<String,String> params = new MultivaluedStringMap();
 		//params.put("inactivecode", Arrays.asList(new String[]{"N"}));
 		//params.put("itemcode", Arrays.asList(new String[]{"AECBUB218NR"}));
 		params.put("maxResults", Arrays.asList(new String[]{"500"}));
