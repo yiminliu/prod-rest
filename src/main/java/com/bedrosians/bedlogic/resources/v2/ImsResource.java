@@ -19,7 +19,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.codehaus.jettison.json.JSONObject;
-
+import org.glassfish.jersey.process.internal.RequestScoped;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -45,6 +45,7 @@ import com.bedrosians.bedlogic.util.logger.aspect.Loggable;
 *
 */
 
+@RequestScoped
 @Controller
 @Path("/ims")
 public class ImsResource
@@ -73,7 +74,7 @@ public class ImsResource
         Products result = null;
         String jsonStr = null;
         try
-        {
+        {  
             //Check user security
             keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, APINAME, DBOperation.SEARCH);
             //Retrieve data from database based on the given query parameters
