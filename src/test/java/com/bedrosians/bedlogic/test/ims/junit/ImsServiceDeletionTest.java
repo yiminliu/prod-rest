@@ -36,19 +36,6 @@ public class ImsServiceDeletionTest {
 	        
 	 }
 	
-	@Test
-	public void testDeleteItem()throws Exception {
-		Ims item = new Ims("TEST2");
-		String jStringItemInfo = "{\"itemcode\":\"TEST2\"}";
-		//JSONObject params = new JSONObject(jStringItemInfo);
-		ObjectNode params= new ObjectNode(JsonNodeFactory.instance);
-		params.put("itemcode","TEST2");
-	    imsService.deleteItem(params);
-	    //imsService.deleteItem(JsonUtil.toObjectNode(params));
-	     System.out.println("testDeleteItem Done");
-	        
-	 }
-	
 	 @Test
 		public void testNothing(){
 	}

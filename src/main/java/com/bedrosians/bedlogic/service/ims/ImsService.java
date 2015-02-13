@@ -18,9 +18,8 @@ public interface ImsService {
 	public List<?> getItems(MultivaluedMap<String, String> queryParams, boolean wrappedData);	
 	public String createItem(ObjectNode inputJsonObj);
 	public String createOrUpdateItem(Ims item, DBOperation operation);
-	public Ims updateItem(ObjectNode inputJsonObj);			
+	public Ims updateItem(Ims itemFromInput);			
 	public void deleteItemByItemCode(String itemCode);
-	public void deleteItem(ObjectNode inputJsonObj);
 	public void deleteItem(Ims ims);
 	public void deactivateItem(Ims itemFromInput);
     public boolean validateVendorId(Integer vendorId);

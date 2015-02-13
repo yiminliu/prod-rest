@@ -170,7 +170,7 @@ public class LoggingAspect {
 			Ims ims = (Ims) arg;
 			clazz = ims.getClass().getSimpleName();
 			id = "ItemCode--" + ims.getItemcode();
-			descriptor = "Description--" + ims.getItemdesc().getItemdesc1();
+			descriptor = "";//"Description--" + ims.getItemdesc().getItemdesc1();
 			//descriptor = ims.toString();
 		} else if (arg instanceof HttpServletRequest || arg instanceof HttpServletResponse) {
 			return buffer.toString();

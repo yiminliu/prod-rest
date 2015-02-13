@@ -8,23 +8,24 @@ import org.codehaus.jettison.json.JSONObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.exception.DataMappingException;
 import com.bedrosians.bedlogic.exception.InputParamException;
 
 
 public class JsonUtil {
 
-	public static Object jsonStringToPOJO(String jsonString, Object obj){
-		Object object = null; 
+	public static Ims jsonStringToPOJO(String jsonString){
+		Ims object = null; 
 		ObjectMapper mapper = new ObjectMapper(); 
 		try{
-			object = mapper.readValue(jsonString, obj.getClass());
+			object = mapper.readValue(jsonString, Ims.class);
 		}
 		catch (JsonProcessingException e) {
-	      	throw new DataMappingException("JsonGenerationException occured during jsonObjectToPOJO(): " + e.getMessage(), e);
+	      	throw new DataMappingException("JsonGenerationException occured during jsonStringToPOJO: " + e.getMessage(), e);
         } 
 		catch(IOException e){
-			throw new InputParamException("IOException occured during jsonObjectToPOJO(): " + e.getMessage(), e);
+			throw new InputParamException("IOException occured during jsonStringToPOJO: " + e.getMessage(), e);
 		}
 		return object;
 	}

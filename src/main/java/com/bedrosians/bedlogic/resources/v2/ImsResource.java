@@ -18,7 +18,6 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.codehaus.jettison.json.JSONObject;
 import org.glassfish.jersey.process.internal.RequestScoped;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -143,13 +142,13 @@ public class ImsResource
     
      /**
        * This method creates a item based on the given information.
-       * @param Json object containing the information to create a new item.
+       * @param String Json String containing the information to create a new item.
        * @return Response object which contains the status of "201, created" and an uri with the created item code, or error status and message if exception occurs
        */
        @POST
        @Consumes(MediaType.APPLICATION_JSON)
        @Loggable(value = LogLevel.INFO)
-       public Response create(@Context HttpHeaders requestHeaders, JSONObject inputJsonObj)
+       public Response create(@Context HttpHeaders requestHeaders, String jsonString)
        {
     	  Response response;
           try
@@ -157,10 +156,10 @@ public class ImsResource
              //Check user security
              keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, APINAME, DBOperation.CREATE);
              //Create a new item using the given data in json format, and save it into database
-             //String itemCode = imsService.createItem(inputJsonObj);
-             String itemCode = imsService.createItem(JsonUtil.toObjectNode(inputJsonObj));
+             Ims item = JsonUtil.jsonStringToPOJO(jsonString);
+             String itemCode = imsService.createOrUpdateItem(item, DBOperation.CREATE);
              //Create response
-             response = Response.created(URI.create("/"+itemCode)).build();
+             response = Response.created(URI.create("/"+itemCode)).entity(itemCode).build();
           }
           catch (BedException e)
           {
@@ -171,14 +170,14 @@ public class ImsResource
 
      /**
        * This method updates an item based on the given item info.
-       * @param A Json object containing item information to update.
+       * @param String Json String containing item information to update.
        * @return Response object which contains a "200, OK" status and a message body including the updated item in json format, or error status and message if exception occurs
        */
        @PUT
        @Consumes(MediaType.APPLICATION_JSON)
        @Produces({MediaType.APPLICATION_JSON})
        @Loggable(value = LogLevel.INFO)
-       public Response update(@Context HttpHeaders requestHeaders, JSONObject inputJsonObj)
+       public Response update(@Context HttpHeaders requestHeaders, String jsonString)
        {
           Response response;
           try
@@ -186,7 +185,8 @@ public class ImsResource
              //Check user security
              keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, APINAME, DBOperation.UPDATE);
              //Update an item based on the input json data
-             Ims item = imsService.updateItem(JsonUtil.toObjectNode(inputJsonObj));
+             Ims item = JsonUtil.jsonStringToPOJO(jsonString);
+             item = imsService.updateItem(item);
              Products result = new Products(new ItemWrapper(item));
              String jsonStr = result.toJSONStringWithJackson("ims");
              //Create json response

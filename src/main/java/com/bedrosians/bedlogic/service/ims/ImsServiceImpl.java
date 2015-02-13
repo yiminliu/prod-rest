@@ -219,14 +219,14 @@ public class ImsServiceImpl implements ImsService {
 	@Loggable(value = LogLevel.INFO)
 	@Override
 	@Transactional(readOnly = false, propagation=Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ) 
-	public synchronized Ims updateItem(ObjectNode jsonObj){
-		String itemCode = JsonUtil.validateItemCode(jsonObj);
-		Ims itemFromInput = (Ims)JsonUtil.jsonObjectToPOJO(jsonObj, new Ims());
+	public synchronized Ims updateItem(Ims itemFromInput){
+		//String itemCode = JsonUtil.validateItemCode(jsonObj);
+		//Ims itemFromInput = (Ims)JsonUtil.jsonObjectToPOJO(jsonObj, new Ims());
 		itemFromInput.setItemcode(itemFromInput.getItemcode().toUpperCase());
      	Ims itemToUpdate = null;
 		Session session = getSession();	
 		try{
-			itemToUpdate = imsDao.getItemByItemCode(session, itemCode.trim().toUpperCase());
+			itemToUpdate = imsDao.getItemByItemCode(session, itemFromInput.getItemcode().trim().toUpperCase());
 		}
 	    catch(HibernateException hbe){
 	     	if(hbe.getCause() != null) {
@@ -246,7 +246,7 @@ public class ImsServiceImpl implements ImsService {
 		  	   throw new DatabaseOperationException("Error occured during updateItem(). Cause : " +  e.getMessage());	
 		}
 		if(itemToUpdate == null)
-	       throw new DataNotFoundException("No data found for the given item code: " + itemCode);	
+	       throw new DataNotFoundException("No data found for the given item code: " + itemFromInput.getItemcode());	
 		itemToUpdate = ImsDataTransferUtil.transferItemInfo(itemToUpdate, itemFromInput, DBOperation.UPDATE);
 		transferColorHues(itemToUpdate, itemFromInput, DBOperation.UPDATE);
   	    //ImsValidator.validateNewItem(itemToUpdate);
@@ -313,12 +313,6 @@ public class ImsServiceImpl implements ImsService {
 		}
 	}
 	
-	@Loggable(value = LogLevel.INFO)
-	@Override
-	synchronized public void deleteItem(ObjectNode jsonObj){
-		String itemCode = JsonUtil.validateItemCode(jsonObj);
-		deleteItemByItemCode(itemCode);
-	}
 	
 	@Loggable(value = LogLevel.INFO)
 	@Override

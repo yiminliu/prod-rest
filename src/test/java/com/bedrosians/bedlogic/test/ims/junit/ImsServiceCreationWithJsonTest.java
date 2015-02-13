@@ -790,7 +790,7 @@ public class ImsServiceCreationWithJsonTest {
 	 }
 	 
 	 String jStringWithItemCode = 
-			   "{\"itemcode\":\"newItemcode1\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
+			   "{\"itemcode\":\"TEST2\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
 	    		+ "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\"},"
 	    		+ "}";
 	 

@@ -16,7 +16,7 @@ public class BedExceptionMapper implements ExceptionMapper<BedException>
         int     code;
         String  message;
               
-        if (theException instanceof InputParamException)
+        if (theException instanceof InputParamException || theException instanceof DataMappingException)
         {
             code = 400;
             message = "Bad Request";
