@@ -3,11 +3,10 @@ package com.bedrosians.bedlogic.util;
 import java.io.File;
 import java.io.IOException;
 
-import org.codehaus.jettison.json.JSONObject;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.exception.DataMappingException;
 import com.bedrosians.bedlogic.exception.InputParamException;
@@ -110,18 +109,25 @@ public class JsonUtil {
 		return itemCode.toUpperCase();
 	}
 
-	public static ObjectNode toObjectNode(JSONObject inputJsonObj)
-    {
- 	   ObjectNode objectNode = null;
- 	   try
- 	   {
- 	      ObjectMapper mapper = new ObjectMapper();
- 	      objectNode = (ObjectNode)mapper.readTree(inputJsonObj.toString());
-        }
- 	   catch(Exception e)
- 	   {
- 		   e.printStackTrace();
- 	   }
- 	   return objectNode;
- 	   }
+	public static JsonNode jsonStringToJsonNode(String jsonString) {
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode jsonNode = null;
+		try{
+	       jsonNode = mapper.readTree(jsonString);
+		}
+		catch(JsonProcessingException e){
+		   //throw e;
+		}
+	    catch(IOException e){
+		   //throw e;
+	    }
+	    return jsonNode;
+	}
+	
+	public static JsonNode getSubJsonNode(String jsonString, String fieldName) {
+		JsonNode rootNode = jsonStringToJsonNode(jsonString);
+		JsonNode subNode = rootNode.get(fieldName);
+		return subNode;
+	}	
+		
 }

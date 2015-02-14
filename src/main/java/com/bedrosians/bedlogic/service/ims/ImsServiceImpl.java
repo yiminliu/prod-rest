@@ -42,7 +42,7 @@ import com.bedrosians.bedlogic.util.ims.ImsDataUtil;
 import com.bedrosians.bedlogic.util.ims.ImsValidator;
 import com.bedrosians.bedlogic.util.logger.aspect.LogLevel;
 import com.bedrosians.bedlogic.util.logger.aspect.Loggable;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+
 
 @Service("imsService")
 public class ImsServiceImpl implements ImsService {
@@ -162,12 +162,8 @@ public class ImsServiceImpl implements ImsService {
 	
 	@Loggable(value = LogLevel.INFO)
 	@Override
-	public String createItem(ObjectNode jsonObj) {  	
-		JsonUtil.validateItemCode(jsonObj);
-		String itemCode;
-     	Ims itemFromInput = (Ims)JsonUtil.jsonObjectToPOJO(jsonObj, new Ims());
-     	itemCode = createOrUpdateItem(itemFromInput, DBOperation.CREATE);
-     	return itemCode;		 	
+	public String createItem(String jsonString) {  	
+        return createOrUpdateItem(JsonUtil.jsonStringToPOJO(jsonString), DBOperation.CREATE);
     }
 	
 	@Loggable(value = LogLevel.INFO)
@@ -215,6 +211,12 @@ public class ImsServiceImpl implements ImsService {
    }
 	
 	//--------------------------------Update DB Operation --------------------------//
+	
+	@Loggable(value = LogLevel.INFO)
+	@Override
+	public Ims updateItem(String jsonString) {  	
+        return updateItem(JsonUtil.jsonStringToPOJO(jsonString));
+    }
 	
 	@Loggable(value = LogLevel.INFO)
 	@Override

@@ -25,10 +25,8 @@ import org.springframework.stereotype.Controller;
 import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.exception.BedException;
 import com.bedrosians.bedlogic.exception.BedExceptionMapper;
-import com.bedrosians.bedlogic.models.Products;
 import com.bedrosians.bedlogic.service.ims.ImsService;
 import com.bedrosians.bedlogic.service.security.KeymarkUcUserSecurityService;
-import com.bedrosians.bedlogic.util.JsonUtil;
 import com.bedrosians.bedlogic.util.JsonWrapper.ItemWrapper;
 import com.bedrosians.bedlogic.util.enums.ApiName;
 import com.bedrosians.bedlogic.util.enums.DBOperation;
@@ -38,9 +36,9 @@ import com.bedrosians.bedlogic.util.logger.aspect.Loggable;
 
 
 /**
-* This restful web service resource class acts as the logical resource of ims Service to provide database CRUD operations on ims.
-* This web service resource is used via HTTP request method (GET, POST, PUT, DELETE). JSON is the only format supported for message exchange by this resource.
-* This class uses "/ims" as its root endpoint.
+* This is the IMS Restful Web Service resource class. It accepts HTTP requests and delegates to underlying service classes to fulfill database CRUD operations on ims, and then it return a Response to client.
+* This web service resource is used via HTTP request method (GET, POST, PUT, DELETE). JSON is the only format supported for message exchange by this resource currently.
+* This class uses "/ims" as its root resource.
 *
 */
 
@@ -70,28 +68,18 @@ public class ImsResource
      { 
     	List<?> itemList = null;
         Response response = null;
-        Products result = null;
-        String jsonStr = null;
         try
         {  
             //Check user security
             keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, APINAME, DBOperation.SEARCH);
             //Retrieve data from database based on the given query parameters
             String wrappedData = ImsQueryUtil.getValue(uriInfo.getQueryParameters(), "wrappedData");
-            if("No".equalsIgnoreCase(wrappedData)){
+            if("No".equalsIgnoreCase(wrappedData))
             	itemList = imsService.getItems(uriInfo.getQueryParameters(), false);
-            	//Convert the data to Json string
-            	result = new Products(itemList);
-               	jsonStr = result.toJSONStringWithJackson(null);
-            }
-            else{
+            else
             	itemList = imsService.getItems(uriInfo.getQueryParameters(), true);
-            	//Convert the data to Json string
-            	result = new Products(itemList);
-            	jsonStr = result.toJSONStringWithJackson("ims");
-            }
             //Create json response
-            response = Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();
+            response = Response.ok(itemList, MediaType.APPLICATION_JSON).build();
         }
         catch (BedException e)
         {
@@ -112,26 +100,14 @@ public class ImsResource
     {
      	Ims item = null;
    	    Response response = null;
-        Products result = null;
-        String jsonStr = null;
    	    try
         {
            //Check user security
            keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, APINAME, DBOperation.SEARCH);
-           String wrappedData = ImsQueryUtil.getValue(uriInfo.getQueryParameters(), "wrappedData");
            //Retrieve data from database based on the given item code
            item = imsService.getItem(itemCode);
-           //Convert the data to Json string
-           if("No".equalsIgnoreCase(wrappedData)){
-              result = new Products(item);
-           }
-           else{
-             //Wrap the data
-              result = new Products(new ItemWrapper(item));
-           }   
-           jsonStr = result.toJSONStringWithJackson("ims");
-           //Create json response
-           response = Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();
+            //Create json response
+           response = Response.ok(new ItemWrapper(item), MediaType.APPLICATION_JSON).build();
          }
          catch (BedException e)
          {
@@ -156,10 +132,9 @@ public class ImsResource
              //Check user security
              keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, APINAME, DBOperation.CREATE);
              //Create a new item using the given data in json format, and save it into database
-             Ims item = JsonUtil.jsonStringToPOJO(jsonString);
-             String itemCode = imsService.createOrUpdateItem(item, DBOperation.CREATE);
+             String itemCode = imsService.createItem(jsonString);
              //Create response
-             response = Response.created(URI.create("/"+itemCode)).entity(itemCode).build();
+             response = Response.created(URI.create("/bedlogic/v2/ims/"+itemCode)).entity(itemCode).build();
           }
           catch (BedException e)
           {
@@ -185,12 +160,9 @@ public class ImsResource
              //Check user security
              keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, APINAME, DBOperation.UPDATE);
              //Update an item based on the input json data
-             Ims item = JsonUtil.jsonStringToPOJO(jsonString);
-             item = imsService.updateItem(item);
-             Products result = new Products(new ItemWrapper(item));
-             String jsonStr = result.toJSONStringWithJackson("ims");
-             //Create json response
-             response = Response.ok(jsonStr, MediaType.APPLICATION_JSON).build();
+             Ims item = imsService.updateItem(jsonString);
+              //Create json response
+             response = Response.ok(new ItemWrapper(item), MediaType.APPLICATION_JSON).build();
           }
           catch (BedException e)
           {

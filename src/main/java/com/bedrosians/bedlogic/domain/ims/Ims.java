@@ -19,7 +19,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.Version;
-
 import javax.validation.constraints.Size;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -59,7 +58,7 @@ import com.bedrosians.bedlogic.domain.ims.embeddable.VendorInfo;
 import com.bedrosians.bedlogic.util.ims.ImsDataUtil;
 
 
-@JsonRootName(value = "ims")
+@JsonRootName(value="item")
 @Component
 @Entity
 @Table(name = "ims", schema = "public")
