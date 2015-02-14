@@ -1,12 +1,9 @@
 Ims Service Requirements
 ==============================
 
----
-
 Overview
 --------
-The ims service manages Bedrosians item information. The service will be used to search and manage the item information.
-The ims service provides item search, creation, update and deletion services.
+The ims Rest Web Service manages Bedrosians item information. The service will allow creation, retrieval, update and deletion of item resources.
 
                         Service wadl
 -----------------------------------------------------------------------
