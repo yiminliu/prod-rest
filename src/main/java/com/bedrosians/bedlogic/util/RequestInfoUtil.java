@@ -13,6 +13,8 @@ public class RequestInfoUtil implements Serializable{
 	private String userName;
 	private AtomicLong requestId;
 	
+	public RequestInfoUtil(){}
+	
 	public RequestInfoUtil(String userName, AtomicLong requestId) {
 		super();
 		this.userName = userName;
