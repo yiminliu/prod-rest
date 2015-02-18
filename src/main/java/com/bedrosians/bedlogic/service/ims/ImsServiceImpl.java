@@ -490,7 +490,7 @@ public class ImsServiceImpl implements ImsService {
  			   //if(vendor.getId().equals(item.getVendors().getVendornbr1()) && (DBOperation.UPDATE.equals(dBOperation) || DBOperation.CLONE.equals(dBOperation)))	
  			   vendor = ImsDataUtil.setCalculatedVendorData(item, vendor);
  			   item.addNewVendorSystem(vendor);
-       		   if(vendor.getVendorOrder() == 1)
+       		   if(vendor.getVendorOrder() == null || vendor.getVendorOrder() == 1)
        			  lagancyVendor = ImsDataUtil.convertNewVendorToLegancyVendorInfo(vendor); 
        		   else if(vendor.getVendorOrder() == 2)
        			  lagancyVendor.setVendornbr2(vendor.getVendorId().getId()); 

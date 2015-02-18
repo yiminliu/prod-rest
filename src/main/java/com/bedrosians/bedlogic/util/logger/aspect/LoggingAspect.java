@@ -15,9 +15,11 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bedrosians.bedlogic.domain.ims.Ims;
+import com.bedrosians.bedlogic.util.RequestInfoUtil;
 
 
 @Component
@@ -41,7 +43,8 @@ public class LoggingAspect {
 	@Resource
 	private Slf4jLogger logger;
 
-	//@Autowired
+	@Autowired
+	private RequestInfoUtil currentUser;
 	//private LoggingHelper loggingHelper;
 
 	/**
@@ -76,9 +79,9 @@ public class LoggingAspect {
 		String methodName = joinPoint.getSignature().getName();
 
 		if (ArrayUtils.isEmpty(joinPoint.getArgs())) {
-			logger.log(loggable.value(), clazz, null, BEFORE_STRING, ""/*loggingHelper.getUserStamp()*/, methodName, constructArgString(clazz, joinPoint.getArgs()));
+			logger.log(loggable.value(), clazz, null, BEFORE_STRING, currentUser.getUserName()/*loggingHelper.getUserStamp()*/, methodName, constructArgString(clazz, joinPoint.getArgs()));
 		} else {
-			logger.log(loggable.value(), clazz, null, BEFORE_WITH_PARAMS_STRING, ""/*loggingHelper.getUserStamp()*/, methodName,
+			logger.log(loggable.value(), clazz, null, BEFORE_WITH_PARAMS_STRING, currentUser.getUserName()/*loggingHelper.getUserStamp()*/, methodName,
 					constructArgString(clazz, joinPoint.getArgs()));
 		}
 	}
@@ -88,7 +91,7 @@ public class LoggingAspect {
 		Class<? extends Object> clazz = joinPoint.getTarget().getClass();
 		String name = joinPoint.getSignature().getName();
 	    logger.log(LogLevel.ERROR, clazz, throwable, AFTER_THROWING, /* loggingHelper.getUserStamp(),*/ name, throwable.getMessage(), constructArgString(clazz, joinPoint.getArgs()));
-		logger.log(LogLevel.ERROR, clazz, throwable, AFTER_THROWING_NO_PARAMS, ""/*loggingHelper.getUserStamp()*/, name, throwable.getMessage());
+		logger.log(LogLevel.ERROR, clazz, throwable, AFTER_THROWING_NO_PARAMS, currentUser.getUserName()/*loggingHelper.getUserStamp()*/, name, throwable.getMessage());
 	}
 
 	@AfterReturning(value = "@annotation(trace)", returning = "returnValue", argNames = "joinPoint, trace, returnValue")
@@ -101,13 +104,13 @@ public class LoggingAspect {
 			MethodSignature signature = (MethodSignature) joinPoint.getSignature();
 			Class<?> returnType = signature.getReturnType();
 			if (returnType.getName().compareTo("void") == 0) {
-				logger.log(loggable.value(), clazz, null, AFTER_RETURNING_VOID, ""/*loggingHelper.getUserStamp()*/, name, elapsedTime);
+				logger.log(loggable.value(), clazz, null, AFTER_RETURNING_VOID, currentUser.getUserName()/*loggingHelper.getUserStamp()*/, name, elapsedTime);
 				start = 0;
 				elapsedTime = 0;
 				return;
 			}
 		}
-		logger.log(loggable.value(), clazz, null, AFTER_RETURNING, ""/*loggingHelper.getUserStamp()*/, name, constructArgString(clazz, returnValue), elapsedTime);
+		logger.log(loggable.value(), clazz, null, AFTER_RETURNING, currentUser.getUserName()/*loggingHelper.getUserStamp()*/, name, constructArgString(clazz, returnValue), elapsedTime);
 		start = 0;
 		elapsedTime = 0;
 	}
