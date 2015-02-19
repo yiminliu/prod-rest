@@ -38,8 +38,8 @@ public class JacksonObjectMapperProvider implements ContextResolver<ObjectMapper
 	private static ObjectMapper createImsObjectMapper() {
 	   final ObjectMapper result = new ObjectMapper();
 	   result.enable(SerializationFeature.INDENT_OUTPUT);
-	   result.configure(SerializationFeature.WRAP_ROOT_VALUE, true);
-	   result.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
+	   //result.configure(SerializationFeature.WRAP_ROOT_VALUE, true);
+	   //result.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
 	   result.setAnnotationIntrospector(createJaxbJacksonAnnotationIntrospector());
 	   return result;
 	}
