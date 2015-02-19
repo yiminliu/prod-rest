@@ -172,7 +172,7 @@ public class LoggingAspect {
 		} else if (arg instanceof Ims) {
 			Ims ims = (Ims) arg;
 			clazz = ims.getClass().getSimpleName();
-			id = "ItemCode--" + ims.getItemcode();
+			id = "itemcode=" + ims.getItemcode();
 			descriptor = "";//"Description--" + ims.getItemdesc().getItemdesc1();
 			//descriptor = ims.toString();
 		} else if (arg instanceof HttpServletRequest || arg instanceof HttpServletResponse) {
@@ -188,7 +188,7 @@ public class LoggingAspect {
 		} else if (id != null && id.equals("unknown")) {
 			buffer.append(formatArg(clazz, arg));
 		} else {
-			buffer.append(formatArg(id, descriptor));
+			buffer.append(formatArg(id));
 		}
 		
 		/*if (arg instanceof java.util.Set) {

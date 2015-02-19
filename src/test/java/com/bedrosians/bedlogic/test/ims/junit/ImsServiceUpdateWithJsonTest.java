@@ -1,8 +1,6 @@
 package com.bedrosians.bedlogic.test.ims.junit;
 
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +34,7 @@ public class ImsServiceUpdateWithJsonTest {
 	@Autowired
 	ImsService imsService;
 	
-	private String id = "TEST3";
+	private String id = "TEST";
 	
  	
 	@Before
@@ -450,22 +448,14 @@ public class ImsServiceUpdateWithJsonTest {
 	        assertEquals("3", item.getNewFeature().getRecommendedGroutJointMax());
 	        //assertEquals(new Date(), item.getImsNewFeature().getLastModifiedDate());
 	 }
-	 
-	 @Test
-	 public void testUpdateItemWithUnitAndVendorJsonObject2() throws Exception {
-	        System.out.println("testUpdateItemWithUnitAndVendor: ");
-	        //JSONObject params = new JSONObject(jStringWithUnitAndVendor);
-	        //JSONObject params = new JSONObject(jStringWithNewVendorSystem3);
-	        //imsService.updateItem(JsonUtil.toObjectNode(params));
-	        imsService.updateItem(JsonUtil.jsonStringToPOJO(jStringWithNewVendorSystem3));
-	 }       
+	 	   
 	 @Test
 	 public void testUpdateItemWithUnitAndVendorJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithUnitAndVendor: ");
 	        //JSONObject params = new JSONObject(jStringWithUnitAndVendor);
 	        //JSONObject params = new JSONObject(jStringWithNewVendorSystem);
 	        //imsService.updateItem(JsonUtil.toObjectNode(params));
-	        imsService.updateItem(JsonUtil.jsonStringToPOJO(jStringWithNewVendorSystem));
+	        imsService.updateItem(jStringWithNewVendorSystem3);
 	        
 	        Ims item = imsService.getItem(id);
 	        assertEquals("PCS", item.getUnits().getBaseunit());
@@ -927,18 +917,6 @@ public class ImsServiceUpdateWithJsonTest {
     		    //+ "                     ],"
 	     	    + "}";
 
-	 String jStringWithNewVendorSystem = 
-			    "{"
-			    + "\"itemcode\":\"newItemcode\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
-	    		+ "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\"},"
-	    		//+ "\"newVendorSystem\":[{\"vendorOrder\":1,\"vendorName\":\"TestVendor1\",\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorNetPrice\":4.0500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"id\":134585},"
-	    	    
-	    		+ "\"newVendorSystem\":[{\"vendorOrder\":1,\"vendorName\":\"test\",\"vendorName2\":null,\"vendorXrefId\":\"ATM41\",\"vendorListPrice\":5.1500,\"vendorNetPrice\":7.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"test\",\"vendorDiscountPct\":10.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":11.0,\"vendorFreightRateCwt\":10.0,\"vendorLandedBaseCost\":3.1500,\"leadTime\":60,\"dutyPct\":30.0,\"id\":134585},"
-	    		+ "                     {\"vendorOrder\":2,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":6.1500,\"vendorNetPrice\":7.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"test\",\"vendorDiscountPct\":20.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":10.0,\"vendorFreightRateCwt\":12.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":20.0,\"id\":271520},"
-	    		+ "                     {\"vendorOrder\":3,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorNetPrice\":7.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"test\",\"vendorDiscountPct\":30.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":10.0,\"vendorFreightRateCwt\":13.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":10.0,\"id\":453680},"
-	    		 + "],"
-	    		+ "}";
-
 	 
 	 String jStringWithNewFeature = 
 			     "{\"itemcode\":\"newItemcode\","
@@ -948,7 +926,7 @@ public class ImsServiceUpdateWithJsonTest {
 	    		+ "\"itemdesc\":{\"fulldesc\":\"update 2x2 Athena Mosaic on 12x12 Sheet \",\"itemdesc1\":\" update 2x2 Athena Mosaic on 12x12\"},"
 	     		+ "\"newFeature\":{"
 	     		   + "\"grade\":\"Second\","
-	     		   + "\"status\":\"BETTER\","
+	     		   + "\"status\":\"Better\","
 	     		   + "\"body\":\"Red_Body\","
 	     		   + "\"edge\":\"Tumbled\","
 	     		   + "\"mpsCode\":\"Drop\","
@@ -1231,7 +1209,7 @@ public class ImsServiceUpdateWithJsonTest {
 	    		+ "}";
 	 String jStringWithNewVendorSystem3 =
 		     "{"
-		     	+ "\"itemcode\":\"ELMARAGT1224\","
+		     	+ "\"itemcode\":\"TEST\","
 		     	+ "\"itemcategory\":\"ARARAT\","
 		     	+ "\"countryorigin\":\"USA\","
 		     	//+ "\"inactivecode\":\"Y\","
@@ -1279,7 +1257,7 @@ public class ImsServiceUpdateWithJsonTest {
 		   		+ "{\"vendorId\":{\"id\":544394},\"vendorOrder\":1,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"K822751R\",\"vendorListPrice\":12.7,\"vendorNetPrice\":12.7,\"vendorPriceUnit\":\"S/M\",\"vendorFob\":\"\",\"vendorDiscountPct\":0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0,\"vendorFreightRateCwt\":0,\"vendorLandedBaseCost\":12.7,\"leadTime\":0,\"dutyPct\":0},"
 		   		+ "{\"vendorId\":{\"id\":null},\"vendorOrder\":2,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"\",\"vendorListPrice\":0,\"vendorNetPrice\":null,\"vendorPriceUnit\":\"0\",\"vendorFob\":\"\",\"vendorDiscountPct\":null,\"vendorPriceRoundAccuracy\":null,\"vendorMarkupPct\":0,\"vendorFreightRateCwt\":0,\"vendorLandedBaseCost\":0,\"leadTime\":null,\"dutyPct\":null},"
 		   		+ "{\"vendorId\":{\"id\":null},\"vendorOrder\":3,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"\",\"vendorListPrice\":0,\"vendorNetPrice\":null,\"vendorPriceUnit\":\"0\",\"vendorFob\":\"\",\"vendorDiscountPct\":null,\"vendorPriceRoundAccuracy\":null,\"vendorMarkupPct\":0,\"vendorFreightRateCwt\":0,\"vendorLandedBaseCost\":0,\"leadTime\":null,\"dutyPct\":null}"
-		   		+ "],"
+		   		+ "]"
 		   				
 		   		//+ ""newFeature":{"grade":"Second","status":"BETTER","body":"Double_Loaded","edge":"Rectified","mpsCode":"New_Product","designLook":"Wood","designStyle":"Contemporary","surfaceApplication":"Ink_Jet","surfaceType":"Abrasive","surfaceFinish":"Antiquated","warranty":3,"recommendedGroutJointMin":"1","recommendedGroutJointMax":"1","createdDate":1423008000000,"launchedDate":null,"droppedDate":null,"lastModifiedDate":null},"iconDescription":{"madeInCountry":"Italy","exteriorProduct":null,"adaAccessibility":null,"throughColor":null,"colorBody":null,"inkJet":null,"glazed":null,"unglazed":"Yes","rectifiedEdge":null,"chiseledEdge":null,"versaillesPattern":null,"recycled":null,"postRecycled":null,"preRecycled":null,"leadPoint":null,"greenFriendly":null,"coefficientOfFriction":null},"colorhues":[{"colorHue":"GRAY"}]}
 		   		//+ "],"

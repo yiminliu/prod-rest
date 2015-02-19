@@ -127,18 +127,18 @@ public class ImsServiceImpl implements ImsService {
 		catch(HibernateException hbe){
 			if(hbe.getCause() != null) {
 			   if(hbe.getCause().getMessage() != null && hbe.getCause().getMessage().contains("permission denied for relation"))	
-			      throw new UnauthorizedException("Permission denied error occured during getItems. Cause: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());  
+			      throw new UnauthorizedException("Permission denied error occured during getItems(). Cause: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage());  
 			   else	
-			      throw new DatabaseOperationException("Error occured during getWrappedItems(). Cause: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
+			      throw new DatabaseOperationException("Error occured during getItems(). Cause: " +  hbe.getMessage() + ". Root cause: " + hbe.getCause().getMessage(), hbe);	
 			}
 			else
-		  	   throw new DatabaseOperationException("Error occured during getWrappedItems. Cause: " +  hbe.getMessage(), hbe);
+		  	   throw new DatabaseOperationException("Error occured during getItems(). Cause: " +  hbe.getMessage(), hbe);
 		}
 		catch(RuntimeException e){
 			if(e.getCause() != null)
-		  	   throw new DatabaseOperationException("Error occured during getWrappedItems. Cause: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
+		  	   throw new DatabaseOperationException("Error occured during getItems(). Cause: " +  e.getMessage() + ". Root cause: " + e.getCause().getMessage(), e);	
 		  	else
-		  	   throw new DatabaseOperationException("Error occured during getWrappedItems. Cause: " +  e.getMessage(), e);	
+		  	   throw new DatabaseOperationException("Error occured during getItems(). Cause: " +  e.getMessage(), e);	
 		}
 		List<Object> list = new ArrayList<Object>(itemList.size());
 		for(Ims item : itemList){

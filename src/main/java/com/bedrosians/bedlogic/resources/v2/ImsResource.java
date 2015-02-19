@@ -63,7 +63,7 @@ public class ImsResource
      @GET
      @Produces({MediaType.APPLICATION_JSON})
      @Loggable(value = LogLevel.INFO)
-     @SuppressWarnings("unchecked")
+     
      public Response get(@Context HttpHeaders requestHeaders, @Context UriInfo uriInfo)
      { 
     	List<Ims> itemList = null;
@@ -180,7 +180,7 @@ public class ImsResource
      /**
        * This method deletes an item based on the given item code.
        * @param Item code string.
-       * @return Response object which contains a "204, No Content" status and no message body, or error status and message if exception occurs
+       * @return Response object which contains a "200, OK" status and "Item  + itemCode + Deleted" message body, or error status and message if exception occurs
        */
        @DELETE
        @Path("{itemcode}")
@@ -195,7 +195,7 @@ public class ImsResource
              //delete an item from database based on the given item code
              imsService.deleteItemByItemCode(itemCode);
              //Create response
-             response = Response.noContent().build();
+             response = Response.ok("Item " + itemCode + "Deleted").build();
           }
           catch (BedException e)
           {

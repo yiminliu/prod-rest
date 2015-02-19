@@ -202,8 +202,8 @@ public class ImsServiceCreationWithJsonTest {
 	       
 	        Ims item = imsService.getItem(id);
 	        
-	      //  assertEquals("Athena", item.getSeries().getSeriesname());
-	      //  assertEquals("Ash", item.getSeries().getSeriescolor());
+	        assertEquals("Athena", item.getSeries().getSeriesname());
+	        assertEquals("Ash", item.getSeries().getSeriescolor());
 	 }
 	 
 	 String newItemcode = testItemId + new Random().nextInt(9000);
@@ -375,7 +375,7 @@ public class ImsServiceCreationWithJsonTest {
 	        assertNotNull(id);
 	        Ims item = imsService.getItem(id);
 	        assertEquals("First", item.getNewFeature().getGrade().getDescription());
-	        assertEquals("GOOD", item.getNewFeature().getStatus().getDescription());
+	        assertEquals("Good", item.getNewFeature().getStatus().getDescription());
 	        
 	        assertEquals("Red Body", item.getNewFeature().getBody().getDescription());
 	        assertEquals("Tumbled", item.getNewFeature().getEdge().getDescription());
@@ -508,7 +508,7 @@ public class ImsServiceCreationWithJsonTest {
 	        System.out.println("newly created Item id  = " + id);
 	        Ims item = imsService.getItem(id);
 	        //for(Note note :)
-	        //assertEquals("First", item.getNewNoteSystem());
+	        assertEquals("test Po note", item.getNotes().getPonotes());
 	 }
 	 
 	 @Test
@@ -731,7 +731,7 @@ public class ImsServiceCreationWithJsonTest {
 			//	assertEquals("red".toUpperCase(), hue.getColorDescription().getDescription().toUpperCase());
 	        //item new features
 	        assertEquals("First", item.getNewFeature().getGrade().getDescription());
-	        assertEquals("GOOD", item.getNewFeature().getStatus().getDescription());
+	        assertEquals("Good", item.getNewFeature().getStatus().getDescription());
 	        assertEquals("Red Body", item.getNewFeature().getBody().getDescription());
 	        assertEquals("Tumbled", item.getNewFeature().getEdge().getDescription());
 	        assertEquals("Drop", item.getNewFeature().getMpsCode().getDescription());
@@ -1005,7 +1005,7 @@ public class ImsServiceCreationWithJsonTest {
 	 
 	 String jStringWithNewFeature = "{\"itemcode\":\"newItemcode\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
 	    		+ "\"itemdesc\":{\"fulldesc\":\"2x2 Athena Mosaic on 12x12 Sheet  Ash(Gray)\",\"itemdesc1\":\"2x2 Athena Mosaic on 12x12 SHT Ash\"},"
-	     		+ "\"newFeature\":{\"grade\":\"First\",\"status\":\"GOOD\",\"body\":\"Red_Body\",\"edge\":\"Tumbled\",\"mpsCode\":\"Drop\",\"designLook\":\"Wood\",\"designStyle\":\"Modern\",\"surfaceApplication\":\"Silk\",\"surfaceType\":\"Cross_Cut\",\"surfaceFinish\":\"Antiquated\",\"warranty\":3,\"recommendedGroutJointMin\":\"1\",\"recommendedGroutJointMax\":\"2\",\"createdDate\":\"2014-05-14\",\"launchedDate\":null,\"droppedDate\":null,\"lastModifiedDate\":null},"
+	     		+ "\"newFeature\":{\"grade\":\"First\",\"status\":\"Good\",\"body\":\"Red_Body\",\"edge\":\"Tumbled\",\"mpsCode\":\"Drop\",\"designLook\":\"Wood\",\"designStyle\":\"Modern\",\"surfaceApplication\":\"Silk\",\"surfaceType\":\"Cross_Cut\",\"surfaceFinish\":\"Antiquated\",\"warranty\":3,\"recommendedGroutJointMin\":\"1\",\"recommendedGroutJointMax\":\"2\",\"createdDate\":\"2014-05-14\",\"launchedDate\":null,\"droppedDate\":null,\"lastModifiedDate\":null},"
 	    		+ "}";
 	 
 	 String jStringWithNewNotes = "{\"itemcode\":\"newItemcode41\",\"itemcategory\":\"ATHENA\",\"countryorigin\":\"Italy\",\"inactivecode\":\"N\","
@@ -1106,7 +1106,7 @@ public class ImsServiceCreationWithJsonTest {
 	    	
 	        	//+ "\"vendors\":{\"vendornbr\":0,\"vendornbr1\":134585,\"vendornbr2\":0,\"vendornbr3\":0,\"vendorxrefcd\":\"ATM40\",\"vendorlistprice\":4.1500,\"vendorpriceunit\":\"SHT\",\"vendorfob\":\"\",\"vendordiscpct\":0.0,\"vendorroundaccuracy\":2,\"vendornetprice\":4.1500,\"vendormarkuppct\":0.0,\"vendorfreightratecwt\":0.0,\"dutypct\":0.0,\"leadtime\":60,\"vendorLandedBaseCost\":4.1500,\"vendordiscpct2\":0.0,\"vendordiscpct3\":0.0},
 	    		+ "\"cost\":{\"cost1\":1.0000,\"priorcost\":1.0000},"
-	    		//+ "\"imsNewFeature\":{\"grade\":\"First\",\"status\":\"GOOD\",\"body\":\"Red_Body\",\"edge\":\"Tumbled\",\"mpsCode\":\"Drop\",\"designLook\":\"Wood\",\"designStyle\":\"Modern\",\"surfaceApplication\":\"Silk\",\"surfaceType\":\"Cross_Cut\",\"surfaceFinish\":\"Antiquated\",\"warranty\":3,\"recommendedGroutJointMin\":\"1\",\"recommendedGroutJointMax\":\"2\",\"createdDate\":\"2014-05-14\",\"launchedDate\":null,\"droppedDate\":null,\"lastModifiedDate\":null},"
+	    		//+ "\"imsNewFeature\":{\"grade\":\"First\",\"status\":\"Good\",\"body\":\"Red_Body\",\"edge\":\"Tumbled\",\"mpsCode\":\"Drop\",\"designLook\":\"Wood\",\"designStyle\":\"Modern\",\"surfaceApplication\":\"Silk\",\"surfaceType\":\"Cross_Cut\",\"surfaceFinish\":\"Antiquated\",\"warranty\":3,\"recommendedGroutJointMin\":\"1\",\"recommendedGroutJointMax\":\"2\",\"createdDate\":\"2014-05-14\",\"launchedDate\":null,\"droppedDate\":null,\"lastModifiedDate\":null},"
 	    		//+ "\"notes\":{\"ponotes\":\"test po note\",\"notes1\":\"test notes1\",\"notes2\":\"test note2\",\"notes3\":\"test notes3\"},"
 	    		 + "\"notes\":{\"ponotes\":\"test po note\",\"buyernotes\":\"test note1\",\"internalnotes\":\"test note2\",\"invoicenotes\":\"test note3\"}"
     			//+ "\"newNoteSystem\":[{\"noteType\":\"po\",\"note\":\"test Po note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"buyer\",\"note\":\"test buyer note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"invoice\",\"note\":\"test invoice note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"additional\",\"note\":\"test additional note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"internal\",\"note\":\"test internal note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null}],"
@@ -1114,7 +1114,7 @@ public class ImsServiceCreationWithJsonTest {
 	 
 	 String jStringFullItemAndAssociationInfo = 
 			    //basic info
-			     "{\"itemcode\":\"newItemcode\","
+			     "{\"itemcode\":\"TEST\","
 			    + "\"itemcategory\":\"ATHENA\","
 			    + "\"countryorigin\":\"Italy\","
 			    + "\"inactivecode\":\"N\","
@@ -1198,7 +1198,7 @@ public class ImsServiceCreationWithJsonTest {
 		   		+ "{\"vendorId\":{\"id\":null},\"vendorOrder\":3,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"\",\"vendorListPrice\":0,\"vendorNetPrice\":null,\"vendorPriceUnit\":\"0\",\"vendorFob\":\"\",\"vendorDiscountPct\":null,\"vendorPriceRoundAccuracy\":null,\"vendorMarkupPct\":0,\"vendorFreightRateCwt\":0,\"vendorLandedBaseCost\":0,\"leadTime\":null,\"dutyPct\":null}"
 		   		+ "],"
 		   		
-	    		+ "\"newFeature\":{\"grade\":\"First\",\"status\":\"GOOD\",\"body\":\"Red_Body\",\"edge\":\"Tumbled\",\"mpsCode\":\"Drop\",\"designLook\":\"Wood\",\"designStyle\":\"Modern\",\"surfaceApplication\":\"Silk\",\"surfaceType\":\"Cross_Cut\",\"surfaceFinish\":\"Antiquated\",\"warranty\":3,\"recommendedGroutJointMin\":\"1\",\"recommendedGroutJointMax\":\"2\",\"createdDate\":\"2014-05-14\",\"launchedDate\":null,\"droppedDate\":null,\"lastModifiedDate\":null},"
+	    		+ "\"newFeature\":{\"grade\":\"First\",\"status\":\"Good\",\"body\":\"Red_Body\",\"edge\":\"Tumbled\",\"mpsCode\":\"Drop\",\"designLook\":\"Wood\",\"designStyle\":\"Modern\",\"surfaceApplication\":\"Silk\",\"surfaceType\":\"Cross_Cut\",\"surfaceFinish\":\"Antiquated\",\"warranty\":3,\"recommendedGroutJointMin\":\"1\",\"recommendedGroutJointMax\":\"2\",\"createdDate\":\"2014-05-14\",\"launchedDate\":null,\"droppedDate\":null,\"lastModifiedDate\":null},"
 	    		//+ "\"newNoteSystem\":[{\"noteType\":\"po\",\"text\":\"test Po note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"buyer\",\"text\":\"test buyer note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"invoice\",\"text\":\"test invoice note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"additional\",\"text\":\"test additional note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null},{\"noteType\":\"internal\",\"text\":\"test internal note\",\"createdDate\":\"2014-05-14\",\"lastModifiedDate\":null}],"
 	    		+ "\"iconDescription\":{\"madeInCountry\":\"USA\",\"exteriorProduct\":true,\"adaAccessibility\":true,\"throughColor\":false,\"colorBody\":true,\"inkJet\":false,\"glazed\":true,\"unglazed\":false,\"rectifiedEdge\":true,\"chiseledEdge\":false,\"versaillesPattern\":true,\"recycled\":false,\"postRecycled\":true,\"preRecycled\":false,\"leadPoint\":true,\"greenFriendly\":false,\"coefficientOfFriction\":true}"
 		        + "}";
