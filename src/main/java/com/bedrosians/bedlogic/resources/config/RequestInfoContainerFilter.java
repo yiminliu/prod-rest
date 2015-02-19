@@ -27,7 +27,7 @@ public class RequestInfoContainerFilter implements ContainerRequestFilter {
 			AtomicLong id = (AtomicLong)containerRequestContext.getProperty("requestId");
 			if(id == null) {
 		       Random random = new Random(System.currentTimeMillis());
-		       id = new AtomicLong(random.nextLong());
+		       id = new AtomicLong(Math.abs(random.nextLong()));
 		       //containerRequestContext.setProperty("request_id", id);
 		    } 
 			currentUser.setRequestId(id);
@@ -36,7 +36,7 @@ public class RequestInfoContainerFilter implements ContainerRequestFilter {
 			//containerRequestContext.setProperty("current_user_name", user.getName());	
 			if(user != null) {
   			   currentUser.setUserName(user.getName());
-			   System.out.println("user:" + user.getName());
+			   //System.out.println("user:" + user.getName());
 			}
 		}
 }

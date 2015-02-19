@@ -223,7 +223,7 @@ public class ImsServiceImpl implements ImsService {
 	public synchronized Ims updateItem(Ims itemFromInput){
 		//String itemCode = JsonUtil.validateItemCode(jsonObj);
 		//Ims itemFromInput = (Ims)JsonUtil.jsonObjectToPOJO(jsonObj, new Ims());
-		itemFromInput.setItemcode(itemFromInput.getItemcode().toUpperCase());
+		//itemFromInput.setItemcode(itemFromInput.getItemcode().toUpperCase());
      	Ims itemToUpdate = null;
 		Session session = getSession();	
 		try{
@@ -268,7 +268,7 @@ public class ImsServiceImpl implements ImsService {
 		   else
 			  throw new DatabaseOperationException("Error occured during updateItem(), due to: " +  e.getMessage());	
 		}
-    	return FormatUtil.process(itemToUpdate);
+    	return itemToUpdate;
 	}
 	
 	//--------------------------------Deletion DB Operation --------------------------//

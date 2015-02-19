@@ -27,6 +27,7 @@ import com.bedrosians.bedlogic.exception.BedException;
 import com.bedrosians.bedlogic.exception.BedExceptionMapper;
 import com.bedrosians.bedlogic.service.ims.ImsService;
 import com.bedrosians.bedlogic.service.security.KeymarkUcUserSecurityService;
+import com.bedrosians.bedlogic.util.FormatUtil;
 import com.bedrosians.bedlogic.util.enums.ApiName;
 import com.bedrosians.bedlogic.util.enums.DBOperation;
 import com.bedrosians.bedlogic.util.logger.aspect.LogLevel;
@@ -167,7 +168,7 @@ public class ImsResource
              Ims updatedItem = imsService.updateItem(item);
               //Create json response
              //response = Response.ok(item, MediaType.APPLICATION_JSON).build();
-             response = Response.ok(updatedItem, MediaType.APPLICATION_JSON).build();
+             response = Response.ok(FormatUtil.process(updatedItem), MediaType.APPLICATION_JSON).build();
           }
           catch (BedException e)
           {
