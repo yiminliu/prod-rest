@@ -66,18 +66,18 @@ public class ImsResource
      @Loggable(value = LogLevel.INFO)
      public Response get(@Context HttpHeaders requestHeaders, @Context UriInfo uriInfo)
      { 
-    	List<?> itemList = null;
+    	List<Ims> itemList = null;
         Response response = null;
         try
         {  
             //Check user security
             keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, APINAME, DBOperation.SEARCH);
             //Retrieve data from database based on the given query parameters
-            String wrappedData = ImsQueryUtil.getValue(uriInfo.getQueryParameters(), "wrappedData");
-            if("No".equalsIgnoreCase(wrappedData))
-            	itemList = imsService.getItems(uriInfo.getQueryParameters(), false);
-            else
-            	itemList = imsService.getItems(uriInfo.getQueryParameters(), true);
+            //String wrappedData = ImsQueryUtil.getValue(uriInfo.getQueryParameters(), "wrappedData");
+            //if("No".equalsIgnoreCase(wrappedData))
+            	itemList = (List<Ims>)imsService.getItems(uriInfo.getQueryParameters(), false);
+           // else
+            //	itemList = imsService.getItems(uriInfo.getQueryParameters(), true);
             //Create json response
             response = Response.ok(itemList, MediaType.APPLICATION_JSON).build();
         }
@@ -107,7 +107,8 @@ public class ImsResource
            //Retrieve data from database based on the given item code
            item = imsService.getItem(itemCode);
             //Create json response
-           response = Response.ok(new ItemWrapper(item), MediaType.APPLICATION_JSON).build();
+           //response = Response.ok(new ItemWrapper(item), MediaType.APPLICATION_JSON).build();
+           response = Response.ok(item, MediaType.APPLICATION_JSON).build();
          }
          catch (BedException e)
          {
@@ -162,7 +163,8 @@ public class ImsResource
              //Update an item based on the input json data
              Ims item = imsService.updateItem(jsonString);
               //Create json response
-             response = Response.ok(new ItemWrapper(item), MediaType.APPLICATION_JSON).build();
+             //response = Response.ok(item, MediaType.APPLICATION_JSON).build();
+             response = Response.ok(item, MediaType.APPLICATION_JSON).build();
           }
           catch (BedException e)
           {

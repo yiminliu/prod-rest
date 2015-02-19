@@ -142,11 +142,11 @@ public class ImsServiceImpl implements ImsService {
 		  	   throw new DatabaseOperationException("Error occured during getWrappedItems. Cause: " +  e.getMessage(), e);	
 		}
 		List<Object> list = new ArrayList<Object>(itemList.size());
-		for(Ims ims : itemList){
-		    if(wrappedData) 
-		    	list.add(new ItemWrapper(FormatUtil.process(ims)));	
-		    else 
-		    	list.add(FormatUtil.process(ims));				
+		for(Ims item : itemList){
+		    //if(wrappedData) 
+		    	list.add(new ItemWrapper(FormatUtil.process(item)));	
+		    //else 
+		    //	list.add(FormatUtil.process(item));				
 		}
 		return list;
 	}
