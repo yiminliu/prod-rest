@@ -35,7 +35,6 @@ import com.bedrosians.bedlogic.exception.InputParamException;
 import com.bedrosians.bedlogic.exception.UnauthorizedException;
 import com.bedrosians.bedlogic.util.FormatUtil;
 import com.bedrosians.bedlogic.util.JsonUtil;
-import com.bedrosians.bedlogic.util.JsonWrapper.ItemWrapper;
 import com.bedrosians.bedlogic.util.enums.DBOperation;
 import com.bedrosians.bedlogic.util.ims.ImsDataTransferUtil;
 import com.bedrosians.bedlogic.util.ims.ImsDataUtil;
@@ -144,9 +143,9 @@ public class ImsServiceImpl implements ImsService {
 		List<Object> list = new ArrayList<Object>(itemList.size());
 		for(Ims item : itemList){
 		    //if(wrappedData) 
-		    	list.add(new ItemWrapper(FormatUtil.process(item)));	
+		    //	list.add(new ItemWrapper(FormatUtil.process(item)));	
 		    //else 
-		    //	list.add(FormatUtil.process(item));				
+		    	list.add(FormatUtil.process(item));				
 		}
 		return list;
 	}
@@ -269,7 +268,7 @@ public class ImsServiceImpl implements ImsService {
 		   else
 			  throw new DatabaseOperationException("Error occured during updateItem(), due to: " +  e.getMessage());	
 		}
-    	return itemToUpdate;
+    	return FormatUtil.process(itemToUpdate);
 	}
 	
 	//--------------------------------Deletion DB Operation --------------------------//

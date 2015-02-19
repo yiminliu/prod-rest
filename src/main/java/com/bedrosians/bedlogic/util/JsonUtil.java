@@ -10,13 +10,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.exception.DataMappingException;
 import com.bedrosians.bedlogic.exception.InputParamException;
+import com.bedrosians.bedlogic.resources.config.JacksonObjectMapperProvider;
 
 
 public class JsonUtil {
 
 	public static Ims jsonStringToPOJO(String jsonString){
 		Ims object = null; 
-		ObjectMapper mapper = new ObjectMapper(); 
+		ObjectMapper mapper = new JacksonObjectMapperProvider().getContext(Ims.class); 
 		try{
 			object = mapper.readValue(jsonString, Ims.class);
 		}

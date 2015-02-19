@@ -26,6 +26,7 @@ public class JerseyWSTestClient {
 	private static final String mediaTypeJson = MediaType.APPLICATION_JSON;
 	private static final String basePath = "bedlogic/v2";
 	private static final String rootResource = "ims";
+	
 	private static final String testItemCode = "AECBUB218NR".toUpperCase();
 	private static final String colorHue = "RED";
 	private static final String originCountry = "USA";
@@ -44,7 +45,7 @@ public class JerseyWSTestClient {
 	   
 		/******** Item search test *********/	
 	   //testGetItemByItemCode(testItemCode);
-	   //testGetItemByMultipleItemCodes();
+	   testGetItemByMultipleItemCodes();
 	   //testGetItemByColorHues(colorHue);
 	   //testGetItemByMultipleColorCategories(new String[]{colorHue, "GREEN", "YELLOW"});
 	   //testGetItemByMultipleColorHues(new String[]{colorHue, "GREEN", "YELLOW"});
@@ -60,7 +61,7 @@ public class JerseyWSTestClient {
 	   //testUpdateItemWithJsonString();
 	   
 	   /******** Item deletion test *********/
-	   testDeleteItemByItemCode();
+	  // testDeleteItemByItemCode();
 	   
 	   /******** Load test ********/
 	   //for(int i = 0; i < 100; i++){
@@ -443,7 +444,7 @@ public class JerseyWSTestClient {
 	}	
 	*/
 	private static URI getTestBaseURI() {
-	   return UriBuilder.fromUri("http://localhost:8888/" + basePath + "/" + rootResource).build();
+	   return UriBuilder.fromUri("http://localhost:8080/" + basePath + "/" + rootResource).build();
 	  // return UriBuilder.fromUri("http://beta.bedrosians.com/api" + "/" + rootResource).build();
 	}
 	
