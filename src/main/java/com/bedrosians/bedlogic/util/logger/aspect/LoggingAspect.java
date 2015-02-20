@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.bedrosians.bedlogic.domain.ims.Ims;
-import com.bedrosians.bedlogic.util.RequestInfoUtil;
+import com.bedrosians.bedlogic.util.RequestInfo;
 
 
 @Component
@@ -44,31 +44,7 @@ public class LoggingAspect {
 	private Slf4jLogger logger;
 
 	@Autowired
-	private RequestInfoUtil currentUser;
-	//private LoggingHelper loggingHelper;
-
-	/**
-	 * This class is used to store the start times of nested method calls. These values are used to calculate the total
-	 * time it took to process the method.
-	 * 
-	 * 
-	 */
-	private class StartTimeStack extends Stack<Long> {
-		private static final long serialVersionUID = 1L;
-
-		public boolean add(Long time) {
-			return super.add(time);
-		}
-
-		public Long pop() {
-			Long lastTime = super.pop();
-			if (lastTime == null) {
-				return new Long(0);
-			} else {
-				return lastTime;
-			}
-		}
-	}
+	private RequestInfo requestInfo;
 
 	@Before(value = "@annotation(trace)", argNames = "joinPoint, trace")
 	public void before(JoinPoint joinPoint, Loggable loggable) {
@@ -79,38 +55,37 @@ public class LoggingAspect {
 		String methodName = joinPoint.getSignature().getName();
 
 		if (ArrayUtils.isEmpty(joinPoint.getArgs())) {
-			logger.log(loggable.value(), clazz, null, BEFORE_STRING, "request_id: " + currentUser.getRequestId()/*loggingHelper.getUserStamp()*/, methodName, constructArgString(clazz, joinPoint.getArgs()));
+			logger.log(loggable.value(), clazz, null, BEFORE_STRING, requestInfo.toString()/*loggingHelper.getUserStamp()*/, methodName, constructArgString(clazz, joinPoint.getArgs()));
 		} else {
-			logger.log(loggable.value(), clazz, null, BEFORE_WITH_PARAMS_STRING, "request_id: " + currentUser.getRequestId()/*loggingHelper.getUserStamp()*/, methodName,
-					constructArgString(clazz, joinPoint.getArgs()));
+			logger.log(loggable.value(), clazz, null, BEFORE_WITH_PARAMS_STRING, requestInfo.toString(), methodName, constructArgString(clazz, joinPoint.getArgs()));
 		}
 	}
 
 	@AfterThrowing(value = "@annotation(Loggable)", throwing = "throwable", argNames = "joinPoint, throwable")
 	public void afterThrowing(JoinPoint joinPoint, Throwable throwable) {
 		Class<? extends Object> clazz = joinPoint.getTarget().getClass();
-		String name = joinPoint.getSignature().getName();
-	    logger.log(LogLevel.ERROR, clazz, throwable, AFTER_THROWING, /* loggingHelper.getUserStamp(),*/ name, throwable.getMessage(), constructArgString(clazz, joinPoint.getArgs()));
-		logger.log(LogLevel.ERROR, clazz, throwable, AFTER_THROWING_NO_PARAMS, "request_id: " + currentUser.getRequestId()/*loggingHelper.getUserStamp()*/, name, throwable.getMessage());
+		String methodName = joinPoint.getSignature().getName();
+	    logger.log(LogLevel.ERROR, clazz, throwable, AFTER_THROWING, requestInfo.toString(),/* loggingHelper.getUserStamp(),*/ methodName, throwable.getMessage(), constructArgString(clazz, joinPoint.getArgs()));
+		logger.log(LogLevel.ERROR, clazz, throwable, AFTER_THROWING_NO_PARAMS, requestInfo.toString(), methodName, throwable.getMessage());
 	}
 
 	@AfterReturning(value = "@annotation(trace)", returning = "returnValue", argNames = "joinPoint, trace, returnValue")
 	public void afterReturning(JoinPoint joinPoint, Loggable loggable, Object returnValue) {
 		elapsedTime = System.currentTimeMillis() - startTimeStack.pop();
 		Class<? extends Object> clazz = joinPoint.getTarget().getClass();
-		String name = joinPoint.getSignature().getName();
+		String methodName = joinPoint.getSignature().getName();
 
 		if (joinPoint.getSignature() instanceof MethodSignature) {
 			MethodSignature signature = (MethodSignature) joinPoint.getSignature();
 			Class<?> returnType = signature.getReturnType();
 			if (returnType.getName().compareTo("void") == 0) {
-				logger.log(loggable.value(), clazz, null, AFTER_RETURNING_VOID, "request_id: " + currentUser.getRequestId()/*loggingHelper.getUserStamp()*/, name, elapsedTime);
+				logger.log(loggable.value(), clazz, null, AFTER_RETURNING_VOID, requestInfo.toString(), methodName, elapsedTime);
 				start = 0;
 				elapsedTime = 0;
 				return;
 			}
 		}
-		logger.log(loggable.value(), clazz, null, AFTER_RETURNING, "request_id: " + currentUser.getRequestId()/*loggingHelper.getUserStamp()*/, name, constructArgString(clazz, returnValue), elapsedTime);
+		logger.log(loggable.value(), clazz, null, AFTER_RETURNING, requestInfo.toString(), methodName, constructArgString(clazz, returnValue), elapsedTime);
 		start = 0;
 		elapsedTime = 0;
 	}
@@ -201,5 +176,27 @@ public class LoggingAspect {
 		*/
 		return buffer.toString();
 	}
-	
+
+	/**
+	 * This class is used to store the start times of nested method calls. These values are used to calculate the total
+	 * time it took to process the method.
+	 * 
+	 * 
+	 */
+	private class StartTimeStack extends Stack<Long> {
+		private static final long serialVersionUID = 1L;
+
+		public boolean add(Long time) {
+			return super.add(time);
+		}
+
+		public Long pop() {
+			Long lastTime = super.pop();
+			if (lastTime == null) {
+				return new Long(0);
+			} else {
+				return lastTime;
+			}
+		}
+	}
 }

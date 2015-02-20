@@ -221,9 +221,7 @@ public class ImsServiceImpl implements ImsService {
 	@Override
 	@Transactional(readOnly = false, propagation=Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ) 
 	public synchronized Ims updateItem(Ims itemFromInput){
-		//String itemCode = JsonUtil.validateItemCode(jsonObj);
-		//Ims itemFromInput = (Ims)JsonUtil.jsonObjectToPOJO(jsonObj, new Ims());
-		//itemFromInput.setItemcode(itemFromInput.getItemcode().toUpperCase());
+		itemFromInput.setItemcode(itemFromInput.getItemcode().toUpperCase());
      	Ims itemToUpdate = null;
 		Session session = getSession();	
 		try{

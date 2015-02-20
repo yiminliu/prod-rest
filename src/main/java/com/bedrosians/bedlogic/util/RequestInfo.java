@@ -8,33 +8,38 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequestScoped
-public class RequestInfoUtil implements Serializable{
+public class RequestInfo implements Serializable{
 	private static final long serialVersionUID = 321397721787L;
 	private String userName;
 	private AtomicLong requestId;
 	
-	public RequestInfoUtil(){}
+	public RequestInfo(){}
 	
-	public RequestInfoUtil(String userName, AtomicLong requestId) {
+	public RequestInfo(String userName, AtomicLong requestId) {
 		super();
 		this.userName = userName;
 		this.requestId = requestId;
 	}
 
-	public String getUserName() {
+	public synchronized String getUserName() {
 		return userName;
 	}
 
-	public void setUserName(String userName) {
+	public synchronized void setUserName(String userName) {
 		this.userName = userName;
 	}
 
-	public AtomicLong getRequestId() {
+	public synchronized AtomicLong getRequestId() {
 		return requestId;
 	}
 
-	public void setRequestId(AtomicLong requestId) {
+	public synchronized void setRequestId(AtomicLong requestId) {
 		this.requestId = requestId;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "User:" + userName + "<request_id:" + requestId + ">";
+	}
+
 }

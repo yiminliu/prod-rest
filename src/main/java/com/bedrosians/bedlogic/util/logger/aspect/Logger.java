@@ -1,5 +1,6 @@
 package com.bedrosians.bedlogic.util.logger.aspect;
 
+
 public interface Logger {
 
   boolean isLogLevel(LogLevel logLevel, Class<?> clazz);
