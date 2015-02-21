@@ -170,6 +170,7 @@ public class CacheTest {
 	}
 	
 	@Test
+	@SuppressWarnings("unchecked")
 	//@Transactional
 	public void testCacheWithProductOrigin(){
     	long startTime = System.currentTimeMillis();

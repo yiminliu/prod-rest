@@ -10,6 +10,17 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.DateBridge;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.NumericField;
+import org.hibernate.search.annotations.Resolution;
+import org.hibernate.search.annotations.Store;
+import org.hibernate.search.bridge.builtin.BigDecimalBridge;
 import org.springframework.format.annotation.DateTimeFormat;
 
 
@@ -36,6 +47,10 @@ public class Price implements java.io.Serializable {
 	public Price(){}
 	
 	@Column(name = "sellprice", precision = 9, scale = 4)
+	@Field(index=Index.YES, analyze=Analyze.NO, store=Store.NO)
+    @NumericField
+    @FieldBridge(impl = BigDecimalBridge.class)
+    private BigDecimal price;
 	public BigDecimal getSellprice() {
 		return this.sellprice;
 	}
@@ -81,6 +96,10 @@ public class Price implements java.io.Serializable {
 	}
 	
 	@Column(name = "tempprice", precision = 9, scale = 4)
+	@Field(index=Index.YES, analyze=Analyze.NO, store=Store.NO)
+    @NumericField
+    @FieldBridge(impl = BigDecimalBridge.class)
+	@DateBridge(resolution=Resolution.DAY)
 	public BigDecimal getTempprice() {
 		return this.tempprice;
 	}
@@ -92,6 +111,8 @@ public class Price implements java.io.Serializable {
 	@Temporal(TemporalType.DATE)
 	@Column(name = "tempdatefrom", length = 13)
 	@DateTimeFormat(pattern="MM/dd/yyyy")
+	@Field
+	@DateBridge(resolution=Resolution.DAY)
 	public Date getTempdatefrom() {
 		return this.tempdatefrom;
 	}

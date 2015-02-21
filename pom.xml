@@ -38,7 +38,7 @@
        <spring-security.version>3.2.4.RELEASE</spring-security.version>
        <aspectj.version>1.6.11</aspectj.version>
        <hibernate.version>4.3.5.Final</hibernate.version>
-       <hibernate-search.version>4.5.1.Final</hibernate-search.version>
+       <hibernate-search.version>4.5.3.Final</hibernate-search.version>
        <jackson.version>2.2.2</jackson.version>
        <skipTests>true</skipTests>
     </properties>
@@ -170,6 +170,13 @@
 	     <version>4.0.4.Final</version>
        </dependency>
         
+         <!-- Hibernate EhCache -->
+       <dependency>
+         <groupId>org.hibernate</groupId>
+         <artifactId>hibernate-ehcache</artifactId>
+         <version>${hibernate.version}</version>
+       </dependency>
+       
        <!-- Hibernate Search -->         
        <dependency>
          <groupId>org.hibernate</groupId>
@@ -181,18 +188,11 @@
          <artifactId>hibernate-search-analyzers</artifactId>
          <version>${hibernate-search.version}</version>
        </dependency>
-       <dependency>
+       <!--<dependency>
          <groupId>org.hibernate</groupId>
          <artifactId>hibernate-search-infinispan</artifactId>
          <version>${hibernate-search.version}</version>
-       </dependency>
-
-       <!-- Hibernate EhCache -->
-       <dependency>
-         <groupId>org.hibernate</groupId>
-         <artifactId>hibernate-ehcache</artifactId>
-         <version>${hibernate.version}</version>
-       </dependency>
+       </dependency>-->
        
        <!-- servlet -->
        <dependency>

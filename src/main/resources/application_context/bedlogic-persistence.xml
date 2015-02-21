@@ -64,8 +64,8 @@
                 <prop key="hibernate.search.default.directory_provider">${hibernate.search.default.directory_provider}</prop>
                 <prop key="hibernate.search.default.indexBase">${hibernate.search.default.indexBase}</prop>  
                 <prop key="hibernate.search.lucene_version">${hibernate.search.lucene_version}</prop>
-                <!--<prop key="hibernate.search.default.refresh">${hibernate.search.default.refresh}</prop>-->
-                <prop key="hibernate.search.indexing_strategy">manual</prop>
+                <prop key="hibernate.search.default.refresh">${hibernate.search.default.refresh}</prop>
+                <!--disable automatic indexing <prop key="hibernate.search.indexing_strategy">manual</prop>-->
             </props>  
         </property>  
     </bean>

@@ -1,11 +1,9 @@
 package com.bedrosians.bedlogic.resources.config;
 
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.ws.rs.ApplicationPath;
@@ -45,29 +43,15 @@ public class RequestInfoContainerFilter implements ContainerRequestFilter {
 		   MultivaluedMap<String,String> headers = containerRequestContext.getHeaders();
 		   List<String> authorizationList = (List<String>)headers.get("authorization");
 	       if (authorizationList != null && !authorizationList.isEmpty()){
-	           Map<String,String> authInfo = null;
-               String[] authorizationHeader = authorizationList.get(0).split(" ");
+	           String[] authorizationHeader = authorizationList.get(0).split(" ");
                if (authorizationHeader.length == 2 && SecurityContext.BASIC_AUTH.equalsIgnoreCase(authorizationHeader[0])){
                    Base64 decoder = new Base64();
                    byte[]      decodedBytes = decoder.decode(authorizationHeader[1].getBytes());
                    String      decodedString = new String(decodedBytes);
                    String[]    authInfoArray = decodedString.split(":");
-                   
-                   if (authInfoArray.length == 1) {
-                       authInfo = new HashMap<String,String>();
-                       authInfo.put("user", authInfoArray[0]);
-                       authInfo.put("password", "");
-                       requestInfo.setUserName(authInfoArray[0]);
-          			   containerRequestContext.setProperty("current_user_name", authInfoArray[0]);	
-                   }
-                   else if (authInfoArray.length == 2) {
-                      authInfo = new HashMap<String,String>();
-                      authInfo.put("user", authInfoArray[0]);
-                      authInfo.put("password", authInfoArray[1]);
-                      requestInfo.setUserName(authInfoArray[0]);
-         			  containerRequestContext.setProperty("current_user_name", authInfoArray[0]);
-                   }                
-              }
+                   requestInfo.setUserName(authInfoArray[0]);
+       			   containerRequestContext.setProperty("current_user_name", authInfoArray[0]);	
+               }
            }
 		}    
 }

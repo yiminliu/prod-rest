@@ -176,6 +176,7 @@ public class Ims implements java.io.Serializable {
 	}
 	
 	@Embedded
+	@IndexedEmbedded
 	public Price getPrice() {
 		return price;
 	}
