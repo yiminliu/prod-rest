@@ -20,7 +20,6 @@ import com.bedrosians.bedlogic.dao.ims.ImsDao;
 import com.bedrosians.bedlogic.domain.ims.IconCollection;
 import com.bedrosians.bedlogic.domain.ims.Ims;
 import com.bedrosians.bedlogic.domain.ims.ImsNewFeature;
-import com.bedrosians.bedlogic.domain.user.KeymarkUcUser;
 import com.bedrosians.bedlogic.service.ims.ImsService;
 import com.bedrosians.bedlogic.service.user.KeymarkUcUserService;
 
@@ -42,7 +41,7 @@ public class CacheTest {
 	
 	@Test
 	//@Transactional
-	public void testCacheWithProductId(){
+	public void testCacheWithItemCode(){
     	long startTime = System.currentTimeMillis();
     	long totalTime = 0l;
 		MultivaluedMap<String,String> params = new MultivaluedStringMap();
@@ -118,7 +117,7 @@ public class CacheTest {
 	
 	@Test
 	@Transactional
-	public void testCacheWithProductIdMatch(){
+	public void testCacheWithItemCodeMatch(){
     	long startTime = System.currentTimeMillis();
     	long totalTime = 0l;
 		MultivaluedMap<String,String> params = new MultivaluedStringMap();
@@ -138,7 +137,7 @@ public class CacheTest {
     	   e.printStackTrace();
         }
 	    totalTime = System.currentTimeMillis() - startTime;
-        System.out.println("1st query, total time: " + totalTime);
+        System.out.println("Finished 1st query, # of items retrieved: "+ items.size() + ". total time: " + totalTime);
 	    System.out.println("1st round Statistics().getConnectCount() = "  + sessionFactory.getStatistics().getConnectCount());
 	    System.out.println("1st round Statistics().getEntityFetchCount() = "  + sessionFactory.getStatistics().getEntityFetchCount()); //Prints 1
         System.out.println("1st round Statistics().getSecondLevelCacheHitCount() = " + sessionFactory.getStatistics().getSecondLevelCacheHitCount()); //Prints 0
@@ -166,19 +165,19 @@ public class CacheTest {
           session.close();
         }  
 	    totalTime = System.currentTimeMillis() - startTime;
-        System.out.println("Finished. 2nd query total time: " + totalTime);
+        System.out.println("Finished 2nd query. # of items retrieved: "+ items.size() + ". total time: " + totalTime);
 	}
 	
 	@Test
 	@SuppressWarnings("unchecked")
 	//@Transactional
-	public void testCacheWithProductOrigin(){
+	public void testCacheWithItemOrigin(){
     	long startTime = System.currentTimeMillis();
     	long totalTime = 0l;
 		MultivaluedMap<String,String> params = new MultivaluedStringMap();
 		//params.put("inactivecode", Arrays.asList(new String[]{"N"}));
 		params.put("origin", Arrays.asList(new String[]{"USA"}));
-		params.put("maxResults", Arrays.asList(new String[]{"500"}));
+		//params.put("maxResults", Arrays.asList(new String[]{"500"}));
 		Session session = sessionFactory.openSession();
 		List<Ims> items = null;
 	    try{
@@ -194,8 +193,7 @@ public class CacheTest {
     	   e.printStackTrace();
         }
 	    totalTime = System.currentTimeMillis() - startTime;
-        System.out.println("Finished 1st query, total time: " + totalTime);
-	    System.out.println("1st round retrieved # of item = " + items.size());
+        System.out.println("Finished 1st query, # of items retrieved: "+ items.size() + ". total time: " + totalTime);
 	    System.out.println("1st round Statistics().getConnectCount() = "  + sessionFactory.getStatistics().getConnectCount());
 	    System.out.println("1st round Statistics().getEntityFetchCount() = "  + sessionFactory.getStatistics().getEntityFetchCount()); //Prints 1
         System.out.println("1st round Statistics().getSecondLevelCacheHitCount() = " + sessionFactory.getStatistics().getSecondLevelCacheHitCount()); //Prints 1
@@ -217,7 +215,6 @@ public class CacheTest {
 	    }
 		finally
         {
-		  System.out.println("1st round retrieved # of item = " + items.size());
 	      System.out.println("Statistics().getConnectCount() = "  + sessionFactory.getStatistics().getConnectCount());
 	      System.out.println("Statistics().getTransactionCount() = "  + sessionFactory.getStatistics().getTransactionCount());
 	  	  System.out.println("Statistics().getEntityFetchCount() = "  + sessionFactory.getStatistics().getEntityFetchCount()); //Prints 1
@@ -226,7 +223,7 @@ public class CacheTest {
           session.close();
         } 
 	    totalTime = System.currentTimeMillis() - startTime;
-        System.out.println("Finished. 2nd query total time: " + totalTime);
+	    System.out.println("Finished 2nd query, # of items retrieved: "+ items.size() + ". total time: " + totalTime);
 	}
 	
 	@Test

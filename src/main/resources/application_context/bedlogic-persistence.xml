@@ -58,7 +58,8 @@
                 <prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop>
                 <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>  
                 <prop key="hibernate.cache.ehcache.configurationResourceName">/ehcache.xml</prop>
-                <prop key="hibernate.cache.use_structured_entries">${hibernate.cache.use_structured_entries}</prop>     
+                <prop key="hibernate.cache.use_structured_entries">${hibernate.cache.use_structured_entries}</prop>  
+                <!--useful for debugging-->   
                 <prop key="hibernate.cache.generate_statistics">${hibernate.cache.generate_statistics}</prop> 
                 <!--  Hibernate Search -->
                 <prop key="hibernate.search.default.directory_provider">${hibernate.search.default.directory_provider}</prop>
