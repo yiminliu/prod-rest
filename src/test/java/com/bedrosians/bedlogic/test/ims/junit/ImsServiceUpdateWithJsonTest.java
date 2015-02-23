@@ -34,7 +34,7 @@ public class ImsServiceUpdateWithJsonTest {
 	@Autowired
 	ImsService imsService;
 	
-	private String id = "TEST";
+	private String id = "TEST3";
 	
  	
 	@Before
@@ -409,21 +409,20 @@ public class ImsServiceUpdateWithJsonTest {
 	        } 
 	        assertEquals("GREEN",item.getColorcategory());
 	 }
-	 
-	 //@Test
+	*/ 
+	 @Test
 	 public void testUpdateItemWithMultipleColorHuesJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithColorHues: ");
-	        JSONObject params = new JSONObject(jStringWithMultipleColorHues);
-	        productService.updateItem(JsonUtil.toObjectNode(params));
+	        imsService.updateItem(jStringWithMultipleColorHues);
 	        
-	        Ims item = productService.getItem(id);
+	        Ims item = imsService.getItem(id);
 	        for(ColorHue colorHue : item.getColorhues()){
-	            assertTrue("BEIGE".equals(colorHue.getColorHue()) || "RED".equals(colorHue.getColorHue()));
+	            assertTrue("PINK".equals(colorHue.getColorHue()) || "RED".equals(colorHue.getColorHue()) || "CLEAR".equals(colorHue.getColorHue()) || "TAN".equals(colorHue.getColorHue()));
 	            assertTrue(item.getColorcategory().contains(colorHue.getColorHue()));
 	        } 
-	        assertTrue("BEIGE".equals(item.getColorcategory()) || "RED".equals(item.getColorcategory()));
+	        assertTrue("PINK".equals(item.getColorcategory()) || "RED".equals(item.getColorcategory()) || "CLEAR".equals(item.getColorcategory()) || "TAN".equals(item.getColorcategory()));
 	 }
-*/	 
+	 
 	 @Test
 	 public void testUpdateItemWithNewFeatureByJsonObject() throws Exception {
 	        System.out.println("testUpdateItemWithJsonObject: ");
@@ -626,7 +625,7 @@ public class ImsServiceUpdateWithJsonTest {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        //JSONObject params = new JSONObject(jStringFullItemAndAssociationInfo);
 	        //imsService.updateItem(JsonUtil.toObjectNode(params));
-	        imsService.updateItem(JsonUtil.jsonStringToPOJO(jStringFullItemAndAssociationInfo));
+	        imsService.updateItem(jStringFullItemAndAssociationInfo);
 	        	        
 	        Ims item = imsService.getItem(id);
 	        
@@ -820,7 +819,7 @@ public class ImsServiceUpdateWithJsonTest {
     		+ "}";
  
 	 String jStringWithMultipleColorHues = 
-		     "{\"itemcode\":\"newItemcode\","
+		     "{\"itemcode\":\"TEST3\","
 		    + "\"itemcategory\":\"ATHENA\","
  		    + "\"countryorigin\":\"Italy\","
  		    + "\"inactivecode\":\"N\","
@@ -828,8 +827,8 @@ public class ImsServiceUpdateWithJsonTest {
  			+ "\"itemtypecode\":\"#\","
  			+ "\"abccode\":\"C\","
  			+ "\"itemcode2\":\"\","
- 			+ "\"colorhues\":[\"PINK\", \"RED\", \"CLEAR\", \"TAN\"],"
-    		+ "\"priorVendor\":null}";
+ 			+ "\"colorhues\":[\"PINK\", \"RED\", \"CLEAR\", \"TAN\"]"
+    		+ "}";
  
 	 
 	 String jStringWithColorCategory = 
@@ -1135,7 +1134,7 @@ public class ImsServiceUpdateWithJsonTest {
 	 
 	 String jStringFullItemAndAssociationInfo = 
 			    //basic info
-			     "{\"itemcode\":\"NEWITEMCODE\","
+			     "{\"itemcode\":\"TEST3\","
 			    + "\"itemcategory\":\"ATHENA\","
 			    + "\"countryorigin\":\"Italy\","
 			    + "\"inactivecode\":\"N\","
@@ -1179,13 +1178,15 @@ public class ImsServiceUpdateWithJsonTest {
 	    		//------ associations ------//
 	    		+ "\"colorhues\":[\"BEIGE\",\"YELLOW\"],"
 		    	//"\"vendors\":{\"vendornbr\":0,\"vendornbr1\":134585,\"vendornbr2\":0,\"vendornbr3\":0,\"vendorxrefcd\":\"ATM40\",\"vendorlistprice\":4.1500,\"vendorpriceunit\":\"SHT\",\"vendorfob\":\"\",\"vendordiscpct\":0.0,\"vendorroundaccuracy\":2,\"vendornetprice\":4.1500,\"vendormarkuppct\":0.0,\"vendorfreightratecwt\":0.0,\"dutypct\":0.0,\"leadtime\":60,\"vendorLandedBaseCost\":4.1500,\"vendordiscpct2\":0.0,\"vendordiscpct3\":0.0},
-	    		+ "\"newVendorSystem\":[{\"vendorOrder\":1,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorNetPrice\":4.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"id\":134585},"
-	    		+ "                     {\"vendorOrder\":2,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorNetPrice\":4.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"id\":302871},"
-	    		+ "                     {\"vendorOrder\":3,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"ATM40\",\"vendorListPrice\":4.1500,\"vendorNetPrice\":4.1500,\"vendorPriceUnit\":\"SHT\",\"vendorFob\":\"\",\"vendorDiscountPct\":0.0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0.0,\"vendorFreightRateCwt\":0.0,\"vendorLandedBaseCost\":4.1500,\"leadTime\":60,\"dutyPct\":0.0,\"version\":null,\"id\":529554},"
- 		        + "                     ],"
-	    		+ "\"newFeature\":{\"grade\":\"Third\",\"status\":\"BEST\",\"body\":\"Red_Body\",\"edge\":\"Tumbled\",\"mpsCode\":\"Drop\",\"designLook\":\"Wood\",\"designStyle\":\"Modern\",\"surfaceApplication\":\"Silk\",\"surfaceType\":\"Cross_Cut\",\"surfaceFinish\":\"Antiquated\",\"warranty\":3,\"recommendedGroutJointMin\":\"1\",\"recommendedGroutJointMax\":\"2\",\"launchedDate\":null,\"droppedDate\":null,\"lastModifiedDate\":null},"
+	    		+ "\"newVendorSystem\":"
+	    		+ "["
+		   		+ "{\"vendorId\":{\"id\":544394},\"vendorOrder\":1,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"K822751R\",\"vendorListPrice\":12.7,\"vendorNetPrice\":12.7,\"vendorPriceUnit\":\"S/M\",\"vendorFob\":\"\",\"vendorDiscountPct\":0,\"vendorPriceRoundAccuracy\":2,\"vendorMarkupPct\":0,\"vendorFreightRateCwt\":0,\"vendorLandedBaseCost\":12.7,\"leadTime\":0,\"dutyPct\":0},"
+		   		+ "{\"vendorId\":{\"id\":null},\"vendorOrder\":2,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"\",\"vendorListPrice\":0,\"vendorNetPrice\":null,\"vendorPriceUnit\":\"0\",\"vendorFob\":\"\",\"vendorDiscountPct\":null,\"vendorPriceRoundAccuracy\":null,\"vendorMarkupPct\":0,\"vendorFreightRateCwt\":0,\"vendorLandedBaseCost\":0,\"leadTime\":null,\"dutyPct\":null},"
+		   		+ "{\"vendorId\":{\"id\":null},\"vendorOrder\":3,\"vendorName\":null,\"vendorName2\":null,\"vendorXrefId\":\"\",\"vendorListPrice\":0,\"vendorNetPrice\":null,\"vendorPriceUnit\":\"0\",\"vendorFob\":\"\",\"vendorDiscountPct\":null,\"vendorPriceRoundAccuracy\":null,\"vendorMarkupPct\":0,\"vendorFreightRateCwt\":0,\"vendorLandedBaseCost\":0,\"leadTime\":null,\"dutyPct\":null}"
+		   		+ "]"
+	    		+ "\"newFeature\":{\"grade\":\"Third\",\"status\":\"Best\",\"body\":\"Red_Body\",\"edge\":\"Tumbled\",\"mpsCode\":\"Drop\",\"designLook\":\"Wood\",\"designStyle\":\"Modern\",\"surfaceApplication\":\"Silk\",\"surfaceType\":\"Cross_Cut\",\"surfaceFinish\":\"Antiquated\",\"warranty\":3,\"recommendedGroutJointMin\":\"1\",\"recommendedGroutJointMax\":\"2\",\"launchedDate\":null,\"droppedDate\":null,\"lastModifiedDate\":null},"
 	    		//+ "\"newNoteSystem\":[{\"noteType\":\"po\",\"note\":\"test Po note new \",\"lastModifiedDate\":null},{\"noteType\":\"buyer\",\"note\":\"test buyer note\",\"lastModifiedDate\":null},{\"noteType\":\"invoice\",\"note\":\"test invoice note\",\"lastModifiedDate\":null},{\"noteType\":\"additional\",\"note\":\"test additional note\",\"lastModifiedDate\":null},{\"noteType\":\"internal\",\"note\":\"test internal note\",\"lastModifiedDate\":null}],"
-	    		+ "\"iconDescription\":{\"madeInCountry\":\"China\",\"exteriorProduct\":false,\"adaAccessibility\":false,\"throughColor\":false,\"colorBody\":true,\"inkJet\":false,\"glazed\":true,\"unglazed\":false,\"rectifiedEdge\":true,\"chiseledEdge\":false,\"versaillesPattern\":true,\"recycled\":false,\"postRecycled\":true,\"preRecycled\":false,\"leadPoint\":true,\"greenFriendly\":false,\"coefficientOfFriction\":true},"
+	    		+ "\"iconDescription\":{\"madeInCountry\":\"China\",\"exteriorProduct\":false,\"adaAccessibility\":false,\"throughColor\":false,\"colorBody\":true,\"inkJet\":false,\"glazed\":true,\"unglazed\":false,\"rectifiedEdge\":true,\"chiseledEdge\":false,\"versaillesPattern\":true,\"recycled\":false,\"postRecycled\":true,\"preRecycled\":false,\"leadPoint\":true,\"greenFriendly\":false,\"coefficientOfFriction\":true}"
 		        + "}";
 	 
 	 String jStringWithNewVendorSystem2 = 
@@ -1281,7 +1282,7 @@ public class ImsServiceUpdateWithJsonTest {
 			                    {"vendorOrder":2,"vendorName":null,"vendorName2":null,"vendorXrefId":"","vendorListPrice":0,"vendorNetPrice":null,"vendorPriceUnit":"0","vendorFob":"","vendorDiscountPct":null,"vendorPriceRoundAccuracy":null,"vendorMarkupPct":0,"vendorFreightRateCwt":0,"vendorLandedBaseCost":0,"leadTime":null,"dutyPct":null,"id":null},
 			                    {"vendorOrder":3,"vendorName":null,"vendorName2":null,"vendorXrefId":"","vendorListPrice":0,"vendorNetPrice":null,"vendorPriceUnit":"0","vendorFob":"","vendorDiscountPct":null,"vendorPriceRoundAccuracy":null,"vendorMarkupPct":0,"vendorFreightRateCwt":0,"vendorLandedBaseCost":0,"leadTime":null,"dutyPct":null,"id":null},
 			                    {"vendorOrder":null,"vendorName":null,"vendorName2":null,"vendorXrefId":null,"vendorListPrice":0,"vendorNetPrice":null,"vendorPriceUnit":null,"vendorFob":"","vendorDiscountPct":null,"vendorPriceRoundAccuracy":null,"vendorMarkupPct":0,"vendorFreightRateCwt":0,"vendorLandedBaseCost":0,"leadTime":null,"dutyPct":null,"id":null}],
-			                    "newFeature":{"grade":null,"status":"BEST","body":null,"edge":null,"mpsCode":"New_Product","designLook":null,"designStyle":null,"surfaceApplication":null,"surfaceType":null,"surfaceFinish":null,"warranty":null,"recommendedGroutJointMin":null,"recommendedGroutJointMax":null,"createdDate":1422921600000,"launchedDate":null,"droppedDate":null,"lastModifiedDate":null},
+			                    "newFeature":{"grade":null,"status":"Best","body":null,"edge":null,"mpsCode":"New_Product","designLook":null,"designStyle":null,"surfaceApplication":null,"surfaceType":null,"surfaceFinish":null,"warranty":null,"recommendedGroutJointMin":null,"recommendedGroutJointMax":null,"createdDate":1422921600000,"launchedDate":null,"droppedDate":null,"lastModifiedDate":null},
 			                    "iconDescription":{"madeInCountry":null,"exteriorProduct":null,"adaAccessibility":null,"throughColor":null,"colorBody":null,"inkJet":null,"glazed":null,"unglazed":null,"rectifiedEdge":null,"chiseledEdge":null,"versaillesPattern":null,"recycled":null,"postRecycled":null,"preRecycled":null,"leadPoint":null,"greenFriendly":null,"coefficientOfFriction":null},
 			                    "colorhues":[{"colorHue":"CLEAR"}]}
      */
