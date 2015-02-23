@@ -557,6 +557,8 @@ public class ImsServiceImpl implements ImsService {
 		       }	   
 		  }
 	  }
+	  if(itemToDB.getColorhues() != null && !itemToDB.getColorhues().isEmpty())
+		 itemToDB.setColorcategory(ImsDataUtil.convertColorHuesToColorCategory(itemToDB.getColorhues()));
 	}
    
    private static synchronized void transferNewVendorSystem(Ims itemToDB, Ims itemFromInput, DBOperation operation) {

@@ -293,8 +293,8 @@ public class ImsDataTransferUtil {
 			if(operation.equals(DBOperation.UPDATE)) itemToDB.setPriorlastupdated(new Date());
 			if(itemFromInput.getColorcategory() != null && !itemFromInput.getColorcategory().isEmpty())
 				itemToDB.setColorcategory(itemFromInput.getColorcategory());
-			else if(itemFromInput.getColorhues() != null || !itemFromInput.getColorhues().isEmpty())
-			   	itemToDB.setColorcategory(ImsDataUtil.convertColorHuesToColorCategory(itemFromInput.getColorhues()));
+			//else if(itemFromInput.getColorhues() != null && !itemFromInput.getColorhues().isEmpty())
+			//   	itemToDB.setColorcategory(ImsDataUtil.convertColorHuesToColorCategory(itemFromInput.getColorhues()));
 			
 			//if(itemFromInput.getSubtype() != null) itemToDB.setSubtype(itemFromInput.getSubtype());
 			//if(itemFromInput.getType() != null) itemToDB.setType(itemFromInput.getType());
