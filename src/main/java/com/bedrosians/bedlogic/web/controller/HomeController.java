@@ -55,9 +55,9 @@ public class HomeController {
 	 	public ModelAndView handleDatabaseSchemaException(DatabaseSchemaException ex) {
 	  
 	 		ModelAndView model = new ModelAndView("/exception/exception");
-	 		model.addObject("errorCode", ex.getErrorCode());
+	 		model.addObject("errorCode", ex.getHttpErrorCode());
 	 		model.addObject("errorType", ex.getErrorType());
-	 		model.addObject("errorMessage", ex.getErrorMessage());
+	 		model.addObject("errorMessage", ex.getMessage());
 	 		model.addObject("rootErrorMessage", ex.getRootErrorMessage());
 	 		model.addObject("error", ex);
 	 		model.addObject("rootError", ex.getRootError());
@@ -69,8 +69,9 @@ public class HomeController {
 	public ModelAndView handleDataOperationException(DatabaseOperationException ex) {
  
 		ModelAndView model = new ModelAndView("/exception/exception");
-		model.addObject("errorCode", ex.getErrorCode());
-		model.addObject("errorMessage", ex.getErrorMessage());
+		model.addObject("errorCode", ex.getHttpErrorCode());
+ 		model.addObject("errorType", ex.getErrorType());
+ 		model.addObject("errorMessage", ex.getMessage());
 		model.addObject("error", ex.getRootError());
  
 		return model;

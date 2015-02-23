@@ -5,34 +5,52 @@ import java.io.Serializable;
 public class BedException extends RuntimeException  implements Serializable
 {
 	protected static final long serialVersionUID = -34724706273251377L;
-	protected String errorCode;
+	protected Integer httpErrorCode;
+	protected String httpMessage;
+	protected String appErrorCode;
 	protected String errorType;
-	protected String errorMessage;
+	protected String message;
 	protected String rootErrorMessage;
 	protected Throwable rootError;
     
     public BedException() {
     	super();
     }
-    
+       
     public BedException(String message) { 
-       errorMessage = (errorType == null) ? "" : errorType + ": " + message + "\n\r";
+    	this();
+        this.message = message;
     }
     
-    public BedException(String message, Throwable rootError) { 
+    public BedException(String message, Throwable rootError) {
+    	this(message);
     	if(rootError != null)
-    	   errorMessage = message + " Cause: " + rootError.getMessage();
-    	else
-    	   errorMessage = message + "\n\r";
-    	this.rootError = rootError;
+    	   this.message = message;
+     	this.rootError = rootError;
     }
-
-	public String getErrorCode() {
-		return errorCode;
+    
+	public Integer getHttpErrorCode() {
+		return httpErrorCode;
 	}
 
-	public void setErrorCode(String errorCode) {
-		this.errorCode = errorCode;
+	public void setHttpErrorCode(Integer httpErrorCode) {
+		this.httpErrorCode = httpErrorCode;
+	}
+
+	public String getHttpMessage() {
+		return httpMessage;
+	}
+
+	public void setHttpMessage(String httpMessage) {
+		this.httpMessage = httpMessage;
+	}
+
+	public String getAppErrorCode() {
+		return appErrorCode;
+	}
+
+	public void setAppErrorCode(String appErrorCode) {
+		this.appErrorCode = appErrorCode;
 	}
 
 	public String getErrorType() {
@@ -44,12 +62,12 @@ public class BedException extends RuntimeException  implements Serializable
 		this.errorType = errorType;
 	}
 
-	public String getErrorMessage() {
-		return errorMessage;
+	public String getMessage() {
+		return message;
 	}
 
-	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 	public String getRootErrorMessage() {

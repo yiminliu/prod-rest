@@ -16,15 +16,16 @@ import com.bedrosians.bedlogic.domain.ims.embeddable.Material;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Price;
 import com.bedrosians.bedlogic.domain.ims.embeddable.TestSpecification;
 import com.bedrosians.bedlogic.domain.ims.embeddable.Units;
-import com.bedrosians.bedlogic.service.mvc.ims.ImsServiceMVC;
+import com.bedrosians.bedlogic.exception.InputParamException;
 import com.bedrosians.bedlogic.util.enums.DBOperation;
+import com.bedrosians.bedlogic.util.ims.ImsDBUtil;
 
 
 @Component
 public class ImsValidator implements Validator {
 	
 	@Autowired
-	private ImsServiceMVC imsService;
+	private ImsDBUtil imsDBUtil;
 	
 	@Override
 	public boolean supports(Class<?> myClass) {
@@ -60,10 +61,10 @@ public class ImsValidator implements Validator {
 	 }
 	 
 	 private void checkItemCodeAvailability(String itemCode, DBOperation action, Errors errors) {
-	    if(imsService.itemCodeIsTaken(itemCode) && (action.equals(DBOperation.CREATE)  || action.equals(DBOperation.CLONE))) 
+	    if(imsDBUtil.itemCodeIsTaken(itemCode) && (action.equals(DBOperation.CREATE)  || action.equals(DBOperation.CLONE))) 
 	       errors.rejectValue("itemcode", "item.itemcode.taken", "Item code is taken, please use a different item code");
-	    else if(!imsService.itemCodeIsTaken(itemCode) && (action.equals(DBOperation.UPDATE) || action.equals(DBOperation.DELETE) || action.equals(DBOperation.SEARCH)))		
-		   errors.rejectValue("itemcode", "item.itemcode.not_found", "No item found for this item code. Try again.");
+	    //else if(!(imsDBUtil.itemCodeIsTaken(itemCode)) && /*(action.equals(DBOperation.UPDATE) ||*/ (action.equals(DBOperation.DELETE) || action.equals(DBOperation.SEARCH)))		
+		//   errors.rejectValue("itemcode", "item.itemcode.not_found", "No item found for this item code. Try again.");
 	 }
 	 
 	 private void checkItemDescription(String data, Errors errors) {
@@ -149,44 +150,36 @@ public class ImsValidator implements Validator {
 		 }		 		 
 	 }
 	 
-	 public void validateVendorInfo(Ims item, Errors errors) {
+	 public void validateVendorInfo(Ims item, String dbOperation, Errors errors) {
 		 List<Vendor> data = item.getNewVendorSystem();
 		 Units units = item.getUnits();
 		 if (data != null && !data.isEmpty()) {
 			 Vendor vendor1 = data.get(0);
-			 if(vendor1 != null && vendor1.getVendorId() != null)
+			 if(vendor1 != null && vendor1.getVendorId() != null && !("update".equalsIgnoreCase(dbOperation)))
 			    validateVendorId(vendor1.getVendorId().getId(), errors);
-			 //if(data.get(0) != null && data.get(0).getVendorId().getId() == null)
-				 
-	         //  errors.rejectValue("vendor.newVendorSystem[0].vendirId.id", "item.newVendorSystem[0].vendirId.id.null", "Please enter a valid number number");
 			 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorPriceUnit", "required.item.newVendorSystem[\"0\"].vendorPriceUnit", "Required.");
 			 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorListPrice", "required.item.newVendorSystem[\"0\"].vendorListPrice", "Required.");
 			 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorDiscountPct", "required.item.newVendorSystem[\"0\"].vendorDiscountPct", "Required.");
 			 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorPriceRoundAccuracy", "required.item.newVendorSystem[\"0\"].vendorPriceRoundAccuracy", "Required.");
 			 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorMarkupPct", "required.item.newVendorSystem[\"0\"].vendorMarkupPct", "Required.");
 			 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorFreightRateCwt", "required.item.newVendorSystem[\"0\"].vendorFreightRateCwt", "Required.");
-			 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorMarkupPct", "required.item.newVendorSystem[\"0\"].vendorMarkupPct", "Required.");
-			 //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorNetPrice", "required.item.newVendorSystem[\"0\"].vendorNetPrice", "Required.");
-			 //ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorLandedBaseCost", "required.item.newVendorSystem[\"0\"].vendorLandedBaseCost", "Required.");
-			
-			 if((vendor1.getVendorPriceUnit() == null) ||
+		     if((vendor1.getVendorPriceUnit() == null) ||
 			    (!vendor1.getVendorPriceUnit().equals(units.getBaseunit()) && 
 			     !vendor1.getVendorPriceUnit().equals(units.getUnit1unit()) && 
 			     !vendor1.getVendorPriceUnit().equals(units.getUnit2unit()) && 
 			     !vendor1.getVendorPriceUnit().equals(units.getUnit3unit()) && 
 			     !vendor1.getVendorPriceUnit().equals(units.getUnit4unit()))){
-				 errors.rejectValue("newVendorSystem[\"0\"].vendorPriceUnit", "item.newVendorSystem[\"0\"].vendorPriceUnit", "Vendor price unit should match one of the packageing units");
+				 errors.rejectValue("newVendorSystem[\"0\"].vendorPriceUnit", "item.newVendorSystem[\"0\"].vendorPriceUnit", "Vendor price unit should match one of the packaging units");
 			 }
-			// if((vendor1.getVendorPriceUnit() == null) ||
-			//		    (vendor1.getVendorPriceUnit().equals(units.getBaseunit()) && vendor1.getVendorFreightRateCwt()
-			//		     vendor1.getVendorPriceUnit().equals(units.getUnit1unit()) &&
-			 
+	  	     if(vendor1.getVendorPriceRoundAccuracy() == null || vendor1.getVendorPriceRoundAccuracy() < 0 || vendor1.getVendorPriceRoundAccuracy() > 100){
+	  	    	errors.rejectValue("newVendorSystem[\"0\"].vendorPriceRoundAccuracy", "required.item.newVendorSystem[\"0\"].vendorPriceRoundAccuracy", "Vendor round accuracy should be 0 to 100.");   
+	  	     }
 		 }
 	 }
 	 
 	 public void validateVendorId(Integer id, Errors errors) {
 		 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newVendorSystem[\"0\"].vendorId.id", "required.item.newVendorSystem[\"0\"].vendorId.id", "Required.");
-		 if(id != null && !imsService.validateVendorId(id))
+		 if(id != null && !imsDBUtil.validateVendorId(id))
 			 errors.rejectValue("newVendorSystem[\"0\"].vendorId.id", "item.newVendorSystem[0].vendorId.id.invalid", "Invalid Vendor number."); 
 	 }
 	 

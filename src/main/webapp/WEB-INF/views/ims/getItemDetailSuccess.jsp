@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/includes/doctype.jsp"%>
 <%@ include file="/WEB-INF/includes/styles.jsp"%>
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
   <title>Item Detail</title>
 </head>
@@ -209,7 +209,6 @@
                       <tr>
                          <td>${vendor.vendorOrder}</td>
                          <td style="color : red"><a id="keymarkVendoDetail" href="<spring:url value="/ims/getKeymarkVendorDetail/${vendor.vendorId.id}" />">${vendor.vendorId.id}</a></td>
-                         <!--<td>${vendor.vendorId.id}</td>-->
                          <!--<td>${vendor.vendorName}</td>
                          <td>${vendor.vendorName2}</td>-->
                          <td>${vendor.vendorXrefId}</td>

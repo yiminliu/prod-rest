@@ -45,7 +45,7 @@ public class ColorHue implements java.io.Serializable {
 	
 	@JsonIgnore
 	@Id
-	@Column(name = "id", unique = true, nullable = false)
+	@Column(name = "ims_color_hue_id", unique = true, nullable = false)
 	@GeneratedValue(strategy=GenerationType.AUTO, generator="ims_color_hue_id_seq_gen")
 	@SequenceGenerator(name="ims_color_hue_id_seq_gen", sequenceName="ims_color_hue_id_seq")
 	@DocumentId
@@ -59,8 +59,8 @@ public class ColorHue implements java.io.Serializable {
 
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "item_code")
-	//@ContainedIn
+	@JoinColumn(name = "item_code", nullable=false)
+	@ContainedIn
 	public Ims getItem() {
 		return this.item;
 	}
@@ -121,7 +121,7 @@ public class ColorHue implements java.io.Serializable {
 		final int prime = 31;
 		int result = 7 + ((id == null)? 0 : id.intValue());
 		result = prime * (result == 0? 1 : result) + ((colorHue == null) ? 0 : colorHue.hashCode());
-		result = prime * result + ((item == null) ? 0 : item.getItemcode().hashCode());
+		result = prime * result + ((item == null) ? 0 : ((item.getItemcode()==null) ? 0 : item.getItemcode().trim().hashCode()));
 		return result;
 	}
 
@@ -142,9 +142,13 @@ public class ColorHue implements java.io.Serializable {
 		if (item == null) {
 			if (other.item != null)
 				return false;
-		} else if (item.getItemcode() != null && other.item != null && !item.getItemcode().equals(other.item.getItemcode()))
+		} else if (item.getItemcode() != null && other.item != null && !item.getItemcode().trim().equals(other.item.getItemcode().trim()))
 			return false;
 		return this.getId() == other.getId();
 	}
 
+	@Override
+	public String toString() {
+		return "ColorHue [colorHue=" + colorHue + "]";
+	}	
 }

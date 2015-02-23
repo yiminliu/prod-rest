@@ -10,7 +10,7 @@ public class DatabaseSchemaException extends BedException {
 	
     public DatabaseSchemaException() { 
     	super();
-    	this.errorMessage = "Database Schema Error"; 
+    	this.message = "Database Schema Error"; 
     	if(errorType == null)
     	   errorType = "DatabaseSchemaException"; 	
     }

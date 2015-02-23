@@ -63,12 +63,12 @@ public class Vendor implements java.io.Serializable {
 		this.vendorId = vendorId;
 	}
 	
-	@JsonIgnore
+	//@JsonIgnore
 	//@IndexedEmbedded
 	@EmbeddedId
-	@AttributeOverrides({
-		@AttributeOverride(name = "itemCode", column = @Column(name = "item_code", nullable = false, length = 20)),
-		@AttributeOverride(name = "id", column = @Column(name = "vendor_id", nullable = false, precision = 10, scale = 0)) })
+	//@AttributeOverrides({
+		//@AttributeOverride(name = "itemCode", column = @Column(name = "item_code", nullable = false, length = 20)),
+		//@AttributeOverride(name = "id", column = @Column(name = "vendor_id", nullable = false, precision = 10, scale = 0)) })
     public VendorId getVendorId() {
 		return this.vendorId;
 	}
@@ -90,6 +90,7 @@ public class Vendor implements java.io.Serializable {
 	}
 
 	@JsonIgnore
+	//@OneToOne(fetch = FetchType.EAGER)
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="vendor_id", insertable = false, updatable = false)
 	public KeymarkVendor getKeymarkVendor() {
@@ -98,15 +99,6 @@ public class Vendor implements java.io.Serializable {
 
 	public void setKeymarkVendor(KeymarkVendor keymarkVendor) {
 		this.keymarkVendor = keymarkVendor;
-	}
-
-	@Transient
-	public Integer getId(){
-		return this.vendorId.getId();
-	}
-	
-	public void setId(Integer id){
-	   this.vendorId.setId(id);
 	}
 	
 	@Column(name = "vendor_order", length = 2)
@@ -200,7 +192,7 @@ public class Vendor implements java.io.Serializable {
 		this.leadTime = leadTime;
 	}
 
-	@Column(name = "landed_base_cost", precision = 13, scale = 6, updatable=false)
+	@Column(name = "landed_base_cost")
 	public BigDecimal getVendorLandedBaseCost() {
 		return this.vendorLandedBaseCost;
 	}
@@ -238,7 +230,6 @@ public class Vendor implements java.io.Serializable {
 		this.version = version;
 	}
 	
-
 	@Transient
 	public String getVendorName() {
 		return vendorName;
@@ -331,12 +322,11 @@ public class Vendor implements java.io.Serializable {
 		return Arrays.asList("vendorId", "vendorName", "vendorXrefId", "vendorPriceUnit", "vendorFob", "vendorlistprice", "vendorNetPrice", "vendorDiscountPct", 
 				               "vendorPriceRoundAccuracy" , "leadTime", "vendorFreightRateCwt", "dutyPct");
 	}
-
 	
 	@JsonIgnore
 	@Transient
 	public boolean isEmpty(){
-		return vendorId == null;
+		return vendorId == null || ((vendorId.getId() == null || vendorId.getId() == 0) && (vendorId.getItemCode() == null || vendorId.getItemCode().trim().isEmpty()));
 		//&& vendorName == null && vendorXrefId == null && vendorListPrice == null && 
 		//	   vendorNetPrice == null && vendorPriceUnit == null && vendorFob == null;
 	}
@@ -344,7 +334,7 @@ public class Vendor implements java.io.Serializable {
 	@Override
 	public String toString() {
 		return "Vendor ["
-				+ "vendorId=" + vendorId.getId() 
+				+ "vendorId=" + vendorId 
 				+ ", vendorName=" + vendorName
 				+ ", vendorName2=" + vendorName2 
 				+ ", vendorXrefId=" + vendorXrefId 

@@ -19,7 +19,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.Version;
-//import javax.validation.constraints.Size;
 
 import javax.validation.constraints.Size;
 
@@ -32,7 +31,6 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Analyzer;
-import org.hibernate.search.annotations.AnalyzerDef;
 import org.hibernate.search.annotations.Boost;
 import org.hibernate.search.annotations.DocumentId;
 import org.hibernate.search.annotations.Field;
@@ -61,7 +59,7 @@ import com.bedrosians.bedlogic.domain.ims.embeddable.VendorInfo;
 import com.bedrosians.bedlogic.util.ims.ImsDataUtil;
 
 
-@JsonRootName(value = "ims")
+@JsonRootName(value="item")
 @Component
 @Entity
 @Table(name = "ims", schema = "public")
@@ -101,7 +99,7 @@ public class Ims implements java.io.Serializable {
 	private String productline;
 	private Integer itemgroupnbr;
 	private Date priorlastupdated;	
-	private Long version;
+	private Long version = 0L;
 	
 	//----- Embedded Components ---------//
 	private Description itemdesc;
@@ -120,16 +118,14 @@ public class Ims implements java.io.Serializable {
   	private Cost cost;
   	private SimilarItemCode relateditemcodes;
   	private VendorInfo vendors = new VendorInfo();
-  	//private PriorVendor priorVendor;
   	
 	//------- Associations --------//
   	//@OrderBy("vendorOrder ASC") 
-  	private List<Vendor> newVendorSystem = new CopyOnWriteArrayList<Vendor>();
+  	private List<Vendor> newVendorSystem = new CopyOnWriteArrayList<>();
   	private ImsNewFeature newFeature;
     private IconCollection iconDescription;
 	private List<ColorHue> colorhues =  new CopyOnWriteArrayList<>();
 	private List<String> colors =  new ArrayList<>();
-  	//private List<Note> newNoteSystem = new ArrayList<>();
      	
 	private String colorHueString;
 	
@@ -425,15 +421,19 @@ public class Ims implements java.io.Serializable {
 	}
 	*/
 	
-	
+	@JsonIgnore
 	@Transient
 	public List<String> getColors() {
 		if(colors == null || colors.isEmpty())
 		   colors = ImsDataUtil.convertColorCategoryToStringList(colorcategory);	
 		return colors;
-		//return ImsDataUtil.convertColorCategoryToStringList(colorcategory);
 	}
 	
+	public void setColors(List<String> colors) {
+		this.colors = colors;
+	}
+	
+	@JsonIgnore
 	@Transient
 	public String getColorHueString() {
 		//return colorHueString;
@@ -441,9 +441,6 @@ public class Ims implements java.io.Serializable {
 	}
 	public void setColorHueString(String colorHueString) {
 		this.colorHueString = colorHueString;
-	}
-	public void setColors(List<String> colors) {
-		this.colors = colors;
 	}
 	
 	@Column(name = "showonalysedwards", length = 1)
@@ -546,12 +543,11 @@ public class Ims implements java.io.Serializable {
 	}
 
 	public void addNewVendorSystem(Vendor vendor){
-		if(vendor.getVendorId().getItemCode() == null || !vendor.getVendorId().getItemCode().equalsIgnoreCase(getItemcode()))
+		if(vendor.getVendorId().getItemCode() == null || !(vendor.getVendorId().getItemCode().equalsIgnoreCase(getItemcode())))
 		   vendor.getVendorId().setItemCode(getItemcode());	
 		vendor.setIms(this);
 		if(getNewVendorSystem() == null)
-		   setNewVendorSystem(new ArrayList<Vendor>());	
-		//vendor.setVendorOrder(getNewVendorSystem().size() +1);
+		   setNewVendorSystem(new CopyOnWriteArrayList<Vendor>());	
 		getNewVendorSystem().add(vendor);
 	}
 	
@@ -581,51 +577,6 @@ public class Ims implements java.io.Serializable {
 			colorhues = new ArrayList<ColorHue>();
 		colorhues.add(colorhue);
 	}
-   
-	/*
-	//@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "ims", cascade = CascadeType.ALL)
-	public List<Note> getNewNoteSystem() {
-		return this.newNoteSystem;
-	}
-
-	public void setNewNoteSystem(List<Note> newNoteSystem) {
-		this.newNoteSystem = newNoteSystem;
-	}
-
-	public void addNote(Note note){
-		if(getNewNoteSystem() != null && getNewNoteSystem().size() < 5)
-			initNotes(5);
-		note.setItem(this);
-		String noteType = note.getNoteType();
-		switch(noteType){
-		   case "po": case "po_note":
-			   getNewNoteSystem().set(0, note);
-			   break;
-		   case "buyer": case "buyer_note":
-	    	   getNewNoteSystem().set(1, note);
-			   break;	
-		   case "invoice": case "invoice_note":
-			   getNewNoteSystem().set(2, note);
-			   break;
-		   case "internal": case "internal_note":
-			   getNewNoteSystem().set(4, note);
-			   break;	
-		   case "additional": case "additional_note":
-			   getNewNoteSystem().set(3, note);
-			   break;	   
-		}
-	}
-
-	public void initNotes(int numberOfNotes){
-		newNoteSystem = Arrays.asList(new Note[numberOfNotes]);
-		for(int i = 0; i < numberOfNotes; i++) {
-			Note note = new Note();
-			note.setItem(this);
-			newNoteSystem.set(i, note);
-		}
-	}	
-	*/
 	
 	@JsonIgnore
 	@Version
@@ -633,7 +584,7 @@ public class Ims implements java.io.Serializable {
 	public Long getVersion() {
 		return version;
 	}
-	private void setVersion(Long version) {
+	public void setVersion(Long version) {
 		this.version = version;
 	}
 	
@@ -676,7 +627,7 @@ public class Ims implements java.io.Serializable {
 			Purchasers purchasers, PackagingInfo packaginginfo, Notes notes,
 			Applications applications, List<String> usage, Units units,
 			Cost cost, VendorInfo vendors, SimilarItemCode relateditemcodes,
-			List<Vendor> newVendorSystem, ImsNewFeature imsNewFeature,
+			CopyOnWriteArrayList<Vendor> newVendorSystem, ImsNewFeature imsNewFeature,
 			IconCollection iconDescription) {
 		super();
 		this.itemcode = itemcode;
@@ -750,30 +701,54 @@ public class Ims implements java.io.Serializable {
 			return false;
 		return true;
 	}
-
 	@Override
 	public String toString() {
-		return "Product "
-				+ "[itemcd=" + itemcode 
-				+ ", productNewFeature=" + newFeature 
-				+ ", abccode=" + abccode 
-				+ ", category=" + itemcategory 
-				+ ", inactivecd=" + inactivecode
-				+ ", itemgroupnbr=" + itemgroupnbr 
-				+ ", itemtypecode=" + itemtypecode 
-				+ ", printlabel=" + printlabel 
-				+ ", productline=" + productline 
-				+ ", updatecode=" + updatecode 
-				+ ", origin=" + countryorigin
-				+ ", shadevariation=" + shadevariation 
-				+ ", showonwebsite=" + showonwebsite
-				+ ", colorcategory=" + colorcategory 
-				+ ", showonalysedwards=" + showonalysedwards 
-				+ ", offshade=" + offshade 
-				+ ", itemcd2=" + itemcode2 
-				+ ", icons=" + iconsystem 
-				+ ", inventoryItemcd=" + inventoryitemcode 
-				+ "]";
+		return "Ims ["
+				+ "itemcode=" + itemcode + ", "
+				+ "itemcategory=" + itemcategory + ", "
+				+ "countryorigin=" + countryorigin + ", "
+				+ "inactivecode=" + inactivecode + ", "
+				+ "shadevariation=" + shadevariation
+				+ ", colorcategory=" + colorcategory + 
+				", showonwebsite=" + showonwebsite + 
+				", iconsystem=" + iconsystem
+				+ ", itemtypecode=" + itemtypecode + 
+				", abccode=" + abccode
+				+ ", itemcode2=" + itemcode2 + 
+				", inventoryitemcode=" + inventoryitemcode + 
+				", showonalysedwards=" + showonalysedwards + 
+				", offshade=" + offshade
+				+ ", printlabel=" + printlabel + 
+				", taxclass=" + taxclass
+				+ ", lottype=" + lottype + 
+				", updatecode=" + updatecode
+				+ ", directship=" + directship + 
+				", dropdate=" + dropdate
+				+ ", productline=" + productline + 
+				", itemgroupnbr=" + itemgroupnbr + 
+				", priorlastupdated=" + priorlastupdated
+				+ ", version=" + version + 
+				", itemdesc=" + itemdesc
+				+ ", series=" + series + 
+				", material=" + material
+				+ ", dimensions=" + dimensions + 
+				", price=" + price
+				+ ", testSpecification=" + testSpecification + 
+				", purchasers=" + purchasers + 
+				", packaginginfo=" + packaginginfo + 
+				", notes=" + notes + 
+				", applications=" + applications + 
+				", usage=" + usage
+				+ ", units=" + units + 
+				", cost=" + cost + 
+				", relateditemcodes=" + relateditemcodes + 
+				", vendors=" + vendors
+				+ ", newVendorSystem=" + newVendorSystem + 
+				", newFeature=" + newFeature + 
+				", iconDescription=" + iconDescription
+				+ ", colorhues=" + colorhues + 
+				", colors=" + colors
+				+ ", colorHueString=" + colorHueString + 
+				"]";
 	}
-
 }

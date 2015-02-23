@@ -6,6 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Embeddable
 public class Units  implements java.io.Serializable {
 
@@ -504,8 +506,9 @@ public class Units  implements java.io.Serializable {
 		this.unit4wgtperunit = unit4wgtperunit;
 	}
 
-	@Transient
-	public boolean isDefault(){
-		return stdunit == null && ordunit == null && unit1unit == null && unit2unit == null && unit3unit == null && unit4unit == null;
-	}
+	//@JsonIgnore
+	//@Transient
+	//public boolean isDefault(){
+	//	return stdunit == null && ordunit == null && unit1unit == null && unit2unit == null && unit3unit == null && unit4unit == null;
+	//}
 }

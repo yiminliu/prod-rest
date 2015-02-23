@@ -1,11 +1,19 @@
 package com.bedrosians.bedlogic.web.controller;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.validation.Valid;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.UriBuilder;
 
+import org.glassfish.jersey.internal.util.collection.MultivaluedStringMap;
+import org.hibernate.criterion.DetachedCriteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
@@ -49,9 +57,12 @@ import com.bedrosians.bedlogic.exception.DataNotFoundException;
 import com.bedrosians.bedlogic.exception.DatabaseOperationException;
 import com.bedrosians.bedlogic.exception.DatabaseSchemaException;
 import com.bedrosians.bedlogic.exception.InputParamException;
-import com.bedrosians.bedlogic.service.ims.ImsService;
 import com.bedrosians.bedlogic.util.enums.DBOperation;
+import com.bedrosians.bedlogic.util.ims.ImsDBUtil;
+import com.bedrosians.bedlogic.util.ims.ImsDataUtil;
 import com.bedrosians.bedlogic.web.validator.ImsValidator;
+import com.bedrosians.bedlogic.webservice.client.ImsRestClient;
+
 
 /**
 * This MVC controller class takes all ims-related requests and dispatches the requests to corresponding services to fulfill database CRUD operations on ims.
@@ -66,8 +77,14 @@ import com.bedrosians.bedlogic.web.validator.ImsValidator;
 
 public class ImsController {
 
+	private static final String username = "keymark"; //"SCOT";
+	private static final String password = "JBED";
+	
    @Autowired
-   private ImsService imsService;
+   private ImsRestClient imsRestClient;
+   
+   @Autowired
+   private ImsDBUtil imsDBUtil;
        
    @Autowired
    @Qualifier("imsValidator")
@@ -99,7 +116,7 @@ public class ImsController {
 	   dbOperation = "retrieve";
 	   Ims item = null;
 	   try{
-		   item = imsService.getItemByItemCode(itemCode);
+		   item = imsRestClient.getItemByItemCode(itemCode, username, password);
 	   }
 	   catch(Exception e){
 		  throw e;
@@ -128,10 +145,22 @@ public class ImsController {
      * @return String the item search resulting page which shows all items match the search criteria
      */
     @RequestMapping(value="/getItems", method = RequestMethod.POST)
-    public String getItems(@RequestParam LinkedHashMap<String, List<String>> allRequestParams, @ModelAttribute("item") Ims item, Model model, BindingResult result, SessionStatus status) {
-	   List<Ims> items = null;
+    //public String getItems(@RequestParam LinkedHashMap<String, List<String>> allRequestParams, @ModelAttribute("item") Ims item, Model model, BindingResult result, SessionStatus status) {
+    public String getItems(@RequestParam LinkedHashMap<String,String> allRequestParams, @ModelAttribute("item") Ims item, Model model, BindingResult result, SessionStatus status) {
+    	 
+    List<Ims> items = null;
 	   try{
-		   items = imsService.getItems(allRequestParams);
+		   MultivaluedMap<String, String> multivaluedMap = new MultivaluedStringMap();
+			   Set<Map.Entry<String, String>> entrySet = allRequestParams.entrySet();
+			   Iterator<Map.Entry<String, String>> it = entrySet.iterator();
+			   while(it.hasNext()) {
+				    //--------------- Process the input data --------------//
+			     	Entry<String, String> entry = (Entry<String, String>)it.next();
+			     	if(entry.getValue() != null && !entry.getValue().isEmpty())
+			     	   multivaluedMap.add((String)entry.getKey(), (String)entry.getValue());
+		   }
+		   //items = imsService.getItems(allRequestParams);
+		   items = imsRestClient.getItems(multivaluedMap, username, password);
 	   }
 	   catch(DataNotFoundException e){
 		   status.setComplete(); //finished the "item" SessionAttribute
@@ -147,6 +176,15 @@ public class ImsController {
 	   status.setComplete(); //finish the "item" SessionAttribute
 	   return "ims/getItemsSuccess";
     }
+    /*public WebResource queryParams(MultivaluedMap<String, String> params) {
+        UriBuilder b = getUriBuilder();
+        for (Map.Entry<String, List<String>> e : params.entrySet()) {
+            for (String value : e.getValue())
+                b.queryParam(e.getKey(), value);
+        }
+        return new WebResource(this, b);
+    }
+    */
    
     //--------------------------- Create Item --------------------------// 
    
@@ -169,6 +207,8 @@ public class ImsController {
    public String itemMaterialForm(@ModelAttribute("aItem") @Valid Ims item, Model model, BindingResult bindingResult, SessionStatus status) {
 	   if("update".equalsIgnoreCase(dbOperation)){
 		   validator.validateGeneralInfo(item, DBOperation.UPDATE, bindingResult);
+		   if(item.getColors() != null && !ImsDataUtil.colorHuesAndColorsEquals(item.getColorhues(), item.getColors()))
+			  item.setColorhues(ImsDataUtil.convertColorListToColorHueObjects(item.getColors()));			
 		   if (bindingResult.hasErrors()) 
 			  return "ims/updateItem_begin";
 	   }
@@ -184,7 +224,6 @@ public class ImsController {
            model.addAttribute("aItem", item);
        }    
    	   return "ims/createItem_material";
-   
    }
    
    //handle material info
@@ -253,7 +292,7 @@ public class ImsController {
    @RequestMapping(value = "/createItem_icon", method = RequestMethod.POST)
    public String itemIconForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult bindingResult) {
       if (item != null) {
-    	  validator.validateVendorInfo(item, bindingResult);
+    	  validator.validateVendorInfo(item, dbOperation, bindingResult);
      	   if (bindingResult.hasErrors()) {
                return "ims/createItem_vendor";
            }
@@ -263,7 +302,7 @@ public class ImsController {
       }
       return null;
    }
-   //handle test spec
+   //handle new icon
    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
    @RequestMapping(value = "/createItem_test", method = RequestMethod.POST)
    public String itemTestSpecForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult result) {
@@ -272,6 +311,7 @@ public class ImsController {
        return "ims/createItem_test";
    }
      
+   //handle test spec
    @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
    @RequestMapping(value = "/createItem_note", method = RequestMethod.POST)
    public String itemNoteForm(@ModelAttribute("aItem") Ims item, Model model, BindingResult bindingResult) {
@@ -300,11 +340,11 @@ public class ImsController {
           }
    	      try {
               if("update".equalsIgnoreCase(dbOperation)){
-       	         imsService.createOrUpdateItem(item, DBOperation.UPDATE);
+       	         imsRestClient.updateItem(item, username, password);
            	     model.addAttribute("operation", "Updated");
               }
               else{
-                 imsService.createOrUpdateItem(item, DBOperation.CREATE);
+                 imsRestClient.createItem(item, username, password);
                  model.addAttribute("operation", "Created");
               }
               model.addAttribute("item", item);
@@ -329,7 +369,7 @@ public class ImsController {
     public String updateItem(@PathVariable("itemcode") String itemCode, Model model){
        Ims item = null;
        try{
-    	   item = imsService.getItemByItemCode(itemCode);
+    	   item =  imsRestClient.getItemByItemCode(itemCode, username, password);
        }
        catch (Exception te) {
           throw te;
@@ -362,7 +402,7 @@ public class ImsController {
           }
       	 Ims retrievedItem = null;
     	 try {
-    		 retrievedItem = imsService.getItemByItemCode(itemCode);
+    		 retrievedItem =  imsRestClient.getItemByItemCode(itemCode, username, password);
          }
       	 catch (Exception te) {
              throw te;
@@ -387,7 +427,7 @@ public class ImsController {
     	  dbOperation = "clone";
     	  Ims retrievedItem = null;
      	   try {
-     		  retrievedItem = imsService.getItemByItemCode(itemCode);
+     		  retrievedItem =  imsRestClient.getItemByItemCode(itemCode, username, password);
           }
      	  catch(DataNotFoundException dnfe){
      		  throw new InputParamException("No item with the Item Code " + itemCode + " found in database. You cannot clone an item with this item code.");
@@ -404,7 +444,7 @@ public class ImsController {
      
       @PreAuthorize("hasAnyRole('ROLE_SUPERUSER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_PURCHASER')")
       @RequestMapping(value = "/cloneItemForm", method = RequestMethod.GET)
-      public String cloneItem(Model model){
+      public String cloneItemForm(Model model){
     	  dbOperation = "clone";
     	  model.addAttribute("item", new Ims());
          return "ims/cloneItemForm";
@@ -424,7 +464,7 @@ public class ImsController {
       	  } 
     	   Ims retrievedItem = null;
       	   try {
-      		  retrievedItem = imsService.getItemByItemCode(item.getItemcode());
+      		  retrievedItem =  imsRestClient.getItemByItemCode(item.getItemcode(), username, password);
            }
       	   catch(DataNotFoundException dnfe){
     		  throw new InputParamException("No item with the Item Code " + item.getItemcode() + " found in database. You cannot clone an item with this item code.");
@@ -447,9 +487,11 @@ public class ImsController {
          	  if (bindingResult.hasErrors()) {
                   return "ims/cloneItem";
          	  } 
-    	      try {
+         	  if(item.getColors() != null && !ImsDataUtil.colorHuesAndColorsEquals(item.getColorhues(), item.getColors()))
+   			     item.setColorhues(ImsDataUtil.convertColorListToColorHueObjects(item.getColors()));			
+   	   	      try {
                   //imsServiceMVC.createItem(item, DBOperation.CLONE);
-    	    	  imsService.createOrUpdateItem(item, DBOperation.CLONE);
+    	    	  imsRestClient.createItem(item, username, password);
               }
               catch (Exception te) {
                  throw te;
@@ -471,7 +513,7 @@ public class ImsController {
      public String deleteItem(@PathVariable("itemCode") String itemCode, Model model){
     	 dbOperation = "delete";
     	 try{
-  		   imsService.deleteItemByItemCode(itemCode);
+    		 imsRestClient.deleteItem(itemCode, username, password);
   	    }
   	    catch(Exception e){
   		   throw e;
@@ -494,7 +536,7 @@ public class ImsController {
             return "ims/deleteItem";
         }
   	    try{
-  		   imsService.deleteItem(item);
+  		   imsRestClient.deleteItem(item.getItemcode(), username, password);
   	   }
   	   catch(Exception e){
   		   e.printStackTrace();
@@ -514,7 +556,7 @@ public class ImsController {
      @RequestMapping(value="deactivateItem", method = RequestMethod.POST)
      public String deactivateItem(@ModelAttribute("item") Ims item, Model model){
   	   try{
-  		   imsService.deactivateItem(item);
+  		 imsRestClient.updateItem(item, username, password);
   	   }
   	   catch(Exception e){
   		   e.printStackTrace();
@@ -587,7 +629,7 @@ public class ImsController {
      
      @ModelAttribute
      public void newVendorSystemEmptyList(Model model) {
-     	 model.addAttribute("newVendorSystem", imsService.getNewVendorSystem());
+     	 model.addAttribute("newVendorSystem", imsDBUtil.getNewVendorSystem());
      }
      
      
@@ -597,9 +639,9 @@ public class ImsController {
      public ModelAndView handleDataNotFoundException(DataNotFoundException ex) {
    
   		ModelAndView model = new ModelAndView("/exception/exception");
-  		model.addObject("errorCode", ex.getErrorCode());
+  		model.addObject("errorCode", ex.getHttpErrorCode());
  		model.addObject("errorType", ex.getErrorType());
- 		model.addObject("errorMessage", ex.getErrorMessage());
+ 		model.addObject("errorMessage", ex.getMessage());
  		model.addObject("rootErrorMessage", ex.getRootErrorMessage());
  		model.addObject("error", ex);
  		model.addObject("rootError", ex.getRootError());
@@ -611,9 +653,9 @@ public class ImsController {
      public ModelAndView handleInputParamException(InputParamException ex) {
    
   		ModelAndView model = new ModelAndView("/exception/exception");
-  		model.addObject("errorCode", ex.getErrorCode());
+  		model.addObject("errorCode", ex.getHttpErrorCode());
  		model.addObject("errorType", ex.getErrorType());
- 		model.addObject("errorMessage", ex.getErrorMessage());
+ 		model.addObject("errorMessage", ex.getMessage());
  		model.addObject("rootErrorMessage", ex.getRootErrorMessage());
  		model.addObject("error", ex);
  		model.addObject("rootError", ex.getRootError());
@@ -625,9 +667,9 @@ public class ImsController {
  	public ModelAndView handleDataOperationException(DatabaseOperationException ex) {
   
  		ModelAndView model = new ModelAndView("/exception/exception");
- 		model.addObject("errorCode", ex.getErrorCode());
+ 		model.addObject("errorCode", ex.getHttpErrorCode());
  		model.addObject("errorType", ex.getErrorType());
- 		model.addObject("errorMessage", ex.getErrorMessage());
+ 		model.addObject("errorMessage", ex.getMessage());
  		model.addObject("rootErrorMessage", ex.getRootErrorMessage());
  		model.addObject("error", ex);
  		model.addObject("rootError", ex.getRootError());
@@ -639,9 +681,9 @@ public class ImsController {
  	public ModelAndView handleDatabaseSchemaException(DatabaseSchemaException ex) {
   
  		ModelAndView model = new ModelAndView("/exception/exception");
- 		model.addObject("errorCode", ex.getErrorCode());
+ 		model.addObject("errorCode", ex.getHttpErrorCode());
  		model.addObject("errorType", ex.getErrorType());
- 		model.addObject("errorMessage", ex.getErrorMessage());
+ 		model.addObject("errorMessage", ex.getMessage());
  		model.addObject("rootErrorMessage", ex.getRootErrorMessage());
  		model.addObject("error", ex);
  		model.addObject("rootError", ex.getRootError());
@@ -653,7 +695,7 @@ public class ImsController {
     public String getKeymarkVendorDetail(@PathVariable("vendorNumber") String vendorNumber, Model model){
  	   KeymarkVendor  keymarkVendor = null;
  	   try{
- 		  keymarkVendor = imsService.getKeymarkVendorByVendorNumber(Integer.valueOf(vendorNumber));
+ 		  keymarkVendor = imsDBUtil.getKeymarkVendorByVendorNumber(Integer.valueOf(vendorNumber));
  	   }
  	   catch(Exception e){
  		  throw e;

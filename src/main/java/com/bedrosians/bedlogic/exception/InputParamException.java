@@ -9,7 +9,9 @@ public class InputParamException extends BedException {
 	private static final long serialVersionUID = -3447273251377L;
     public InputParamException() {
     	super();
-    	this.errorMessage = "Input Parameter Error";
+    	httpErrorCode = 400;
+        httpMessage = "Bad Request";
+    	message = "Input Parameter Error";
     	if(errorType == null)
     	   errorType = "Input Parameter Error";
     }
@@ -19,6 +21,6 @@ public class InputParamException extends BedException {
     }
     
     public InputParamException(String message, Throwable cause) { 
-       super("Input Parameter Error: " + message, cause);
+       super(message, cause);
     }
 }

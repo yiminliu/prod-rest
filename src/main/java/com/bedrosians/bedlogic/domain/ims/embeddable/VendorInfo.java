@@ -12,6 +12,8 @@ import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.NumericField;
 import org.hibernate.search.annotations.Store;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Embeddable
 public class VendorInfo  implements java.io.Serializable {
 
@@ -58,7 +60,7 @@ public class VendorInfo  implements java.io.Serializable {
 
 		@Field(index=Index.YES, analyze=Analyze.NO, store=Store.YES)
 		@NumericField
-		@Column(name = "vendornbr1", precision = 6, updatable=false)
+		@Column(name = "vendornbr1")
 		public Integer getVendornbr1() {
 			return this.vendornbr1;
 		}
@@ -139,7 +141,7 @@ public class VendorInfo  implements java.io.Serializable {
 			this.vendorroundaccuracy = vendorroundaccuracy;
 		}
 
-		@Column(name = "vendornetprice", precision = 9, scale = 4, updatable=false)
+		@Column(name = "vendornetprice")
 		public BigDecimal getVendornetprice() {
 			return this.vendornetprice;
 		}
@@ -166,7 +168,7 @@ public class VendorInfo  implements java.io.Serializable {
 			this.vendorfreightratecwt = vendorfreightratecwt;
 		}
 
-		@Column(name = "vendorlandedbasecost", precision = 13, scale = 6, updatable=false)
+		@Column(name = "vendorlandedbasecost")
 		public BigDecimal getVendorlandedbasecost() {
 			return this.vendorlandedbasecost;
 		}
@@ -193,8 +195,9 @@ public class VendorInfo  implements java.io.Serializable {
 			this.leadtime = leadtime;
 		}
 		
-		@Transient
-		public boolean isDefault(){
-		  return vendornbr1 == null && vendornbr2 == null && vendorlistprice == BigDecimal.ZERO && vendorfob == null && vendornetprice == BigDecimal.ZERO;
-		}
+		//@JsonIgnore
+		//@Transient
+		//public boolean isDefault(){
+		//  return vendornbr1 == null && vendornbr2 == null && vendorlistprice == BigDecimal.ZERO && vendorfob == null && vendornetprice == BigDecimal.ZERO;
+		//}
 }

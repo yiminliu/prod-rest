@@ -40,9 +40,8 @@
           </tr>
           <tr>
               <td><span style="color:black;">Green Friendly:</span>
-                  <form:checkbox path="testSpecification.greenfriendly" value="" />Yes
-                  <form:input path="testSpecification.greenfriendly" type="hidden" value="N" />
-                </td>
+                  <form:checkbox path="testSpecification.greenfriendly" value="Y" />Yes
+              </td>
           </tr>
           <tr>
               <td><label> Pei Abrasion: </label>

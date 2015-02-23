@@ -353,14 +353,14 @@ public class IconCollection implements java.io.Serializable {
 			   preRecycled == null && leadPoint == null && greenFriendly == null && coefficientOfFriction == null;
 	}
 	
-	@JsonIgnore
-	@Transient
-	public boolean isDefault(){
-		return exteriorProduct.equals("No") && adaAccessibility.equals("No") && throughColor.equals("No") && colorBody.equals("No") && 
-			   inkJet.equals("No") && glazed.equals("No") && unglazed.equals("No") && rectifiedEdge.equals("No") &&
-			   chiseledEdge.equals("No") && versaillesPattern.equals("No") && recycled.equals("No") && postRecycled.equals("No") && 
-			   preRecycled.equals("No") && leadPoint.equals("No") && greenFriendly.equals("No") && coefficientOfFriction.equals("No");
-	}
+	//@JsonIgnore
+	//@Transient
+	//public boolean isDefault(){
+	//	return exteriorProduct.equals("No") && adaAccessibility.equals("No") && throughColor.equals("No") && colorBody.equals("No") && 
+	//		   inkJet.equals("No") && glazed.equals("No") && unglazed.equals("No") && rectifiedEdge.equals("No") &&
+	//		   chiseledEdge.equals("No") && versaillesPattern.equals("No") && recycled.equals("No") && postRecycled.equals("No") && 
+	//		   preRecycled.equals("No") && leadPoint.equals("No") && greenFriendly.equals("No") && coefficientOfFriction.equals("No");
+	//}
 
 	@Override
 	public int hashCode() {
@@ -387,5 +387,23 @@ public class IconCollection implements java.io.Serializable {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "IconCollection ["
+				+ "itemCode=" + itemCode + ", madeInCountry="
+				+ madeInCountry + ", exteriorProduct=" + exteriorProduct
+				+ ", adaAccessibility=" + adaAccessibility + ", throughColor="
+				+ throughColor + ", colorBody=" + colorBody + ", inkJet="
+				+ inkJet + ", glazed=" + glazed + ", unglazed=" + unglazed
+				+ ", rectifiedEdge=" + rectifiedEdge + ", chiseledEdge="
+				+ chiseledEdge + ", versaillesPattern=" + versaillesPattern
+				+ ", recycled=" + recycled + ", postRecycled=" + postRecycled
+				+ ", preRecycled=" + preRecycled + ", leadPoint=" + leadPoint
+				+ ", greenFriendly=" + greenFriendly
+				+ ", coefficientOfFriction=" + coefficientOfFriction + "]";
+	}
+	
+	
 	
 }

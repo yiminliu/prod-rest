@@ -282,7 +282,7 @@ public class ImsNewFeature implements java.io.Serializable {
 		return version;
 	}
 	
-	private void setVersion(Integer version){
+	public void setVersion(Integer version){
 		this.version = version;
 	}
 	
@@ -343,7 +343,7 @@ public class ImsNewFeature implements java.io.Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((itemCode == null) ? 0 : itemCode.hashCode());
+		result = prime * result + ((itemCode == null) ? 0 : itemCode.trim().hashCode());
 		return result;
 	}
 
@@ -359,7 +359,7 @@ public class ImsNewFeature implements java.io.Serializable {
 		if (itemCode == null) {
 			if (other.itemCode != null)
 				return false;
-		} else if (!itemCode.equals(other.itemCode))
+		} else if (!itemCode.trim().equals(other.itemCode.trim()))
 			return false;
 		return true;
 	}

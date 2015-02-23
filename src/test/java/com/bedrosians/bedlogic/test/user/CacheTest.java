@@ -12,9 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
-import com.bedrosians.bedlogic.dao.ims.ImsDao;
 import com.bedrosians.bedlogic.domain.user.KeymarkUcUser;
-import com.bedrosians.bedlogic.service.ims.ImsService;
 import com.bedrosians.bedlogic.service.user.KeymarkUcUserService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -25,11 +23,6 @@ public class CacheTest {
 
 	@Autowired
 	SessionFactory sessionFactory;
-	@Autowired
-	ImsDao itemDao;
-
-	@Autowired
-	ImsService imsService;
 	@Autowired
 	KeymarkUcUserService keymarkUcUserService;
 	

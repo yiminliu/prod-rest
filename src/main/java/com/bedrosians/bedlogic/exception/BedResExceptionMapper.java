@@ -3,7 +3,6 @@ package com.bedrosians.bedlogic.exception;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MediaType;
 
-import com.bedrosians.bedlogic.exception.*;
 
 public class BedResExceptionMapper
 {

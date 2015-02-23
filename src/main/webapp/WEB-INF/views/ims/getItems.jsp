@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/includes/doctype.jsp"%>
 <%@ include file="/WEB-INF/includes/styles.jsp"%>
 <%@ include file="/WEB-INF/includes/popups.jsp"%>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
 <title>Show Item</title>
 </head>
@@ -69,10 +69,10 @@
           </td> 
       </tr>
       <tr>
-       <td>Length: <form:input path="dimensions.nominallength" cssStyle="width:90px;"></form:input></td>
+       <td><span id="input_label">Length:</span> <form:input path="dimensions.nominallength" cssStyle="width:90px;"></form:input></td>
      </tr>
       <tr>
-       <td>Width : <form:input path="dimensions.nominalwidth" cssStyle="width:90px;"></form:input></td>
+       <td><span id="input_label">Width :</span> <form:input path="dimensions.nominalwidth" cssStyle="width:90px;"></form:input></td>
      </tr>
      <tr>  
         <td><label for="countryOptions">Origin: </label>

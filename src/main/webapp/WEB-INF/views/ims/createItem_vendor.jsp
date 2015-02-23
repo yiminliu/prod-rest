@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/includes/doctype.jsp"%>
 <%@ include file="/WEB-INF/includes/styles.jsp"%>
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
 <title>Item Management System -- Create An Item</title>
 </head>
@@ -13,9 +13,8 @@
 <form:form method="POST" action="${action}" modelAttribute="aItem">
     <div style="color:Green"> <h3>Vendors</h3></div>
     <table class="category">
-     <c:forEach items="${newVendorSystem}" varStatus="loop">
+    <c:forEach items="${newVendorSystem}" varStatus="loop">
        <tr>
-          <!--<td style="width:20">Order#: <form:input path="newVendorSystem[${loop.index + 1}].vendorOrder"></form:input></td>-->  
           <td style="width:20"><label for="vendorOrder"> </label>
                  <form:hidden path="newVendorSystem[${loop.index}].vendorOrder" value="${loop.index + 1}"/>${loop.index + 1}. 
           </td> 
@@ -40,7 +39,7 @@
             <form:select id="vendorPriceUnit" path="newVendorSystem[${loop.index}].vendorPriceUnit" cssClass="span-8" cssErrorClass="span-8 validationFailed" cssStyle="width:80px;">
                <form:option value="0" selected="selected">Select one</form:option>
                <c:forEach var="vendorPriceUnit" items="${packageUnitList}" varStatus="status">
-                 <form:option value="${vendorPriceUnit}">${vendorPriceUnit}</form:option>
+                 <form:option value="${vendorPriceUnit.description}">${vendorPriceUnit.description}</form:option>
               </c:forEach>
             </form:select>
             <form:errors path="newVendorSystem[${loop.index}].vendorPriceUnit" cssClass="error" />
