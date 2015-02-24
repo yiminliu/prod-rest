@@ -76,7 +76,7 @@ public class ImsResource
             //String wrappedData = ImsQueryUtil.getValue(uriInfo.getQueryParameters(), "wrappedData");
             //if("No".equalsIgnoreCase(wrappedData))
             	itemList = (List<Ims>)imsService.getItems(uriInfo.getQueryParameters(), false);
-           // else
+            // else
             //	itemList = imsService.getItems(uriInfo.getQueryParameters(), true);
             //Create json response
             response = Response.ok(itemList, MediaType.APPLICATION_JSON).build();
@@ -107,7 +107,6 @@ public class ImsResource
            //Retrieve data from database based on the given item code
            item = imsService.getItem(itemCode);
             //Create json response
-           //response = Response.ok(new ItemWrapper(item), MediaType.APPLICATION_JSON).build();
            response = Response.ok(item, MediaType.APPLICATION_JSON).build();
          }
          catch (BedException e)
@@ -125,7 +124,6 @@ public class ImsResource
        @POST
        @Consumes(MediaType.APPLICATION_JSON)
        @Loggable(value = LogLevel.INFO)
-       //public Response create(@Context HttpHeaders requestHeaders, String jsonString)
        public Response create(@Context HttpHeaders requestHeaders, Ims item)
        {
     	  Response response;
@@ -134,7 +132,6 @@ public class ImsResource
              //Check user security
              keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, APINAME, DBOperation.CREATE);
              //Create a new item using the given data in json format, and save it into database
-             //String itemCode = imsService.createItem(jsonString);
              String itemCode = imsService.createOrUpdateItem(item, DBOperation.CREATE);
              //Create response
              response = Response.created(URI.create("/bedlogic/v2/ims/"+itemCode)).entity(itemCode).build();
@@ -155,7 +152,6 @@ public class ImsResource
        @Consumes(MediaType.APPLICATION_JSON)
        @Produces({MediaType.APPLICATION_JSON})
        @Loggable(value = LogLevel.INFO)
-      // public Response update(@Context HttpHeaders requestHeaders, String jsonString)
        public Response update(@Context HttpHeaders requestHeaders, Ims item)
        {
           Response response;
@@ -164,10 +160,8 @@ public class ImsResource
              //Check user security
              keymarkUcUserSecurityService.doUserSecurityCheck(requestHeaders, APINAME, DBOperation.UPDATE);
              //Update an item based on the input json data
-             //Ims item = imsService.updateItem(jsonString);
              Ims updatedItem = imsService.updateItem(item);
               //Create json response
-             //response = Response.ok(item, MediaType.APPLICATION_JSON).build();
              response = Response.ok(FormatUtil.process(updatedItem), MediaType.APPLICATION_JSON).build();
           }
           catch (BedException e)

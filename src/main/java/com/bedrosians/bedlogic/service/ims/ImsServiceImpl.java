@@ -120,9 +120,9 @@ public class ImsServiceImpl implements ImsService {
 		if(queryParams == null || queryParams.isEmpty()){
 			throw new InputParamException("Query criteria is empty");
 		}
-		List<Ims> itemList = null;
+		List<Ims> items = null;
 		try{
-			itemList = imsDao.getItemsByQueryParameters(queryParams);
+			items = imsDao.getItemsByQueryParameters(queryParams);
 		}
 		catch(HibernateException hbe){
 			if(hbe.getCause() != null) {
@@ -140,14 +140,16 @@ public class ImsServiceImpl implements ImsService {
 		  	else
 		  	   throw new DatabaseOperationException("Error occured during getItems(). Cause: " +  e.getMessage(), e);	
 		}
-		List<Object> list = new ArrayList<Object>(itemList.size());
-		for(Ims item : itemList){
+		if(items == null || items.isEmpty())
+		       throw new DataNotFoundException("No data found.");	
+		List<Object> itemList = new ArrayList<Object>(items.size());
+		for(Ims item : items){
 		    //if(wrappedData) 
 		    //	list.add(new ItemWrapper(FormatUtil.process(item)));	
 		    //else 
-		    	list.add(FormatUtil.process(item));				
+			itemList.add(FormatUtil.process(item));				
 		}
-		return list;
+		return itemList;
 	}
 	
 	@Loggable(value = LogLevel.INFO)

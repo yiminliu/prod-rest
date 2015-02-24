@@ -36,7 +36,6 @@ public class LoggingAspect {
 	private static final String ARG_PATTERN_DOUBLE = "<{0}:{1}>";
 
 	private long start;
-
 	private long elapsedTime;
 	private StartTimeStack startTimeStack = new StartTimeStack();
 
@@ -90,8 +89,7 @@ public class LoggingAspect {
 		elapsedTime = 0;
 	}
 
-	private String formatArg(
-			Object... args) {
+	private String formatArg(Object... args) {
 		if (args.length == 1) {
 			return format(ARG_PATTERN_SINGLE, args);
 		} else if (args.length == 2) {
