@@ -1,4 +1,4 @@
-package com.bedrosians.bedlogic.domain.ims.enums;
+package com.bedrosians.bedlogic.util.enums;
 
 public enum RoleDomain implements java.io.Serializable {
 

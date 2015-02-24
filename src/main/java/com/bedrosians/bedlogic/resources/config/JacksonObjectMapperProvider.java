@@ -17,24 +17,24 @@ import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 public class JacksonObjectMapperProvider implements ContextResolver<ObjectMapper> {
 	
 	final ObjectMapper defaultObjectMapper;
-	final ObjectMapper imsObjectMapper;
+	final ObjectMapper customObjectMapper;
 	
 	public JacksonObjectMapperProvider() {
 	   defaultObjectMapper = createDefaultMapper();
-	   imsObjectMapper = createImsObjectMapper();
+	   customObjectMapper = createCustomObjectMapper();
 	}
 	
 	@Override
 	public ObjectMapper getContext(final Class<?> type) {
 	   if (type == Ims.class) {
-	       return imsObjectMapper;
+	       return customObjectMapper;
 	   } 
 	   else {
 	       return defaultObjectMapper;
 	   }
 	}
 	
-	private static ObjectMapper createImsObjectMapper() {
+	private static ObjectMapper createCustomObjectMapper() {
 	   final ObjectMapper result = new ObjectMapper();
 	   result.enable(SerializationFeature.INDENT_OUTPUT);
 	   //result.configure(SerializationFeature.WRAP_ROOT_VALUE, true);

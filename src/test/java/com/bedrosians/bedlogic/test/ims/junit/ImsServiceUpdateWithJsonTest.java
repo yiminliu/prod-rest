@@ -428,7 +428,7 @@ public class ImsServiceUpdateWithJsonTest {
 	        System.out.println("testUpdateItemWithJsonObject: ");
 	        //JSONObject params = new JSONObject(jStringWithNewFeature);            
 	        //imsService.updateItem(JsonUtil.toObjectNode(params));
-	        imsService.updateItem(JsonUtil.jsonStringToPOJO(jStringWithNewFeature));
+	        imsService.updateItem(jStringWithNewFeature);
 	        Ims item = imsService.getItem(id);
 	        assertEquals("Second", item.getNewFeature().getGrade().getDescription());
 	        assertEquals("Better", item.getNewFeature().getStatus().getDescription());
@@ -523,7 +523,7 @@ public class ImsServiceUpdateWithJsonTest {
 	        System.out.println("testUpdateItemWithNewIcon: ");
 	        //JSONObject params = new JSONObject(jStringWithNewIcons);
 	        //imsService.updateItem(JsonUtil.toObjectNode(params));
-	        imsService.updateItem(JsonUtil.jsonStringToPOJO(jStringWithNewIcons));
+	        imsService.updateItem(jStringWithNewIcons);
 	        System.out.println("newly Updated Item id  = " + id);
 	        Ims item = imsService.getItem(id);
 	        IconCollection icon = item.getIconDescription();
@@ -574,7 +574,7 @@ public class ImsServiceUpdateWithJsonTest {
 	        System.out.println("testUpdateItemWithNewIcon: ");
 	        //JSONObject params = new JSONObject(jStringWithLagecyIcon);
 	        //imsService.updateItem(JsonUtil.toObjectNode(params));
-	        imsService.updateItem(JsonUtil.jsonStringToPOJO(jStringWithLagecyIcon));
+	        imsService.updateItem(jStringWithLagecyIcon);
 	        
 	        System.out.println("newly Updated Item id  = " + id);
 	        Ims item = imsService.getItem(id);

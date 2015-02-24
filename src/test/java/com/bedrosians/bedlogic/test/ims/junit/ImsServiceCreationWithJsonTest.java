@@ -615,7 +615,7 @@ public class ImsServiceCreationWithJsonTest {
 	 public void testCreateItemWithAllImsAndAssociationsByJsonObject() throws Exception {
 	        System.out.println("testCreateItemWithJsonObject: ");
 	        //JSONObject params = new JSONObject(jStringFullItemAndAssociationInfo);
-	        String id = imsService.createOrUpdateItem(JsonUtil.jsonStringToPOJO(jStringFullItemAndAssociationInfo), DBOperation.CREATE);
+	        String id = imsService.createOrUpdateItem((Ims)JsonUtil.jsonStringToPOJO(jStringFullItemAndAssociationInfo, new Ims()), DBOperation.CREATE);
 	        assertNotNull(id);
 	        
 	        Ims item = imsService.getItem(id);

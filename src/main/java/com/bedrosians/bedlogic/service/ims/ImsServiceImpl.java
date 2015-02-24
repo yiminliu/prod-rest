@@ -162,7 +162,7 @@ public class ImsServiceImpl implements ImsService {
 	@Loggable(value = LogLevel.INFO)
 	@Override
 	public String createItem(String jsonString) {  	
-        return createOrUpdateItem(JsonUtil.jsonStringToPOJO(jsonString), DBOperation.CREATE);
+        return createOrUpdateItem((Ims)JsonUtil.jsonStringToPOJO(jsonString, new Ims()), DBOperation.CREATE);
     }
 	
 	@Loggable(value = LogLevel.INFO)
@@ -214,7 +214,7 @@ public class ImsServiceImpl implements ImsService {
 	@Loggable(value = LogLevel.INFO)
 	@Override
 	public Ims updateItem(String jsonString) {  	
-        return updateItem(JsonUtil.jsonStringToPOJO(jsonString));
+        return updateItem((Ims)JsonUtil.jsonStringToPOJO(jsonString, new Ims()));
     }
 	
 	@Loggable(value = LogLevel.INFO)

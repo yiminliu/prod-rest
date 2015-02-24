@@ -15,11 +15,10 @@ import com.bedrosians.bedlogic.resources.config.JacksonObjectMapperProvider;
 
 public class JsonUtil {
 
-	public static Ims jsonStringToPOJO(String jsonString){
-		Ims object = null; 
-		ObjectMapper mapper = new JacksonObjectMapperProvider().getContext(Ims.class); 
+	public static Object jsonStringToPOJO(String jsonString, Object object){
+		ObjectMapper mapper = new JacksonObjectMapperProvider().getContext(Object.class); 
 		try{
-			object = mapper.readValue(jsonString, Ims.class);
+			object = mapper.readValue(jsonString, Object.class);
 		}
 		catch (JsonProcessingException e) {
 	      	throw new DataMappingException("JsonGenerationException occured during jsonStringToPOJO: " + e.getMessage(), e);
